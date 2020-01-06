@@ -33,6 +33,8 @@ def main():
     # Initialise execution context.
     ctx = ExecutionContext(ARGS.network_id, metadata.ID, ARGS.simulator_run_id)
 
+    print(ctx.network_id)
+
     # Initialise mq broker.
     init_mq_broker(ctx.network_id)
 
@@ -42,7 +44,6 @@ def main():
     from stests.generators.wg_100.phase_01.actors import user
 
 
-
-if __name__ == "__main__":
-    ARGS, _ = ARGS.parse_known_args()
-    main()
+# Auto-invoke.
+ARGS, _ = ARGS.parse_known_args()
+main()

@@ -101,7 +101,7 @@ ARGS.add_argument(
     default=DEFAULT_TOKEN_SUPPLY
     )
 
-def get_pipeline_for_contract(ctx):
+def get_pipeline_for_contract(actors, ctx):
     """Returns a pipeline to initialise a contract account.
     
     """
@@ -110,7 +110,7 @@ def get_pipeline_for_contract(ctx):
         actors.contract.cache_account.message()
 
 
-def get_pipeline_for_user(ctx, index):
+def get_pipeline_for_user(actors, ctx, index):
     """Returns a pipeline to initialise a user account.
     
     """
@@ -119,24 +119,24 @@ def get_pipeline_for_user(ctx, index):
         actors.user.cache_account.message()
 
 
-def get_group_for_users(ctx, max_user_accounts):
+def get_group_for_users(actors, ctx, max_user_accounts):
     """Returns a group to initialise a set of user accounts.
     
     """
     return dramatiq.group(map(
-        lambda index: get_pipeline_for_user(ctx, index), 
+        lambda index: get_pipeline_for_user(actors, ctx, index), 
         range(max_user_accounts)
     ))
 
 
-def get_workflow(ctx, max_user_accounts):
+def get_workflow(actors, ctx, max_user_accounts):
     """Returns a workflow that initialises accounts, resources ...etc, 
        in readiness for system test execution.
     
     """
     return dramatiq.group([
-        get_pipeline_for_contract(ctx),
-        get_group_for_users(ctx, max_user_accounts)
+        get_pipeline_for_contract(actors, ctx),
+        get_group_for_users(actors, ctx, max_user_accounts)
         ])
 
 
@@ -155,7 +155,7 @@ def main():
     from stests.generators.wg_100.phase_01 import actors
 
     # Execute workflow.
-    workflow = get_workflow(ctx, ARGS.max_user_accounts)
+    workflow = get_workflow(actors, ctx, ARGS.max_user_accounts)
     workflow.run()
 
 
