@@ -2,7 +2,7 @@ from dramatiq.results import Results
 from dramatiq.results.backends import RedisBackend
 
 from stests.core.mq.encoders import encoder_for_results
-from stests.core.cache.redis.utils import get_connection
+from stests.core.cache.redis.utils.connection import get_connection
 
 
 

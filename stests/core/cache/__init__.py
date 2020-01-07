@@ -2,6 +2,8 @@ from enum import Enum
 
 from stests.core.cache import redis
 
+
+
 # Enum: set of supported cache store types.
 CacheTypeEnum = Enum("CacheTypeEnum", "redis memory")
 
@@ -10,7 +12,6 @@ STORES = {
     CacheTypeEnum.redis: redis,
     CacheTypeEnum.memory: None
 }
-
 
 
 def get_store(store_type: CacheTypeEnum = CacheTypeEnum.redis):

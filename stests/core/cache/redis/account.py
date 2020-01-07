@@ -1,7 +1,5 @@
-import redis
-
-from stests.core.cache.redis.utils import get_key
-from stests.core.cache.redis.utils import do_set
+from stests.core.cache.redis.utils.keyspace import get_key
+from stests.core.cache.redis.utils.commands import do_set
 from stests.core.types.core import ExecutionContext
 from stests.core.types.account import Account
 

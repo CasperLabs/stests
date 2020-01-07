@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import Flag
 
 from dataclasses_json import dataclass_json
 
@@ -8,15 +8,15 @@ from stests.core.types.utils import get_enum_field
 
 
 # Enum: Set of node states.
-NodeStatusEnum = Enum("NodeStatusEnum", """
-    NULL
-    GENESIS
-    INITIALIZING
-    HEALTHY
-    DISTRESSED
-    DOWN
-    DEINITIALIZING    
-    """)
+NodeStatus = Flag("NodeStatus", [
+    "NULL",
+    "GENESIS",
+    "INITIALIZING",
+    "HEALTHY",
+    "DISTRESSED",
+    "DOWN",
+    "DEINITIALIZING"    
+    ])
 
 
 @dataclass_json
@@ -27,8 +27,8 @@ class Node():
     """
     host: str
     port: int
-    status: NodeStatusEnum = \
-        get_enum_field(NodeStatusEnum, NodeStatusEnum.NULL)
+    status: NodeStatus = \
+        get_enum_field(NodeStatus, NodeStatus.NULL)
 
 
 # Set: supported domain types.

@@ -5,10 +5,13 @@ from enum import Enum
 
 
 # Enum: set of supported key encodings.
-KeyEncodingEnum = Enum("KeyEncodingEnum", "bytes hex")
+KeyEncoding = Enum("KeyEncoding", [
+    "BYTES",
+    "HEX"
+    ])
 
 
-def create_key_pair(encoding: KeyEncodingEnum = KeyEncodingEnum.bytes):
+def create_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES):
     """Returns an ED25519 key pair, each key is a 32 byte array.
 
     :rtype: 2 member tuple: (private key, public key)
@@ -29,9 +32,9 @@ def create_key_pair(encoding: KeyEncodingEnum = KeyEncodingEnum.bytes):
     )
 
     # Return Convert to hex if requested.
-    if encoding == KeyEncodingEnum.bytes:
+    if encoding == KeyEncoding.BYTES:
         return pvk, pbk
-    if encoding == KeyEncodingEnum.hex:
+    if encoding == KeyEncoding.HEX:
         return pvk.hex(), pbk.hex()
 
     raise TypeError(f"{encoding} key pair encoding is unsupported")

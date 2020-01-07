@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from enum import Flag
 
 from dataclasses_json import dataclass_json
 
@@ -8,12 +9,20 @@ from stests.core.types.utils import get_enum_field
 
 
 
-# Enum: Set of account states.
-AccountStatusEnum = Enum("AccountStatusEnum", "new funding funded active")
+# Flag: Set of account states.
+AccountStatus = Flag("AccountStatus", [
+    "NEW",
+    "FUNDING",
+    "FUNDED",
+    "ACTIVE"
+    ])
 
 
 # Enum: Set of account types.
-AccountTypeEnum = Enum("AccountTypeEnum", "contract user")
+AccountType = Enum("AccountType", [
+    "CONTRACT",
+    "USER"
+    ])
 
 
 @dataclass_json
@@ -24,10 +33,10 @@ class Account:
     """
     index: int
     key_pair: KeyPair
-    status: AccountStatusEnum = \
-        get_enum_field(AccountStatusEnum, AccountStatusEnum.new)
-    typeof: AccountTypeEnum = \
-        get_enum_field(AccountTypeEnum)
+    status: AccountStatus = \
+        get_enum_field(AccountStatus, AccountStatus.NEW)
+    typeof: AccountType = \
+        get_enum_field(AccountType)
 
 
     @property
@@ -53,6 +62,6 @@ class Account:
 # Set: supported domain types.
 TYPESET = {
     Account,
-    AccountStatusEnum,
-    AccountTypeEnum
+    AccountStatus,
+    AccountType
 }

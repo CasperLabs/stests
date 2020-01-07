@@ -12,6 +12,7 @@ dramatiq = {extras = ["rabbitmq", "watch"],version = "*"}
 cryptography = "*"
 pika = "*"
 dataclasses-json = "*"
+hiredis = "*"
 
 [requires]
 python_version = "3.8"
