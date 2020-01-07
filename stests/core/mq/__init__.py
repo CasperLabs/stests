@@ -1,7 +1,7 @@
 import dramatiq
 
 from stests.core.mq.brokers import get_broker
-from stests.core.mq.brokers import BrokerTypeEnum
+from stests.core.mq.brokers import MessageBrokerType
 from stests.core.mq.encoders import encoder_for_messages as encoder
 from stests.core.mq.middleware import get_middleware
 
@@ -9,7 +9,7 @@ from stests.core.mq.middleware import get_middleware
 
 def init(
     network_id: str,
-    broker_type: BrokerTypeEnum = BrokerTypeEnum.rabbitmq
+    broker_type: MessageBrokerType = MessageBrokerType.RABBIT
     ) -> dramatiq:
     """Initialises message queue package.
     

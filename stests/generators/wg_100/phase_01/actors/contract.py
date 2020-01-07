@@ -15,6 +15,7 @@ def create_account(ctx, index):
     """Creates a smart contract related network account.
     
     """
+    print(111)
     account = create_contract_account(index)
 
     return ctx, account

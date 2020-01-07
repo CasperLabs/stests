@@ -6,21 +6,29 @@ from stests.core.mq.brokers import stub
 
 
 # Enum: set of supported mq broker types.
-BrokerTypeEnum = Enum("BrokerTypeEnum", "rabbitmq redis stub")
+MessageBrokerType = Enum("MessageBrokerType", [
+    "RABBIT",
+    "REDIS",
+    "STUB"
+])
+
 
 # Map: Broker type -> factory.
 FACTORIES = {
-    BrokerTypeEnum.rabbitmq: rabbitmq,
-    BrokerTypeEnum.redis: redis,
-    BrokerTypeEnum.stub: stub
+    MessageBrokerType.RABBIT: rabbitmq,
+    MessageBrokerType.REDIS: redis,
+    MessageBrokerType.STUB: stub
 }
 
 
 def get_broker(
     network_id: str,
-    broker_type: BrokerTypeEnum = BrokerTypeEnum.rabbitmq
+    broker_type: MessageBrokerType = MessageBrokerType.RABBIT
     ):
     """Returns an MQ broker instance for integration with dramatiq framework.
+
+    :param network_id: Network identifier, e.g. LOC-DEV-01
+    :param broker_type: Type of broker to be instantiated.
 
     """
     try:

@@ -15,6 +15,7 @@ def create_account(ctx, index):
     """Creates a user related network account.
     
     """
+    print(222)
     account = create_user_account(index)
 
     return ctx, account
