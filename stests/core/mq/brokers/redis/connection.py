@@ -11,7 +11,7 @@ DEFAULT_HOST = "localhost"
 DEFAULT_PORT = 6379
 
 # Default redis db (there are 16 per cluster).
-DEFAULT_DB = 1
+DEFAULT_DB = 0
 
 
 def get_connection() -> redis.Connection:
@@ -31,6 +31,6 @@ def _get_env_var(name, default=None):
 
     """
     # Apply prefix.
-    name = f'CACHE_REDIS_{name}'
+    name = f'MQ_BROKER_REDIS_{name}'
 
     return get_env_var(name, default)
