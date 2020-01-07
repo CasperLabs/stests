@@ -5,16 +5,19 @@ from stests.core.cache import redis
 
 
 # Enum: set of supported cache store types.
-CacheTypeEnum = Enum("CacheTypeEnum", "redis memory")
+CacheTypeEnum = Enum("CacheTypeEnum", [
+    "REDIS",
+    "STUB"
+])
 
 # Map: Cache store type -> store.
 STORES = {
-    CacheTypeEnum.redis: redis,
-    CacheTypeEnum.memory: None
+    CacheTypeEnum.REDIS: redis,
+    CacheTypeEnum.STUB: None
 }
 
 
-def get_store(store_type: CacheTypeEnum = CacheTypeEnum.redis):
+def get_store(store_type: CacheTypeEnum = CacheTypeEnum.REDIS):
     """Returns a cache store used to cache system state in between actor invocations.
 
     """
