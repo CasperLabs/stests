@@ -9,13 +9,10 @@ def _get_env_var(name, default=None):
 
     """
     # Apply prefix.
-    name = f'MQ_BROKER_REDIS_{name}'
+    name = f'CACHE_REDIS_{name}'
 
     return get_env_var(name, default)
 
-
-# Config: redis db.
-DB = _get_env_var('DB', 0)
 
 # Config: redis host.
 HOST = _get_env_var('HOST', "localhost")
@@ -23,10 +20,14 @@ HOST = _get_env_var('HOST', "localhost")
 # Config: redis port.
 PORT = _get_env_var('PORT', 6379)
 
+# Config: redis database.
+DB = _get_env_var('DB', 1)
 
-def get_connection() -> redis.Connection:
+
+def get_connection(db: int = DB) -> redis.Redis:
     """Returns redis connection.
     
     """
+    # TODO: map network id to a redis db.
     # TODO: cluster connections
-    return redis.Redis(db=DB, host=HOST, port=PORT)
+    return redis.Redis(db=db, host=HOST, port=PORT)

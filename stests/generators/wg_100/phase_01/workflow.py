@@ -1,10 +1,13 @@
 import argparse
 
-from stests.core.mq import dramatiq
-from stests.core.mq import init as init_mq_broker
-from stests.core.types.core import ExecutionContext
+import dramatiq
+
+from stests.core.utils import env
+from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.execution import init_services
 from stests.generators.wg_100 import metadata
-from stests.utils import env
+
+
 
 # Default number of user accounts to generate.
 DEFAULT_USER_ACCOUNTS = 5
@@ -101,65 +104,59 @@ ARGS.add_argument(
     default=DEFAULT_TOKEN_SUPPLY
     )
 
-def get_pipeline_for_contract(actors, ctx):
-    """Returns a pipeline to initialise a contract account.
-    
-    """
-    return \
-        actors.contract.create_account.message(ctx, 0) | \
-        actors.contract.cache_account.message()
-
-
-def get_pipeline_for_user(actors, ctx, index):
-    """Returns a pipeline to initialise a user account.
-    
-    """
-    return \
-        actors.user.create_account.message(ctx, index) | \
-        actors.user.cache_account.message()
-
-
-def get_group_for_users(actors, ctx, max_user_accounts):
-    """Returns a group to initialise a set of user accounts.
-    
-    """
-    return dramatiq.group(map(
-        lambda index: get_pipeline_for_user(actors, ctx, index), 
-        range(max_user_accounts)
-    ))
-
 
 def get_workflow(actors, ctx, max_user_accounts):
     """Returns a workflow that initialises accounts, resources ...etc, 
        in readiness for system test execution.
     
     """
+    def get_pipeline_for_contract():
+        """Returns a pipeline to initialise a contract account."""
+        return \
+            actors.contract.create_account.message(ctx, 0) | \
+            actors.contract.cache_account.message()
+
+
+    def get_pipeline_for_user(index):
+        """Returns a pipeline to initialise a user account."""
+        return \
+            actors.user.create_account.message(ctx, index) | \
+            actors.user.cache_account.message()
+
+
+    def get_group_for_users(max_user_accounts):
+        """Returns a group to initialise a set of user accounts."""
+        return dramatiq.group(map(
+            lambda index: get_pipeline_for_user(index), 
+            range(max_user_accounts)
+        ))
+
+
     return dramatiq.group([
-        get_pipeline_for_contract(actors, ctx),
-        get_group_for_users(actors, ctx, max_user_accounts)
+        get_pipeline_for_contract(),
+        get_group_for_users(max_user_accounts)
         ])
 
 
-def main():
+def main(args):
     """Workflow entry point.
     
     """
-    # Initialise execution context.
-    ctx = ExecutionContext(ARGS.network_id, metadata.ID, ARGS.simulator_run_id)
+    # Set context.
+    ctx = ExecutionContext.create(args.network_id, metadata.ID, args.simulator_run_id)
 
-    # Initialise mq broker.
-    init_mq_broker(ctx.network_id)
+    # Initialise services.
+    init_services(ctx)
 
     # Import actors.
-    # Note: currently we must import actors AFTER the mq broker is initiialised.
+    # Note: currently we must import actors AFTER services are initialised.
     from stests.generators.wg_100.phase_01 import actors
 
     # Execute workflow.
-    workflow = get_workflow(actors, ctx, ARGS.max_user_accounts)
+    workflow = get_workflow(actors, ctx, args.max_user_accounts)
     workflow.run()
 
 
 
 if __name__ == "__main__":
-    ARGS = ARGS.parse_args()
-    main()
+    main(ARGS.parse_args())

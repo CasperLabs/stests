@@ -1,4 +1,4 @@
-from stests.utils.env import get_env_var
+from stests.core.utils.env import get_env_var
 
 
 

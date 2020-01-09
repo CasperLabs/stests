@@ -10,6 +10,3 @@ TYPESET = \
     core.TYPESET | \
     network.TYPESET | \
     node.TYPESET
-
-# Map: domain type keys -> domain type.  
-TYPEMAP = {f"{i.__module__}.{i.__name__}": i for i in TYPESET}

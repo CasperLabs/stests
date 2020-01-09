@@ -1,5 +1,5 @@
 """
-.. module:: stests.utils.py
+.. module:: stests.core.utils.py
    :copyright: Copyright "December 01, 2016", IPSL
    :license: GPL/CeCIL
    :platform: Unix, Windows

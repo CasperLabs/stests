@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e9555f0a53c9f5c577b71a6d6992e08ef3e4f0b57959ba438f3a7c3666f4b32f"
+            "sha256": "51beb59e2b1579bb6dbb3f21330df2e92f534b1659d23bda7dec0cccef0d524a"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -107,6 +107,14 @@
             ],
             "index": "pypi",
             "version": "==1.7.0"
+        },
+        "fakeredis": {
+            "hashes": [
+                "sha256:169598943dc10aadd62871a34b2867bb5e24f9da7ebc97a2058c3f35c760241e",
+                "sha256:1db27ec3a5c964b9fb9f36ec1b9770a81204c54e84f83c763f36689eef4a5fd4"
+            ],
+            "index": "pypi",
+            "version": "==1.1.0"
         },
         "gevent": {
             "hashes": [
@@ -284,6 +292,13 @@
                 "sha256:30f610279e8b2578cab6db20741130331735c781b56053c59c4076da27f06b66"
             ],
             "version": "==1.13.0"
+        },
+        "sortedcontainers": {
+            "hashes": [
+                "sha256:974e9a32f56b17c1bac2aebd9dcf197f3eb9cd30553c5852a3187ad162e1a03a",
+                "sha256:d9e96492dd51fae31e60837736b38fe42a187b5404c16606ff7ee7cd582d4c60"
+            ],
+            "version": "==2.1.0"
         },
         "stringcase": {
             "hashes": [

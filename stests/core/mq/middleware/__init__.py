@@ -1,8 +1,12 @@
-from stests.core.mq.middleware.results import get_middleware as _get_mware_results
+from stests.core.mq.middleware.args_destructurer import get_mware  as _get_args_destructurer
+from stests.core.mq.middleware.services_injector import get_mware as _get_services_injector
 
 
 def get_middleware():
     """Returns middleware to be applied to a broker.
     
     """
-    return (_get_mware_results(), )
+    return (
+        _get_args_destructurer(),
+        _get_services_injector()
+        )

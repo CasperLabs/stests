@@ -1,11 +1,11 @@
-from stests.core.cache.redis.utils.keyspace import get_key
-from stests.core.cache.redis.utils.commands import do_set
-from stests.core.types.core import ExecutionContext
+from stests.core.cache.utils.commands import do_set
+from stests.core.cache.utils.keyspace import get_key
 from stests.core.types.network import Network
+from stests.core.utils.execution import ExecutionContext
 
 
 
-def append(network: Network):
+def append(ctx: ExecutionContext, network: Network):
     """Appends network information to cache store.
 
     :param ctx: Contextual information passed along the flow of execution.
@@ -18,6 +18,6 @@ def append(network: Network):
     key = network.name
 
     # Push to cache store.
-    do_set(key, network)
+    do_set(ctx, key, network)
 
     return key

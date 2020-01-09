@@ -1,22 +1,14 @@
 import argparse
 import os
 
-from stests.core.mq import init as init_mq_broker
-from stests.core.types.core import ExecutionContext
+from stests.core.utils import env
+from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.execution import init_services
 from stests.generators.wg_100 import metadata
-from stests.utils import env
-
 
 
 # Set command line arguments.
 ARGS = argparse.ArgumentParser(f"Executes the {metadata.DESCRIPTION} workload generator.")
-ARGS.add_argument(
-    "--simulator-run-id",
-    help="Simulator run identifier.",
-    dest="simulator_run_id",
-    type=int,
-    default=0
-    )
 ARGS.add_argument(
     "--network-id",
     help="Network identifier.",
@@ -26,24 +18,21 @@ ARGS.add_argument(
     )
 
 
-def main():
+def main(args):
     """Worker entry point.
     
     """
-    # Initialise execution context.
-    ctx = ExecutionContext(ARGS.network_id, metadata.ID, ARGS.simulator_run_id)
+    # Set context.
+    ctx = ExecutionContext.create(args.network_id, metadata.ID)
 
-    print(ctx.network_id)
-
-    # Initialise mq broker.
-    init_mq_broker(ctx.network_id)
+    # Initialise execution services.
+    init_services(ctx)
 
     # Import actors of relevance.
-    # Note: currently we must import actors AFTER the mq broker is initiialised.
+    # Note: currently we must import actors AFTER servcies are initiialised.
     from stests.generators.wg_100.phase_01.actors import contract
     from stests.generators.wg_100.phase_01.actors import user
 
 
 # Auto-invoke.
-ARGS, _ = ARGS.parse_known_args()
-main()
+main(ARGS.parse_known_args()[0])

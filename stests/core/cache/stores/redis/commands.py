@@ -1,14 +1,21 @@
 import typing
 
+import redis
+
 from stests.core.cache.redis.utils.connection import get_connection
 
 
 
-def do_set(key: str, data: typing.Any):
-    """Execute redis.set command.
+def do_set(
+    key: str,
+    data: typing.Any,
+    connection: redis.Redis = None
+    ):
+    """Executes redis.set command.
     
     :param key: Key of item to be cached.
     :param data: Data to be cached.
+    :param connection: Pointer to a module implementing the Redis protocol.
 
     """
     # Auto map domain types to JSON (if applicable).
@@ -21,5 +28,5 @@ def do_set(key: str, data: typing.Any):
     
     # Connect & set.
     # TODO: change connection to context manager ?
-    r = get_connection()
+    r = connection or get_connection()
     r.set(key, data)

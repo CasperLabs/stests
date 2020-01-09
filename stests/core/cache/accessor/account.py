@@ -1,7 +1,7 @@
-from stests.core.cache.redis.utils.keyspace import get_key
-from stests.core.cache.redis.utils.commands import do_set
-from stests.core.types.core import ExecutionContext
+from stests.core.cache.utils.commands import do_set
+from stests.core.cache.utils.keyspace import get_key
 from stests.core.types.account import Account
+from stests.core.utils.execution import ExecutionContext
 
 
 
@@ -17,8 +17,8 @@ def append(ctx: ExecutionContext, account: Account) -> str:
     # Set key.
     key = get_key(ctx, f"account.{account.short_type}", account.index)
 
-    # Push to cache store.
-    do_set(key, account)
+    # Push to store.
+    do_set(ctx, key, account)
 
     return key
 
