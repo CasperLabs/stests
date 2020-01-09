@@ -10,7 +10,6 @@ from stests.generators.wg_100 import metadata
 _QUEUE = f"{metadata.ID}.phase_01.contract"
 
 
-
 @dramatiq.actor(queue_name=_QUEUE, actor_name="create_contract_account")
 def create_account(ctx, index):
     """Creates a smart contract related network account.

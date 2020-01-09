@@ -57,13 +57,3 @@ class ExecutionContext():
 
         return ctx
 
-
-def init_services(ctx: ExecutionContext):
-    """Initialise services.
-    
-    """
-    # JIT import to avoid circular references.
-    from stests.core.mq.initialiser import init as init_broker
-
-    # Establish connection to message broker.
-    init_broker(ctx)

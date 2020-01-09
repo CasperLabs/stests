@@ -1,10 +1,11 @@
 import argparse
 import os
 
+from stests.core.mq.initialiser import init as init_broker
 from stests.core.utils import env
 from stests.core.utils.execution import ExecutionContext
-from stests.core.utils.execution import init_services
 from stests.generators.wg_100 import metadata
+
 
 
 # Set command line arguments.
@@ -18,21 +19,15 @@ ARGS.add_argument(
     )
 
 
-def main(args):
-    """Worker entry point.
-    
-    """
-    # Set context.
-    ctx = ExecutionContext.create(args.network_id, metadata.ID)
+# Set args filtering out dramatiq specific.
+args, _ = ARGS.parse_known_args()
 
-    # Initialise execution services.
-    init_services(ctx)
+# Set context.
+ctx = ExecutionContext.create(args.network_id, metadata.ID)
 
-    # Import actors of relevance.
-    # Note: currently we must import actors AFTER servcies are initiialised.
-    from stests.generators.wg_100.phase_01.actors import contract
-    from stests.generators.wg_100.phase_01.actors import user
+# Initialise broker.
+init_broker(ctx)
 
-
-# Auto-invoke.
-main(ARGS.parse_known_args()[0])
+# Import actors of relevance (AFTER broker is initialised).
+from stests.generators.wg_100.phase_01.actors import contract
+from stests.generators.wg_100.phase_01.actors import user
