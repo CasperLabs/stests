@@ -15,7 +15,7 @@ import os
 _PREFIX = 'CL_STESTS_'
 
 
-def get_env_var(name: str, default=None) -> str:
+def get_var(name: str, default=None) -> str:
     """Returns an environment variable's current value.
 
     :param name: Environment variable name.
@@ -24,10 +24,20 @@ def get_env_var(name: str, default=None) -> str:
     :returns: An environment variable's current value.
 
     """
-    # Apply prefix.
-    key = f'{_PREFIX}{name.upper()}'
+    name = get_var_name(name)
 
-    return os.getenv(key) or default
+    return os.getenv(name) or default
+
+
+def get_var_name(name: str) -> str:
+    """Returns an environment variable's name.
+
+    :param name: Environment variable name.
+
+    :returns: An environment variable's full name.
+
+    """
+    return f'{_PREFIX}{name.upper()}'
 
 
 def get_network_id(default="LOC-DEV-01") -> str:
@@ -38,7 +48,4 @@ def get_network_id(default="LOC-DEV-01") -> str:
     :returns: Network identifier.
 
     """
-    # Apply prefix.
-    key = f'{_PREFIX}CONFIG_NETWORK_ID'
-
-    return os.getenv(key) or default
+    return get_var("CONFIG_NETWORK_ID", default)

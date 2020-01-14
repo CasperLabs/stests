@@ -1,6 +1,6 @@
 import redis
 
-from stests.core.utils.env import get_env_var
+from stests.core.utils import env
 
 
 
@@ -11,7 +11,7 @@ def _get_env_var(name, default=None):
     # Apply prefix.
     name = f'MQ_BROKER_REDIS_{name}'
 
-    return get_env_var(name, default)
+    return env.get_var(name, default)
 
 
 # Config: redis db.

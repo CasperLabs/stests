@@ -8,13 +8,12 @@ from stests.core.types.account import AccountType
 
 
 def test_01():
-    """Test factory module is imported."""
+    """Test module is imported."""
     assert inspect.ismodule(factory) == True
 
 
-
 def test_02():
-    """Test factory functions are exposed."""
+    """Test functions are exposed."""
     for f in {
         'create_account',
         }:
@@ -22,7 +21,7 @@ def test_02():
 
 
 def test_03():
-    """Test factory function: create account."""
+    """Test function: create_account."""
     i = factory.create_account(
         random.choice(list(AccountType)),
         random.randint(0, 100)
