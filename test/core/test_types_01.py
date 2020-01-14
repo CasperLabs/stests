@@ -3,11 +3,6 @@ from stests.core.types import ENUMS
 from stests.core.types import TYPESET
 
 
-for kls in CLASSES:
-    i = kls.create()
-    print(111, i.to_dict())
-
-
 def test_01():
     """Test types are exposed as sets."""
     assert isinstance(CLASSES, set)
