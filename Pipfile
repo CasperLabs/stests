@@ -14,6 +14,9 @@ pika = "*"
 dataclasses-json = "*"
 hiredis = "*"
 fakeredis = "*"
+pytests = "*"
+pytest = "*"
+tox = "*"
 
 [requires]
 python_version = "3.8"

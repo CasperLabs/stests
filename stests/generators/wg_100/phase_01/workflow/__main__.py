@@ -10,7 +10,7 @@ from stests.generators.wg_100 import metadata
 args = ARGS.parse_args()
 
 # Set context.
-ctx = ExecutionContext.create(args.network_id, metadata.ID, args.simulator_run_id)
+ctx = ExecutionContext.create(args.network_id, metadata.ID, args.simulator_id)
 
 # Initialise broker.
 init_broker(ctx)

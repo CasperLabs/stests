@@ -31,7 +31,20 @@ class Node():
         get_enum_field(NodeStatus, NodeStatus.NULL)
 
 
+    @staticmethod
+    def create():
+        """Factory: returns an instance for testing purposes.
+        
+        """
+        return Node("localhost", 1234)
+
+
 # Set: supported domain types.
-TYPESET = {
+CLASSES = {
     Node,
+}
+
+# Set: supported domain enums.
+ENUMS = {
+    NodeStatus,
 }

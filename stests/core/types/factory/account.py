@@ -20,7 +20,7 @@ def create_contract_account(index: int) -> Account:
     return _create_account(AccountType.CONTRACT, index)
 
 
-def _create_account(typeof, index) -> Account:
+def create_account(typeof, index) -> Account:
     """Returns a DApp account instance.
     
     """

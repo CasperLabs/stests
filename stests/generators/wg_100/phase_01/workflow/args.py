@@ -1,4 +1,7 @@
 import argparse
+from dataclasses import dataclass
+
+from dataclasses_json import dataclass_json
 
 from stests.core.utils import env
 from stests.generators.wg_100 import metadata
@@ -29,9 +32,9 @@ ARGS = argparse.ArgumentParser(f"Executes the {metadata.DESCRIPTION} workload ge
 # ... execution context arguments
 # TODO: specify
 ARGS.add_argument(
-    "--simulator-run-id",
+    "--simulator-id",
     help="Simulator run identifier.",
-    dest="simulator_run_id",
+    dest="simulator_id",
     type=int,
     default=0
     )
@@ -100,3 +103,10 @@ ARGS.add_argument(
     type=int,
     default=_DEFAULT_TOKEN_SUPPLY
     )
+
+
+# @dataclass_json
+# @dataclass
+# class Arguments():
+#     simulator_type: str = metadata.ID
+

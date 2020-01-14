@@ -1,5 +1,7 @@
 import dramatiq
 
+from stests.core.types.account import AccountType
+
 
 
 def get_workflow(ctx, args):
@@ -7,19 +9,20 @@ def get_workflow(ctx, args):
     
     """
     # Import actors JIT so as to ensure that broker has been injected.
+    from stests.generators.wg_100.phase_01.actors import accounts
     from stests.generators.wg_100.phase_01 import actors
 
     def get_pipeline_for_contract():
         """Returns a workflow pipeline to initialise a contract account."""
         return \
-            actors.contract.create_account.message(ctx, 0) | \
-            actors.contract.cache_account.message()
+            accounts.create.message(ctx, AccountType.CONTRACT, 0) | \
+            actors.contract.deploy.message()
 
 
     def get_pipeline_for_user(index):
         """Returns a workflow pipeline to initialise a user account."""
         return \
-            actors.user.create_account.message(ctx, index) | \
+            accounts.create.message(ctx, AccountType.USER, index) | \
             actors.user.cache_account.message()
 
 

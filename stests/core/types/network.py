@@ -55,7 +55,22 @@ class Network():
         get_enum_field(NetworkStatus, NetworkStatus.NULL)
 
 
+    @staticmethod
+    def create():
+        """Factory: returns an instance for testing purposes.
+        
+        """
+        return Network("DEV-LOC-01", [])
+
+
 # Set: supported domain types.
-TYPESET = {
+CLASSES = {
     Network,
+}
+
+# Set: supported domain enums.
+ENUMS = {
+    NetworkLifetime,
+    NetworkOperator,
+    NetworkStatus
 }

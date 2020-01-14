@@ -1,3 +1,4 @@
+import random
 from dataclasses import dataclass
 from enum import Enum
 from enum import Flag
@@ -59,9 +60,21 @@ class Account:
         return str(self.typeof).split('.')[-1]
 
 
+    @staticmethod
+    def create():
+        """Factory: returns an instance for testing purposes.
+        
+        """
+        return Account(0, KeyPair.create(), typeof=random.choice(list(AccountType)))
+
+
 # Set: supported domain types.
-TYPESET = {
+CLASSES = {
     Account,
+}
+
+# Set: supported domain enums.
+ENUMS = {
     AccountStatus,
     AccountType
 }

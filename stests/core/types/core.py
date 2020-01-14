@@ -17,7 +17,18 @@ class KeyPair():
     public_key: str
 
 
+    @staticmethod
+    def create():
+        """Factory: returns an instance for testing purposes.
+        
+        """
+        return KeyPair(
+            "a164cfbf6f0797c4894bec5683fb3c715f2acd07c412747db8b91160e9db7c78", 
+            "ee12b3606431ca201c605409c345427388d54c397386aa513185be6649b4ed61"
+            )
+
+
 # Set: supported domain types.
-TYPESET = {
+CLASSES = {
     KeyPair,
 }

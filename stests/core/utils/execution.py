@@ -22,11 +22,11 @@ class ExecutionContext():
     # Identifier of network being tested.
     network_id: str
 
-    # Identifier of generator driving a test run.
-    generator_id: str
+    # Type of simulation being executed.
+    simulation_type: str
 
-    # Identifier of current test run.
-    generator_run: int = 0
+    # Identifier of simulation being executed.
+    simulation_id: int = 0
 
     # Note: not serialised.
     services: typing.ClassVar[ExecutionServices] = ExecutionServices()
@@ -36,13 +36,13 @@ class ExecutionContext():
     def create(
         network_id: str,
         simulation_type: str,
-        simulation_run: int = 0        
+        simulation_id: int = 0        
         ):
         """Returns an instance ready for use within a workflow.
 
         :param network_id: Identifier of network being tested.
         :param simulation_type: Type of simulation being run.
-        :param simulation_run: Identifier of current run.
+        :param simulation_id: Identifier of current run.
         :returns: An execution context instance ready for use by actors.
 
         """        
@@ -50,7 +50,7 @@ class ExecutionContext():
         from stests.core import cache
 
         # Instantiate.
-        ctx = ExecutionContext(network_id, simulation_type, simulation_run)
+        ctx = ExecutionContext(network_id, simulation_type, simulation_id)
 
         # Set actor services.
         ctx.services.cache = cache.get_store(ctx) 

@@ -26,7 +26,7 @@ def _get_namespace(ctx: ExecutionContext, item_type: str = None) -> str:
     :returns: Namespace to be prefixed to an item key.
 
     """
-    ns = f"{ctx.network_id}.{ctx.generator_id}.{ctx.generator_run}"
+    ns = f"{ctx.network_id}.{ctx.simulation_type}.{ctx.simulation_id}"
     if item_type is not None:
         ns = f"{ns}.{item_type}"
 
