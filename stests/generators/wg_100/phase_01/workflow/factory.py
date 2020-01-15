@@ -10,20 +10,19 @@ def get_workflow(ctx, args):
     """
     # Import actors JIT so as to ensure that broker has been injected.
     from stests.generators.wg_100.phase_01.actors import accounts
-    from stests.generators.wg_100.phase_01 import actors
+    from stests.generators.wg_100.phase_01.actors import contracts
 
     def get_pipeline_for_contract():
         """Returns a workflow pipeline to initialise a contract account."""
         return \
             accounts.create.message(ctx, AccountType.CONTRACT, 0) | \
-            actors.contract.deploy.message()
+            contracts.deploy.message()
 
 
     def get_pipeline_for_user(index):
         """Returns a workflow pipeline to initialise a user account."""
         return \
-            accounts.create.message(ctx, AccountType.USER, index) | \
-            actors.user.cache_account.message()
+            accounts.create.message(ctx, AccountType.USER, index)
 
 
     def get_group_for_users():

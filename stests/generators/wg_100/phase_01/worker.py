@@ -29,5 +29,5 @@ ctx = ExecutionContext.create(args.network_id, metadata.ID)
 init_broker(ctx)
 
 # Import actors of relevance (AFTER broker is initialised).
-from stests.generators.wg_100.phase_01.actors import contract
-from stests.generators.wg_100.phase_01.actors import user
+from stests.generators.wg_100.phase_01.actors import accounts
+from stests.generators.wg_100.phase_01.actors import contracts

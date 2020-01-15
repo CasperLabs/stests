@@ -6,21 +6,7 @@ from stests.core.types.account import AccountType
 
 
 
-def create_user_account(index: int) -> Account:
-    """Returns a DApp user account instance.
-    
-    """
-    return _create_account(AccountType.USER, index)
-
-
-def create_contract_account(index: int) -> Account:
-    """Returns a DApp contract account instance.
-    
-    """
-    return _create_account(AccountType.CONTRACT, index)
-
-
-def create_account(typeof, index) -> Account:
+def create_account(typeof: AccountType, index: int) -> Account:
     """Returns a DApp account instance.
     
     """

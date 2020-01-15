@@ -1,7 +1,6 @@
 import dramatiq
 
 from stests.core.cache import accessor as cache
-from stests.core.types.factory import create_contract_account
 from stests.generators.wg_100 import metadata
 from stests.core.types.account import AccountType
 
@@ -16,3 +15,6 @@ def deploy(ctx, account):
     
     """
     # Pull wasm.
+    print("TODO: pull wasm blob and deploy")
+
+    print(cache.retrieve_account(ctx, AccountType.CONTRACT, account.index))

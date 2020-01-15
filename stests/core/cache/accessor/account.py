@@ -17,7 +17,7 @@ def append_account(ctx: ExecutionContext, account: Account) -> str:
 
     """
     # Set key.
-    key = get_key(ctx, f"account.{account.short_type}", account.index)
+    key = get_key(ctx, f"account.{account.short_type}", str(account.index).zfill(7))
 
     # Push to store.
     do_set(ctx, key, account)
