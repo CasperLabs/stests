@@ -23,7 +23,7 @@ class ServicesInjectorMiddleware(dramatiq.Middleware):
             ctx.services.cache = cache.get_store(ctx) 
 
 
-def get_mware():
+def get_mware() -> ServicesInjectorMiddleware:
     """Returns instance of services injector middleware.
     
     """

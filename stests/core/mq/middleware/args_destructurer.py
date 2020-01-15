@@ -20,7 +20,7 @@ class ArgsDestructurerMiddleware(dramatiq.Middleware):
             message.args = tuple(message.args[0])
 
 
-def get_mware():
+def get_mware() -> ArgsDestructurerMiddleware:
     """Returns instance of arguments destructurer middleware.
     
     """

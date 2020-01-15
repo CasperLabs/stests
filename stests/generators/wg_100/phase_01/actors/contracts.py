@@ -1,8 +1,8 @@
 import dramatiq
 
 from stests.core.cache import accessor as cache
+from stests.core.types import AccountType
 from stests.generators.wg_100 import metadata
-from stests.core.types.account import AccountType
 
 
 # Queue to which message will be dispatched.
@@ -16,5 +16,6 @@ def deploy(ctx, account):
     """
     # Pull wasm.
     print("TODO: pull wasm blob and deploy")
+    print(account)
 
     print(cache.retrieve_account(ctx, AccountType.CONTRACT, account.index))

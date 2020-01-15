@@ -7,7 +7,10 @@ from stests.core.utils.execution import ExecutionContext
 
 
 
-def init(ctx: ExecutionContext, broker_type: BrokerType = BrokerType.RABBIT) -> dramatiq:
+def init(
+    ctx: ExecutionContext,
+    broker_type: BrokerType = BrokerType.RABBIT
+    ) -> dramatiq:
     """Initialises message broker plus dramtiq.
     
     :param network_id: Identifier of network being tested.

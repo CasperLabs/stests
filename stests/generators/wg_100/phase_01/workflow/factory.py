@@ -1,6 +1,6 @@
 import dramatiq
 
-from stests.core.types.account import AccountType
+from stests.core.types import AccountType
 
 
 

@@ -37,14 +37,3 @@ class Node():
         
         """
         return Node("localhost", 1234)
-
-
-# Set: supported domain types.
-CLASSES = {
-    Node,
-}
-
-# Set: supported domain enums.
-ENUMS = {
-    NodeStatus,
-}

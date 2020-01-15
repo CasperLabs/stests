@@ -1,3 +1,5 @@
+from dramatiq.broker import Broker
+
 from stests.core.mq.brokers import BrokerType
 from stests.core.mq.brokers import rabbitmq
 from stests.core.mq.brokers import redis
@@ -15,11 +17,16 @@ FACTORIES = {
 }
 
 
-def get_broker(ctx: ExecutionContext, broker_type: BrokerType = BrokerType.RABBIT):
+def get_broker(
+    ctx: ExecutionContext,
+    broker_type: BrokerType = BrokerType.RABBIT
+    ) -> Broker:
     """Returns an MQ broker instance for integration with dramatiq framework.
 
     :param ctx: Contextual information passed along the flow of execution.
     :param broker_type: Type of broker to be instantiated.
+
+    :returns: A configured message broker.
 
     """
     # Set factory.

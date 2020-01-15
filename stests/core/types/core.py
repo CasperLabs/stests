@@ -28,7 +28,3 @@ class KeyPair():
             )
 
 
-# Set: supported domain types.
-CLASSES = {
-    KeyPair,
-}

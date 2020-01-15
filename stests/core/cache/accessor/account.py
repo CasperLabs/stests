@@ -1,8 +1,8 @@
+from stests.core.types import Account
+from stests.core.types import AccountType
 from stests.core.cache.utils.commands import do_set
 from stests.core.cache.utils.commands import do_get
 from stests.core.cache.utils.keyspace import get_key
-from stests.core.types.account import Account
-from stests.core.types.account import AccountType
 from stests.core.utils.execution import ExecutionContext
 
 
@@ -17,7 +17,7 @@ def append_account(ctx: ExecutionContext, account: Account) -> str:
 
     """
     # Set key.
-    key = get_key(ctx, f"account.{account.short_type}", str(account.index).zfill(7))
+    key = get_key(ctx, f"account.{account.short_type}", _get_index(account.index))
 
     # Push to store.
     do_set(ctx, key, account)
@@ -36,7 +36,16 @@ def retrieve_account(ctx: ExecutionContext, typeof: AccountType, index: int) -> 
 
     """    
     # Set key.
-    key = get_key(ctx, f"account.{str(typeof).split('.')[-1]}", index)
+    key = get_key(ctx, f"account.{str(typeof).split('.')[-1]}", _get_index(index))
+
+    print(key)
 
     # Pull from store.
     return do_get(ctx, key)
+
+
+def _get_index(index):
+    """Returns an account index formatted for key usage.
+    
+    """
+    return str(index).zfill(7)

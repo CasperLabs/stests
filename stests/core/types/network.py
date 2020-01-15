@@ -61,16 +61,3 @@ class Network():
         
         """
         return Network("DEV-LOC-01", [])
-
-
-# Set: supported domain types.
-CLASSES = {
-    Network,
-}
-
-# Set: supported domain enums.
-ENUMS = {
-    NetworkLifetime,
-    NetworkOperator,
-    NetworkStatus
-}

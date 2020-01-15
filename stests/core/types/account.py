@@ -1,4 +1,5 @@
 import random
+import typing
 from dataclasses import dataclass
 from enum import Enum
 from enum import Flag
@@ -41,7 +42,7 @@ class Account:
 
 
     @property
-    def identifiers(self):
+    def identifiers(self) -> typing.Set:
         """Returns set of identifiers that can be used to disambiguate accounts.
         
         """
@@ -66,15 +67,3 @@ class Account:
         
         """
         return Account(0, KeyPair.create(), typeof=random.choice(list(AccountType)))
-
-
-# Set: supported domain types.
-CLASSES = {
-    Account,
-}
-
-# Set: supported domain enums.
-ENUMS = {
-    AccountStatus,
-    AccountType
-}

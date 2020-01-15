@@ -1,6 +1,6 @@
+from stests.core.types import Network
 from stests.core.cache.utils.commands import do_set
 from stests.core.cache.utils.keyspace import get_key
-from stests.core.types.network import Network
 from stests.core.utils.execution import ExecutionContext
 
 
