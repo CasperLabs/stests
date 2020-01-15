@@ -1,3 +1,5 @@
+import typing
+
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
 from enum import Enum
@@ -11,7 +13,9 @@ KeyEncoding = Enum("KeyEncoding", [
     ])
 
 
-def create_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES):
+def create_key_pair(
+    encoding: KeyEncoding = KeyEncoding.BYTES
+    ) -> typing.Tuple[str, str]:
     """Returns an ED25519 key pair, each key is a 32 byte array.
 
     :rtype: 2 member tuple: (private key, public key)

@@ -2,7 +2,7 @@ import typing
 
 import redis
 
-from stests.core.cache.redis.utils.connection import get_connection
+from stests.core.cache.stores.redis.connection import get_connection
 
 
 

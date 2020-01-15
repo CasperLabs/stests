@@ -2,9 +2,6 @@ import typing
 
 import fakeredis
 
-from stests.core.cache.redis.utils.connection import get_connection
-
-
 
 def do_set(
     key: str,

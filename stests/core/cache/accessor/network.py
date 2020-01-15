@@ -5,7 +5,7 @@ from stests.core.utils.execution import ExecutionContext
 
 
 
-def append(ctx: ExecutionContext, network: Network):
+def append_network(ctx: ExecutionContext, network: Network) -> str:
     """Appends network information to cache store.
 
     :param ctx: Contextual information passed along the flow of execution.

@@ -8,6 +8,7 @@ def get_store(network_id: str = None) -> redis.Redis:
     """Returns instance of a redis cache store accessor.
 
     :param network_id: Network identifier, e.g. LOC-DEV-01
+
     :returns: An instance of a redis cache store accessor.
 
     """
