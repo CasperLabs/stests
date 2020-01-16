@@ -1,5 +1,27 @@
-from stests.core.utils import env
+import os
 
+from dramatiq.brokers.rabbitmq import RabbitmqBroker
+
+from stests.core.utils import env
+from stests.core.utils.execution import ExecutionContext
+
+
+
+def get_broker(ctx: ExecutionContext) -> RabbitmqBroker:
+    """Returns instance of rabbit mq broker.
+
+    :param ctx: Contextual information passed along the flow of execution.
+
+    :returns: An instance of a Rabbit MQ broker.
+
+    """
+    # Set RabbitMQ virtual host.
+    vhost = ctx.network_id.upper()
+
+    # Set RabbitMQ connection url.
+    url = _get_url(vhost)
+
+    return RabbitmqBroker(url=url)
 
 
 def _get_env_var(name, default=None, convertor=None):
@@ -34,11 +56,9 @@ USER = _get_env_var('USER', "clabs-mq-stests-user")
 USER_PWD = _get_env_var('USER_PWD', "clabs")
 
 
-def get_url(vhost) -> str:
-    """Returns rabbit mq connection information.
+def _get_url(vhost) -> str:
+    """Returns rabbit mq connection URL.
     
-    :param vhost: Broker virtual host to which to connect.
-
     """
     # TODO: ssl
     return f"{PROTOCOL}://{USER}:{USER_PWD}@{HOST}:{PORT}/{vhost}"

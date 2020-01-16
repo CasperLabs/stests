@@ -14,7 +14,6 @@ def do_set(ctx: ExecutionContext, key: str, data: typing.Any):
     :param data: Data to be cached.
 
     """
-    print(data)
     as_json = json.dumps(encoder.encode(data), indent=4)
 
     ctx.services.cache.set(key, as_json)

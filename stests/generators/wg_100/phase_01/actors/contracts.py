@@ -10,12 +10,9 @@ _QUEUE = f"{metadata.ID}.phase_01.contract"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def deploy(ctx, account):
+def deploy_contract(ctx, account):
     """Deploys smart contract to target network.
     
     """
     # Pull wasm.
     print("TODO: pull wasm blob and deploy")
-    print(account)
-
-    print(cache.retrieve_account(ctx, AccountType.CONTRACT, account.index))

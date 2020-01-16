@@ -38,8 +38,6 @@ def retrieve_account(ctx: ExecutionContext, typeof: AccountType, index: int) -> 
     # Set key.
     key = get_key(ctx, f"account.{str(typeof).split('.')[-1]}", _get_index(index))
 
-    print(key)
-
     # Pull from store.
     return do_get(ctx, key)
 

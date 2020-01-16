@@ -11,7 +11,7 @@ _QUEUE = f"{metadata.ID}.phase_01.accounts"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def create(ctx, account_type, account_id):
+def create_account(ctx, account_type, account_id):
     """Creates an account to be used during simulation execution.
     
     """
