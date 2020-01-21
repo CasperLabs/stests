@@ -62,11 +62,11 @@ class PublicKey(Key):
             )
 
     @classmethod
-    def create(cls, pvk: typing.AnyStr = "ee12b3606431ca201c605409c345427388d54c397386aa513185be6649b4ed61"):
+    def create(cls, pbk: typing.AnyStr = "ee12b3606431ca201c605409c345427388d54c397386aa513185be6649b4ed61"):
         """Factory: returns an instance for testing purposes.
         
         """
-        return PublicKey(pvk if isinstance(pvk, str) else pvk.hex())    
+        return PublicKey(pbk if isinstance(pbk, str) else pbk.hex())    
 
 
 @dataclass_json
