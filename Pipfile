@@ -14,9 +14,9 @@ pika = "*"
 dataclasses-json = "*"
 hiredis = "*"
 fakeredis = "*"
-pytests = "*"
 pytest = "*"
 tox = "*"
+casperlabs-client = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.7"

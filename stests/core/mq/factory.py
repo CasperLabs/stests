@@ -17,10 +17,7 @@ FACTORIES = {
 }
 
 
-def get_broker(
-    ctx: ExecutionContext,
-    broker_type: BrokerType = BrokerType.RABBIT
-    ) -> Broker:
+def get_broker(ctx: ExecutionContext, broker_type: BrokerType) -> Broker:
     """Returns an MQ broker instance for integration with dramatiq framework.
 
     :param ctx: Contextual information passed along the flow of execution.
