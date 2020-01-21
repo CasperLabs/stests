@@ -42,18 +42,6 @@ class Account:
 
 
     @property
-    def identifiers(self) -> typing.Set:
-        """Returns set of identifiers that can be used to disambiguate accounts.
-        
-        """
-        return {
-            self.index,
-            self.key_pair.private_key,
-            self.key_pair.public_key
-            }
-
-    
-    @property
     def short_type(self) -> str:
         """Returns short type name.
         

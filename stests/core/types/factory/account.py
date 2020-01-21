@@ -10,10 +10,10 @@ def create_account(typeof: AccountType, index: int) -> Account:
     """Returns a DApp account instance.
     
     """
-    (pvk_bytes, pvk_hex, pvk_pem), (pbk_bytes, pbk_hex, pbk_pem) = crypto.get_account_keys()
+    pvk, pbk = crypto.get_key_pair(crypto.KeyEncoding.BYTES)
 
     return Account(
         index=index,
-        key_pair=KeyPair(private_key=pvk_hex, public_key=pbk_hex),
+        key_pair=KeyPair.create(pvk, pbk),
         typeof=typeof
         )

@@ -14,6 +14,14 @@ KeyEncoding = Enum("KeyEncoding", [
     ])
 
 
+# Enum: set of supported key types.
+KeyType = Enum("KeyType", [
+    "PRIVATE",
+    "PUBLIC"
+    ])
+
+
+
 def get_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
     """Returns an ED25519 key pair, each key is a 32 byte array.
 
@@ -58,50 +66,3 @@ def get_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str,
 
     # BYTES.
     return pvk, pbk
-
-
-def get_account_keys():
-    """Returns an ED25519 key pair encoded in byte, hex & PEM formats.
-
-    :rtype: 2 member tuple: ((bytes, str, str), (bytes, str, str))
-    
-    """    
-    # Create new key pair.
-    pvk = ed25519.Ed25519PrivateKey.generate()
-    pbk = pvk.public_key()
-
-    # Encode private key -> bytes.
-    pvk_bytes = pvk.private_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PrivateFormat.Raw,
-        encryption_algorithm=serialization.NoEncryption()
-    )
-
-    # Encode private key -> hex.
-    pvk_hex = pvk_bytes.hex()
-
-    # Encode private key -> PEM.
-    pvk_pem = pvk.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.NoEncryption()
-    )
-
-    # Encode public key -> bytes.
-    pbk_bytes = pbk.public_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PublicFormat.Raw
-    )
-
-    # Encode public key -> hex.
-    pbk_hex = pbk_bytes.hex()
-
-    # Encode public key -> PEM.
-    pbk_pem = pbk.public_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo
-    )
-
-    return \
-        (pvk_bytes, pvk_hex, pvk_pem), \
-        (pbk_bytes, pbk_hex, pbk_pem)
