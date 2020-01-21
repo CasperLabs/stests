@@ -6,7 +6,7 @@ from enum import Flag
 
 from dataclasses_json import dataclass_json
 
-from stests.core.types.core import KeyPair
+from stests.core.types.crypto import KeyPair
 from stests.core.types.utils import get_enum_field
 
 
@@ -35,10 +35,8 @@ class Account:
     """
     index: int
     key_pair: KeyPair
-    status: AccountStatus = \
-        get_enum_field(AccountStatus, AccountStatus.NEW)
-    typeof: AccountType = \
-        get_enum_field(AccountType)
+    status: AccountStatus = get_enum_field(AccountStatus, AccountStatus.NEW)
+    typeof: AccountType = get_enum_field(AccountType)
 
 
     @property

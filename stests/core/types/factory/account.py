@@ -1,6 +1,6 @@
 
 from stests.core.clx import crypto
-from stests.core.types.core import KeyPair
+from stests.core.types.crypto import KeyPair
 from stests.core.types.account import Account
 from stests.core.types.account import AccountType
 

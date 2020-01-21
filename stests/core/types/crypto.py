@@ -40,10 +40,12 @@ class PrivateKey(Key):
         )
 
     @classmethod
-    def create(cls, pvk: typing.AnyStr = "a164cfbf6f0797c4894bec5683fb3c715f2acd07c412747db8b91160e9db7c78"):
+    def create(cls, pvk: typing.AnyStr = None):
         """Factory: returns an instance for testing purposes.
         
         """
+        pvk = pvk or "a164cfbf6f0797c4894bec5683fb3c715f2acd07c412747db8b91160e9db7c78"
+
         return PrivateKey(pvk if isinstance(pvk, str) else pvk.hex())
 
 
@@ -62,10 +64,12 @@ class PublicKey(Key):
             )
 
     @classmethod
-    def create(cls, pbk: typing.AnyStr = "ee12b3606431ca201c605409c345427388d54c397386aa513185be6649b4ed61"):
+    def create(cls, pbk: typing.AnyStr = None):
         """Factory: returns an instance for testing purposes.
         
         """
+        pbk = pbk or "ee12b3606431ca201c605409c345427388d54c397386aa513185be6649b4ed61"
+
         return PublicKey(pbk if isinstance(pbk, str) else pbk.hex())    
 
 
