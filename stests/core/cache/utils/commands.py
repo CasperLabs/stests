@@ -5,8 +5,18 @@ from stests.core.utils import encoder
 
 
 
+def do_delete(store: typing.Callable, key: str):
+    """Wraps redis.delete command.
+    
+    :param store: Cache store connection wrapper.
+    :param key: Key of item to be uncached.
+
+    """
+    store.delete(key)
+
+
 def do_set(store: typing.Callable, key: str, data: typing.Any):
-    """Executes redis.set command.
+    """Wraps redis.set command.
     
     :param store: Cache store connection wrapper.
     :param key: Key of item to be cached.
@@ -17,7 +27,7 @@ def do_set(store: typing.Callable, key: str, data: typing.Any):
 
 
 def do_get(store: typing.Callable, key: str) -> typing.Any:
-    """Executes redis.get command.
+    """Wraps redis.get command.
     
     :param store: Cache store connection wrapper.
     :param key: Key of item to be cached.

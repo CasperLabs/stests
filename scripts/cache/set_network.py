@@ -1,12 +1,12 @@
 import argparse
 import json
 
-from stests.core.cache.factory import get_store
 from stests.core.types import Network
 from stests.core.types import NetworkLifetime
 from stests.core.types import NetworkOperatorType
 from stests.core.utils import defaults
-from stests.core.utils import encoder
+
+from stests.core.cache import accessor as cache
 
 
 
@@ -49,15 +49,7 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network = get_network(args)
-    with get_store(network.name) as store:
-        store.delete(
-            get_cache_key(network)
-        )
-        store.set(
-            get_cache_key(network),
-            get_cache_data(network)
-        )
+    cache.set_network(get_network(args))
 
 
 def get_network(args):
@@ -69,20 +61,6 @@ def get_network(args):
     network.metadata.operator_type = NetworkOperatorType[args.operator_type]
 
     return network
-
-
-def get_cache_key(network):
-    """Returns cache key to use.
-    
-    """
-    return f"{network.name}"
-
-
-def get_cache_data(network):
-    """Returns cache data to persist in cache.
-    
-    """
-    return json.dumps(encoder.encode(network), indent=4)
 
 
 # Entry point.

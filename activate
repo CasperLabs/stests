@@ -6,7 +6,6 @@
 export CL_STESTS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export CL_STESTS_SCRIPTS=$CL_STESTS_HOME/scripts
 
-
 # ###############################################################
 # STANDARD-SECTION: ALIASES
 # ###############################################################

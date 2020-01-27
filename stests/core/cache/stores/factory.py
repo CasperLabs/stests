@@ -31,4 +31,4 @@ def get_store(network_id: str, store_type: StoreType = StoreType.REDIS):
     except KeyError:
         raise NotImplementedError(f"{store_type} cache store is unsupported")
 
-    return factory.get_store(network_id)
+    return factory.get_store(network_id.upper())

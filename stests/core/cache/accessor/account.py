@@ -1,8 +1,8 @@
 from stests.core.types import Account
 from stests.core.types import AccountType
-from stests.core.cache.utils.commands import do_set
-from stests.core.cache.utils.commands import do_get
-from stests.core.cache.utils.keyspace import get_key
+from stests.core.cache.utils import do_set
+from stests.core.cache.utils import do_get
+from stests.core.cache.utils import get_key
 from stests.core.utils.workflow import WorkflowContext
 
 
