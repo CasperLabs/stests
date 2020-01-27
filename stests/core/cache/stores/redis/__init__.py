@@ -1,6 +1,6 @@
 import redis
 
-from stests.core.cache.stores.redis.connection import get_connection
+from stests.core.cache.stores.redis import envars
 
 
 
@@ -12,8 +12,10 @@ def get_store(network_id: str = None) -> redis.Redis:
     :returns: An instance of a redis cache store accessor.
 
     """
-    # TODO: map network id to a redis db so as to partition when
-    #       running tests across multiple networks.
+    # TODO: 1. map network id to a redis db so as to partition when
+    #          running tests across multiple networks.
     db = 1
 
-    return get_connection(db)
+    # TODO: 2. cluster connections
+
+    return redis.Redis(db=db, host=envars.HOST, port=envars.PORT)

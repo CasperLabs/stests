@@ -11,6 +11,9 @@
 import os
 import typing
 
+from stests.core.utils import logger
+
+
 
 # Package env var prefix.
 _PREFIX = 'CL_STESTS_'
@@ -28,8 +31,11 @@ def get_var(name: str, default=None, convertor: typing.Callable = None) -> str:
     """
     name = get_var_name(name)
     value = os.getenv(name) or default
+    value = value if convertor is None or value is None else convertor(value)
 
-    return value if convertor is None or value is None else convertor(value)
+    logger.log_debug(f"env var: {name} :: {value}")
+
+    return value
 
 
 def get_var_name(name: str) -> str:

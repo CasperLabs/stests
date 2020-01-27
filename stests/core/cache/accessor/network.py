@@ -18,6 +18,6 @@ def append_network(ctx: WorkflowContext, network: Network) -> str:
     key = network.name
 
     # Push to cache store.
-    do_set(ctx, key, network)
+    do_set(ctx.services.cache, key, network)
 
     return key

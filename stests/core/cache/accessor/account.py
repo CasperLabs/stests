@@ -20,7 +20,7 @@ def append_account(ctx: WorkflowContext, account: Account) -> str:
     key = get_key(ctx, f"account.{account.short_type}", _get_index(account.index))
 
     # Push to store.
-    do_set(ctx, key, account)
+    do_set(ctx.services.cache, key, account)
 
     return key
 
@@ -39,7 +39,7 @@ def retrieve_account(ctx: WorkflowContext, typeof: AccountType, index: int) -> A
     key = get_key(ctx, f"account.{str(typeof).split('.')[-1]}", _get_index(index))
 
     # Pull from store.
-    return do_get(ctx, key)
+    return do_get(ctx.services.cache, key)
 
 
 def _get_index(index):

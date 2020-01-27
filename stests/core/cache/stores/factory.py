@@ -1,8 +1,15 @@
-from stests.core.cache.stores import StoreType
+from enum import Enum
+
 from stests.core.cache.stores import redis
 from stests.core.cache.stores import stub
-from stests.core.utils.workflow import WorkflowContext
 
+
+
+# Enum: set of supported cache store types.
+StoreType = Enum("StoreType", [
+    "REDIS",
+    "STUB"
+])
 
 # Map: Cache store type -> factory.
 FACTORIES = {
@@ -11,10 +18,10 @@ FACTORIES = {
 }
 
 
-def get_store(ctx: WorkflowContext, store_type: StoreType = StoreType.REDIS):
+def get_store(network_id: str, store_type: StoreType = StoreType.REDIS):
     """Returns a cache store ready to be used as a state persistence & flow control mechanism.
 
-    :param ctx: Contextual information passed along the flow of execution.
+    :param network_id: Identifier of network being tested.
     :param store_type: Type of store to be instantiated.
     :returns: A cache store.
 
@@ -24,4 +31,4 @@ def get_store(ctx: WorkflowContext, store_type: StoreType = StoreType.REDIS):
     except KeyError:
         raise NotImplementedError(f"{store_type} cache store is unsupported")
 
-    return factory.get_store(ctx.network_id)
+    return factory.get_store(network_id)

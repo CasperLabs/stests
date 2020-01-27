@@ -11,6 +11,7 @@ from stests.core.types.network import NetworkStatus
 from stests.core.types.node import Node
 from stests.core.types.node import NodeMetadata
 from stests.core.types.node import NodeStatus
+from stests.core.types.node import NodeType
 
 
 # Supported domain classes.
@@ -20,7 +21,7 @@ CLASSES = {
     Network,
     NetworkMetadata,
     Node,
-    NodeMetadata,
+    NodeMetadata
 }
 
 # Supported domain enums.
@@ -32,6 +33,7 @@ ENUMS = {
     NetworkOperatorType,
     NetworkStatus,
     NodeStatus,
+    NodeType
 }
 
 # Supported domain types.

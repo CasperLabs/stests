@@ -6,6 +6,7 @@ from typing import List
 
 from stests.core.types.node import Node
 from stests.core.types.utils import get_enum_field
+from stests.core.utils import defaults
 
 
 
@@ -47,7 +48,7 @@ class NetworkMetadata():
     """
     lifetime: NetworkLifetime = \
         get_enum_field(NetworkLifetime, NetworkLifetime.REPEAT)
-    operatorType: NetworkOperatorType = \
+    operator_type: NetworkOperatorType = \
         get_enum_field(NetworkOperatorType, NetworkOperatorType.LOCAL)
 
 
@@ -77,6 +78,6 @@ class Network():
         """Factory: returns an instance for testing purposes.
         
         """
-        return Network("DEV-LOC-01", [
+        return Network(defaults.NETWORK_ID, [
             Node.create(),
         ])

@@ -1,0 +1,15 @@
+# ###############################################################
+# STANDARD-SECTION: SETUP
+# ###############################################################
+
+# Set paths.
+export CL_STESTS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export CL_STESTS_SCRIPTS=$CL_STESTS_HOME/scripts
+
+
+# ###############################################################
+# STANDARD-SECTION: ALIASES
+# ###############################################################
+
+alias cl-stests-set-network='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_network.py'
+alias cl-stests-set-node='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_node.py'

@@ -6,12 +6,8 @@ from enum import Flag
 from stests.core.types.account import Account
 from stests.core.types.account import AccountType
 from stests.core.types.utils import get_enum_field
+from stests.core.utils import defaults
 
-
-
-# Defaults.
-DEFAULT_HOST = "localhost"
-DEFAULT_PORT = 40400
 
 
 # Enum: Set of node states.
@@ -39,8 +35,6 @@ class NodeMetadata():
     """Metadata associated with test node.
     
     """
-    status: NodeStatus = \
-        get_enum_field(NodeStatus, NodeStatus.NULL)
     typeof: NodeType = \
         get_enum_field(NodeType, NodeType.FULL)
 
@@ -59,10 +53,13 @@ class Node():
     """Represents a node within a target network.
     
     """
-    host: str
-    port: int
-    operator: Account
+    host: str = defaults.NODE_HOST
+    port: int = defaults.NODE_PORT
+    network_id: str = defaults.NETWORK_ID
+    operator: Account = None
     metadata: NodeMetadata = NodeMetadata()
+    status: NodeStatus = \
+        get_enum_field(NodeStatus, NodeStatus.NULL)
 
 
     @staticmethod
@@ -71,7 +68,5 @@ class Node():
         
         """
         return Node(
-            DEFAULT_HOST,
-            DEFAULT_PORT,
-            Account.create(AccountType.VALIDATOR)
+            operator=Account.create(AccountType.VALIDATOR)
             )

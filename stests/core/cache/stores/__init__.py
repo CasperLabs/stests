@@ -1,9 +1,2 @@
-from enum import Enum
-
-
-
-# Enum: set of supported cache store types.
-StoreType = Enum("StoreType", [
-    "REDIS",
-    "STUB"
-])
+from stests.core.cache.stores.factory import get_store
+from stests.core.cache.stores.factory import StoreType

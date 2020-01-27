@@ -26,6 +26,15 @@ def log(msg: str = None, level: str = LOG_LEVEL_INFO):
     print(_get_message(msg, level))
 
 
+def log_debug(msg: str):
+    """Outputs a debug message to log.
+
+    :param str msg: Message to be written to log.
+
+    """
+    log(msg, LOG_LEVEL_DEBUG)
+
+
 def log_error(err: Exception):
     """Logs a runtime error.
 

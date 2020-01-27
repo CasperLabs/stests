@@ -149,8 +149,11 @@ class WorkflowContext():
 
 
     def set_services(self):
+        """Injects workflow servcies.
+        
+        """
         # JIT import to avoid circular references.
         from stests.core import cache
 
         self.services = WorkflowServices()
-        self.services.cache = cache.get_store(self) 
+        self.services.cache = cache.get_store(self.args.network_id) 

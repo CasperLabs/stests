@@ -1,30 +1,14 @@
-import os
-
-from dramatiq.brokers.rabbitmq import RabbitmqBroker
+import typing
 
 from stests.core.utils import env
-from stests.core.utils.workflow import WorkflowContext
 
 
 
-def get_broker(ctx: WorkflowContext) -> RabbitmqBroker:
-    """Returns instance of rabbit mq broker.
-
-    :param ctx: Contextual information passed along the flow of execution.
-
-    :returns: An instance of a Rabbit MQ broker.
-
-    """
-    # Set RabbitMQ virtual host.
-    vhost = ctx.network_id.upper()
-
-    # Set RabbitMQ connection url.
-    url = _get_url(vhost)
-
-    return RabbitmqBroker(url=url)
-
-
-def _get_env_var(name, default=None, convertor=None):
+def _get_env_var(
+    name: str,
+    default: typing.Any = None,
+    convertor: typing.Callable = None
+    ) -> str:
     """Returns an environment variable's current value.
 
     """
@@ -54,11 +38,3 @@ USER = _get_env_var('USER', "clabs-mq-stests-user")
 
 # Config: rabbitmq user password.
 USER_PWD = _get_env_var('USER_PWD', "clabs")
-
-
-def _get_url(vhost) -> str:
-    """Returns rabbit mq connection URL.
-    
-    """
-    # TODO: ssl
-    return f"{PROTOCOL}://{USER}:{USER_PWD}@{HOST}:{PORT}/{vhost}"
