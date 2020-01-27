@@ -30,8 +30,8 @@ class Arguments(WorkflowArguments):
     wasm_contract_filename: str = defaults.WASM_CONTRACT_FILENAME
 
     # TODO: pull network info from cache - including nodes + validators
-    validator_pvk_pem_fpath: str = "/Users/a-0/ops/clabs/chain-000/nodes/node-000/keys/validator-private.pem"
-    validator_pbk_hex = "d09cad126cbecff01b7231c6565ba483735e00f5cd93aa1ef011844c881ec1e8"
+    validator_pvk_pem_fpath: str = "/Users/a-0/ops/clabs/chains/DEV-LOC-01/nodes/node-001/keys/validator-private.pem"
+    validator_pbk_hex = "1993752f8a4bb49e05d1847ecaa51e2730714e76bad286c273248404444be092"
 
 
     @classmethod
