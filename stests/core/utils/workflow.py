@@ -133,6 +133,10 @@ class WorkflowContext():
     def workflow_type(self):
         return self.args.workflow_type
 
+    @property
+    def cache_namespace(self):
+        return f"{self.workflow_type}.{self.workflow_id}"
+
 
     @staticmethod
     def create(args: WorkflowArguments):

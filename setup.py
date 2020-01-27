@@ -22,6 +22,7 @@ NAME = "stests"
 REQUIRES = [
     'cryptography',
     'dataclasses-json',
+    'redis',
     'fakeredis',
     'hiredis',
     'dramatiq',
@@ -38,15 +39,6 @@ def _read(fname):
     fpath = os.path.join(fpath, fname)
     with open(fpath, mode='r', encoding='utf-8') as file_:
         return file_.read()
-
-
-def _get_version():
-    """Returns library version by inspecting __init__.py file.
-
-    """
-    return re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
-                     _read(f"{NAME}/__init__.py"),
-                     re.MULTILINE).group(1)
 
 
 setup(
@@ -67,10 +59,10 @@ setup(
         "Source": "https://github.com/CasperLabs/stests/tree/master/stests",
         "Readme": "https://github.com/CasperLabs/stests/blob/master/README.md"
     },
-    python_requires=">=3.6.0",
+    python_requires=">=3.7.0",
     setup_requires=[],
     url='https://github.com/CasperLabs/stests',
-    version=_get_version(),
+    version="0.1.1",
     zip_safe=False,
     classifiers=[
         'Development Status :: 3 - Alpha',

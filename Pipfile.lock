@@ -30,13 +30,6 @@
             ],
             "version": "==19.3.0"
         },
-        "casperlabs-client": {
-            "hashes": [
-                "sha256:c136dc8347049e21e31321825152d6997892debba735f788fa81572794c7f752"
-            ],
-            "index": "pypi",
-            "version": "==0.7.8"
-        },
         "cffi": {
             "hashes": [
                 "sha256:0b49274afc941c626b605fb59b59c3485c17dc776dc3cc7cc14aca74cc19cc42",

@@ -1,12 +1,11 @@
 import argparse
 import json
 
+from stests.core import cache
 from stests.core.types import Network
 from stests.core.types import NetworkLifetime
 from stests.core.types import NetworkOperatorType
 from stests.core.utils import defaults
-
-from stests.core.cache import accessor as cache
 
 
 

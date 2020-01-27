@@ -2,9 +2,9 @@ import casperlabs_client as pyclx
 import dramatiq
 import time
 
+from stests.core import cache
 from stests.core import clx
-from stests.core.cache import accessor as cache
-from stests.core.types import factory as type_factory
+from stests.core.types.factory import create_account
 from stests.core.types import AccountType
 from stests.generators.wg_100 import metadata
 
@@ -20,10 +20,10 @@ def create(ctx, account_type, account_id=0):
     
     """
     # Instantiate.
-    account = type_factory.create_account(account_type, account_id)
+    account = create_account(account_type, account_id, ctx.network_id)
 
     # Cache.
-    cache.append_account(ctx, account)
+    cache.set_account(ctx.network_id, ctx.cache_namespace, account)
 
     return ctx, account
 
@@ -49,7 +49,7 @@ def fund_contract(ctx, account):
     """Funds contract account (from faucet).
     
     """
-    faucet = cache.retrieve_account(ctx, AccountType.FAUCET, 0)
+    faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
     clx.do_transfer(
         ctx,
         10000000,
@@ -66,7 +66,7 @@ def fund_user(ctx, account):
     """Funds user account (from faucet).
     
     """
-    faucet = cache.retrieve_account(ctx, AccountType.FAUCET, 0)
+    faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
     clx.do_transfer(
         ctx,
         10000000,

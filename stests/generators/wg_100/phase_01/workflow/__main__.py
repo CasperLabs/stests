@@ -66,7 +66,7 @@ ARGS.add_argument(
 # Set workflow arguments.
 args = Arguments.create(ARGS.parse_args())
 
-# Set workflow execution context.
+# # Set workflow execution context.
 ctx = WorkflowContext.create(args)
 
 # Set workflow.

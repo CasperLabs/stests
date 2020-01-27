@@ -34,6 +34,6 @@ def execute(
         gas_price=TX_GAS_PRICE
     )
 
-    logger.log(f"PYCLX :: transfer :: {amount} :: {cp1_pbk_hex} :: {cp2_pbk_hex} :: {deploy_hash_hex}")
+    logger.log(f"PYCLX :: transfer :: {amount} :: {cp1_pbk_hex[:8]} -> {cp2_pbk_hex[:8]} :: {deploy_hash_hex}")
 
     return deploy_hash_hex

@@ -16,7 +16,7 @@ hiredis = "*"
 fakeredis = "*"
 pytest = "*"
 tox = "*"
-casperlabs-client = "*"
+grpc = "*"
 
 [requires]
 python_version = "3.7"

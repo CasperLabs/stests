@@ -7,6 +7,7 @@ from enum import Flag
 
 from stests.core.types.crypto import KeyPair
 from stests.core.types.utils import get_enum_field
+from stests.core.utils import defaults
 
 
 
@@ -36,6 +37,7 @@ class Account:
     """
     index: int
     key_pair: KeyPair
+    network_id: str = defaults.NETWORK_ID
     status: AccountStatus = get_enum_field(AccountStatus, AccountStatus.NEW)
     typeof: AccountType = get_enum_field(AccountType)
 
@@ -54,7 +56,7 @@ class Account:
         
         """
         return Account(
-            0,
-            KeyPair.create(),
+            index=0,
+            key_pair=KeyPair.create(),
             typeof=typeof or random.choice(list(AccountType))
             )

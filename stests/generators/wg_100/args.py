@@ -31,7 +31,8 @@ class Arguments(WorkflowArguments):
 
     # TODO: pull network info from cache - including nodes + validators
     validator_pvk_pem_fpath: str = "/Users/a-0/ops/clabs/chains/DEV-LOC-01/nodes/node-001/keys/validator-private.pem"
-    validator_pbk_hex = "1993752f8a4bb49e05d1847ecaa51e2730714e76bad286c273248404444be092"
+
+    validator_pbk_hex: str = "1993752f8a4bb49e05d1847ecaa51e2730714e76bad286c273248404444be092"
 
 
     @classmethod
