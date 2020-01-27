@@ -1,7 +1,6 @@
 from dataclasses import field
-from enum import Enum
-
 from dataclasses_json import config
+from enum import Enum
 
 
 
