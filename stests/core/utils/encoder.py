@@ -1,13 +1,14 @@
 import typing
 
 from stests.core.types import ENUMS
-from stests.core.types import TYPESET
-from stests.core.utils.execution import ExecutionContext
+from stests.core.types import TYPESET as CORE_TYPESET
+from stests.core.utils.workflow import WorkflowContext
+from stests.core.utils.workflow import WorkflowArguments
 
 
 
-# Extend typeset.
-TYPESET = TYPESET | { ExecutionContext, }
+# Set typeset.
+TYPESET = CORE_TYPESET
 
 # Set typemap.
 # Map: domain type keys -> domain type.  
@@ -23,6 +24,10 @@ def encode(data: typing.Any) -> bytes:
         return tuple(map(encode, data))
     elif isinstance(data, list):
         return list(map(encode, data))
+
+    # When encoding workflow context simply encode the arguments.
+    if isinstance(data, WorkflowContext):
+        return encode(data.args)
 
     # Skip non-custom types.
     if type(data) not in TYPESET:
@@ -59,3 +64,13 @@ def decode(data: bytes) -> typing.Any:
     
     # Return type instance hydrated from incoming data.
     return cls.from_dict(data)
+
+
+def register_type(cls):
+    """Workflows need to extend the typeset so as to ensure that arguments are decoded/encoded correctly.
+    
+    """
+    global TYPESET
+    if cls not in TYPESET:
+        TYPESET = TYPESET | { cls, }
+        TYPEMAP[f"{cls.__module__}.{cls.__name__}"] = cls

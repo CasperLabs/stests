@@ -25,20 +25,22 @@ def test_03():
 
 
 def test_04():
-    """Test function: get_var."""
-    # Default value.
+    """Test function: get_var -> default."""
     assert env.get_var("test_var", 111) == 111
 
-    # Defined value.
+
+def test_05():
+    """Test function: get_var -> custom."""
     os.environ['CL_STESTS_TEST_VAR'] = "TEST-VALUE"
     assert env.get_var("test_var") == "TEST-VALUE"
 
 
-def test_05():
-    """Test function: get_var_name."""
-    # Default value.
+def test_06():
+    """Test function: get_var_name -> default."""
     assert env.get_network_id() == "LOC-DEV-01"
 
-    # Defined value.
+
+def test_07():
+    """Test function: get_var_name -> custom."""
     os.environ['CL_STESTS_CONFIG_NETWORK_ID'] = "INT-SYS-01"
     assert env.get_network_id() == "INT-SYS-01"

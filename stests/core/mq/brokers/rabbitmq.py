@@ -3,11 +3,11 @@ import os
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 
 from stests.core.utils import env
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 
 
 
-def get_broker(ctx: ExecutionContext) -> RabbitmqBroker:
+def get_broker(ctx: WorkflowContext) -> RabbitmqBroker:
     """Returns instance of rabbit mq broker.
 
     :param ctx: Contextual information passed along the flow of execution.

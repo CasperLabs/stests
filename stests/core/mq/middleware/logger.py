@@ -1,7 +1,7 @@
 import dramatiq
 
 from stests.core import cache
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 from stests.core.utils import logger as _logger
 
 
@@ -17,12 +17,11 @@ class LoggingMiddleware(dramatiq.Middleware):
         :param message: A message being processed.
 
         """
-        actor_name = str(message).split('(')[0]
         if exception is None:
-            msg = f"{actor_name} :: EXECUTION COMPLETE"
+            msg = f"ACTOR :: {_get_actor_name(message)} :: execution complete"
             _logger.log(msg)
         else:
-            msg = f"{actor_name} :: EXECUTION ERROR :: err={exception}"
+            msg = f"ACTOR :: {_get_actor_name(message)} :: ERROR :: err={exception}"
             _logger.log_error(msg)
 
 
@@ -33,9 +32,15 @@ class LoggingMiddleware(dramatiq.Middleware):
         :param message: A message being processed.
 
         """
-        actor_name = str(message).split('(')[0]
-        msg = f"{actor_name} :: EXECUTION STARTS"
+        msg = f"ACTOR :: {_get_actor_name(message)} :: executing ..."
         _logger.log(msg)
+
+
+def _get_actor_name(message):
+    """Returns actor name by parsing incoming message.
+    
+    """
+    return str(message).split('(')[0]
 
 
 def get_mware() -> LoggingMiddleware:

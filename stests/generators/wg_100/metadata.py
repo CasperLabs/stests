@@ -1,5 +1,5 @@
-# Workload generaor identifier.
-ID = "WG-100"
-
-# Workload generaor desscription.
+# Workload description.
 DESCRIPTION = "ERC-20 Token Auction"
+
+# Workload type.
+TYPE = "WG-100"

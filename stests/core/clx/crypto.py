@@ -1,24 +1,10 @@
 import typing
+from enum import Enum
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
-from enum import Enum
 
-
-
-# Enum: set of supported key encodings.
-KeyEncoding = Enum("KeyEncoding", [
-    "BYTES",
-    "HEX",
-    "PEM"
-    ])
-
-
-# Enum: set of supported key types.
-KeyType = Enum("KeyType", [
-    "PRIVATE",
-    "PUBLIC"
-    ])
+from stests.core.types import KeyEncoding
 
 
 

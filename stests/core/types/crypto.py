@@ -1,11 +1,20 @@
+import tempfile
 import typing
 from dataclasses import dataclass
-
 from dataclasses_json import dataclass_json
+from enum import Enum
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+
+
+# Enum: set of supported key encodings.
+KeyEncoding = Enum("KeyEncoding", [
+    "BYTES",
+    "HEX",
+    "PEM"
+    ])
 
 
 
@@ -22,6 +31,15 @@ class Key():
     def as_bytes(self) -> bytes:
         """Key as byte array format."""
         return bytes.fromhex(self.as_hex)
+
+    @property
+    def as_pem_filepath(self) -> str:
+        """Key as a pem file path."""
+        tempfile.NamedTemporaryFile
+        with tempfile.NamedTemporaryFile("wb", delete=False) as temp_file:
+            with open(temp_file.name, "wb") as fstream:
+                fstream.write(self.as_pem)
+            return temp_file.name
 
 
 @dataclass_json

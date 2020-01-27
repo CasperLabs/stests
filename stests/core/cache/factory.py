@@ -1,7 +1,7 @@
 from stests.core.cache.stores import StoreType
 from stests.core.cache.stores import redis
 from stests.core.cache.stores import stub
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 
 
 # Map: Cache store type -> factory.
@@ -11,7 +11,7 @@ FACTORIES = {
 }
 
 
-def get_store(ctx: ExecutionContext, store_type: StoreType = StoreType.REDIS):
+def get_store(ctx: WorkflowContext, store_type: StoreType = StoreType.REDIS):
     """Returns a cache store ready to be used as a state persistence & flow control mechanism.
 
     :param ctx: Contextual information passed along the flow of execution.

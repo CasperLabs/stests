@@ -2,11 +2,11 @@ import redis
 from dramatiq.brokers.redis import RedisBroker
 
 from stests.core.utils import env
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 
 
 
-def get_broker(ctx: ExecutionContext) -> RedisBroker:
+def get_broker(ctx: WorkflowContext) -> RedisBroker:
     """Returns instance of redis mq broker.
     
     :param ctx: Contextual information passed along the flow of execution.

@@ -3,12 +3,12 @@ import dramatiq
 from stests.core.mq import encoder
 from stests.core.mq import factory
 from stests.core.mq.brokers import BrokerType
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 
 
 
 def init(
-    ctx: ExecutionContext,
+    ctx: WorkflowContext,
     broker_type: BrokerType = BrokerType.RABBIT
     ) -> dramatiq:
     """Initialises message broker plus dramtiq.

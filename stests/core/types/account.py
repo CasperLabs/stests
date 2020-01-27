@@ -1,10 +1,9 @@
 import random
 import typing
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from enum import Enum
 from enum import Flag
-
-from dataclasses_json import dataclass_json
 
 from stests.core.types.crypto import KeyPair
 from stests.core.types.utils import get_enum_field
@@ -23,14 +22,16 @@ AccountStatus = Flag("AccountStatus", [
 # Enum: Set of account types.
 AccountType = Enum("AccountType", [
     "CONTRACT",
-    "USER"
+    "FAUCET",
+    "USER",
+    "VALIDATOR"
     ])
 
 
 @dataclass_json
 @dataclass
 class Account:
-    """A DApp account that maps to an address upon target network.
+    """An account that maps to an address upon target chain.
     
     """
     index: int

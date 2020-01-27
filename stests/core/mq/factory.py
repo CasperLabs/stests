@@ -5,7 +5,7 @@ from stests.core.mq.brokers import rabbitmq
 from stests.core.mq.brokers import redis
 from stests.core.mq.brokers import stub
 from stests.core.mq.middleware import get_middleware
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 
 
 
@@ -17,7 +17,7 @@ FACTORIES = {
 }
 
 
-def get_broker(ctx: ExecutionContext, broker_type: BrokerType) -> Broker:
+def get_broker(ctx: WorkflowContext, broker_type: BrokerType) -> Broker:
     """Returns an MQ broker instance for integration with dramatiq framework.
 
     :param ctx: Contextual information passed along the flow of execution.

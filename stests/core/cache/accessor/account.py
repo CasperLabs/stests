@@ -3,11 +3,11 @@ from stests.core.types import AccountType
 from stests.core.cache.utils.commands import do_set
 from stests.core.cache.utils.commands import do_get
 from stests.core.cache.utils.keyspace import get_key
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 
 
 
-def append_account(ctx: ExecutionContext, account: Account) -> str:
+def append_account(ctx: WorkflowContext, account: Account) -> str:
     """Appends an account to cache store.
 
     :param ctx: Contextual information passed along the flow of execution.
@@ -25,7 +25,7 @@ def append_account(ctx: ExecutionContext, account: Account) -> str:
     return key
 
 
-def retrieve_account(ctx: ExecutionContext, typeof: AccountType, index: int) -> Account:
+def retrieve_account(ctx: WorkflowContext, typeof: AccountType, index: int) -> Account:
     """Retrieves an account from cache store.
 
     :param ctx: Contextual information passed along the flow of execution.

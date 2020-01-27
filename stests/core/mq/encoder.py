@@ -33,8 +33,12 @@ def decode(data: bytes) -> MessageData:
     # Decode raw json.
     data = json.loads(data.decode("utf-8"))
     
-    # Decode incoming domain objects.
-    if 'args' in data:
+    # Decode any incoming workflow arguments.
+    try:
+        data['args']
+    except KeyError:
+        pass
+    else:
         data['args'] = _decode(data['args'])
 
     return data

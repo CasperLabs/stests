@@ -1,12 +1,12 @@
 import json
 import typing
 
-from stests.core.utils.execution import ExecutionContext
+from stests.core.utils.workflow import WorkflowContext
 from stests.core.utils import encoder
 
 
 
-def do_set(ctx: ExecutionContext, key: str, data: typing.Any):
+def do_set(ctx: WorkflowContext, key: str, data: typing.Any):
     """Executes redis.set command.
     
     :param ctx: Contextual information passed along the flow of execution.
@@ -19,7 +19,7 @@ def do_set(ctx: ExecutionContext, key: str, data: typing.Any):
     ctx.services.cache.set(key, as_json)
 
 
-def do_get(ctx: ExecutionContext, key: str) -> typing.Any:
+def do_get(ctx: WorkflowContext, key: str) -> typing.Any:
     """Executes redis.get command.
     
     :param ctx: Contextual information passed along the flow of execution.

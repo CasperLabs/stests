@@ -2,8 +2,8 @@ import inspect
 import random
 
 from stests.core.types import factory
-from stests.core.types.account import Account
-from stests.core.types.account import AccountType
+from stests.core.types import Account
+from stests.core.types import AccountType
 
 
 
