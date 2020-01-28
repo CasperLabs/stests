@@ -7,6 +7,12 @@ NETWORK_LIFETIME = "REPEAT"
 # Default network metadata: operator type.
 NETWORK_OPERATOR_TYPE = "LOCAL"
 
+# Default node id.
+NODE_ID = "001"
+
+# Default node name.
+NODE_NAME = "NODE-001"
+
 # Default node host.
 NODE_HOST = "localhost"
 

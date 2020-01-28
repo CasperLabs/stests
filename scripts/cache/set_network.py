@@ -1,5 +1,4 @@
 import argparse
-import json
 
 from stests.core import cache
 from stests.core.types import Network

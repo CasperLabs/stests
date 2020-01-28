@@ -40,6 +40,7 @@ def fund_faucet(ctx, account):
         ctx.args.validator_pbk_hex,
         account.key_pair.public_key.as_hex
         )
+    time.sleep(3)
 
     return ctx, account
 
@@ -57,6 +58,7 @@ def fund_contract(ctx, account):
         faucet.key_pair.public_key.as_hex,
         account.key_pair.public_key.as_hex
         )
+    time.sleep(3)
 
     return ctx, account
 
@@ -74,5 +76,6 @@ def fund_user(ctx, account):
         faucet.key_pair.public_key.as_hex,
         account.key_pair.public_key.as_hex
         )
+    time.sleep(3)
 
     return ctx, account

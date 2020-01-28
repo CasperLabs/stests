@@ -23,10 +23,8 @@ def execute(
     """
     pyclx = get_client(ctx)    
 
-    deploy_hash_hex = "TODO: dispatch contract deploy"
+    logger.log(f"TODO :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath}")
 
-    logger.log(f"PYCLX :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath} :: {deploy_hash_hex}")
-
-    return deploy_hash_hex
+    return "TODO: dispatch contract deploy"
 
 

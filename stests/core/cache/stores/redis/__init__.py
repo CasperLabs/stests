@@ -7,7 +7,7 @@ from stests.core.cache.stores.redis import envars
 def get_store(network_id: str) -> redis.Redis:
     """Returns instance of a redis cache store accessor.
 
-    :param network_id: Network identifier, e.g. LOC-DEV-01
+    :param network_id: Network identifier, e.g. DEV-LOC-01
 
     :returns: An instance of a redis cache store accessor.
 

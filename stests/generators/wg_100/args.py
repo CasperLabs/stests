@@ -1,3 +1,5 @@
+import os
+
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
@@ -29,10 +31,9 @@ class Arguments(WorkflowArguments):
     # Name of smart contract .wasm file..
     wasm_contract_filename: str = defaults.WASM_CONTRACT_FILENAME
 
-    # TODO: pull network info from cache - including nodes + validators
-    validator_pvk_pem_fpath: str = "/Users/a-0/ops/clabs/chains/DEV-LOC-01/nodes/node-001/keys/validator-private.pem"
-
-    validator_pbk_hex: str = "1993752f8a4bb49e05d1847ecaa51e2730714e76bad286c273248404444be092"
+    # TEMPORARY: pull network info from cache - including nodes + validators
+    validator_pvk_pem_fpath: str = None
+    validator_pbk_hex: str = None
 
 
     @classmethod
@@ -42,7 +43,13 @@ class Arguments(WorkflowArguments):
         :param parsed: Parsed command line arguments.
 
         """
-        return WorkflowArguments.create(cls, metadata.TYPE, parsed)
+        args = WorkflowArguments.create(cls, metadata.TYPE, parsed)
+
+        # TEMPORARY: inject validator pvk/pbk.
+        args.validator_pvk_pem_fpath = get_validator_pvk_pem_fpath(args.network_id)
+        args.validator_pbk_hex = get_validator_pbk_hex(args.network_id)
+
+        return args
 
 
     @staticmethod
@@ -51,6 +58,19 @@ class Arguments(WorkflowArguments):
         
         """
         return WorkflowArguments.get_parser(metadata.DESCRIPTION)
+
+
+
+_OPS_DIR = os.getenv("CLABS_OPS")
+
+
+def get_validator_pvk_pem_fpath(network_id, node_name="NODE-001"):
+    return f"{_OPS_DIR}/chains/{network_id}/nodes/{node_name}/keys/validator-private.pem"
+
+def get_validator_pbk_hex(network_id, node_name="NODE-001"):
+    fpath = f"{_OPS_DIR}/chains/{network_id}/nodes/{node_name}/keys/validator-id-hex"
+    with open(fpath, 'r') as fstream:
+        return fstream.read()
 
 
 # Framework requirement: register arguments type.

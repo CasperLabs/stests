@@ -1,13 +1,12 @@
 import argparse
-import json
 
-from stests.core.cache.factory import get_store
+from stests.core import cache
 from stests.core.types import Network
+from stests.core.types import NetworkLifetime
+from stests.core.types import NetworkOperatorType
 from stests.core.types import Node
 from stests.core.types import NodeType
 from stests.core.utils import defaults
-from stests.core.utils import encoder
-
 
 
 # Set CLI argument parser.
@@ -22,6 +21,15 @@ ARGS.add_argument(
     dest="network_id",
     type=str,
     default=defaults.NETWORK_ID
+    )
+
+# Set CLI argument: node identifer.
+ARGS.add_argument(
+    "--name",
+    help="Name of node being tested.",
+    dest="name",
+    type=str,
+    default=defaults.NODE_NAME
     )
 
 # Set CLI argument: node host.
@@ -45,7 +53,7 @@ ARGS.add_argument(
 # Set CLI argument: node type.
 ARGS.add_argument(
     "--typeof",
-    help="Node type, i.e. full | readonly.",
+    help="Node type, i.e. FULL | READONLY.",
     dest="typeof",
     type=str,
     default=defaults.NODE_TYPE
@@ -58,10 +66,10 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    node = get_node(args)
-    network = get_network(args)
-
-    print(network)
+    network = cache.get_network(args.network_id)
+    network.nodeset = [n for n in network.nodeset if n.name != args.name] + \
+                      [get_node(args)]
+    cache.set_network(network)
 
 
 def get_node(args):
@@ -69,15 +77,11 @@ def get_node(args):
     
     """
     node = Node()
-    # return Node(
-    #     defaults.NODE_HOST,
-    #     defaults.NODE_PORT,
-    #     defaults.NETWORK_ID,
-    #     Account.create(AccountType.VALIDATOR)
-    #     )
-            
-    #             node = Node(args.network_id.upper(), [])
-    # node.metadata.typeof = NodeType[args.typeof]
+    node.host = args.host
+    node.port = args.port
+    node.name = args.name
+    node.network_id = args.network_id
+    node.metadata.typeof = args.typeof
 
     return node
 

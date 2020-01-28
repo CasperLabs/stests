@@ -60,7 +60,7 @@ class Node():
     metadata: NodeMetadata = NodeMetadata()
     status: NodeStatus = \
         get_enum_field(NodeStatus, NodeStatus.NULL)
-
+    name: str = defaults.NODE_NAME
 
     @staticmethod
     def create():

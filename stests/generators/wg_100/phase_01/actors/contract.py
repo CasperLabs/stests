@@ -15,6 +15,4 @@ def deploy(ctx, account):
     
     """
     fpath = resources.get_wasm_path(ctx.args.wasm_contract_filename)
-    xxx = clx.do_deploy_contract(ctx, account, fpath)
-
-    print(xxx)
+    clx.do_deploy_contract(ctx, account, fpath)
