@@ -6,7 +6,6 @@ from stests.core.mq.brokers import stub
 from stests.core.mq.middleware import get_middleware
 from stests.core.utils import env
 from stests.core.utils.exceptions import InvalidEnvironmentVariable
-from stests.core.utils.workflow import WorkflowContext
 
 
 # Name of environment variable for deriving broker type.
@@ -23,15 +22,15 @@ FACTORIES = {
 }
 
 
-def get_broker(ctx: WorkflowContext) -> Broker:
+def get_broker(network_id: str) -> Broker:
     """Returns an MQ broker instance for integration with dramatiq framework.
 
-    :param ctx: Contextual information passed along the flow of execution.
+    :param network_id: Identifier of network being tested, e.g. DEV-LOC-01
     :returns: A configured message broker.
 
     """
     factory = FACTORIES[_get_broker_type()]
-    broker = factory.get_broker(ctx)
+    broker = factory.get_broker(network_id)
     for mware in get_middleware():
         broker.add_middleware(mware)
 

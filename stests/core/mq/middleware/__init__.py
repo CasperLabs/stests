@@ -2,17 +2,20 @@ import typing
 
 import dramatiq
 
-from stests.core.mq.middleware.args_destructurer import get_mware  as _get_args_destructurer
-from stests.core.mq.middleware.logger import get_mware  as _get_logger
-from stests.core.mq.middleware.services_injector import get_mware as _get_services_injector
+from stests.core.mq.middleware.args_destructurer import ArgsDestructurerMiddleware
+from stests.core.mq.middleware.logger import LoggingMiddleware
+
+
+
+# Middleware to inject.
+MWARE = (
+    LoggingMiddleware,
+    ArgsDestructurerMiddleware
+)
 
 
 def get_middleware() -> typing.Tuple[dramatiq.Middleware]:
-    """Returns middleware to be applied to a broker.
+    """Returns set of middleware to be injected into dramatiq.
     
     """
-    return (
-        _get_logger(),
-        _get_args_destructurer(),
-        _get_services_injector()
-        )
+    return tuple(map(lambda T: T(), MWARE))

@@ -1,9 +1,6 @@
-import os
-
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.utils import encoder
 from stests.core.utils.workflow import WorkflowArguments
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
@@ -13,6 +10,9 @@ from stests.generators.wg_100 import metadata
 @dataclass_json
 @dataclass
 class Arguments(WorkflowArguments):
+    """Arguments to be passed through workflow.
+    
+    """
     # Name of ERC20 token for which an auction is being simulated.
     token_name: str = defaults.TOKEN_NAME
 
@@ -52,17 +52,9 @@ class Arguments(WorkflowArguments):
         return args
 
 
-    @staticmethod
-    def get_parser():
-        """Returns the workflow's CLI argument parser.
-        
-        """
-        return WorkflowArguments.get_parser(metadata.DESCRIPTION)
 
-
-
+import os
 _OPS_DIR = os.getenv("CLABS_OPS")
-
 
 def get_validator_pvk_pem_fpath(network_id, node_name="NODE-001"):
     return f"{_OPS_DIR}/chains/{network_id}/nodes/{node_name}/keys/validator-private.pem"
@@ -71,7 +63,3 @@ def get_validator_pbk_hex(network_id, node_name="NODE-001"):
     fpath = f"{_OPS_DIR}/chains/{network_id}/nodes/{node_name}/keys/validator-id-hex"
     with open(fpath, 'r') as fstream:
         return fstream.read()
-
-
-# Framework requirement: register arguments type.
-encoder.register_type(Arguments)

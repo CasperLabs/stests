@@ -1,20 +1,19 @@
 from dramatiq.brokers.redis import RedisBroker
 
-from stests.core.mq.brokers.redis import envars
-from stests.core.utils.workflow import WorkflowContext
+from stests.core.mq.brokers.redis import evars
 
 
-def get_broker(ctx: WorkflowContext) -> RedisBroker:
-    """Returns instance of redis mq broker.
+
+def get_broker(network_id: str) -> RedisBroker:
+    """Returns instance of redis MQ broker.
     
-    :param ctx: Contextual information passed along the flow of execution.
-
+    :param network_id: Identifier of network being tested, e.g. DEV-LOC-01
     :returns: An instance of a redis MQ broker.
 
     """
     # TODO: map network identifier to db#.
     return RedisBroker(
-        db=envars.DB,
-        host=envars.HOST,
-        port=envars.PORT
+        db=evars.DB,
+        host=evars.HOST,
+        port=evars.PORT
         )

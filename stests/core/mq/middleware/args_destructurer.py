@@ -19,10 +19,3 @@ class ArgsDestructurerMiddleware(dramatiq.Middleware):
         if len(message.args) == 1 and isinstance(message.args[0], list):
             message.args = tuple(message.args[0])
 
-
-def get_mware() -> ArgsDestructurerMiddleware:
-    """Returns instance of arguments destructurer middleware.
-    
-    """
-    return ArgsDestructurerMiddleware()
-

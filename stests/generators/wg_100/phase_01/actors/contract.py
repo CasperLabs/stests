@@ -14,5 +14,5 @@ def deploy(ctx, account):
     """Deploys smart contract to target network.
     
     """
-    fpath = resources.get_wasm_path(ctx.args.wasm_contract_filename)
+    fpath = resources.get_wasm_path(ctx.wasm_contract_filename)
     clx.do_deploy_contract(ctx, account, fpath)

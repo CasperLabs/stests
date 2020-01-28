@@ -36,8 +36,8 @@ def fund_faucet(ctx, account):
     clx.do_transfer(
         ctx,
         100000000,
-        ctx.args.validator_pvk_pem_fpath,
-        ctx.args.validator_pbk_hex,
+        ctx.validator_pvk_pem_fpath,
+        ctx.validator_pbk_hex,
         account.key_pair.public_key.as_hex
         )
     time.sleep(3)

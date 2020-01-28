@@ -1,30 +1,27 @@
 import dramatiq
 
-from stests.core.mq import init_broker
 from stests.core.types import AccountType
 
 
-def get_workflow(ctx, args):
+
+def get_workflow(args):
     """Returns a workflow group that performs various spinup tasks.
     
     """
-    # Initialise broker & import actors.
-    init_broker(ctx)
     from stests.generators.wg_100.phase_01.actors import accounts
     from stests.generators.wg_100.phase_01.actors import contract
-
 
     def get_pipeline_for_faucet():
         """Returns a workflow pipeline to initialise a faucet account."""
         return \
-            accounts.create.message(ctx, AccountType.FAUCET) | \
+            accounts.create.message(args, AccountType.FAUCET) | \
             accounts.fund_faucet.message()
 
 
     def get_pipeline_for_contract():
         """Returns a workflow pipeline to initialise a contract account."""
         return \
-            accounts.create.message(ctx, AccountType.CONTRACT) | \
+            accounts.create.message(args, AccountType.CONTRACT) | \
             accounts.fund_contract.message() | \
             contract.deploy.message()
 
@@ -32,7 +29,7 @@ def get_workflow(ctx, args):
     def get_pipeline_for_user(index):
         """Returns a workflow pipeline to initialise a user account."""
         return \
-            accounts.create.message(ctx, AccountType.USER, index) | \
+            accounts.create.message(args, AccountType.USER, index) | \
             accounts.fund_user.message() \
 
 

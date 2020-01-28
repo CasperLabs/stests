@@ -1,7 +1,6 @@
 import dramatiq
 
 from stests.core import cache
-from stests.core.utils.workflow import WorkflowContext
 from stests.core.utils import logger as _logger
 
 
@@ -41,10 +40,3 @@ def _get_actor_name(message):
     
     """
     return str(message).split('(')[0]
-
-
-def get_mware() -> LoggingMiddleware:
-    """Returns instance of services injector middleware.
-    
-    """
-    return LoggingMiddleware()

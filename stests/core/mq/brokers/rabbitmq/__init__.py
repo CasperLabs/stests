@@ -2,27 +2,25 @@ import os
 
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 
-from stests.core.mq.brokers.rabbitmq import envars
-from stests.core.utils.workflow import WorkflowContext
+from stests.core.mq.brokers.rabbitmq import evars
 
 
-def get_broker(ctx: WorkflowContext) -> RabbitmqBroker:
-    """Returns instance of rabbit mq broker.
 
-    :param ctx: Contextual information passed along the flow of execution.
+def get_broker(network_id: str) -> RabbitmqBroker:
+    """Returns instance of rabbit MQ broker.
 
+    :param network_id: Identifier of network being tested, e.g. DEV-LOC-01
     :returns: An instance of a Rabbit MQ broker.
 
     """
-    vhost = ctx.network_id.upper()
-    url = _get_url(vhost)
+    url = _get_url(network_id)
 
     return RabbitmqBroker(url=url)
 
 
-def _get_url(vhost) -> str:
-    """Returns rabbit mq connection URL.
+def _get_url(network_id) -> str:
+    """Returns rabbit MQ connection URL.
     
     """
     # TODO: ssl
-    return f"{envars.PROTOCOL}://{envars.USER}:{envars.USER_PWD}@{envars.HOST}:{envars.PORT}/{vhost}"
+    return f"{evars.PROTOCOL}://{evars.USER}:{evars.USER_PWD}@{evars.HOST}:{evars.PORT}/{network_id}"
