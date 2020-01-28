@@ -20,7 +20,11 @@ from stests.core.utils import defaults
 _PREFIX = 'CL_STESTS_'
 
 
-def get_var(name: str, default=None, convertor: typing.Callable = None) -> str:
+def get_var(
+    name: str,
+    default=None,
+    convertor: typing.Callable = None
+    ) -> str:
     """Returns an environment variable's current value.
 
     :param name: Environment variable name.
@@ -31,12 +35,12 @@ def get_var(name: str, default=None, convertor: typing.Callable = None) -> str:
 
     """
     name = get_var_name(name)
-    value = os.getenv(name) or default
-    value = value if convertor is None or value is None else convertor(value)
+    value = os.getenv(name)
+    if value is not None:
+        logger.log_debug(f"env var: {name} :: {value}")
+    value = value or default
 
-    logger.log_debug(f"env var: {name} :: {value}")
-
-    return value
+    return value if convertor is None or value is None else convertor(value)
 
 
 def get_var_name(name: str) -> str:

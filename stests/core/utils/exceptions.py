@@ -1,0 +1,43 @@
+import inspect
+
+
+
+class LibraryException(Exception):
+    """Default library exception class.
+
+    """
+
+    def __init__(self, msg):
+        """Constructor.
+
+        :param msg: Exception message.
+
+        """
+        self.message = msg() if inspect.isfunction(msg) else str(msg)
+
+
+    def __str__(self):
+        """Returns a string representation.
+
+        """
+        return u"CLABS STESTS EXCEPTION : {0}".format(repr(self.message))
+
+
+class InvalidEnvironmentVariable(LibraryException):
+    """Raised when a library environment variable hasbeen misconfigured.
+    
+    """
+    def __init__(self, name, val, expected=None):
+        """Constructor.
+
+        :param name: Environment variable name.
+        :param val: Environment variable val.
+        :param expected: Expected value.
+
+        """ 
+        err = f"Invalid env-var: {name} :: f{val}"
+        if expected:
+            if isinstance(expected, dict):
+                expected = " | ".join(list(expected.keys()))
+            err = f"{err}.  Expected {expected}"
+        super(InvalidEnvironmentVariable, self).__init__(err)

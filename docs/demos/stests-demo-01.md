@@ -74,11 +74,15 @@
     cl-stests-run-ee DEV-LOC-01 001
     ```
 
-9.  Start execution engine (in new terminal)
+    - show control_ee.sh file
+
+9.  Start node (in new terminal)
 
     ```
     cl-stests-run-node-standalone DEV-LOC-01 001
     ```
+
+    - show control_node.sh file
 
 10. New shell: workflow phase 01
 
@@ -95,9 +99,11 @@
     - show created queues
     - show sample messages
 
-12. Existing shell: worker phase 01
+12. New shell: worker phase 01
 
     ```
+    cd $CLABS_HOME/stests
+    pipenv shell
     cd stests/generators/wg_100/phase_01
     export CL_STESTS_CONFIG_NETWORK_ID=DEV-LOC-01
     dramatiq -p 1 -t 1 worker --path $CLABS_HOME/stests --watch $CLABS_HOME/stests/stests
@@ -117,7 +123,24 @@
     - open UI
     - show cache contents
 
-16. Code design
+16. Reopen shell for workflow
+
+    ```
+    cd $CLABS_HOME/stests
+    pipenv shell
+    python ./stests/generators/wg_100/phase_01/workflow --network-id DEV-LOC-01 workflow-id 1 --user-accounts=1000
+    ```
+
+17. Reopen shell for worker
+
+    - Show messages being processed
+
+18. Redis Desktop Manager  
+
+    - open UI
+    - show cache contents
+
+19. Code design
 
     - core
         - cache
