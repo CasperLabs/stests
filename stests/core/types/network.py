@@ -3,46 +3,13 @@ import typing
 from dataclasses import dataclass
 from dataclasses import field
 
+from stests.core.types.enums import get_enum_field
+from stests.core.types.enums import NetworkOperatorType
+from stests.core.types.enums import NetworkStatus
+from stests.core.types.enums import NetworkType
 from stests.core.types.utils import Entity
-from stests.core.types.utils import get_enum_field
 from stests.core.utils import defaults
 
-
-
-class NetworkStatus(enum.Flag):
-    """Flag over set network states.
-    
-    """
-    NULL = enum.auto()
-    GENESIS = enum.auto()
-    INITIALIZING = enum.auto()
-    HEALTHY = enum.auto()
-    DISTRESSED = enum.auto()
-    DOWN = enum.auto()
-    DE_INITIALIZING = enum.auto()
-
-
-class NetworkOperatorType(enum.Enum):
-    """Enumeration over set of network operator types.
-    
-    """
-    LOCAL = enum.auto()
-    INTERNAL = enum.auto()
-    EXTERNAL = enum.auto()
-
-
-class NetworkType(enum.Enum):
-    """Enumeration over set of network types.
-    
-    """
-    LOC = (NetworkOperatorType.LOCAL, "Developer tests")
-    DEV = (NetworkOperatorType.INTERNAL, "Developer tests")
-    LRT = (NetworkOperatorType.INTERNAL, "Long running tests")
-    SYS = (NetworkOperatorType.INTERNAL, "Full system tests")
-    STG = (NetworkOperatorType.INTERNAL, "Release staging")
-    POC = (NetworkOperatorType.EXTERNAL, "Proof of concept")
-    TEST = (NetworkOperatorType.EXTERNAL, "Chain candidate")
-    MAIN = (NetworkOperatorType.EXTERNAL, "Main")
 
 
 @dataclass

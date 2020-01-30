@@ -3,31 +3,13 @@ import random
 import typing
 from dataclasses import dataclass
 
+from stests.core.types.enums import AccountStatus
+from stests.core.types.enums import AccountType
+from stests.core.types.enums import get_enum_field
 from stests.core.types.key_pair import KeyPair
 from stests.core.types.utils import Entity
-from stests.core.types.utils import get_enum_field
 from stests.core.utils import defaults
 
-
-
-class AccountStatus(enum.Flag):
-    """Flag over set account states.
-    
-    """
-    NEW = enum.auto()
-    FUNDING = enum.auto()
-    FUNDED = enum.auto()
-    ACTIVE = enum.auto()
-
-
-class AccountType(enum.Enum):
-    """Enumeration over set of account types.
-    
-    """
-    CONTRACT = enum.auto()
-    FAUCET = enum.auto()
-    USER = enum.auto()
-    BOND = enum.auto()
 
 
 @dataclass

@@ -1,25 +1,10 @@
-import enum
 import tempfile
-import typing
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
-
-from stests.core import clx
 from stests.core.types.utils import Entity
+from stests.core.utils import crypto
 
-
-
-class KeyEncoding(enum.Enum):
-    """Enumeration over set of key encodings.
-    
-    """
-    BYTES = enum.auto()
-    HEX = enum.auto()
-    PEM = enum.auto()
 
 
 @dataclass_json
@@ -54,11 +39,7 @@ class PrivateKey(Key):
     @property
     def as_pem(self) -> str:
         """Key as pem string."""
-        return Ed25519PrivateKey.from_private_bytes(self.as_bytes).private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption()
-        )
+        return crypto.get_private_key_pem(self.as_bytes)
 
 
 @dataclass
@@ -69,10 +50,7 @@ class PublicKey(Key):
     @property
     def as_pem(self) -> str:
         """Returns key as pem string."""
-        return Ed25519PublicKey.from_public_bytes(self.as_bytes).public_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo
-            )
+        return crypto.get_public_key_pem(self.as_bytes)
 
 
 @dataclass_json
@@ -95,7 +73,7 @@ class KeyPair():
         if (not pvk and pbk) or (pvk and not pbk):
             raise ValueError("Must either specify both keys or none at all.")
         
-        if not pvk and not pbk::
-            pvk, pbk = clx.get_key_pair(clx.KeyEncoding.HEX)
+        if not pvk and not pbk:
+            pvk, pbk = crypto.get_key_pair(crypto.KeyEncoding.HEX)
 
         return KeyPair(PrivateKey(pvk), PublicKey(pbk))

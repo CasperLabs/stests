@@ -2,33 +2,15 @@ import enum
 from dataclasses import dataclass
 
 from stests.core.types.account import Account
-from stests.core.types.account import AccountType
+from stests.core.types.enums import AccountType
+
+from stests.core.types.enums import get_enum_field
+from stests.core.types.enums import NodeStatus
+from stests.core.types.enums import NodeType
 from stests.core.types.network import NetworkEntity
 from stests.core.types.utils import Entity
-from stests.core.types.utils import get_enum_field
 from stests.core.utils import defaults
 
-
-
-class NodeStatus(enum.Flag):
-    """Flag over set node states.
-    
-    """
-    NULL = enum.auto()
-    GENESIS = enum.auto()
-    INITIALIZING = enum.auto()
-    HEALTHY = enum.auto()
-    DISTRESSED = enum.auto()
-    DOWN = enum.auto()
-    DE_INITIALIZING = enum.auto()
-
-
-class NodeType(enum.Enum):
-    """Enumeration over set of node types.
-    
-    """
-    FULL = enum.auto()
-    READ_ONLY = enum.auto()
 
 
 @dataclass
