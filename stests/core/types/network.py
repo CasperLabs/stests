@@ -29,14 +29,6 @@ class Network(Entity):
 
 
     @classmethod
-    def create(cls):
-        """Factory: returns an instance for testing purposes.
-        
-        """
-        return Network()
-
-
-    @classmethod
     def get_key(cls, typeof: NetworkType, idx: int) -> str:
         """Returns network's key for identification purposes.
         

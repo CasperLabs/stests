@@ -27,9 +27,23 @@ def get_isodatetime_field():
 
 @dataclass_json
 @dataclass
-class Entity():
+class Entity:
     """Base class for all entities flowing through system.
     
     """    
     # Timestamp when entity was first instantiated.
     _created_at: datetime = get_isodatetime_field()
+
+
+    @staticmethod
+    def instantiate(typeof):
+        """Factory: returns an instance for testing purposes.
+        
+        """
+        try:
+            typeof.create
+        except AttributeError:
+            return typeof()
+        else:
+            return typeof.create()
+

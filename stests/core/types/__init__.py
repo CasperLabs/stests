@@ -13,12 +13,16 @@ from stests.core.types.node import Node
 
 
 
-# Domain classes.
-CLASSES = {
+# Domain entities - i.e. classes that subclass Entity.
+ENTITIES = {
     Account,
-    KeyPair,
     Network,
     Node,
+}
+
+# Domain classes.
+CLASSES = ENTITIES | {
+    KeyPair,
 }
 
 # Domain enums.
