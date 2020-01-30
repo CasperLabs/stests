@@ -11,19 +11,20 @@ from stests.core.types.key_pair import KeyPair
 from stests.core.types.network import Network
 from stests.core.types.node import Node
 
+from stests.core.types.utils import Entity
 
 
-# Domain entities - i.e. classes that subclass Entity.
-ENTITIES = {
+
+# Domain classes.
+CLASSES = {
     Account,
+    KeyPair,
     Network,
     Node,
 }
 
-# Domain classes.
-CLASSES = ENTITIES | {
-    KeyPair,
-}
+# Domain entities - i.e. classes that subclass Entity.
+ENTITIES = {i for i in CLASSES if issubclass(i, Entity)}
 
 # Domain enums.
 ENUMS = {

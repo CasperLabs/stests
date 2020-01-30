@@ -38,7 +38,7 @@ class Network(Entity):
 
 @dataclass
 class NetworkEntity(Entity):
-    """Base class for all entities associated with a network.
+    """Base class for all entities intimately associated with a network.
     
     """    
     network_idx: int = 1

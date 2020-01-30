@@ -13,34 +13,8 @@ TYPESET = CORE_TYPESET
 TYPEMAP = {f"{i.__module__}.{i.__name__}": i for i in TYPESET}
 
 
-def encode(data: typing.Any) -> bytes:
-    """Encodes input data in readiness for dispatch over wire.
-    
-    """
-    # Recurse over tuples/lists.
-    if isinstance(data, tuple):
-        return tuple(map(encode, data))
-    elif isinstance(data, list):
-        return list(map(encode, data))
-
-    # Skip non-custom types.
-    if type(data) not in TYPESET:
-        return data
-
-    if type(data) in ENUMS:
-        return str(data)
-
-    # Convert custom types to dictionary.
-    obj = data.to_dict()
-
-    # Append type info for downstream round-trip.
-    obj['_type'] = f"{data.__module__}.{data.__class__.__name__}"
-
-    return obj
-
-
-def decode(data: bytes) -> typing.Any:
-    """Decodes data dispatched over wire.
+def decode(data: typing.Any) -> typing.Any:
+    """Decodes input data dispatched over wire.
     
     """
     # Recurse over tuples/lists.
@@ -58,6 +32,33 @@ def decode(data: bytes) -> typing.Any:
     
     # Return type instance hydrated from incoming data.
     return cls.from_dict(data)
+
+
+def encode(data: typing.Any) -> typing.Any:
+    """Encodes input data in readiness for dispatch over wire.
+    
+    """
+    # Recurse over tuples/lists.
+    if isinstance(data, tuple):
+        return tuple(map(encode, data))
+    elif isinstance(data, list):
+        return list(map(encode, data))
+
+    # Skip non domain types.
+    if type(data) not in TYPESET:
+        return data
+
+    # Stringify domain enums.
+    if type(data) in ENUMS:
+        return str(data)
+
+    # Dictionarify domain types.
+    obj = data.to_dict()
+
+    # Append domain info for downstream round-trip.
+    obj['_type'] = f"{data.__module__}.{data.__class__.__name__}"
+
+    return obj
 
 
 def register_type(cls):

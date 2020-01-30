@@ -5,7 +5,7 @@ from dataclasses_json import config
 
 
 class AccountStatus(enum.Flag):
-    """Flag over set account states.
+    """Flag over set of account states.
     
     """
     NEW = enum.auto()
@@ -24,6 +24,15 @@ class AccountType(enum.Enum):
     BOND = enum.auto()
 
 
+class DeployStatus(enum.Flag):
+    """Flag over set of deploy states.
+    
+    """
+    NULL = enum.auto()
+    FINALIZED = enum.auto()
+    REJECTED = enum.auto()
+
+
 class NetworkOperatorType(enum.Enum):
     """Enumeration over set of network operator types.
     
@@ -34,7 +43,7 @@ class NetworkOperatorType(enum.Enum):
 
 
 class NetworkStatus(enum.Flag):
-    """Flag over set network states.
+    """Flag over set of network states.
     
     """
     NULL = enum.auto()
@@ -61,7 +70,7 @@ class NetworkType(enum.Enum):
 
 
 class NodeStatus(enum.Flag):
-    """Flag over set node states.
+    """Flag over set of node states.
     
     """
     NULL = enum.auto()
