@@ -1,43 +1,28 @@
 import argparse
 
+from scripts.cache import utils
 from stests.core import cache
 from stests.core.types import Network
-from stests.core.types import NetworkLifetime
-from stests.core.types import NetworkOperatorType
-from stests.core.utils import defaults
+from stests.core.types import NetworkType
 
 
 
-# Set CLI argument parser.
-ARGS = argparse.ArgumentParser(
-    f"Uploads network information to stests cache."
-)
+# CLI argument parser.
+ARGS = argparse.ArgumentParser("Upload network information to stests.")
 
-# Set CLI argument: network identifer.
+# CLI argument: network type.
 ARGS.add_argument(
-    "--network-id",
-    help="Identifier of network being tested.",
-    dest="network_id",
-    type=str,
-    default=defaults.NETWORK_ID
+    "type",
+    choices=[i.name.lower() for i in NetworkType],
+    help="Type of network being tested.",
+    type=str
     )
 
-# Set CLI argument: network lifetime.
+# CLI argument: network index.
 ARGS.add_argument(
-    "--lifetime",
-    help="Estimated lifetime of network being tested.",
-    dest="lifetime",
-    type=str,
-    default="REPEAT"
-    )
-
-# Set CLI argument: network operator type.
-ARGS.add_argument(
-    "--operator-type",
-    help="Type of network operator.",
-    dest="operator_type",
-    type=str,
-    default="LOCAL"
+    "idx",
+    help="Network index - must be between 1 and 99.",
+    type=utils.validate_network_idx
     )
 
 
@@ -47,18 +32,10 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    cache.set_network(get_network(args))
-
-
-def get_network(args):
-    """Returns domain object instance deserialised from CLI args.
-    
-    """
-    network = Network(args.network_id.upper(), [])
-    network.metadata.lifetime = NetworkLifetime[args.lifetime]
-    network.metadata.operator_type = NetworkOperatorType[args.operator_type]
-
-    return network
+    cache.set_network(Network(
+        idx=args.idx,
+        typeof=NetworkType[args.type.upper()]
+    ))
 
 
 # Entry point.

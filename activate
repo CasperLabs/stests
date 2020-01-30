@@ -12,3 +12,4 @@ export CL_STESTS_SCRIPTS=$CL_STESTS_HOME/scripts
 
 alias cl-stests-set-network='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_network.py'
 alias cl-stests-set-node='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_node.py'
+alias cl-stests-set-node-bonding-key='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_node_bonding_key.py'

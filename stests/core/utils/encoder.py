@@ -2,8 +2,6 @@ import typing
 
 from stests.core.types import ENUMS
 from stests.core.types import TYPESET as CORE_TYPESET
-from stests.core.utils.workflow import WorkflowContext
-from stests.core.utils.workflow import WorkflowArguments
 
 
 
@@ -24,10 +22,6 @@ def encode(data: typing.Any) -> bytes:
         return tuple(map(encode, data))
     elif isinstance(data, list):
         return list(map(encode, data))
-
-    # When encoding workflow context simply encode the arguments.
-    if isinstance(data, WorkflowContext):
-        return encode(data.args)
 
     # Skip non-custom types.
     if type(data) not in TYPESET:

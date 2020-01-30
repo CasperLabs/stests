@@ -1,17 +1,16 @@
 from stests.core.types.account import Account
 from stests.core.types.account import AccountStatus
 from stests.core.types.account import AccountType
-from stests.core.types.crypto import KeyEncoding
-from stests.core.types.crypto import KeyPair
+from stests.core.types.key_pair import KeyEncoding
+from stests.core.types.key_pair import KeyPair
 from stests.core.types.network import Network
-from stests.core.types.network import NetworkLifetime
-from stests.core.types.network import NetworkMetadata
-from stests.core.types.network import NetworkOperatorType
 from stests.core.types.network import NetworkStatus
+from stests.core.types.network import NetworkType
 from stests.core.types.node import Node
-from stests.core.types.node import NodeMetadata
 from stests.core.types.node import NodeStatus
 from stests.core.types.node import NodeType
+from stests.core.types.utils_factory import create_account
+
 
 
 # Supported domain classes.
@@ -19,9 +18,7 @@ CLASSES = {
     Account,
     KeyPair,
     Network,
-    NetworkMetadata,
     Node,
-    NodeMetadata
 }
 
 # Supported domain enums.
@@ -29,11 +26,10 @@ ENUMS = {
     AccountStatus,
     AccountType,
     KeyEncoding,
-    NetworkLifetime,
-    NetworkOperatorType,
     NetworkStatus,
+    NetworkType,
     NodeStatus,
-    NodeType
+    NodeType,
 }
 
 # Supported domain types.

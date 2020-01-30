@@ -4,6 +4,7 @@ import random
 from stests.core.types import factory
 from stests.core.types import Account
 from stests.core.types import AccountType
+from stests.core.utils import defaults
 
 
 
@@ -24,6 +25,7 @@ def test_03():
     """Test function: create_account."""
     i = factory.create_account(
         random.choice(list(AccountType)),
-        random.randint(0, 100)
+        random.randint(0, 100),
+        defaults.NETWORK_ID
         )
     assert isinstance(i, Account)

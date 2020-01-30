@@ -4,7 +4,7 @@ import time
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.types.factory import create_account
+from stests.core.types import create_account
 from stests.core.types import AccountType
 from stests.generators.wg_100 import metadata
 

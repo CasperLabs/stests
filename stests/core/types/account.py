@@ -1,43 +1,42 @@
+import enum
 import random
 import typing
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
-from enum import Enum
-from enum import Flag
 
-from stests.core.types.crypto import KeyPair
+from stests.core.types.key_pair import KeyPair
+from stests.core.types.utils import Entity
 from stests.core.types.utils import get_enum_field
 from stests.core.utils import defaults
 
 
 
-# Flag: Set of account states.
-AccountStatus = Flag("AccountStatus", [
-    "NEW",
-    "FUNDING",
-    "FUNDED",
-    "ACTIVE"
-    ])
+class AccountStatus(enum.Flag):
+    """Flag over set account states.
+    
+    """
+    NEW = enum.auto()
+    FUNDING = enum.auto()
+    FUNDED = enum.auto()
+    ACTIVE = enum.auto()
 
 
-# Enum: Set of account types.
-AccountType = Enum("AccountType", [
-    "CONTRACT",
-    "FAUCET",
-    "USER",
-    "VALIDATOR"
-    ])
+class AccountType(enum.Enum):
+    """Enumeration over set of account types.
+    
+    """
+    CONTRACT = enum.auto()
+    FAUCET = enum.auto()
+    USER = enum.auto()
+    BOND = enum.auto()
 
 
-@dataclass_json
 @dataclass
-class Account:
+class Account(Entity):
     """An account that maps to an address upon target chain.
     
     """
-    index: int
-    key_pair: KeyPair
-    network_id: str = defaults.NETWORK_ID
+    idx: int = 1
+    key_pair: KeyPair = KeyPair.create()
     status: AccountStatus = get_enum_field(AccountStatus, AccountStatus.NEW)
     typeof: AccountType = get_enum_field(AccountType)
 
@@ -56,7 +55,6 @@ class Account:
         
         """
         return Account(
-            index=0,
             key_pair=KeyPair.create(),
             typeof=typeof or random.choice(list(AccountType))
             )

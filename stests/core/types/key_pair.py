@@ -1,21 +1,24 @@
+import enum
 import tempfile
 import typing
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from enum import Enum
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
+from stests.core.types.utils import Entity
 
-# Enum: set of supported key encodings.
-KeyEncoding = Enum("KeyEncoding", [
-    "BYTES",
-    "HEX",
-    "PEM"
-    ])
 
+
+class KeyEncoding(enum.Enum):
+    """Enumeration over set of key encodings.
+    
+    """
+    BYTES = enum.auto()
+    HEX = enum.auto()
+    PEM = enum.auto()
 
 
 @dataclass_json
@@ -42,7 +45,6 @@ class Key():
             return temp_file.name
 
 
-@dataclass_json
 @dataclass
 class PrivateKey(Key):
     """A private key used to sign/verify/identify.
@@ -67,7 +69,6 @@ class PrivateKey(Key):
         return PrivateKey(pvk if isinstance(pvk, str) else pvk.hex())
 
 
-@dataclass_json
 @dataclass
 class PublicKey(Key):
     """A public key used to verify/identify.
@@ -98,10 +99,10 @@ class KeyPair():
     
     """
     # Private key used for digital signature signing purposes.
-    private_key: PrivateKey
+    private_key: PrivateKey = PrivateKey.create()
 
     # Public key used for account addressing & digital signature verification purposes.
-    public_key: PublicKey
+    public_key: PublicKey = PublicKey.create()
 
     @classmethod
     def create(cls, pvk=None, pbk=None):

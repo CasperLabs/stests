@@ -1,17 +1,17 @@
 # Default network identifier when running tests.
-NETWORK_ID = "DEV-LOC-01"
+NETWORK_ID = "LOC-01"
 
-# Default network metadata: lifetime.
-NETWORK_LIFETIME = "REPEAT"
+# Default network index (>=1, <=99).
+NETWORK_INDEX: int = 1
 
-# Default network metadata: operator type.
-NETWORK_OPERATOR_TYPE = "LOCAL"
+# Default network index (one based).
+NETWORK_TYPE: str = "LOC"
 
-# Default node id.
-NODE_ID = "001"
+# Default node index (>=1, <=999).
+NODE_INDEX: int = 1
 
 # Default node name.
-NODE_NAME = "NODE-001"
+NODE_NAME = "NODE-0001"
 
 # Default node host.
 NODE_HOST = "localhost"

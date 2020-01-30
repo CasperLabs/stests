@@ -1,6 +1,7 @@
 import inspect
 import os
 
+from stests.core.utils import defaults
 from stests.core.utils import env
 
 
@@ -37,7 +38,7 @@ def test_05():
 
 def test_06():
     """Test function: get_var_name -> default."""
-    assert env.get_network_id() == "LOC-DEV-01"
+    assert env.get_network_id() == defaults.NETWORK_ID
 
 
 def test_07():

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.utils.workflow import WorkflowArguments
+from stests.core.utils.workflow import WorkflowContext
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
 
@@ -9,8 +9,8 @@ from stests.generators.wg_100 import metadata
 
 @dataclass_json
 @dataclass
-class Arguments(WorkflowArguments):
-    """Arguments to be passed through workflow.
+class Arguments(WorkflowContext):
+    """Contextual information passed through workflow.
     
     """
     # Name of ERC20 token for which an auction is being simulated.
@@ -43,7 +43,7 @@ class Arguments(WorkflowArguments):
         :param parsed: Parsed command line arguments.
 
         """
-        args = WorkflowArguments.create(cls, metadata.TYPE, parsed)
+        args = WorkflowContext.create(cls, metadata.TYPE, parsed)
 
         # TEMPORARY: inject validator pvk/pbk.
         args.validator_pvk_pem_fpath = get_validator_pvk_pem_fpath(args.network_id)

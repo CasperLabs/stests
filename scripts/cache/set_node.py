@@ -1,62 +1,62 @@
 import argparse
 
+from scripts.cache import utils
 from stests.core import cache
 from stests.core.types import Network
-from stests.core.types import NetworkLifetime
-from stests.core.types import NetworkOperatorType
+from stests.core.types import NetworkType
 from stests.core.types import Node
 from stests.core.types import NodeType
 from stests.core.utils import defaults
 
 
-# Set CLI argument parser.
-ARGS = argparse.ArgumentParser(
-    f"Uploads node information to stests cache."
-)
 
-# Set CLI argument: network identifer.
+# CLI argument parser.
+ARGS = argparse.ArgumentParser(f"Upload node information to stests.")
+
+# CLI argument: network type.
 ARGS.add_argument(
-    "--network-id",
-    help="Identifier of network being tested.",
-    dest="network_id",
-    type=str,
-    default=defaults.NETWORK_ID
+    "network_type",
+    choices=[i.name.lower() for i in NetworkType],
+    help="Type of network being tested.",
+    type=str
     )
 
-# Set CLI argument: node identifer.
+# CLI argument: network index.
 ARGS.add_argument(
-    "--name",
-    help="Name of node being tested.",
-    dest="name",
-    type=str,
-    default=defaults.NODE_NAME
+    "network_idx",
+    help="Network index - must be between 1 and 99.",
+    type=utils.validate_network_idx
+    )
+
+# CLI argument: network index.
+ARGS.add_argument(
+    "node_idx",
+    help="Node index - must be between 1 and 999.",
+    type=utils.validate_node_idx
     )
 
 # Set CLI argument: node host.
 ARGS.add_argument(
-    "--host",
-    help="Node's host.",
-    dest="host",
-    type=str,
-    default=defaults.NODE_HOST
+    "host",
+    default=defaults.NODE_HOST,
+    help="Node host.",
+    type=str
     )
 
 # Set CLI argument: node port.
 ARGS.add_argument(
-    "--port",
-    help="Node's public GRPC port.",
-    dest="port",
-    type=str,
-    default=defaults.NODE_PORT
+    "port",
+    default=defaults.NODE_PORT,
+    help="Node public GRPC port.",
+    type=int
     )
 
 # Set CLI argument: node type.
 ARGS.add_argument(
-    "--typeof",
-    help="Node type, i.e. FULL | READONLY.",
-    dest="typeof",
-    type=str,
-    default=defaults.NODE_TYPE
+    "typeof",
+    choices=[i.name.lower() for i in NodeType],
+    help="Node type.",
+    type=str
     )
 
 
@@ -66,48 +66,13 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network = cache.get_network(args.network_id)
-    network.nodeset = [n for n in network.nodeset if n.name != args.name] + \
-                      [get_node(args)]
-    cache.set_network(network)
-
-
-def get_node(args):
-    """Returns domain object instance deserialised from CLI args.
-    
-    """
-    node = Node()
-    node.host = args.host
-    node.port = args.port
-    node.name = args.name
-    node.network_id = args.network_id
-    node.metadata.typeof = args.typeof
-
-    return node
-
-
-def get_network(args):
-    """Pulls network information from cache.
-    
-    """
-    with get_store(args.network_id) as store:
-        return store.get(
-            args.network_id
-        )
-
-
-def get_network_cache_key(network):
-    """Returns cache key to use.
-    
-    """
-    return f"{network.name}"
-
-
-def get_network_cache_data(network):
-    """Returns cache data to persist in cache.
-    
-    """
-    return json.dumps(encoder.encode(network), indent=4)
+    cache.set_node(Node(
+        host=args.host,
+        idx=args.node_idx,  
+        network_idx=args.network_idx,
+        network_type=NetworkType[args.network_type.upper()],      
+        typeof = NodeType[args.typeof.upper()]
+    ))    
 
 
 # Entry point.

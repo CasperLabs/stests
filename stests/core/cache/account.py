@@ -19,7 +19,6 @@ def get_account(
     :param namespace: Cache key namespace.
     :param typeof: Type of account to be retrieved.
     :param index: Index of account.
-
     :returns: A previously cached account.
 
     """    
@@ -42,7 +41,6 @@ def set_account(
     :param network_id: Identifier of network being tested.
     :param namespace: Cache key namespace.
     :param account: Account being cached.
-
     :returns: Account's cache key.
 
     """

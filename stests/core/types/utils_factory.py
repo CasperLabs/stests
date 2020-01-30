@@ -1,6 +1,6 @@
 
 from stests.core import clx
-from stests.core.types.crypto import KeyPair
+from stests.core.types.key_pair import KeyPair
 from stests.core.types.account import Account
 from stests.core.types.account import AccountType
 from stests.core.utils import logger

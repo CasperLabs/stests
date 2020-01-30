@@ -1,76 +1,64 @@
+import enum
+import typing
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
-from enum import Enum
-from enum import Flag
-from typing import List
+from dataclasses import field
 
-from stests.core.types.node import Node
+from stests.core.types.utils import Entity
 from stests.core.types.utils import get_enum_field
 from stests.core.utils import defaults
 
 
 
-# Enum: Set of network lifetimes.
-NetworkLifetime = Enum("NetworkLifetime", [
-    "SINGLETON",
-    "REPEAT",
-    "SEMI_PERSISTENT",
-    "PERSISTENT"
-    ])
-
-
-# Enum: Set of network operator types.
-NetworkOperatorType = Enum("NetworkOperatorType", [
-    "LOCAL",
-    "INTERNAL",
-    "HYBRID",
-    "EXTERNAL"
-    ])
-
-
-# Enum: Set of network states.
-NetworkStatus = Flag("NetworkStatus", [
-    "NULL",
-    "GENESIS",
-    "INITIALIZING",
-    "HEALTHY",
-    "DISTRESSED",
-    "DOWN",
-    "DE_INITIALIZING"
-    ])
-
-
-@dataclass_json
-@dataclass
-class NetworkMetadata():
-    """Metadata associated with test network.
+class NetworkStatus(enum.Flag):
+    """Flag over set network states.
     
     """
-    lifetime: NetworkLifetime = \
-        get_enum_field(NetworkLifetime, NetworkLifetime.REPEAT)
-    operator_type: NetworkOperatorType = \
-        get_enum_field(NetworkOperatorType, NetworkOperatorType.LOCAL)
+    NULL = enum.auto()
+    GENESIS = enum.auto()
+    INITIALIZING = enum.auto()
+    HEALTHY = enum.auto()
+    DISTRESSED = enum.auto()
+    DOWN = enum.auto()
+    DE_INITIALIZING = enum.auto()
 
 
-    @classmethod
-    def create(cls):
-        """Factory: returns an instance for testing purposes.
-        
-        """
-        return NetworkMetadata()
+class NetworkOperatorType(enum.Enum):
+    """Enumeration over set of network operator types.
+    
+    """
+    LOCAL = enum.auto()
+    INTERNAL = enum.auto()
+    EXTERNAL = enum.auto()
 
 
-@dataclass_json
+class NetworkType(enum.Enum):
+    """Enumeration over set of network types.
+    
+    """
+    LOC = (NetworkOperatorType.LOCAL, "Developer tests")
+    DEV = (NetworkOperatorType.INTERNAL, "Developer tests")
+    LRT = (NetworkOperatorType.INTERNAL, "Long running tests")
+    SYS = (NetworkOperatorType.INTERNAL, "Full system tests")
+    STG = (NetworkOperatorType.INTERNAL, "Release staging")
+    POC = (NetworkOperatorType.EXTERNAL, "Proof of concept")
+    TEST = (NetworkOperatorType.EXTERNAL, "Chain candidate")
+    MAIN = (NetworkOperatorType.EXTERNAL, "Main")
+
+
 @dataclass
-class Network():
+class Network(Entity):
     """A test network.
     
     """
-    name: str
-    nodeset: List[Node]
-    metadata: NetworkMetadata = NetworkMetadata()
-    status: NetworkStatus = \
-        get_enum_field(NetworkStatus, NetworkStatus.NULL)
+    idx: int = 1
+    nodeset: typing.List = field(default_factory=list)
+    status: NetworkStatus = get_enum_field(NetworkStatus, NetworkStatus.NULL)
+    typeof: NetworkType = get_enum_field(NetworkType, NetworkType.LOC)
+
+    @property
+    def key(self):
+        """Returns network's key for identification purposes."""
+        return Network.get_key(self.typeof, self.idx)
 
 
     @classmethod
@@ -78,6 +66,26 @@ class Network():
         """Factory: returns an instance for testing purposes.
         
         """
-        return Network(defaults.NETWORK_ID, [
-            Node.create(),
-        ])
+        return Network()
+
+
+    @classmethod
+    def get_key(cls, typeof: NetworkType, idx: int) -> str:
+        """Returns network's key for identification purposes.
+        
+        """
+        return f"{typeof.name}-{str(idx).zfill(3)}"
+
+
+@dataclass
+class NetworkEntity(Entity):
+    """Base class for all entities associated with a network.
+    
+    """    
+    network_idx: int = 1
+    network_type: str =  get_enum_field(NetworkType, NetworkType.LOC)
+
+    @property
+    def network_key(self):
+        """Returns associated network key."""
+        return Network.get_key(self.network_type, self.network_idx)

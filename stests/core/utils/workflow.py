@@ -9,8 +9,8 @@ from stests.core.utils import env
 
 @dataclass_json
 @dataclass
-class WorkflowArguments():
-    """Arguments associated with workflow execution.
+class WorkflowContext():
+    """Encpasulates information relevant to a workflow's execution context.
     
     """
     # Identifier of network being tested.
@@ -32,7 +32,7 @@ class WorkflowArguments():
         """Simple factory method.
         
         """
-        cls = cls or WorkflowArguments
+        cls = cls or WorkflowContext
         instance = cls(
             network_id=parsed.network_id,
             workflow_id=0,
@@ -43,39 +43,3 @@ class WorkflowArguments():
 
         return instance
 
-
-@dataclass_json
-@dataclass
-class WorkflowContext():
-    """Encpasulates information & services relevant to current execution context.
-    
-    """
-    # Execution arguments pass along execution thread.
-    args: WorkflowArguments
-
-    @property
-    def network_id(self):
-        return self.args.network_id
-
-    @property
-    def workflow_id(self):
-        return self.args.workflow_id
-
-    @property
-    def workflow_type(self):
-        return self.args.workflow_type
-
-    @property
-    def cache_namespace(self):
-        return f"{self.workflow_type}.{self.workflow_id}"
-
-
-    @staticmethod
-    def create(args: WorkflowArguments):
-        """Returns an instance ready for use within a workflow.
-
-        :param args: Workflow arguments typically derived from command line.
-        :returns: A context instance configured for use by actors.
-
-        """        
-        return WorkflowContext(args)
