@@ -1,9 +1,9 @@
 from dramatiq.brokers.stub import StubBroker
-from stests.core.utils.workflow import WorkflowContext
+from stests.core.utils.generator import GeneratorContext
 
 
 
-def get_broker(ctx: WorkflowContext) -> StubBroker:
+def get_broker(ctx: GeneratorContext) -> StubBroker:
     """Returns instance of stub mq broker, primarily for use in testing.
     
     :param network_id: Network identifier, e.g. DEV-LOC-01

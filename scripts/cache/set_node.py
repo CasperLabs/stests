@@ -1,11 +1,11 @@
 import argparse
 
-from scripts.cache import utils
 from stests.core import cache
 from stests.core.types import Network
 from stests.core.types import NetworkType
 from stests.core.types import Node
 from stests.core.types import NodeType
+from stests.core.utils import args_validator
 from stests.core.utils import defaults
 
 
@@ -25,14 +25,14 @@ ARGS.add_argument(
 ARGS.add_argument(
     "network_idx",
     help="Network index - must be between 1 and 99.",
-    type=utils.validate_network_idx
+    type=args_validator.validate_network_idx
     )
 
 # CLI argument: network index.
 ARGS.add_argument(
     "node_idx",
     help="Node index - must be between 1 and 999.",
-    type=utils.validate_node_idx
+    type=args_validator.validate_node_idx
     )
 
 # Set CLI argument: node host.
@@ -48,7 +48,7 @@ ARGS.add_argument(
     "port",
     default=defaults.NODE_PORT,
     help="Node public GRPC port.",
-    type=int
+    type=args_validator.validate_node_port
     )
 
 # Set CLI argument: node type.

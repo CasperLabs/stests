@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.utils.workflow import WorkflowContext
+from stests.core.utils.generator import GeneratorContext
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
 
@@ -9,7 +9,7 @@ from stests.generators.wg_100 import metadata
 
 @dataclass_json
 @dataclass
-class Arguments(WorkflowContext):
+class Arguments:
     """Contextual information passed through workflow.
     
     """
@@ -28,13 +28,6 @@ class Arguments(WorkflowContext):
     # Initial user account CLX balance.
     user_initial_clx_balance: int = defaults.USER_INITIAL_CLX_BALANCE
 
-    # Name of smart contract .wasm file..
-    wasm_contract_filename: str = defaults.WASM_CONTRACT_FILENAME
-
-    # TEMPORARY: pull network info from cache - including nodes + validators
-    validator_pvk_pem_fpath: str = None
-    validator_pbk_hex: str = None
-
 
     @classmethod
     def create(cls, parsed):
@@ -43,23 +36,4 @@ class Arguments(WorkflowContext):
         :param parsed: Parsed command line arguments.
 
         """
-        args = WorkflowContext.create(cls, metadata.TYPE, parsed)
-
-        # TEMPORARY: inject validator pvk/pbk.
-        args.validator_pvk_pem_fpath = get_validator_pvk_pem_fpath(args.network_id)
-        args.validator_pbk_hex = get_validator_pbk_hex(args.network_id)
-
-        return args
-
-
-
-import os
-_OPS_DIR = os.getenv("CLABS_OPS")
-
-def get_validator_pvk_pem_fpath(network_id, node_name="NODE-001"):
-    return f"{_OPS_DIR}/chains/{network_id}/nodes/{node_name}/keys/validator-private.pem"
-
-def get_validator_pbk_hex(network_id, node_name="NODE-001"):
-    fpath = f"{_OPS_DIR}/chains/{network_id}/nodes/{node_name}/keys/validator-id-hex"
-    with open(fpath, 'r') as fstream:
-        return fstream.read()
+        return GeneratorContext.create(cls, metadata.TYPE, parsed)

@@ -1,5 +1,5 @@
 from stests.core.clx.client_factory import get_client
-from stests.core.utils.workflow import WorkflowContext
+from stests.core.utils.generator import GeneratorContext
 from stests.core.utils import logger
 
 
@@ -8,7 +8,7 @@ TX_GAS_PRICE = 1
 
 
 def execute(
-    ctx: WorkflowContext,
+    ctx: GeneratorContext,
     amount: int, 
     cp1_pvk_pem_fpath: str,
     cp1_pbk_hex: str,

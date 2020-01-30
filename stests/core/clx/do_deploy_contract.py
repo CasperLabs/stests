@@ -1,7 +1,7 @@
 from stests.core.clx.client_factory import get_client
 from stests.core.types import Account
-from stests.core.utils.workflow import WorkflowContext
 from stests.core.utils import logger
+from stests.core.utils.generator import GeneratorContext
 
 
 TX_FEE = 10000000
@@ -9,7 +9,7 @@ TX_GAS_PRICE = 1
 
 
 def execute(
-    ctx: WorkflowContext,
+    ctx: GeneratorContext,
     account: Account,
     wasm_filepath: str
     ):

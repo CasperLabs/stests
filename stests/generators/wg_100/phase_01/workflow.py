@@ -1,7 +1,10 @@
 import argparse
 
 from stests.core import mq
+from stests.core.types import NetworkType
+from stests.core.utils import args_validator
 from stests.core.utils import encoder
+from stests.core.utils.generator import GeneratorContext
 from stests.core.utils import env
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
@@ -13,27 +16,46 @@ from stests.generators.wg_100.phase_01.factory import get_workflow
 # Set command line arguments.
 ARGS = argparse.ArgumentParser(f"Executes {metadata.DESCRIPTION} workflow.")
 
-# Network identifer.
+# CLI argument: network type.
 ARGS.add_argument(
-    "--network-id",
-    help="Identifier of network being tested.",
-    dest="network_id",
-    type=str,
-    default=env.get_network_id()
+    "--network-type",
+    dest="network_type",
+    choices=[i.name.lower() for i in NetworkType],
+    help="Type of network being tested.",
+    type=str
+    )
+
+# CLI argument: network index.
+ARGS.add_argument(
+    "--network-idx",
+    dest="network_idx",
+    help="Network index - must be between 1 and 99.",
+    type=args_validator.validate_network_idx,
+    default=1
+    )
+
+# CLI argument: node index.
+ARGS.add_argument(
+    "--node-idx",
+    dest="node_idx",
+    help="Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.",
+    type=args_validator.validate_node_idx,
+    default=1,
+    required=False
     )
 
 # Workflow identifer.
 ARGS.add_argument(
-    "--workflow-id",
-    help="Identifier of workflow being executed.",
-    dest="workflow_id",
-    type=int,
-    default=0
+    "--generator-idx",
+    dest="generator_run_idx",
+    help="Generator run index - must be between 1 and 65536.",
+    type=args_validator.validate_generator_run_idx,
+    default=1
     )
 
 ARGS.add_argument(
     "--token-name",
-    help="Name of ERC-20 token.",
+    help=f"Name of ERC-20 token.  Default={defaults.TOKEN_NAME}",
     dest="token_name",
     type=str,
     default=defaults.TOKEN_NAME
@@ -41,7 +63,7 @@ ARGS.add_argument(
 
 ARGS.add_argument(
     "--token-supply",
-    help="Amount of ERC-20 token to be issued.",
+    help=f"Amount of ERC-20 token to be issued. Default={defaults.TOKEN_SUPPLY}",
     dest="token_supply",
     type=int,
     default=defaults.TOKEN_SUPPLY
@@ -49,7 +71,7 @@ ARGS.add_argument(
 
 ARGS.add_argument(
     "--user-accounts",
-    help="Number of user accounts to generate.",
+    help=f"Number of user accounts to generate. Default={defaults.USER_ACCOUNTS}",
     dest="user_accounts",
     type=int,
     default=defaults.USER_ACCOUNTS
@@ -57,7 +79,7 @@ ARGS.add_argument(
 
 ARGS.add_argument(
     "--user-bids",
-    help="Number of bids per user to submit.",
+    help=f"Number of bids per user to submit. Default={defaults.USER_BIDS}",
     dest="user_bids",
     type=int,
     default=defaults.USER_BIDS
@@ -65,18 +87,10 @@ ARGS.add_argument(
 
 ARGS.add_argument(
     "--user-initial-clx-balance",
-    help="Initial CLX balance of user accounts.",
+    help=f"Initial CLX balance of user accounts. Default={defaults.USER_INITIAL_CLX_BALANCE}",
     dest="user_initial_clx_balance",
     type=int,
     default=defaults.USER_INITIAL_CLX_BALANCE
-    )
-
-ARGS.add_argument(
-    "--wasm-contract-name",
-    help="Name of smart contract .wasm file.",
-    dest="wasm_contract_name",
-    type=str,
-    default=defaults.WASM_CONTRACT_FILENAME
     )
 
 
@@ -87,17 +101,25 @@ def main():
 
     """
     # Set arguments.
-    args = Arguments.create(ARGS.parse_args())
+    args = ARGS.parse_args()
+
+    # Set context.
+    ctx = GeneratorContext.create(metadata.TYPE, args)
+
+    print(ctx)
+
+    # Set arguments.
+    # args = Arguments.create(ARGS.parse_args())
 
     # Framework requirement: register arguments type.
-    encoder.register_type(Arguments)
+    # encoder.register_type(Arguments)
 
-    # Framework requirement: initialise broker.
-    mq.init_broker(args.network_id)
+    # # Framework requirement: initialise broker.
+    # mq.init_broker(args.network_id)
 
-    # Execute workflow.
-    workflow = get_workflow(args)
-    workflow.run()
+    # # Execute workflow.
+    # workflow = get_workflow(args)
+    # workflow.run()
 
 
 # Entry point.

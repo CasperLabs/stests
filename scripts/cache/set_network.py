@@ -4,7 +4,7 @@ from scripts.cache import utils
 from stests.core import cache
 from stests.core.types import Network
 from stests.core.types import NetworkType
-
+from stests.core.utils import args_validator
 
 
 # CLI argument parser.
@@ -22,7 +22,7 @@ ARGS.add_argument(
 ARGS.add_argument(
     "idx",
     help="Network index - must be between 1 and 99.",
-    type=utils.validate_network_idx
+    type=args_validator.validate_network_idx
     )
 
 

@@ -37,11 +37,3 @@ class Node(NetworkEntity):
         
         """
         return str(idx).zfill(4)
-
-
-    @staticmethod
-    def create():
-        """Factory: returns an instance for testing purposes.
-        
-        """
-        return Node()
