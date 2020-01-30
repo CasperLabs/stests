@@ -8,6 +8,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
+from stests.core import clx
 from stests.core.types.utils import Entity
 
 
@@ -59,15 +60,6 @@ class PrivateKey(Key):
             encryption_algorithm=serialization.NoEncryption()
         )
 
-    @classmethod
-    def create(cls, pvk: typing.AnyStr = None):
-        """Factory: returns an instance for testing purposes.
-        
-        """
-        pvk = pvk or "a164cfbf6f0797c4894bec5683fb3c715f2acd07c412747db8b91160e9db7c78"
-
-        return PrivateKey(pvk if isinstance(pvk, str) else pvk.hex())
-
 
 @dataclass
 class PublicKey(Key):
@@ -82,15 +74,6 @@ class PublicKey(Key):
                 format=serialization.PublicFormat.SubjectPublicKeyInfo
             )
 
-    @classmethod
-    def create(cls, pbk: typing.AnyStr = None):
-        """Factory: returns an instance for testing purposes.
-        
-        """
-        pbk = pbk or "ee12b3606431ca201c605409c345427388d54c397386aa513185be6649b4ed61"
-
-        return PublicKey(pbk if isinstance(pbk, str) else pbk.hex())    
-
 
 @dataclass_json
 @dataclass
@@ -99,17 +82,20 @@ class KeyPair():
     
     """
     # Private key used for digital signature signing purposes.
-    private_key: PrivateKey = PrivateKey.create()
+    private_key: PrivateKey
 
     # Public key used for account addressing & digital signature verification purposes.
-    public_key: PublicKey = PublicKey.create()
+    public_key: PublicKey
 
     @classmethod
     def create(cls, pvk=None, pbk=None):
         """Factory: returns an instance for testing purposes.
         
         """
-        return KeyPair(
-            PrivateKey.create(pvk),
-            PublicKey.create(pbk)
-            )
+        if (not pvk and pbk) or (pvk and not pbk):
+            raise ValueError("Must either specify both keys or none at all.")
+        
+        if not pvk and not pbk::
+            pvk, pbk = clx.get_key_pair(clx.KeyEncoding.HEX)
+
+        return KeyPair(PrivateKey(pvk), PublicKey(pbk))

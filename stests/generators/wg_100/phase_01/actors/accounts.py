@@ -4,7 +4,7 @@ import time
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.types import create_account
+from stests.core.types import Account
 from stests.core.types import AccountType
 from stests.generators.wg_100 import metadata
 
@@ -15,12 +15,12 @@ _QUEUE = f"{metadata.TYPE}.phase_01.accounts"
 
 
 @dramatiq.actor(queue_name=_QUEUE, actor_name="create_account")
-def create(ctx, account_type, account_id=0):
+def create(ctx, typeof, idx=1):
     """Creates an account to be used during simulation execution.
     
     """
     # Instantiate.
-    account = create_account(account_type, account_id, ctx.network_id)
+    account = Account(idx=idx, typeof=typeof)
 
     # Cache.
     cache.set_account(ctx.network_id, ctx.cache_namespace, account)
@@ -33,6 +33,8 @@ def fund_faucet(ctx, account):
     """Funds faucet account (from validator).
     
     """
+    return ctx, account
+
     clx.do_transfer(
         ctx,
         100000000,
@@ -50,6 +52,8 @@ def fund_contract(ctx, account):
     """Funds contract account (from faucet).
     
     """
+    return ctx, account
+
     faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
     clx.do_transfer(
         ctx,
@@ -68,6 +72,8 @@ def fund_user(ctx, account):
     """Funds user account (from faucet).
     
     """
+    return ctx, account
+
     faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
     clx.do_transfer(
         ctx,
