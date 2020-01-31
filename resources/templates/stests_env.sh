@@ -5,10 +5,14 @@
 # type (REDIS | STUB)
 export STESTS_CACHE_TYPE="REDIS"
 
-# redis host
+# --------------------------------------------------------------------
+# Cache: REDIS
+# --------------------------------------------------------------------
+
+# Cache -> REDIS -> host
 export STESTS_CACHE_REDIS_HOST="localhost"
 
-# redis port
+# Cache -> REDIS -> port
 export STESTS_CACHE_REDIS_PORT=6379
 
 # --------------------------------------------------------------------
@@ -18,24 +22,40 @@ export STESTS_CACHE_REDIS_PORT=6379
 # type (REDIS | RABBIT | STUB)
 export STESTS_BROKER_TYPE="REDIS"
 
-# redis db #
+# --------------------------------------------------------------------
+# Message Broker: REDIS
+# --------------------------------------------------------------------
+
+# Broker -> REDIS -> db #
 export STESTS_BROKER_REDIS_DB=0
-# redis host
+
+# Broker -> REDIS -> host
 export STESTS_BROKER_REDIS_HOST=localhost
-# redis port
+
+# Broker -> REDIS -> port
 export STESTS_BROKER_REDIS_PORT=5672
 
-# rabbit host
+# --------------------------------------------------------------------
+# Message Broker: RABBIT
+# --------------------------------------------------------------------
+
+# Broker -> RABBIT -> host
 export STESTS_BROKER_RABBIT_HOST=localhost
-# rabbit port
+
+# Broker -> RABBIT -> port
 export STESTS_BROKER_RABBIT_PORT=5672
-# rabbit protocol
+
+# Broker -> RABBIT -> protocol
 export STESTS_BROKER_RABBIT_PROTOCOL=amqp
-# rabbit ssl client cert path
+
+# Broker -> RABBIT -> ssl client cert path
 export STESTS_BROKER_RABBIT_SSL_CLIENT_CERT=
-# rabbit ssl client cert key path
+
+# Broker -> RABBIT -> ssl client cert key path
 export STESTS_BROKER_RABBIT_SSL_CLIENT_KEY=
-# rabbit user
+
+# Broker -> RABBIT -> user
 export STESTS_BROKER_RABBIT_USER=stests-mq-user
-# rabbit user password
+
+# Broker -> RABBIT -> user password
 export STESTS_BROKER_RABBIT_USER_PWD=clabs
