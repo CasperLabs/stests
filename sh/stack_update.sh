@@ -6,11 +6,19 @@ source $STESTS_SH/utils.sh
 # Main entry point.
 main()
 {
-    log "STACK :: update starts ..."
+    log "stack update :: starts ..."
 
-    # TODO
+    update_source
 
-    log "STACK :: update complete"
+    log "stack update :: complete"
+}
+
+# Update source code.
+update_source()
+{
+    log "stack update :: pull repo updates"
+    cd $STESTS_HOME
+    git pull
 }
 
 # Invoke entry point.

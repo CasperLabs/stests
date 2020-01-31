@@ -3,8 +3,8 @@
 # ###############################################################
 
 # Stack commands.
-alias stests-stack-install=$STESTS_SH/sh/stack_install.sh
-alias stests-stack-update=$STESTS_SH/sh/stack_update.sh
+alias stests-stack-setup=$STESTS_SH/stack_setup.sh
+alias stests-stack-update=$STESTS_SH/stack_update.sh
 
 # ###############################################################
 # ALIASES: workers
