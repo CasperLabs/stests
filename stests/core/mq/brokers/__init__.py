@@ -8,11 +8,12 @@ from stests.core.utils import env
 from stests.core.utils.exceptions import InvalidEnvironmentVariable
 
 
-# Name of environment variable for deriving broker type.
-EVAR_BROKER_TYPE = "MQ_BROKER_TYPE"
 
-# Default type of message broker to instantiate.
-DEFAULT_BROKER_TYPE = "RABBIT"
+# Environment variables required by this module.
+class EnvVars:
+    # Cache type.
+    TYPE = env.get_var("BROKER_TYPE", "RABBIT")
+
 
 # Map: Broker type -> factory.
 FACTORIES = {
@@ -29,23 +30,13 @@ def get_broker(network_id: str) -> Broker:
     :returns: A configured message broker.
 
     """
-    factory = FACTORIES[_get_broker_type()]
+    try:
+        factory = FACTORIES[EnvVars.TYPE]
+    except KeyError:
+        raise InvalidEnvironmentVariable("BROKER_TYPE", EnvVars.TYPE, FACTORIES)
+
     broker = factory.get_broker(network_id)
     for mware in get_middleware():
         broker.add_middleware(mware)
 
     return broker
-
-
-def _get_broker_type():
-    """Interrogates environment variable to derive type of broker to instantiate.
-    
-    """    
-    val = env.get_var(EVAR_BROKER_TYPE)
-    if val is None:
-        return DEFAULT_BROKER_TYPE
-    if val not in FACTORIES:
-        name = env.get_var_name(EVAR_BROKER_TYPE)
-        raise InvalidEnvironmentVariable(name, val, FACTORIES)
-
-    return val
