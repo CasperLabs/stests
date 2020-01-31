@@ -1,5 +1,7 @@
 import inspect
 
+from stests.core.utils import env
+
 
 
 class LibraryException(Exception):
@@ -35,7 +37,7 @@ class InvalidEnvironmentVariable(LibraryException):
         :param expected: Expected value.
 
         """ 
-        err = f"Invalid env-var: {name} :: f{val}"
+        err = f"Invalid env-var: {env.get_var_name(name)} :: f{val}"
         if expected:
             if isinstance(expected, dict):
                 expected = " | ".join(list(expected.keys()))

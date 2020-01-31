@@ -1,21 +1,15 @@
 # --------------------------------------------------------------------
-# General settings
+# Cache: REDIS
 # --------------------------------------------------------------------
-# Path to Hermes server install directory.
-export HERMES_HOME=/opt/hermes
 
-# Mode of deployment (dev|test|prod).
-export HERMES_DEPLOYMENT_MODE=dev
+# Cache -> type.
+export STESTS_CACHE_TYPE="REDIS"
 
-# Type of machine (dev|db|mq|mq).
-export HERMES_MACHINE_TYPE=dev
+# Cache -> redis -> host.
+export STESTS_CACHE_REDIS_HOST="localhost"
 
-# Hermes client web service url.
-export HERMES_CLIENT_WEB_URL=http://localhost:8888
-
-# Hermes alert email addresses.
-export HERMES_ALERT_EMAIL_ADDRESS_FROM=prodiguer-ops@ipsl.listes.fr
-export HERMES_ALERT_EMAIL_ADDRESS_TO=prodiguer-ops@ipsl.listes.fr
+# Cache -> redis -> port.
+export STESTS_CACHE_REDIS_PORT=6379
 
 # --------------------------------------------------------------------
 # DB server settings
