@@ -1,18 +1,19 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-
-from stests.core.utils.generator import GeneratorContext
+from stests.core.utils.generator import GeneratorArguments
 from stests.generators.wg_100 import defaults
-from stests.generators.wg_100 import metadata
 
 
 
 @dataclass_json
 @dataclass
-class Arguments:
-    """Contextual information passed through workflow.
+class Arguments(GeneratorArguments):
+    """WG-100 generator arguments.
     
     """
+    # Index of node to push deploys to, if 0 then a random node is selected.
+    node_idx: str = defaults.NODE_IDX
+
     # Name of ERC20 token for which an auction is being simulated.
     token_name: str = defaults.TOKEN_NAME
 
@@ -27,13 +28,3 @@ class Arguments:
 
     # Initial user account CLX balance.
     user_initial_clx_balance: int = defaults.USER_INITIAL_CLX_BALANCE
-
-
-    @classmethod
-    def create(cls, parsed):
-        """Constructor.
-        
-        :param parsed: Parsed command line arguments.
-
-        """
-        return GeneratorContext.create(cls, metadata.TYPE, parsed)

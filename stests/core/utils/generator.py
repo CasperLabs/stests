@@ -21,13 +21,13 @@ class GeneratorScope:
     network_idx: int
 
     # Run index of generator being executed.
-    generator_run_idx: int
+    run_idx: int
 
     # Type of generator being executed.
-    generator_type: str
+    typeof: str
 
 
-    def __init__(self, generator_type, args):
+    def __init__(self, typeof, args):
         """Constructor.
 
         :param args: Parsed command line arguments.
@@ -35,8 +35,8 @@ class GeneratorScope:
         """
         self.network_idx = args.network_idx
         self.network_type = args.network_type
-        self.generator_run_idx = args.generator_run_idx
-        self.generator_type = generator_type
+        self.run_idx = args.generator_run_idx
+        self.typeof = generator_type
 
     @property
     def cache_namespace(self):
@@ -46,7 +46,7 @@ class GeneratorScope:
 
 @dataclass_json
 @dataclass
-class GeneratorArgs:
+class GeneratorArguments:
     """Encapsulates generator arguments passed in from command line.
     
     """
@@ -56,8 +56,12 @@ class GeneratorArgs:
         :param args: Parsed command line arguments.
         
         """
-        # Injected comand line arguments.
-        for i, j in args._get_kwargs():
+        excluded = [
+            'network_idx',
+            'network_type',
+            'generator_run_idx'
+        ]
+        for i, j in [(i, j) for i, j in args._get_kwargs() if i not in excluded]:
             setattr(self, i, j)
 
 
@@ -79,11 +83,15 @@ class GeneratorContext():
 
 
     @staticmethod
-    def create(generator_type: str, args: argparse.Namespace):
+    def create(
+        typeof: str,
+        args_cls: GeneratorArguments,
+        cli_args: argparse.Namespace
+        ):
         """Simple factory method t o instantiate form command line arguments.
         
         """
         return GeneratorContext(
             GeneratorArgs(args),
-            GeneratorScope(generator_type, args)
+            GeneratorScope(typeof, args)
         )

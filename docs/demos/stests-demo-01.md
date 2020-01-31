@@ -105,7 +105,7 @@
     cd $CLABS_HOME/stests
     pipenv shell
     cd stests/generators/wg_100/phase_01
-    export CL_STESTS_CONFIG_NETWORK_ID=DEV-LOC-01
+    export STESTS_CONFIG_NETWORK_ID=DEV-LOC-01
     dramatiq -p 1 -t 1 worker --path $CLABS_HOME/stests --watch $CLABS_HOME/stests/stests
     ```
 

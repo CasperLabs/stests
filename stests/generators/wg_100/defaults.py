@@ -1,3 +1,6 @@
+# Default node index - 0 indicates a random node wil be selected.
+NODE_IDX = 0
+
 # Default name of ERC20 token for which an auction is being simulated.
 TOKEN_NAME = "ABC"
 

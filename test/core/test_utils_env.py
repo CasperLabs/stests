@@ -22,7 +22,7 @@ def test_02():
 
 def test_03():
     """Test function: get_var_name."""
-    assert env.get_var_name("test") == "CL_STESTS_TEST"
+    assert env.get_var_name("test") == "STESTS_TEST"
 
 
 def test_04():
@@ -32,7 +32,7 @@ def test_04():
 
 def test_05():
     """Test function: get_var -> custom."""
-    os.environ['CL_STESTS_TEST_VAR'] = "TEST-VALUE"
+    os.environ['STESTS_TEST_VAR'] = "TEST-VALUE"
     assert env.get_var("test_var") == "TEST-VALUE"
 
 
@@ -43,5 +43,5 @@ def test_06():
 
 def test_07():
     """Test function: get_var_name -> custom."""
-    os.environ['CL_STESTS_CONFIG_NETWORK_ID'] = "INT-SYS-01"
+    os.environ['STESTS_CONFIG_NETWORK_ID'] = "INT-SYS-01"
     assert env.get_network_id() == "INT-SYS-01"

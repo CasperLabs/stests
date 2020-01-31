@@ -17,7 +17,7 @@ from stests.core.utils import defaults
 
 
 # Package env var prefix.
-_PREFIX = 'CL_STESTS_'
+_PREFIX = 'STESTS_'
 
 
 def get_var(

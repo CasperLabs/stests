@@ -1,15 +1,25 @@
 # ###############################################################
-# STANDARD-SECTION: SETUP
+# PATHS
 # ###############################################################
 
-# Set paths.
-export CL_STESTS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-export CL_STESTS_SCRIPTS=$CL_STESTS_HOME/scripts
+export STESTS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export STESTS_SH=$STESTS_HOME/sh
+export STESTS_SRC=$STESTS_HOME/stests
+export STESTS_CLI=$STESTS_HOME/stests/cli
+export STESTS_OPS=$STESTS_HOME/ops
 
 # ###############################################################
-# STANDARD-SECTION: ALIASES
+# OPERATIONS
 # ###############################################################
 
-alias cl-stests-set-network='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_network.py'
-alias cl-stests-set-node='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_node.py'
-alias cl-stests-set-node-bonding-key='cd $CL_STESTS_HOME && pipenv run python $CL_STESTS_SCRIPTS/cache/set_node_bonding_key.py'
+# Ensure shell scripts are executable.
+chmod a+x $STESTS_SH/*.sh
+
+# Ensure ops directories exist
+mkdir -p $STESTS_OPS
+mkdir -p $STESTS_OPS/config
+mkdir -p $STESTS_OPS/daemon
+mkdir -p $STESTS_OPS/logs
+
+# Activate aliases
+source $STESTS_SH/aliases.sh

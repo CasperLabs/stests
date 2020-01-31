@@ -4,8 +4,9 @@ from stests.core import mq
 from stests.core.types import NetworkType
 from stests.core.utils import args_validator
 from stests.core.utils import encoder
-from stests.core.utils.generator import GeneratorContext
 from stests.core.utils import env
+from stests.core.utils.generator import GeneratorContext
+from stests.core.utils.generator import GeneratorScope
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
 from stests.generators.wg_100.phase_01.args import Arguments
@@ -100,13 +101,17 @@ def main():
     :param args: Parsed CLI arguments.
 
     """
-    # Set arguments.
+    # Set cli arguments.
     args = ARGS.parse_args()
 
-    # Set context.
-    ctx = GeneratorContext.create(metadata.TYPE, args)
+    # Set scope.
+    scope = GeneratorScope(args)
 
-    print(ctx)
+    # Set context.
+
+    ctx = GeneratorContext(Arguments, metadata, args)
+
+    print(ctx.scope.to_dict())
 
     # Set arguments.
     # args = Arguments.create(ARGS.parse_args())
