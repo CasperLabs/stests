@@ -1,3 +1,4 @@
+import inspect
 import typing
 
 from stests.core.types import ENUMS
@@ -52,13 +53,30 @@ def encode(data: typing.Any) -> typing.Any:
     if type(data) in ENUMS:
         return str(data)
 
-    # Dictionarify domain types.
-    obj = data.to_dict()
+    # Map domain types to dictionaries.
+    return _encode_domain_class(data)
 
-    # Append domain info for downstream round-trip.
+
+def _encode_domain_class(data):
+    """Returns a domain class instance encoded as a dictionary.
+    
+    """
+    obj = data.to_dict()
     obj['_type'] = f"{data.__module__}.{data.__class__.__name__}"
+    _encode_domain_enums(obj)
 
     return obj
+
+
+def _encode_domain_enums(obj):
+    """Recursively encodes domain enumeration values.
+    
+    """
+    for k, v in obj.items():
+        if isinstance(v, dict):
+            _encode_domain_enums(v)
+        if type(v) in ENUMS:
+            obj[k] = str(v)
 
 
 def register_type(cls):

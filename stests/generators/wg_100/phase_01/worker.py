@@ -1,15 +1,14 @@
 from stests.core import mq
 from stests.core.utils import encoder
-from stests.core.utils import env
-from stests.generators.wg_100.phase_01.workflow import Context
+from stests.generators.wg_100.phase_01.generator_ctx import Context
 
 
 
-# Framework requirement: register arguments type.
-encoder.register_type(Arguments)
+# Framework requirement: register context with encoder.
+encoder.register_type(Context)
 
 # Framework requirement: initialise broker.
-mq.init_broker(env.get_network_id())
+mq.init_broker()
 
 # Import actors.
 from stests.generators.wg_100.phase_01.actors import accounts

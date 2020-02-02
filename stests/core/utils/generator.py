@@ -51,12 +51,15 @@ class GeneratorScope:
         """
         return GeneratorScope(
             network_idx = 'network_idx' in args and args.network_idx,
-            network_type = 'network_type' in args and NetworkType[args.network_type.upper()].name,
+            network_type = 'network_type' in args and NetworkType[args.network_type.upper()],
             node_idx = 'node_idx' in args and args.node_idx,
             run_idx = 'run_idx' in args and args.run_idx,
             typeof = typeof.upper() 
         )
 
+
+# Ensure can be encoded/decoded off the wire.
+encoder.register_type(GeneratorScope)
 
 
 @dataclass_json
@@ -90,3 +93,5 @@ class GeneratorContext():
         # Instantiate workflow.
         workflow = factory(ctx)
         workflow.run()
+
+

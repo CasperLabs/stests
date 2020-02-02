@@ -59,14 +59,14 @@ class NetworkType(enum.Enum):
     """Enumeration over set of network types.
     
     """
-    LOC = (NetworkOperatorType.LOCAL, "Developer tests")
-    DEV = (NetworkOperatorType.INTERNAL, "Developer tests")
-    LRT = (NetworkOperatorType.INTERNAL, "Long running tests")
-    SYS = (NetworkOperatorType.INTERNAL, "Full system tests")
-    STG = (NetworkOperatorType.INTERNAL, "Release staging")
-    POC = (NetworkOperatorType.EXTERNAL, "Proof of concept")
-    TEST = (NetworkOperatorType.EXTERNAL, "Chain candidate")
-    MAIN = (NetworkOperatorType.EXTERNAL, "Main")
+    LOC = enum.auto()
+    DEV = enum.auto()
+    LRT = enum.auto()
+    SYS = enum.auto()
+    STG = enum.auto()
+    POC = enum.auto()
+    TEST = enum.auto()
+    MAIN = enum.auto()
 
 
 class NodeStatus(enum.Flag):
