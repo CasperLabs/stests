@@ -59,3 +59,6 @@ export STESTS_BROKER_RABBIT_USER=stests-mq-user
 
 # Broker -> RABBIT -> user password
 export STESTS_BROKER_RABBIT_USER_PWD=clabs
+
+# Broker -> RABBIT -> virtual host
+export STESTS_BROKER_RABBIT_VHOST=CLABS

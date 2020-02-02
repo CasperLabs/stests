@@ -27,21 +27,23 @@ class EnvVars:
     # RabbitMQ user password.
     USER_PWD = env.get_var('BROKER_RABBIT_USER_PWD', "clabs")
 
+    # RabbitMQ host.
+    VHOST = env.get_var('BROKER_RABBIT_VHOST', "CLABS")
 
 
-def get_broker(network_id: str) -> RabbitmqBroker:
+
+def get_broker() -> RabbitmqBroker:
     """Returns instance of rabbit MQ broker.
 
-    :param network_id: Identifier of network being tested, e.g. DEV-LOC-01
     :returns: An instance of a Rabbit MQ broker.
 
     """
-    return RabbitmqBroker(url=_get_url(network_id))
+    return RabbitmqBroker(url=_get_url())
 
 
-def _get_url(network_id) -> str:
+def _get_url() -> str:
     """Returns rabbit MQ connection URL.
     
     """
     # TODO: apply ssl (if defined in env vars)
-    return f"{EnvVars.PROTOCOL}://{EnvVars.USER}:{EnvVars.USER_PWD}@{EnvVars.HOST}:{EnvVars.PORT}/{network_id}"
+    return f"{EnvVars.PROTOCOL}://{EnvVars.USER}:{EnvVars.USER_PWD}@{EnvVars.HOST}:{EnvVars.PORT}/{EnvVars.VHOST}"

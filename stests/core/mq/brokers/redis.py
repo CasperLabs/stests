@@ -16,7 +16,7 @@ class EnvVars:
     PORT = env.get_var('BROKER_REDIS_PORT', 5672, int)
 
 
-def get_broker(network_id: str) -> RedisBroker:
+def get_broker() -> RedisBroker:
     """Returns instance of redis MQ broker.
     
     :param network_id: Identifier of network being tested, e.g. DEV-LOC-01

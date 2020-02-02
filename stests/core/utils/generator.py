@@ -85,7 +85,7 @@ class GeneratorContext():
 
         # Initialise broker.
         from stests.core import mq
-        mq.init_broker(ctx.scope.network_id)
+        mq.init_broker()
 
         # Instantiate workflow.
         workflow = factory(ctx)

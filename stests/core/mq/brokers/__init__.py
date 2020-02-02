@@ -24,10 +24,9 @@ FACTORIES = {
 }
 
 
-def get_broker(network_id: str) -> Broker:
+def get_broker() -> Broker:
     """Returns an MQ broker instance for integration with dramatiq framework.
 
-    :param network_id: Identifier of network being tested, e.g. DEV-LOC-01
     :returns: A configured message broker.
 
     """
@@ -36,7 +35,7 @@ def get_broker(network_id: str) -> Broker:
     except KeyError:
         raise InvalidEnvironmentVariable("BROKER_TYPE", EnvVars.TYPE, FACTORIES)
 
-    broker = factory.get_broker(network_id)
+    broker = factory.get_broker()
     for mware in get_middleware():
         broker.add_middleware(mware)
 
