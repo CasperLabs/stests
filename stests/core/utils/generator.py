@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 from stests.core.utils import env
+from stests.core.utils import encoder
 from stests.core.types import NetworkType
 
 
@@ -66,3 +67,26 @@ class GeneratorContext():
     """
     # Scope within which generator is being executed.
     scope: GeneratorScope
+
+
+    @classmethod
+    def execute(cls, args: argparse.Namespace, factory: typing.Callable):
+        """Executes generator.
+        
+        :param args: Command line arguments.
+        :param factory: Workflow factory.
+
+        """
+        # Register context class with encoder.
+        encoder.register_type(cls)
+
+        # Set context to be passed to actors.
+        ctx = cls.create(args)
+
+        # Initialise broker.
+        from stests.core import mq
+        mq.init_broker(ctx.scope.network_id)
+
+        # Instantiate workflow.
+        workflow = factory(ctx)
+        workflow.run()

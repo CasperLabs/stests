@@ -2,14 +2,10 @@ import argparse
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-import dramatiq
+import dramatiq 
 
-from stests.core import mq
-from stests.core.types import AccountType
 from stests.core.types import NetworkType
 from stests.core.utils import args_validator
-from stests.core.utils import encoder
-from stests.core.utils import env
 from stests.core.utils.generator import GeneratorContext
 from stests.core.utils.generator import GeneratorScope
 from stests.generators.wg_100 import defaults
@@ -26,7 +22,8 @@ ARGS.add_argument(
     dest="network_type",
     choices=[i.name.lower() for i in NetworkType],
     help="Type of network being tested.",
-    type=str
+    type=str,
+    default=NetworkType.LOC.name.lower()
     )
 
 # CLI argument: scope -> network index.
@@ -143,29 +140,19 @@ class Context(GeneratorContext):
         )
         
 
-def main(args):
-    """Entry point.
-    
-    :param args: Parsed CLI arguments.
+def get_workflow(ctx: Context):
+    """Workflow instance factory.
+
+    :param ctx: Contextual information passed along actor chain.
 
     """
-    # Set context - is passed to actors.
-    ctx = Context.create(args)
+    # NOTE: currently a framework requirement as we need to defer workflow
+    #       instantiation until after MQ broker connection is established.
+    from stests.generators.wg_100.phase_01.actors import get_workflow as _get_workflow
 
-    # Framework requirement: register context.
-    encoder.register_type(Context)
+    return _get_workflow(ctx)
 
-    # Framework requirement: initialise broker.
-    mq.init_broker(ctx.scope.network_id)
 
-    # Framework requirement: import workflow once broker connection established. 
-    from stests.generators.wg_100.phase_01.actors import get_workflow
-
-    # Launch workflow.
-    workflow = get_workflow(ctx)
-    workflow.run()
-
-    
 # Entry point.
 if __name__ == '__main__':
-    main(ARGS.parse_args())
+    Context.execute(ARGS.parse_args(), get_workflow)

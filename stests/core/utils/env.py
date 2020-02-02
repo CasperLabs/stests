@@ -11,7 +11,6 @@
 import os
 import typing
 
-from stests.core.utils import logger
 from stests.core.utils import defaults
 
 
@@ -36,8 +35,6 @@ def get_var(
     """
     name = get_var_name(name)
     value = os.getenv(name)
-    if value is not None:
-        logger.log_debug(f"env var: {name} :: {value}")
     value = value or default
 
     return value if convertor is None or value is None else convertor(value)

@@ -9,9 +9,11 @@ export STESTS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export STESTS_SH=$STESTS_HOME/sh
 export STESTS_SRC=$STESTS_HOME/stests
 export STESTS_CLI=$STESTS_HOME/stests/cli
+export STESTS_GENERATORS=$STESTS_HOME/stests/generators
 export STESTS_OPS=$STESTS_HOME/ops
 export STESTS_RESOURCES=$STESTS_HOME/resources
 export STESTS_TEMPLATES=$STESTS_HOME/resources/templates
+
 
 # ###############################################################
 # ENV

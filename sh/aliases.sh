@@ -25,3 +25,23 @@ alias stests-workers-reset-logs=$STESTS_SH/workers_reset_logs.sh
 alias stests-cache-set-network='cd $STESTS_HOME && pipenv run python $STESTS_CLI/cache/set_network.py'
 alias stests-cache-set-node='cd $STESTS_HOME && pipenv run python $STESTS_CLI/cache/set_node.py'
 alias stests-cache-set-node-bonding-key='cd $STESTS_HOME && pipenv run python $STESTS_CLI/cache/set_node_bonding_key.py'
+
+# ###############################################################
+# ALIASES: generators
+# ###############################################################
+
+_exec_generator()
+{
+    # Destructure generator type, pahse & args.
+    args=($@)
+    args_len=${#args[@]}
+    g_type=${args[0]}
+    g_phase=${args[1]}
+    g_args=${args[@]:2:$args_len}
+
+    # Execute generator.
+    pipenv run python $STESTS_GENERATORS/wg_$g_type/phase_$g_phase/generator.py $g_args
+}
+
+# WG-100: ERC-20 auction.
+alias stests-wg-100-phase-01='_exec_generator 100 01'
