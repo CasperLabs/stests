@@ -6,7 +6,7 @@ from stests.generators.wg_100.phase_01.actors import contract
 
 
 
-def get_workflow(ctx):
+def execute(ctx):
     """Returns a workflow group that performs various spinup tasks.
     
     """
@@ -18,12 +18,28 @@ def get_workflow(ctx):
     #         ])
     #     ])
 
+    # return dramatiq.group([
+    #     _get_pipeline_for_faucet(ctx),
+    #     dramatiq.group([
+    #         _get_pipeline_for_contract(ctx),
+    #         _get_group_for_users(ctx)
+    #         ])
+    #     ])
+    workflow = accounts.get_group_for_account_creation(ctx)
+    workflow.run()
+
+
+def _get_group_for_account_creation(ctx):
+    """Returns a workflow pipeline to initialise a faucet account.
+    
+    """
     return dramatiq.group([
-        _get_pipeline_for_faucet(ctx),
-        dramatiq.group([
-            _get_pipeline_for_contract(ctx),
-            _get_group_for_users(ctx)
-            ])
+        accounts.create.message(ctx, AccountType.FAUCET),
+        accounts.create.message(ctx, AccountType.CONTRACT),
+        dramatiq.group(map(
+                lambda index: accounts.create.message(ctx, AccountType.USER, index), 
+                range(1, ctx.user_accounts + 1)
+            ))        
         ])
 
 
@@ -61,5 +77,5 @@ def _get_group_for_users(ctx):
     """
     return dramatiq.group(map(
         lambda index: _get_pipeline_for_user(ctx, index), 
-        range(ctx.user_accounts)
+        range(1, ctx.user_accounts + 1)
     ))

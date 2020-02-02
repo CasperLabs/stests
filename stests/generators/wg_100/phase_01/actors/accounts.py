@@ -17,16 +17,34 @@ _QUEUE = f"{metadata.TYPE}.phase_01.accounts"
 @dramatiq.actor(queue_name=_QUEUE, actor_name="create_account")
 def create(ctx, typeof, idx=1):
     """Creates an account to be used during simulation execution.
+
+    :param ctx: Generator context information.
+    :param typeof: Type of account to generate.
+    :param idx: Run specific account index.
     
     """
     # Instantiate.
     account = Account(idx=idx, typeof=typeof)
 
     # Cache.
-    print(ctx, idx)
-    cache.set_account(ctx.network_id, ctx.cache_namespace, account)
+    cache.set_account(ctx.generator_id, account)
 
+    # Pass to next actor in pipeline.
     return ctx, account
+
+
+def get_group_for_account_creation(ctx):
+    """Returns a workflow pipeline to initialise a faucet account.
+    
+    """
+    return dramatiq.group([
+        create.message(ctx, AccountType.FAUCET),
+        create.message(ctx, AccountType.CONTRACT),
+        dramatiq.group(map(
+                lambda index: create.message(ctx, AccountType.USER, index), 
+                range(1, ctx.user_accounts + 1)
+            ))        
+        ])
 
 
 @dramatiq.actor(queue_name=_QUEUE)

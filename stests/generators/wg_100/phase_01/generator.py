@@ -2,11 +2,13 @@ import argparse
 
 import dramatiq 
 
+from stests.core import mq
 from stests.core.types import NetworkType
 from stests.core.utils import args_validator
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
-from stests.generators.wg_100.phase_01.generator_ctx import Context
+from stests.generators.wg_100.phase_01.ctx import Context
+from stests.generators.wg_100.phase_01.actors import execute
 
 
 
@@ -97,19 +99,6 @@ ARGS.add_argument(
     )
 
 
-def get_workflow(ctx: Context):
-    """Workflow instance factory.
-
-    :param ctx: Contextual information passed along actor chain.
-
-    """
-    # NOTE: currently a framework requirement as we need to defer workflow
-    #       instantiation until after MQ broker connection is established.
-    from stests.generators.wg_100.phase_01.actors import get_workflow as _get_workflow
-
-    return _get_workflow(ctx)
-
-
 # Entry point.
 if __name__ == '__main__':
-    Context.execute(ARGS.parse_args(), get_workflow)
+    execute(Context.create(ARGS.parse_args()))

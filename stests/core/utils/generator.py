@@ -32,14 +32,14 @@ class GeneratorScope:
     typeof: str
 
     @property
-    def cache_namespace(self):
-        """Derived cache namespace."""
-        return f"{self.typeof}.{self.run_idx}"
+    def generator_id(self):
+        """Fully qualified generator identifier."""
+        return f"{self.network_id}.{self.typeof.upper()}.{str(self.run_idx).zfill(5)}"
 
     @property
     def network_id(self):
-        """Derived network id."""
-        return f"{self.network_type}-{str(self.network_idx).zfill(2)}"
+        """Fully qualified network identifier."""
+        return f"{self.network_type.name}-{str(self.network_idx).zfill(2)}"
 
 
     @staticmethod
@@ -72,9 +72,19 @@ class GeneratorContext():
     # Scope within which generator is being executed.
     scope: GeneratorScope
 
+    @property
+    def generator_id(self):
+        """Fully qualified generator identifier."""
+        return self.scope.generator_id
+
+    @property
+    def network_id(self):
+        """Fully qualified network identifier."""
+        return self.scope.network_id
+
 
     @classmethod
-    def execute(cls, args: argparse.Namespace, factory: typing.Callable):
+    def execute(cls, args: argparse.Namespace):
         """Executes generator.
         
         :param args: Command line arguments.
@@ -86,13 +96,4 @@ class GeneratorContext():
 
         # Set context to be passed to actors.
         ctx = cls.create(args)
-
-        # Initialise broker.
-        from stests.core import mq
-        mq.init_broker()
-
-        # Instantiate workflow.
-        workflow = factory(ctx)
-        workflow.run()
-
 

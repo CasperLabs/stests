@@ -18,4 +18,6 @@ def deploy(ctx, account):
     
     """
     binary_fpath = resources.get_wasm_path(WASM_CONTRACT_FILENAME)
+    return ctx, account
+
     clx.do_deploy_contract(ctx, account, binary_fpath)

@@ -41,14 +41,13 @@ def do_get(store: typing.Callable, key: str) -> typing.Any:
     return encoder.decode(json.loads(store.get(key)))
 
 
-def get_key(network_id: str, namespace: str, item_key: str) -> str:
+def get_key(namespace: str, item_key: str) -> str:
     """Returns fully qualified cache key.
     
-    :param network_id: Identifier of network being tested.
     :param namespace: Namespace to prefix key with.
     :param item_key: Key of item being cached.
 
     :returns: A fully qualified cache key.
 
     """
-    return f"{network_id}.{namespace}:{item_key}"
+    return f"{namespace}:{item_key}"
