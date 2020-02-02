@@ -14,11 +14,14 @@ class GeneratorScope:
     """Encapsulates generator scope informatino such as network identifier.
     
     """
+    # Index of network being tested.
+    network_idx: int
+
     # Type of network being tested.
     network_type: NetworkType
 
-    # Index of network being tested.
-    network_idx: int
+    # Index of node being tested.
+    node_idx: int
 
     # Run index of generator being executed.
     run_idx: int
@@ -26,43 +29,33 @@ class GeneratorScope:
     # Type of generator being executed.
     typeof: str
 
-
-    def __init__(self, typeof, args):
-        """Constructor.
-
-        :param args: Parsed command line arguments.
-        
-        """
-        self.network_idx = args.network_idx
-        self.network_type = args.network_type
-        self.run_idx = args.generator_run_idx
-        self.typeof = generator_type
-
     @property
     def cache_namespace(self):
         """Derived cache namespace."""
-        return f"{self.generator_type}.{self.generator_run_idx}"
+        return f"{self.typeof}.{self.run_idx}"
+
+    @property
+    def network_id(self):
+        """Derived network id."""
+        return f"{self.network_type}-{str(self.network_idx).zfill(2)}"
 
 
-@dataclass_json
-@dataclass
-class GeneratorArguments:
-    """Encapsulates generator arguments passed in from command line.
-    
-    """
-    def __init__(self, args):
-        """Constructor.
+    @staticmethod
+    def create(typeof: str, args: argparse.Namespace):
+        """Simple factory method.
 
         :param args: Parsed command line arguments.
-        
+        :returns: Generator context information.
+
         """
-        excluded = [
-            'network_idx',
-            'network_type',
-            'generator_run_idx'
-        ]
-        for i, j in [(i, j) for i, j in args._get_kwargs() if i not in excluded]:
-            setattr(self, i, j)
+        return GeneratorScope(
+            network_idx = 'network_idx' in args and args.network_idx,
+            network_type = 'network_type' in args and NetworkType[args.network_type.upper()].name,
+            node_idx = 'node_idx' in args and args.node_idx,
+            run_idx = 'run_idx' in args and args.run_idx,
+            typeof = typeof.upper() 
+        )
+
 
 
 @dataclass_json
@@ -72,26 +65,4 @@ class GeneratorContext():
     
     """
     # Scope within which generator is being executed.
-    args: GeneratorArgs
-
-    # Scope within which generator is being executed.
     scope: GeneratorScope
-
-    @property
-    def cache_namespace(self):
-        return self.scope.cache_namespace
-
-
-    @staticmethod
-    def create(
-        typeof: str,
-        args_cls: GeneratorArguments,
-        cli_args: argparse.Namespace
-        ):
-        """Simple factory method t o instantiate form command line arguments.
-        
-        """
-        return GeneratorContext(
-            GeneratorArgs(args),
-            GeneratorScope(typeof, args)
-        )

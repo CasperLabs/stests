@@ -6,9 +6,8 @@ source $STESTS_SH/utils.sh
 # Main entry point.
 main()
 {
-    log "WORKERS :: reloading daemons ..."
-
-    # TODO
+	source $STESTS_SH/workers_start.sh
+	source $STESTS_SH/workers_start.sh
 }
 
 # Invoke entry point.

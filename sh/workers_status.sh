@@ -6,7 +6,7 @@ source $STESTS_SH/utils.sh
 # Main entry point.
 main()
 {
-    # TODO
+	supervisorctl -c $STESTS_OPS/config/supervisord.conf status all
 }
 
 # Invoke entry point.

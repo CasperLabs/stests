@@ -27,6 +27,7 @@ REQUIRES = [
     'hiredis',
     'dramatiq',
     'pytest',
+    'supervisor',
     'tox'
     ]
 

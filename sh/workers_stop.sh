@@ -6,9 +6,9 @@ source $STESTS_SH/utils.sh
 # Main entry point.
 main()
 {
-    log "WORKERS :: stopping daemons ..."
-
-    # TODO
+	supervisorctl -c $STESTS_OPS/config/supervisord.conf stop all
+	supervisorctl -c $STESTS_OPS/config/supervisord.conf shutdown
+	log "workers stop :: killed daemon"
 }
 
 # Invoke entry point.
