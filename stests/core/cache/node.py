@@ -16,7 +16,7 @@ def get_node(network_id: str, node_id: str) -> Node:
     key = network_id
 
     # Pull from store.
-    with get_store(network_id) as store:
+    with get_store() as store:
         return do_get(store, key)
 
 
@@ -31,7 +31,7 @@ def set_node(node: Node) -> str:
     key = f"{node.network_key}.NODE:{node.key}"
 
     # Push to store.
-    with get_store(node.network_key) as store:
+    with get_store() as store:
         do_set(store, key, node)
 
     return key

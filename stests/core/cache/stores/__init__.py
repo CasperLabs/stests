@@ -18,10 +18,9 @@ FACTORIES = {
 }
 
 
-def get_store(network_id: str):
+def get_store():
     """Returns a cache store ready to be used as a state persistence & flow control mechanism.
 
-    :param network_id: Identifier of network being tested.
     :param store_type: Type of store to be instantiated.
     :returns: A cache store.
 
@@ -31,5 +30,4 @@ def get_store(network_id: str):
     except KeyError:
         raise InvalidEnvironmentVariable("CACHE_TYPE", EnvVars.TYPE, FACTORIES)
 
-    return factory.get_store(network_id.upper())
-
+    return factory.get_store()

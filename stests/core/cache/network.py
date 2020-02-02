@@ -16,7 +16,7 @@ def get_network(network_key: str) -> Network:
     key = f"{network_key}"
 
     # Pull from store.
-    with get_store(network_key) as store:
+    with get_store() as store:
         return do_get(store, key)
 
 
@@ -31,7 +31,7 @@ def set_network(network: Network) -> str:
     key = f"{network.key}"
 
     # Push to store.
-    with get_store(network.key) as store:
+    with get_store() as store:
         do_set(store, key, network)
 
     return key

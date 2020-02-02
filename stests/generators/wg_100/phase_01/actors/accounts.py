@@ -23,6 +23,7 @@ def create(ctx, typeof, idx=1):
     account = Account(idx=idx, typeof=typeof)
 
     # Cache.
+    print(ctx, idx)
     cache.set_account(ctx.network_id, ctx.cache_namespace, account)
 
     return ctx, account

@@ -20,7 +20,7 @@ class Account(Entity):
     idx: int = 1
     key_pair: KeyPair = KeyPair.create()
     status: AccountStatus = get_enum_field(AccountStatus, AccountStatus.NEW)
-    typeof: AccountType = get_enum_field(AccountType)
+    typeof: AccountType = get_enum_field(AccountType, AccountType.USER)
 
 
     @property

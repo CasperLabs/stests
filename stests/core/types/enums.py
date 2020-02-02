@@ -97,9 +97,15 @@ def get_enum_field(enum: enum.Enum, default: str=None) -> field:
     :param default: Dataclass field's default value.
 
     """
+    if default is not None:
+        return field(
+            default = default,
+            metadata=config(
+                encoder=lambda x: str(x),
+                decoder=lambda x: enum[x.split('.')[-1]]
+            ))
     return field(
-        default = default,
         metadata=config(
-            encoder=lambda x: str(x).split('.')[-1],
-            decoder=lambda x: enum[x]
+            encoder=lambda x: str(x),
+            decoder=lambda x: enum[x.split('.')[-1]]
         ))

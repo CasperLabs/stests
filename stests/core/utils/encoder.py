@@ -9,9 +9,14 @@ from stests.core.types import TYPESET as CORE_TYPESET
 # Set typeset.
 TYPESET = CORE_TYPESET
 
-# Set typemap.
 # Map: domain type keys -> domain type.  
 TYPEMAP = {f"{i.__module__}.{i.__name__}": i for i in TYPESET}
+
+# Map: domain enum keys -> enum.  
+ENUMMAP = dict()
+for i in ENUMS:
+    for j in i:
+        ENUMMAP[str(j)] = j    
 
 
 def decode(data: typing.Any) -> typing.Any:
@@ -25,9 +30,17 @@ def decode(data: typing.Any) -> typing.Any:
         return list(map(decode, data))
 
     # Skip all except dictionaries with injected type field.
-    if not isinstance(data, dict) or '_type' not in data:
-        return data
+    if isinstance(data, dict) and '_type' in data:
+        return _decode_domain_class(data)
 
+    # Map stringified enum values.
+    if isinstance(data, str) and data in ENUMMAP:
+        return ENUMMAP[data]
+
+    return data
+
+
+def _decode_domain_class(data):
     # Get type to be instantiated.
     cls = TYPEMAP[data['_type']]
     
@@ -53,30 +66,13 @@ def encode(data: typing.Any) -> typing.Any:
     if type(data) in ENUMS:
         return str(data)
 
-    # Map domain types to dictionaries.
-    return _encode_domain_class(data)
-
-
-def _encode_domain_class(data):
-    """Returns a domain class instance encoded as a dictionary.
-    
-    """
+    # Map domain types to dictionary.
     obj = data.to_dict()
+
+    # Inject type info used when decoding.
     obj['_type'] = f"{data.__module__}.{data.__class__.__name__}"
-    _encode_domain_enums(obj)
 
     return obj
-
-
-def _encode_domain_enums(obj):
-    """Recursively encodes domain enumeration values.
-    
-    """
-    for k, v in obj.items():
-        if isinstance(v, dict):
-            _encode_domain_enums(v)
-        if type(v) in ENUMS:
-            obj[k] = str(v)
 
 
 def register_type(cls):

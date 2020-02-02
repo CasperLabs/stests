@@ -6,6 +6,7 @@ from dataclasses_json import dataclass_json
 from stests.core.utils import env
 from stests.core.utils import encoder
 from stests.core.types import NetworkType
+from stests.core.types.enums import get_enum_field
 
 
 
@@ -19,7 +20,7 @@ class GeneratorScope:
     network_idx: int
 
     # Type of network being tested.
-    network_type: NetworkType
+    network_type: NetworkType = get_enum_field(NetworkType)
 
     # Index of node being tested.
     node_idx: int

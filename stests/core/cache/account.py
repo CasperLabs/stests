@@ -27,7 +27,7 @@ def get_account(
     key = get_key(network_id, namespace, str(index).zfill(7))
 
     # Pull from store.
-    with get_store(network_id) as store:
+    with get_store() as store:
         return do_get(store, key)
 
 
@@ -49,7 +49,7 @@ def set_account(
     key = get_key(network_id, namespace, str(account.index).zfill(7))
 
     # Push to store.
-    with get_store(network_id) as store:
+    with get_store() as store:
         do_set(store, key, account)
 
     return key

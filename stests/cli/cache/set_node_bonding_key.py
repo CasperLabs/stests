@@ -68,7 +68,7 @@ def get_network(args):
     """Pulls network information from cache.
     
     """
-    with get_store(args.network_id) as store:
+    with get_store() as store:
         return store.get(
             args.network_id
         )

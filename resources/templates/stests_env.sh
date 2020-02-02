@@ -9,6 +9,9 @@ export STESTS_CACHE_TYPE="REDIS"
 # Cache: REDIS
 # --------------------------------------------------------------------
 
+# Cache -> REDIS -> db
+export STESTS_CACHE_REDIS_DB=1
+
 # Cache -> REDIS -> host
 export STESTS_CACHE_REDIS_HOST="localhost"
 
