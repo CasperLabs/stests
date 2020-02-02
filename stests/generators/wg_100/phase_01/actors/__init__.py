@@ -1,81 +1,69 @@
 import dramatiq
 
-from stests.core.types import AccountType
-from stests.generators.wg_100.phase_01.actors import accounts
-from stests.generators.wg_100.phase_01.actors import contract
+from stests.generators.wg_100 import metadata
+from stests.generators.wg_100.phase_01.actors.accounts import do_create_contract_account
+from stests.generators.wg_100.phase_01.actors.accounts import do_create_faucet_account
+from stests.generators.wg_100.phase_01.actors.accounts import do_create_user_account
+from stests.generators.wg_100.phase_01.actors.accounts import do_fund_contract
+from stests.generators.wg_100.phase_01.actors.accounts import do_fund_faucet
+from stests.generators.wg_100.phase_01.actors.accounts import do_fund_user
+from stests.generators.wg_100.phase_01.actors.contract import do_deploy_contract
 
+
+
+# Queue to which message will be dispatched.
+_QUEUE = f"{metadata.TYPE}.phase_01.orchestrator"
 
 
 def execute(ctx):
     """Returns a workflow group that performs various spinup tasks.
     
     """
-    # return \
-    #     get_pipeline_for_faucet() | \
-    #     dramatiq.group([
-    #         get_pipeline_for_contract(),
-    #         get_group_for_users()
-    #         ])
-    #     ])
-
-    # return dramatiq.group([
-    #     _get_pipeline_for_faucet(ctx),
-    #     dramatiq.group([
-    #         _get_pipeline_for_contract(ctx),
-    #         _get_group_for_users(ctx)
-    #         ])
-    #     ])
-    workflow = accounts.get_group_for_account_creation(ctx)
-    workflow.run()
+    # TODO: chunk user account creation as this may cause memory issue
+    g = dramatiq.group([
+            do_create_faucet_account.message(ctx),
+            do_create_contract_account.message(ctx),
+        ] + list(map(lambda idx: do_create_user_account.message(ctx, idx), range(1, ctx.user_accounts + 1))))
+    g.add_completion_callback(on_accounts_created.message(ctx))
+    g.run()
 
 
-def _get_group_for_account_creation(ctx):
-    """Returns a workflow pipeline to initialise a faucet account.
-    
-    """
-    return dramatiq.group([
-        accounts.create.message(ctx, AccountType.FAUCET),
-        accounts.create.message(ctx, AccountType.CONTRACT),
-        dramatiq.group(map(
-                lambda index: accounts.create.message(ctx, AccountType.USER, index), 
-                range(1, ctx.user_accounts + 1)
-            ))        
-        ])
+@dramatiq.actor(queue_name=_QUEUE)
+def on_accounts_created(ctx):
+    do_fund_faucet.send_with_options(
+        args=(ctx, ),
+        on_success=on_faucet_funded
+    )
 
 
-def _get_pipeline_for_faucet(ctx):
-    """Returns a workflow pipeline to initialise a faucet account.
-    
-    """
-    return \
-        accounts.create.message(ctx, AccountType.FAUCET) | \
-        accounts.fund_faucet.message()
+@dramatiq.actor(queue_name=_QUEUE)
+def on_faucet_funded(_, ctx):
+    do_fund_contract.send_with_options(
+        args=(ctx, ),
+        on_success=on_contract_funded
+    )
 
 
-def _get_pipeline_for_contract(ctx):
-    """Returns a workflow pipeline to initialise a contract account.
-    
-    """
-    return \
-        accounts.create.message(ctx, AccountType.CONTRACT) | \
-        accounts.fund_contract.message() | \
-        contract.deploy.message()
+@dramatiq.actor(queue_name=_QUEUE)
+def on_contract_funded(_, ctx):
+    # TODO: chunk user account funding ?
+    g = dramatiq.group(
+        list(map(lambda idx: do_fund_user.message(ctx, idx), range(1, ctx.user_accounts + 1)))
+        )
+    g.add_completion_callback(on_users_funded.message(ctx))
+    g.run()
 
 
-def _get_pipeline_for_user(ctx, index):
-    """Returns a workflow pipeline to initialise a user account.
-    
-    """
-    return \
-        accounts.create.message(ctx, AccountType.USER, index) | \
-        accounts.fund_user.message() \
+@dramatiq.actor(queue_name=_QUEUE)
+def on_users_funded(ctx):
+    do_deploy_contract.send_with_options(
+        args=(ctx, ),
+        on_success=on_contract_deployed
+    )
 
 
-def _get_group_for_users(ctx):
-    """Returns a workflow group to initialise a set of user accounts.
-    
-    """
-    return dramatiq.group(map(
-        lambda index: _get_pipeline_for_user(ctx, index), 
-        range(1, ctx.user_accounts + 1)
-    ))
+@dramatiq.actor(queue_name=_QUEUE)
+def on_contract_deployed(_, ctx):
+    print("TIME TO GO HOME")
+    print(ctx)
+

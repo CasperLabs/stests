@@ -12,12 +12,14 @@ _QUEUE = f"{metadata.TYPE}.phase_01.contract"
 WASM_CONTRACT_FILENAME="erc20_smart_contract.wasm"
 
 
-@dramatiq.actor(queue_name=_QUEUE, actor_name="deploy_contract")
-def deploy(ctx, account):
+@dramatiq.actor(queue_name=_QUEUE)
+def do_deploy_contract(ctx):
     """Deploys smart contract to target network.
     
     """
+    print("TODO: do_deploy_contract :: 1. pull account.  2. Dispatch deploy.  3. Monitor deploy.")
     binary_fpath = resources.get_wasm_path(WASM_CONTRACT_FILENAME)
-    return ctx, account
+    print(binary_fpath)
+    return ctx
 
-    clx.do_deploy_contract(ctx, account, binary_fpath)
+    # clx.do_deploy_contract(ctx, account, binary_fpath)

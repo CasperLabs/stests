@@ -9,98 +9,99 @@ from stests.core.types import AccountType
 from stests.generators.wg_100 import metadata
 
 
-
 # Queue to which message will be dispatched.
 _QUEUE = f"{metadata.TYPE}.phase_01.accounts"
 
 
-@dramatiq.actor(queue_name=_QUEUE, actor_name="create_account")
-def create(ctx, typeof, idx=1):
-    """Creates an account to be used during simulation execution.
 
-    :param ctx: Generator context information.
-    :param typeof: Type of account to generate.
-    :param idx: Run specific account index.
-    
-    """
+@dramatiq.actor(queue_name=_QUEUE)
+def do_create_faucet_account(ctx):
     # Instantiate.
-    account = Account(idx=idx, typeof=typeof)
+    account = Account(typeof=AccountType.FAUCET)
 
     # Cache.
     cache.set_account(ctx.generator_id, account)
 
     # Pass to next actor in pipeline.
+    # TODO: optimise pipeline in order to reduce cache hits
     return ctx, account
 
 
-def get_group_for_account_creation(ctx):
-    """Returns a workflow pipeline to initialise a faucet account.
-    
-    """
-    return dramatiq.group([
-        create.message(ctx, AccountType.FAUCET),
-        create.message(ctx, AccountType.CONTRACT),
-        dramatiq.group(map(
-                lambda index: create.message(ctx, AccountType.USER, index), 
-                range(1, ctx.user_accounts + 1)
-            ))        
-        ])
+@dramatiq.actor(queue_name=_QUEUE)
+def do_create_contract_account(ctx):
+    # Instantiate.
+    account = Account(typeof=AccountType.CONTRACT)
+
+    # Cache.
+    cache.set_account(ctx.generator_id, account)
+
+    # Pass to next actor in pipeline.
+    # TODO: optimise pipeline in order to reduce cache hits
+    return ctx, account
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def fund_faucet(ctx, account):
+def do_create_user_account(ctx, idx):
+    # Instantiate.
+    account = Account(idx=idx, typeof=AccountType.USER)
+
+    # Cache.
+    cache.set_account(ctx.generator_id, account)
+
+    # Pass to next actor in pipeline.
+    # TODO: optimise pipeline in order to reduce cache hits
+    return ctx, account
+
+
+@dramatiq.actor(queue_name=_QUEUE)
+def do_fund_faucet(ctx):
     """Funds faucet account (from validator).
     
     """
-    return ctx, account
+    print("TODO: do_fund_faucet :: 1. pull accounts.  2. Dispatch transfer.  3. Monitor deploy.")
+    return ctx
 
-    clx.do_transfer(
-        ctx,
-        100000000,
-        ctx.validator_pvk_pem_fpath,
-        ctx.validator_pbk_hex,
-        account.key_pair.public_key.as_hex
-        )
-    time.sleep(3)
+    # clx.do_transfer(
+    #     ctx,
+    #     100000000,
+    #     ctx.validator_pvk_pem_fpath,
+    #     ctx.validator_pbk_hex,
+    #     account.key_pair.public_key.as_hex
+    #     )
 
-    return ctx, account
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def fund_contract(ctx, account):
+def do_fund_contract(ctx):
     """Funds contract account (from faucet).
     
     """
-    return ctx, account
+    print("TODO: do_fund_contract :: 1. pull accounts.  2. Dispatch transfer.  3. Monitor deploy.")
+    return ctx
 
-    faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
-    clx.do_transfer(
-        ctx,
-        10000000,
-        faucet.key_pair.private_key.as_pem_filepath,
-        faucet.key_pair.public_key.as_hex,
-        account.key_pair.public_key.as_hex
-        )
-    time.sleep(3)
-
-    return ctx, account
+    # faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
+    # clx.do_transfer(
+    #     ctx,
+    #     10000000,
+    #     faucet.key_pair.private_key.as_pem_filepath,
+    #     faucet.key_pair.public_key.as_hex,
+    #     account.key_pair.public_key.as_hex
+    #     )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def fund_user(ctx, account):
+def do_fund_user(ctx, idx):
     """Funds user account (from faucet).
     
     """
-    return ctx, account
+    print("TODO: do_fund_user :: 1. pull accounts.  2. Dispatch transfer.  3. Monitor deploy.")
+    return ctx
 
-    faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
-    clx.do_transfer(
-        ctx,
-        10000000,
-        faucet.key_pair.private_key.as_pem_filepath,
-        faucet.key_pair.public_key.as_hex,
-        account.key_pair.public_key.as_hex
-        )
-    time.sleep(3)
-
-    return ctx, account
+    # faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
+    # clx.do_transfer(
+    #     ctx,
+    #     10000000,
+    #     faucet.key_pair.private_key.as_pem_filepath,
+    #     faucet.key_pair.public_key.as_hex,
+    #     account.key_pair.public_key.as_hex
+    #     )

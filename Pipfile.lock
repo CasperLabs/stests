@@ -116,11 +116,11 @@
                 "watch"
             ],
             "hashes": [
-                "sha256:6d4b21b52baa275c4664126237b3f0029545815b84553904814e43b3b2f58b31",
-                "sha256:9cec395ac460eb804e3cca6021cb274011b085843fa85d48d94e9339f7bc2ac3"
+                "sha256:7633aca34b92c77f4f02156c2168018aabb99293396d57e406785538fca61f21",
+                "sha256:7c1384f2dd3b7cd614a4e6e51edadb58e7e27b99ff1eaebe7f750e5fcd7c5f98"
             ],
             "index": "pypi",
-            "version": "==1.7.0"
+            "version": "==1.8.0"
         },
         "ed25519": {
             "hashes": [
@@ -478,11 +478,11 @@
         },
         "redis": {
             "hashes": [
-                "sha256:7595976eb0b4e1fc3ad5478f1fd44215a814ee184a7820de92726f559bdff9cd",
-                "sha256:e933bdb504c69cbd5bdf4e2bb819a99644a36731cef4c59aa637cebfd5ddd4f9"
+                "sha256:0dcfb335921b88a850d461dc255ff4708294943322bd55de6cfd68972490ca1f",
+                "sha256:b205cffd05ebfd0a468db74f0eedbff8df1a7bfc47521516ade4692991bb0833"
             ],
             "index": "pypi",
-            "version": "==3.4.0"
+            "version": "==3.4.1"
         },
         "six": {
             "hashes": [

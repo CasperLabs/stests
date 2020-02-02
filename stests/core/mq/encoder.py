@@ -1,7 +1,7 @@
 import json
 import typing
 
-from stests.core.utils.encoder import encode as _encode
+from stests.core.utils import encoder as _encoder
 from stests.core.utils.encoder import decode as _decode
 
 
@@ -17,10 +17,30 @@ def encode(data: MessageData) -> bytes:
     :returns: Bytestream for dispatch.
     
     """
-    # Encode outgoing domain objects.
-    data['args'] = _encode(data['args'])
+    return json.dumps(_encode(data), separators=(",", ":")).encode("utf-8")
 
-    return json.dumps(data, separators=(",", ":")).encode("utf-8")
+
+def _encode(obj: typing.Any) -> typing.Any:
+    """Encode message data.
+    
+    """
+    # Parse dictionaries.
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if isinstance(v, dict):
+                obj[k] = _encode(v)
+            elif isinstance(v, tuple):
+                obj[k] = tuple(map(_encode, v))
+            elif isinstance(v, list):
+                obj[k] = list(map(_encode, v))        
+            else:
+                obj[k] = _encode(v)
+
+    # Encode stests types.
+    if type(obj) in _encoder.TYPESET:
+        return _encoder.encode(obj)
+        
+    return obj
 
 
 def decode(data: bytes) -> MessageData:
@@ -32,13 +52,13 @@ def decode(data: bytes) -> MessageData:
     """
     # Decode raw json.
     data = json.loads(data.decode("utf-8"))
-    
+
     # Decode any incoming workflow arguments.
     try:
         data['args']
     except KeyError:
         pass
     else:
-        data['args'] = _decode(data['args'])
+        data['args'] = _encoder.decode(data['args'])
 
     return data
