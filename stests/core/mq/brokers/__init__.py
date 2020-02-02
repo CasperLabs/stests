@@ -5,6 +5,7 @@ from stests.core.mq.brokers import redis
 from stests.core.mq.brokers import stub
 from stests.core.mq.middleware import get_middleware
 from stests.core.utils import env
+from stests.core.utils import logger
 from stests.core.utils.exceptions import InvalidEnvironmentVariable
 
 
@@ -38,5 +39,7 @@ def get_broker(network_id: str) -> Broker:
     broker = factory.get_broker(network_id)
     for mware in get_middleware():
         broker.add_middleware(mware)
+
+    logger.log(f"{EnvVars.TYPE} MQ broker connection established")
 
     return broker

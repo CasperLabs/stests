@@ -1,7 +1,7 @@
 from stests.core import mq
 from stests.core.utils import encoder
 from stests.core.utils import env
-from stests.generators.wg_100.phase_01.args import Arguments
+from stests.generators.wg_100.phase_01.workflow import Context
 
 
 
