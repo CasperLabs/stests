@@ -1,19 +1,22 @@
 import enum
 import typing
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from dataclasses import field
+from datetime import datetime
 
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import NetworkOperatorType
 from stests.core.types.enums import NetworkStatus
 from stests.core.types.enums import NetworkType
-from stests.core.types.utils import Entity
+from stests.core.types.utils import get_isodatetime_field
 from stests.core.utils import defaults
 
 
 
+@dataclass_json
 @dataclass
-class Network(Entity):
+class Network:
     """A test network.
     
     """
@@ -28,6 +31,10 @@ class Network(Entity):
 
     # Type of network, e.g. local, lrt, proof-of-concept ...etc.
     typeof: NetworkType = get_enum_field(NetworkType)
+
+    # Standard time stamps.
+    _ts_updated: datetime = get_isodatetime_field(True)
+    _ts_created: datetime = get_isodatetime_field(True)
 
     @property
     def key(self):
@@ -56,8 +63,9 @@ class Network(Entity):
         )
 
 
+@dataclass_json
 @dataclass
-class NetworkEntity(Entity):
+class NetworkEntity:
     """Base class for all entities intimately associated with a network.
     
     """    

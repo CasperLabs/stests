@@ -1,6 +1,5 @@
 import inspect
 
-from stests.core.types import Entity
 from stests.core.types import CLASSES
 from stests.core.types import ENUMS
 from stests.core.types import TYPESET
@@ -51,14 +50,14 @@ def test_05():
 
 def test_06():
     """Test all domain classes can be encoded."""
-    for i in (Entity.instantiate(i) for i in CLASSES):
+    for i in (i.create() for i in CLASSES):
         assert isinstance(encoder.encode(i), dict)
 
 
 def test_07():
     """Test a collection of domain classes can be encoded."""
     for typeof in (tuple, list):
-        collection = typeof(Entity.instantiate(i) for i in CLASSES)
+        collection = typeof(i.create() for i in CLASSES)
         encoded = encoder.encode(collection)
         assert isinstance(encoded, typeof)
         for i in encoded:
@@ -81,7 +80,7 @@ def test_09():
 
 def test_10():
     """Test round-trip over domain model instances."""
-    for i in (Entity.instantiate(i) for i in CLASSES):
+    for i in (i.create() for i in CLASSES):
         k = encoder.decode(encoder.encode(i))
         assert isinstance(k, type(i))
 
@@ -89,5 +88,5 @@ def test_10():
 def test_10():
     """Test round-trip over domain model instance collections."""
     for ctype in (tuple, list):
-        c = encoder.decode(encoder.encode(ctype(Entity.instantiate(i) for i in CLASSES)))
+        c = encoder.decode(encoder.encode(ctype(i.create() for i in CLASSES)))
         assert isinstance(c, ctype)

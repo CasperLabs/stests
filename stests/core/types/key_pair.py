@@ -2,7 +2,6 @@ import tempfile
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.types.utils import Entity
 from stests.core.utils import crypto
 
 

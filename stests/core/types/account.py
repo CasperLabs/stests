@@ -2,20 +2,21 @@ import enum
 import random
 import typing
 from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from datetime import datetime
 
 from stests.core.types.enums import AccountStatus
 from stests.core.types.enums import AccountType
 from stests.core.types.enums import get_enum_field
 from stests.core.types.key_pair import KeyPair
-from stests.core.types.utils import Entity
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.utils import defaults
 
 
 
+@dataclass_json
 @dataclass
-class Account(Entity):
+class Account:
     """An account that maps to an address upon target chain.
     
     """
@@ -31,7 +32,9 @@ class Account(Entity):
     # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
     typeof: AccountType = get_enum_field(AccountType)
 
-    _ts_created: datetime = get_isodatetime_field()
+    # Standard time stamps.
+    _ts_updated: datetime = get_isodatetime_field(True)
+    _ts_created: datetime = get_isodatetime_field(True)
 
 
     @property
@@ -47,11 +50,9 @@ class Account(Entity):
         """Factory: returns an instance for testing purposes.
         
         """
-        print(888)
         return Account(
             idx=1,
             key_pair=KeyPair.create(),
             status=AccountStatus.NEW,
-            typeof=typeof or random.choice(list(AccountType)),
-            _ts_created=datetime.now()
+            typeof=typeof or random.choice(list(AccountType))
             )

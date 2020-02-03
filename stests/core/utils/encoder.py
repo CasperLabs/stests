@@ -41,6 +41,9 @@ def decode(data: typing.Any) -> typing.Any:
 
 
 def _decode_domain_class(data):
+    """Decodes a domain class by performing a type lookup.
+    
+    """
     # Get type to be instantiated.
     cls = TYPEMAP[data['_type']]
     
