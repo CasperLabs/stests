@@ -16,7 +16,6 @@ def get_isodatetime_field():
 
     """
     return field(
-        default_factory=datetime.now,
         metadata=config(
             encoder=datetime.isoformat,
             decoder=datetime.fromisoformat,
@@ -31,10 +30,6 @@ class Entity:
     """Base class for all entities flowing through system.
     
     """    
-    # Timestamp when entity was first instantiated.
-    _created_at: datetime = get_isodatetime_field()
-
-
     @staticmethod
     def instantiate(typeof):
         """Factory: returns an instance for testing purposes.

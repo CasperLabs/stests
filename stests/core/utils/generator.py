@@ -13,7 +13,7 @@ from stests.core.types.enums import get_enum_field
 @dataclass_json
 @dataclass
 class GeneratorScope:
-    """Encapsulates generator scope informatino such as network identifier.
+    """Encapsulates generator scope information such as network identifier.
     
     """
     # Index of network being tested.

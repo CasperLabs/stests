@@ -17,10 +17,17 @@ class Network(Entity):
     """A test network.
     
     """
-    idx: int = 1
-    nodeset: typing.List = field(default_factory=list)
-    status: NetworkStatus = get_enum_field(NetworkStatus, NetworkStatus.NULL)
-    typeof: NetworkType = get_enum_field(NetworkType, NetworkType.LOC)
+    # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
+    idx: int
+    
+    # Set of nodes that constitute the network.
+    nodeset: typing.List
+    
+    # Current network status.
+    status: NetworkStatus = get_enum_field(NetworkStatus)
+
+    # Type of network, e.g. local, lrt, proof-of-concept ...etc.
+    typeof: NetworkType = get_enum_field(NetworkType)
 
     @property
     def key(self):
@@ -36,13 +43,29 @@ class Network(Entity):
         return f"{typeof.name}-{str(idx).zfill(3)}"
 
 
+    @staticmethod
+    def create():
+        """Factory: returns an instance for testing purposes.
+        
+        """
+        return Network(
+            idx=defaults.NETWORK_INDEX,
+            nodeset=[],
+            status=NetworkStatus.NULL,
+            typeof=NetworkType[defaults.NETWORK_TYPE]
+        )
+
+
 @dataclass
 class NetworkEntity(Entity):
     """Base class for all entities intimately associated with a network.
     
     """    
-    network_idx: int = 1
-    network_type: str =  get_enum_field(NetworkType, NetworkType.LOC)
+    # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
+    network_idx: int
+
+    # Type of network, e.g. local, lrt, proof-of-concept ...etc.
+    network_type: str =  get_enum_field(NetworkType)
 
     @property
     def network_key(self):

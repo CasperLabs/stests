@@ -8,6 +8,7 @@ from stests.generators.wg_100.phase_01.actors.accounts import do_fund_contract
 from stests.generators.wg_100.phase_01.actors.accounts import do_fund_faucet
 from stests.generators.wg_100.phase_01.actors.accounts import do_fund_user
 from stests.generators.wg_100.phase_01.actors.contract import do_deploy_contract
+from stests.generators.wg_100.phase_01.actors.setup import do_reset_cache
 
 
 
@@ -16,9 +17,17 @@ _QUEUE = f"{metadata.TYPE}.phase_01.orchestrator"
 
 
 def execute(ctx):
-    """Returns a workflow group that performs various spinup tasks.
+    """Orchestrates execution of WG-100 workflow.
     
     """
+    do_reset_cache.send_with_options(
+        args=(ctx, ),
+        on_success=on_cache_reset
+    )
+
+
+@dramatiq.actor(queue_name=_QUEUE)
+def on_cache_reset(_, ctx):
     # TODO: chunk user account creation as this may cause memory issue
     g = dramatiq.group([
             do_create_faucet_account.message(ctx),

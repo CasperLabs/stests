@@ -1,6 +1,7 @@
+import time
+
 import casperlabs_client as pyclx
 import dramatiq
-import time
 
 from stests.core import cache
 from stests.core import clx
@@ -17,7 +18,7 @@ _QUEUE = f"{metadata.TYPE}.phase_01.accounts"
 @dramatiq.actor(queue_name=_QUEUE)
 def do_create_faucet_account(ctx):
     # Instantiate.
-    account = Account(typeof=AccountType.FAUCET)
+    account = Account.create(typeof=AccountType.FAUCET)
 
     # Cache.
     cache.set_account(ctx.generator_id, account)
@@ -30,7 +31,7 @@ def do_create_faucet_account(ctx):
 @dramatiq.actor(queue_name=_QUEUE)
 def do_create_contract_account(ctx):
     # Instantiate.
-    account = Account(typeof=AccountType.CONTRACT)
+    account = Account.create(typeof=AccountType.CONTRACT)
 
     # Cache.
     cache.set_account(ctx.generator_id, account)
@@ -43,7 +44,7 @@ def do_create_contract_account(ctx):
 @dramatiq.actor(queue_name=_QUEUE)
 def do_create_user_account(ctx, idx):
     # Instantiate.
-    account = Account(idx=idx, typeof=AccountType.USER)
+    account = Account.create(typeof=AccountType.USER)
 
     # Cache.
     cache.set_account(ctx.generator_id, account)
