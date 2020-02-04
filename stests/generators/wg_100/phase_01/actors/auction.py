@@ -16,6 +16,6 @@ _QUEUE = f"{metadata.TYPE}.phase_01.auction"
 
 @dramatiq.actor(queue_name=_QUEUE)
 def do_start_auction(ctx):
-    print(999)
+    print("TODO: do_start_auction :: 1. Establish transfer sequence.")
 
     return ctx

@@ -20,13 +20,14 @@ _QUEUE = f"{metadata.TYPE}.phase_01.setup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_reset_cache(ctx: GeneratorContext):    
-    print("TODO: do_reset_cache :: 1. delete cache data.")
+def do_flush_cache(ctx: GeneratorContext):   
+    """Flushes cache of all previous run data.
+    
+    """
+    # Instantiate.
+    cache.flush_ns(ctx.cache_key)
 
-    print(f"{ctx.scope.network.cache_key} :: {ctx.scope.generator.cache_key}")
-
-    # cache.flush_ns("LOC-01.WG-100:R-00001:")
-
+    # Chain.
     return ctx
 
 
@@ -38,8 +39,8 @@ def do_create_account(ctx: GeneratorContext, index: int, typeof: AccountType):
     # Instantiate.
     account = Account.create(
         index=index,
-        generator=ctx.scope.generator,
-        network=ctx.scope.network,
+        generator=ctx.get_reference(),
+        network=ctx.network,
         typeof=typeof
         )
 

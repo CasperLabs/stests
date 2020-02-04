@@ -14,8 +14,6 @@ def _set_domain_type_instance(instance):
     if type(instance) not in CLASSES:
         raise TypeError("Instance to be cached is not a domain type.")
 
-    print(666, instance.cache_key)
-
     with get_store() as store:
         do_set(store, instance.cache_key, instance)
 

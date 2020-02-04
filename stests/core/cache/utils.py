@@ -63,6 +63,7 @@ def flush_ns(ns):
     """
     cursor = '0'
     ns_keys = ns + '*'
+    print(ns_keys)
     with get_store() as store:
         while cursor != 0:
             cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)

@@ -5,11 +5,12 @@ from dataclasses_json import dataclass_json
 import dramatiq 
 
 from stests.core import mq
-from stests.core.types import GeneratorContext
 from stests.core.utils import args_validator
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
-from stests.generators.wg_100.phase_01 import orchestrator
+from stests.generators.wg_100.phase_01.actors import orchestrator
+from stests.generators.wg_100.phase_01.ctx import Arguments
+from stests.generators.wg_100.phase_01.ctx import Context
 
 
 
@@ -88,47 +89,10 @@ ARGS.add_argument(
     )
 
 
-@dataclass_json
-@dataclass
-class Arguments:
-    """WG-100 generator execution arguments.
-    
-    """
-    # Name of ERC20 token for which an auction is being simulated.
-    token_name: str
-
-    # Total amount of ERC20 token to be issued.
-    token_supply: int
-
-    # Number of user accounts to generate.
-    user_accounts: int
-
-    # Number of bids to submit per user.
-    user_bids: int
-
-    # Initial user account CLX balance.
-    user_initial_clx_balance: int
-
-
-    @staticmethod
-    def create(args: argparse.Namespace):
-        """Simple factory method.
-
-        :param args: Parsed command line arguments.
-
-        """
-        return Arguments(
-            token_name='token_name' in args and args.token_name,
-            token_supply='token_supply' in args and args.token_supply,
-            user_accounts='user_accounts' in args and args.user_accounts,
-            user_bids='user_bids' in args and args.user_bids,
-            user_initial_clx_balance='user_initial_clx_balance' in args and args.user_initial_clx_balance,
-        )
-
 
 args=ARGS.parse_args()
 
-ctx = GeneratorContext.create(
+ctx = Context.create(
     args=Arguments.create(args),
     network=args.network,
     node=args.node,

@@ -5,10 +5,10 @@ from stests.generators.wg_100 import metadata
 from stests.generators.wg_100.phase_01.actors.auction import do_start_auction
 from stests.generators.wg_100.phase_01.actors.setup import do_create_account
 from stests.generators.wg_100.phase_01.actors.setup import do_deploy_contract
+from stests.generators.wg_100.phase_01.actors.setup import do_flush_cache
 from stests.generators.wg_100.phase_01.actors.setup import do_fund_contract
 from stests.generators.wg_100.phase_01.actors.setup import do_fund_faucet
 from stests.generators.wg_100.phase_01.actors.setup import do_fund_user
-from stests.generators.wg_100.phase_01.actors.setup import do_reset_cache
 
 
 # Queue to which message will be dispatched.
@@ -22,13 +22,14 @@ def execute(ctx):
     """Orchestrates execution of WG-100 workflow.
     
     """
-    do_reset_cache.send_with_options(
-        args=(ctx, ), on_success=on_reset_cache
+    do_flush_cache.send_with_options(
+        args=(ctx, ), 
+        on_success=on_flush_cache
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_reset_cache(_, ctx):
+def on_flush_cache(_, ctx):
     do_create_account.send_with_options(
         args=(ctx, 1, AccountType.FAUCET),
         on_success=on_create_faucet_account
@@ -49,7 +50,7 @@ def on_create_contract_account(_, ctx):
         return do_create_account.message(ctx, index, AccountType.USER)
 
     def get_messages():
-        return list(map(get_message, range(1, ctx.user_accounts + 1)))
+        return list(map(get_message, range(1, ctx.args.user_accounts + 1)))
 
     g = dramatiq.group(get_messages())
     g.add_completion_callback(on_create_user_accounts.message(ctx))
@@ -76,7 +77,7 @@ def on_fund_contract(_, ctx):
         return do_fund_user.message(ctx, idx)
 
     def get_messages():
-        return list(map(get_message, range(1, ctx.user_accounts + 1)))
+        return list(map(get_message, range(1, ctx.args.user_accounts + 1)))
 
     g = dramatiq.group(get_messages())
     g.add_completion_callback(on_fund_users.message(ctx))
