@@ -31,23 +31,3 @@ def get_account(
         return do_get(store, key)
 
 
-def set_account(namespace: str, account: Account) -> str:
-    """Appends an account to cache store.
-
-    :param namespace: Cache key namespace.
-    :param account: Account being cached.
-
-    :returns: Account's cache key.
-
-    """
-    # Set keyspace.
-    key = get_key(
-        f"{namespace}:ACCOUNT.{account.typeof.name}",
-        str(account.idx).zfill(7)
-        )
-
-    # Push to store.
-    with get_store() as store:
-        do_set(store, key, account)
-
-    return key

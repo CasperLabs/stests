@@ -5,8 +5,8 @@ from dataclasses_json import dataclass_json
 
 from stests.core.utils import env
 from stests.core.utils import encoder
-from stests.core.types import NetworkType
-from stests.core.types.enums import get_enum_field
+from stests.core.types import GeneratorReference
+from stests.core.types import NetworkReference
 
 
 
@@ -16,25 +16,21 @@ class GeneratorScope:
     """Encapsulates generator scope information such as network identifier.
     
     """
-    # Index of network being tested.
-    network_idx: int
-
-    # Type of network being tested.
-    network_type: NetworkType = get_enum_field(NetworkType)
+    # Associated network reference information.
+    network: NetworkReference
 
     # Index of node being tested.
     node_idx: int
 
-    # Run index of generator being executed.
-    run_idx: int
+    # Associated generator reference information.
+    generator: GeneratorReference
 
-    # Type of generator being executed.
-    typeof: str
 
     @property
     def generator_id(self):
         """Fully qualified generator identifier."""
-        return f"{self.network_id}.{self.typeof.upper()}.R-{str(self.run_idx).zfill(4)}"
+        return f"{self.network.name}.{self.generator.typeof}.R-{str(self.generator.index).zfill(4)}"
+
 
     @property
     def network_id(self):
@@ -51,11 +47,9 @@ class GeneratorScope:
 
         """
         return GeneratorScope(
-            network_idx = 'network_idx' in args and args.network_idx,
-            network_type = 'network_type' in args and NetworkType[args.network_type.upper()],
-            node_idx = 'node_idx' in args and args.node_idx,
-            run_idx = 'run_idx' in args and args.run_idx,
-            typeof = typeof.upper() 
+            generator=GeneratorReference.create(args.run_idx, typeof),
+            network=NetworkReference.create(args.network),
+            node_idx = 'node_idx' in args and args.node_idx
         )
 
 
@@ -96,4 +90,3 @@ class GeneratorContext():
 
         # Set context to be passed to actors.
         ctx = cls.create(args)
-

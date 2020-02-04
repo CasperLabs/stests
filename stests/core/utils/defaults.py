@@ -1,3 +1,6 @@
+# Default account index (>=1, <=99999999).
+ACCOUNT_INDEX: int = 1
+
 # Default network identifier when running tests.
 NETWORK_ID = "LOC-01"
 

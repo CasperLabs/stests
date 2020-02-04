@@ -12,7 +12,7 @@ ARGS = argparse.ArgumentParser("Upload network information to stests.")
 
 # CLI argument: network name.
 ARGS.add_argument(
-    "network_name",
+    "network",
     help="Network name {type}{id}, e.g. lrt1.",
     type=args_validator.validate_network_name
     )
@@ -25,8 +25,8 @@ def main(args):
 
     """
     instance = Network.create(
-        index=int(args.network_name[3:]),
-        typeof=NetworkType[args.network_name[:3].upper()]
+        index=int(args.network[3:]),
+        typeof=NetworkType[args.network[:3].upper()]
     )
     cache.set_network(instance)
     logger.log("Network information successfully registered")

@@ -43,6 +43,11 @@ class Network:
     _ts_updated: datetime = get_isodatetime_field(True)
 
     @property
+    def cache_key(self):
+        """Returns key to be used when caching an instance."""
+        return f"{self.typeof.name}-{str(self.index).zfill(2)}"
+
+    @property
     def key(self):
         """Returns network's key for identification purposes."""
         return Network.get_key(self.typeof, self.index)
@@ -91,10 +96,15 @@ class NetworkReference:
     typeof: str =  get_enum_field(NetworkType)    
 
 
-    @staticmethod
-    def create(name_raw: str=defaults.NETWORK_NAME_RAW):
-        """Factory method: leveraged in both live & test settings.
+    @property
+    def cache_key(self):
+        """Returns key to be used when caching an instance."""
+        return self.name
 
+
+    @classmethod
+    def create(cls, name_raw: str=defaults.NETWORK_NAME_RAW):
+        """Factory method: leveraged in both live & test settings.
 
         """
         index = int(name_raw[3:])
