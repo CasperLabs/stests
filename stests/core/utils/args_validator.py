@@ -1,5 +1,8 @@
 import argparse
 
+from stests.core.types.enums import NetworkType
+
+
 
 # Network index min/max.
 NETWORK_IDX_MIN = 1
@@ -25,7 +28,22 @@ def validate_network_idx(value):
     return validate_int(value, NETWORK_IDX_MIN, NETWORK_IDX_MAX, "Network")
 
 
-def validate_node_idx(value):
+def validate_network_name(value):
+    """Argument verifier: network name.
+    
+    """
+    # TODO: use reg-ex.
+    name = str(value)
+    try:
+        validate_enum(name[:3].upper(), NetworkType, "Network")
+    except argparse.ArgumentError:
+        raise argparse.ArgumentError("Invalid network name: prefix shou")
+    validate_int(name[3:], NETWORK_IDX_MIN, NETWORK_IDX_MAX, "Network")
+
+    return name
+
+
+def validate_node_index(value):
     """Argument verifier: node index.
     
     """
@@ -44,6 +62,17 @@ def validate_generator_run_idx(value):
     
     """
     return validate_int(value, GENERATOR_RUN_IDX_MIN, GENERATOR_RUN_IDX_MAX, "Generator")
+
+
+def validate_enum(value, enum_type, typeof):
+    """Validates a constrained integer value.
+    
+    """
+    try:
+        enum_type[value]
+    except KeyError:
+        err = f"expected {' | '.join([i.name for i in enum_type])}"
+        raise argparse.ArgumentTypeError(err)
 
 
 def validate_int(value, min, max, typeof):

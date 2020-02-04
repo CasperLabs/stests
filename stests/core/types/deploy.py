@@ -4,14 +4,14 @@ from datetime import datetime
 
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import DeployStatus
-from stests.core.types.network import NetworkEntity
+from stests.core.types.network import NetworkReference
 from stests.core.types.utils import get_isodatetime_field
 
 
 
 @dataclass_json
 @dataclass
-class Deploy(NetworkEntity):
+class Deploy:
     """Encapsulates information pertaining to a deploy dispatched to a test network.
     
     """
@@ -22,8 +22,8 @@ class Deploy(NetworkEntity):
     status: DeployStatus = get_enum_field(DeployStatus)
 
     # Standard time stamps.
-    _ts_updated: datetime = get_isodatetime_field(True)
     _ts_created: datetime = get_isodatetime_field(True)
+    _ts_updated: datetime = get_isodatetime_field(True)
 
 
     @staticmethod

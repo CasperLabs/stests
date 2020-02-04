@@ -4,6 +4,12 @@ NETWORK_ID = "LOC-01"
 # Default network index (>=1, <=99).
 NETWORK_INDEX: int = 1
 
+# Default network name.
+NETWORK_NAME = "LOC-01"
+
+# Default raw network name.
+NETWORK_NAME_RAW = "loc1"
+
 # Default network index (one based).
 NETWORK_TYPE: str = "LOC"
 

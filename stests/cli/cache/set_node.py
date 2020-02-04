@@ -7,32 +7,25 @@ from stests.core.types import Node
 from stests.core.types import NodeType
 from stests.core.utils import args_validator
 from stests.core.utils import defaults
+from stests.core.utils import logger
 
 
 
 # CLI argument parser.
 ARGS = argparse.ArgumentParser(f"Upload node information to stests.")
 
-# CLI argument: network type.
+# CLI argument: network name.
 ARGS.add_argument(
-    "network_type",
-    choices=[i.name.lower() for i in NetworkType],
-    help="Type of network being tested.",
-    type=str
+    "network",
+    help="Network name {type}{id}, e.g. lrt1.",
+    type=args_validator.validate_network_name
     )
-
+    
 # CLI argument: network index.
 ARGS.add_argument(
-    "network_idx",
-    help="Network index - must be between 1 and 99.",
-    type=args_validator.validate_network_idx
-    )
-
-# CLI argument: network index.
-ARGS.add_argument(
-    "node_idx",
+    "index",
     help="Node index - must be between 1 and 999.",
-    type=args_validator.validate_node_idx
+    type=args_validator.validate_node_index
     )
 
 # Set CLI argument: node host.
@@ -66,13 +59,15 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    cache.set_node(Node(
+    instance = Node.create(
         host=args.host,
-        idx=args.node_idx,  
-        network_idx=args.network_idx,
-        network_type=NetworkType[args.network_type.upper()],      
+        index=args.index,  
+        network=args.network,
+        port=args.port,
         typeof = NodeType[args.typeof.upper()]
-    ))    
+    )
+    cache.set_node(instance)    
+    logger.log("Node information successfully registered")
 
 
 # Entry point.

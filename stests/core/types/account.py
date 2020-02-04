@@ -33,8 +33,8 @@ class Account:
     typeof: AccountType = get_enum_field(AccountType)
 
     # Standard time stamps.
-    _ts_updated: datetime = get_isodatetime_field(True)
     _ts_created: datetime = get_isodatetime_field(True)
+    _ts_updated: datetime = get_isodatetime_field(True)
 
 
     @property

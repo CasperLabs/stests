@@ -9,7 +9,7 @@ from stests.core.types.enums import AccountType
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import NodeStatus
 from stests.core.types.enums import NodeType
-from stests.core.types.network import NetworkEntity
+from stests.core.types.network import NetworkReference
 from stests.core.types.network import NetworkType
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.utils import defaults
@@ -18,7 +18,7 @@ from stests.core.utils import defaults
 
 @dataclass_json
 @dataclass
-class Node(NetworkEntity):
+class Node:
     """Represents a node within a target network.
     
     """
@@ -30,7 +30,10 @@ class Node(NetworkEntity):
     host: str
 
     # Numerical index to distinguish between nodes, e.g. node-01, node-02 ...etc.
-    idx: int
+    index: int
+
+    # Associated network reference information.
+    network: NetworkReference
 
     # Node's external facing GRPC port.
     port: int
@@ -42,35 +45,40 @@ class Node(NetworkEntity):
     typeof: NodeType = get_enum_field(NodeType)
     
     # Standard time stamps.
-    _ts_updated: datetime = get_isodatetime_field(True)
     _ts_created: datetime = get_isodatetime_field(True)
+    _ts_updated: datetime = get_isodatetime_field(True)
 
     @property
     def key(self):
         """Returns node's key for identification purposes."""
-        return Node.get_key(self.idx)
+        return Node.get_key(self.index)
+
+    @property
+    def cache_key(self):
+        return f"{self.network.name}.NODE:{str(self.index).zfill(4)}"
 
     @classmethod
-    def get_key(cls, idx: int):
+    def get_key(cls, index: int):
         """Returns node's key for identification purposes.
         
         """
-        return str(idx).zfill(4)
+        return str(index).zfill(4)
 
 
     @staticmethod
-    def create():
-        """Factory: returns an instance for testing purposes.
+    def create(
+        account=None,
+        host=defaults.NODE_HOST,
+        index=defaults.NODE_INDEX,
+        network=defaults.NETWORK_NAME,
+        port=defaults.NODE_PORT,
+        status=NodeStatus.NULL,
+        typeof=NodeType[defaults.NODE_TYPE]
+    ):
+        """Factory method: leveraged in both live & test settings.
         
         """
-        return Node(
-            account=Account.create(typeof=AccountType.BOND),
-            host=defaults.NODE_HOST,
-            idx=defaults.NODE_INDEX,
-            port=defaults.NODE_PORT,
-            status=NodeStatus.NULL,
-            typeof=NodeType[defaults.NODE_TYPE],
-            # TODO: review            
-            network_idx=defaults.NETWORK_INDEX,
-            network_type=NetworkType[defaults.NETWORK_TYPE]
-        )
+        network = NetworkReference.create(network)
+
+        return Node(account, host, index, network, port, status, typeof)
+

@@ -21,8 +21,14 @@ class Network:
     
     """
     # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
-    idx: int
+    index: int
     
+    # Network's common name, e.g. LRT-001.
+    name: str
+
+    # Network's raw name, e.g. lrt1.
+    name_raw: str
+
     # Set of nodes that constitute the network.
     nodeset: typing.List
     
@@ -33,49 +39,66 @@ class Network:
     typeof: NetworkType = get_enum_field(NetworkType)
 
     # Standard time stamps.
-    _ts_updated: datetime = get_isodatetime_field(True)
     _ts_created: datetime = get_isodatetime_field(True)
+    _ts_updated: datetime = get_isodatetime_field(True)
 
     @property
     def key(self):
         """Returns network's key for identification purposes."""
-        return Network.get_key(self.typeof, self.idx)
+        return Network.get_key(self.typeof, self.index)
 
 
     @classmethod
-    def get_key(cls, typeof: NetworkType, idx: int) -> str:
+    def get_key(cls, typeof: NetworkType, index: int) -> str:
         """Returns network's key for identification purposes.
         
         """
-        return f"{typeof.name}-{str(idx).zfill(3)}"
+        return f"{typeof.name}-{str(index).zfill(2)}"
 
 
     @staticmethod
-    def create():
+    def create(
+        index=defaults.NETWORK_INDEX,
+        nodeset=[],
+        status=NetworkStatus.NULL,
+        typeof=NetworkType[defaults.NETWORK_TYPE]
+        ):
         """Factory: returns an instance for testing purposes.
         
         """
-        return Network(
-            idx=defaults.NETWORK_INDEX,
-            nodeset=[],
-            status=NetworkStatus.NULL,
-            typeof=NetworkType[defaults.NETWORK_TYPE]
-        )
+        name = f"{typeof.name}-{str(index).zfill(2)}"
+        name_raw = f"{typeof.name.lower()}{index}"
+
+        return Network(index, name, name_raw, nodeset, status, typeof)
 
 
 @dataclass_json
 @dataclass
-class NetworkEntity:
-    """Base class for all entities intimately associated with a network.
+class NetworkReference:
+    """Information used to disambiguate between networks.
     
-    """    
+    """ 
+    # Internal name of network, e.g. LRT-01
+    name: str
+
+    # External name of network, e.g. lrt1
+    name_raw: str
+
     # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
-    network_idx: int
+    index: int
 
     # Type of network, e.g. local, lrt, proof-of-concept ...etc.
-    network_type: str =  get_enum_field(NetworkType)
+    typeof: str =  get_enum_field(NetworkType)    
 
-    @property
-    def network_key(self):
-        """Returns associated network key."""
-        return Network.get_key(self.network_type, self.network_idx)
+
+    @staticmethod
+    def create(name_raw: str=defaults.NETWORK_NAME_RAW):
+        """Factory method: leveraged in both live & test settings.
+
+
+        """
+        index = int(name_raw[3:])
+        typeof = NetworkType[name_raw[:3].upper()]
+        name = f"{typeof.name}-{str(index).zfill(2)}"
+
+        return NetworkReference(name, name_raw, index, typeof)

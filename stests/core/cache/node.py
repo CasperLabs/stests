@@ -20,18 +20,11 @@ def get_node(network_id: str, node_id: str) -> Node:
         return do_get(store, key)
 
 
-def set_node(node: Node) -> str:
+def set_node(node: Node):
     """Appends node information to cache store.
 
     :param node: Node information being cached.
-    :returns: Nodes's cache key.
 
     """    
-    # Set key.
-    key = f"{node.network_key}.NODE:{node.key}"
-
-    # Push to store.
     with get_store() as store:
-        do_set(store, key, node)
-
-    return key
+        do_set(store, node.cache_key, node)
