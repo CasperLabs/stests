@@ -1,7 +1,7 @@
 from stests.core.clx.client_factory import get_client
 from stests.core.types import Account
 from stests.core.utils import logger
-from stests.core.utils.generator import GeneratorContext
+from stests.core.types import GeneratorContext
 
 
 TX_FEE = 10000000

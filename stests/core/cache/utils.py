@@ -1,9 +1,9 @@
 import json
 import typing
 
+from stests.core.cache.stores import get_store
 from stests.core.utils import encoder
 from stests.core.utils import logger
-
 
 
 def do_delete(store: typing.Callable, key: str):
@@ -51,3 +51,22 @@ def get_key(namespace: str, item_key: str) -> str:
 
     """
     return f"{namespace}:{item_key}"
+
+
+CHUNK_SIZE = 5000
+
+def flush_ns(ns):
+    """
+    Clears a namespace
+    :param ns: str, namespace i.e your:prefix
+    :return: int, cleared keys
+    """
+    cursor = '0'
+    ns_keys = ns + '*'
+    with get_store() as store:
+        while cursor != 0:
+            cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
+            if keys:
+                store.delete(*keys)
+
+    return True

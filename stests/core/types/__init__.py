@@ -7,6 +7,7 @@ from stests.core.types.enums import NodeStatus
 from stests.core.types.enums import NodeType
 
 from stests.core.types.account import Account
+from stests.core.types.generator import GeneratorContext
 from stests.core.types.generator import GeneratorReference
 from stests.core.types.key_pair import KeyPair
 from stests.core.types.network import Network
@@ -16,6 +17,7 @@ from stests.core.types.node import Node
 # Domain classes.
 CLASSES = {
     Account,
+    GeneratorContext,
     GeneratorReference,
     KeyPair,
     Network,

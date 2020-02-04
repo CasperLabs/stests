@@ -20,9 +20,6 @@ class EnvVars:
 def get_broker() -> RedisBroker:
     """Returns instance of redis MQ broker.
     
-    :param network_id: Identifier of network being tested, e.g. DEV-LOC-01
-    :returns: An instance of a redis MQ broker.
-
     """
     return RedisBroker(
         db=EnvVars.DB,

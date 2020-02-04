@@ -33,6 +33,16 @@ class DeployStatus(enum.Flag):
     REJECTED = enum.auto()
 
 
+class GeneratorExecutionStatus(enum.Enum):
+    """Enumeration over set of generation execution states.
+    
+    """
+    NULL = enum.auto()
+    ACTIVE = enum.auto()
+    COMPLETE = enum.auto()
+    ERROR = enum.auto()
+
+
 class NetworkOperatorType(enum.Enum):
     """Enumeration over set of network operator types.
     
