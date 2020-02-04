@@ -46,13 +46,13 @@ class Account:
 
 
     @staticmethod
-    def create(typeof=None):
+    def create(idx=1, key_pair=None, typeof=None, status=AccountStatus.NEW):
         """Factory: returns an instance for testing purposes.
         
         """
         return Account(
-            idx=1,
-            key_pair=KeyPair.create(),
-            status=AccountStatus.NEW,
+            idx=idx,
+            key_pair=key_pair or KeyPair.create(),
+            status=status,
             typeof=typeof or random.choice(list(AccountType))
             )

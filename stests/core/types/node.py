@@ -64,7 +64,7 @@ class Node(NetworkEntity):
         
         """
         return Node(
-            account=Account.create(AccountType.BOND),
+            account=Account.create(typeof=AccountType.BOND),
             host=defaults.NODE_HOST,
             idx=defaults.NODE_INDEX,
             port=defaults.NODE_PORT,

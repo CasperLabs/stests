@@ -24,22 +24,18 @@ def _encode(obj: typing.Any) -> typing.Any:
     """Encode message data.
     
     """
-    # Parse dictionaries.
     if isinstance(obj, dict):
-        for k, v in obj.items():
-            if isinstance(v, dict):
-                obj[k] = _encode(v)
-            elif isinstance(v, tuple):
-                obj[k] = tuple(map(_encode, v))
-            elif isinstance(v, list):
-                obj[k] = list(map(_encode, v))        
-            else:
-                obj[k] = _encode(v)
+        return {k: _encode(v) for k, v in obj.items()}
+        
+    if isinstance(obj, tuple):
+        return tuple(map(_encode, obj))
 
-    # Encode stests types.
+    if isinstance(obj, list):
+        return list(map(_encode, obj))
+
     if type(obj) in _encoder.TYPESET:
         return _encoder.encode(obj)
-        
+
     return obj
 
 
@@ -50,15 +46,4 @@ def decode(data: bytes) -> MessageData:
     :returns: Message data for further processing.
 
     """
-    # Decode raw json.
-    data = json.loads(data.decode("utf-8"))
-
-    # Decode any incoming workflow arguments.
-    try:
-        data['args']
-    except KeyError:
-        pass
-    else:
-        data['args'] = _encoder.decode(data['args'])
-
-    return data
+    return _encoder.decode(json.loads(data.decode("utf-8")))

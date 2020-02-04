@@ -34,7 +34,7 @@ class GeneratorScope:
     @property
     def generator_id(self):
         """Fully qualified generator identifier."""
-        return f"{self.network_id}.{self.typeof.upper()}.{str(self.run_idx).zfill(5)}"
+        return f"{self.network_id}.{self.typeof.upper()}.R-{str(self.run_idx).zfill(4)}"
 
     @property
     def network_id(self):

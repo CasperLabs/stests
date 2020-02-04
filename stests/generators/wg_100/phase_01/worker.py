@@ -2,8 +2,8 @@
 import stests.core.mq
 
 # Ensure context is registered.
-import stests.generators.wg_100.phase_01.ctx
+import stests.generators.wg_100.phase_01.context
 
 # Import actors.
-from stests.generators.wg_100.phase_01.actors import accounts
-from stests.generators.wg_100.phase_01.actors import contract
+import stests.generators.wg_100.phase_01.actors
+import stests.generators.wg_100.phase_01.orchestrator

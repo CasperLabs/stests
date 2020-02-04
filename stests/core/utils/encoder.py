@@ -23,59 +23,44 @@ def decode(data: typing.Any) -> typing.Any:
     """Decodes input data dispatched over wire.
     
     """
-    # Recurse over tuples/lists.
     if isinstance(data, tuple):
         return tuple(map(decode, data))
-    elif isinstance(data, list):
+
+    if isinstance(data, list):
         return list(map(decode, data))
 
-    # Skip all except dictionaries with injected type field.
     if isinstance(data, dict) and '_type' in data:
-        return _decode_domain_class(data)
+        return TYPEMAP[data['_type']].from_dict(data)
 
-    # Map stringified enum values.
+    if isinstance(data, dict):
+        return {k: decode(v) for k, v in data.items()}        
+
     if isinstance(data, str) and data in ENUMMAP:
         return ENUMMAP[data]
 
     return data
 
 
-def _decode_domain_class(data):
-    """Decodes a domain class by performing a type lookup.
-    
-    """
-    # Get type to be instantiated.
-    cls = TYPEMAP[data['_type']]
-    
-    # Return type instance hydrated from incoming data.
-    return cls.from_dict(data)
-
-
 def encode(data: typing.Any) -> typing.Any:
     """Encodes input data in readiness for dispatch over wire.
     
     """
-    # Recurse over tuples/lists.
     if isinstance(data, tuple):
         return tuple(map(encode, data))
-    elif isinstance(data, list):
+
+    if isinstance(data, list):
         return list(map(encode, data))
 
-    # Skip non domain types.
     if type(data) not in TYPESET:
         return data
 
-    # Stringify domain enums.
     if type(data) in ENUMS:
         return str(data)
 
-    # Map domain types to dictionary.
-    obj = data.to_dict()
-
-    # Inject type info used when decoding.
-    obj['_type'] = f"{data.__module__}.{data.__class__.__name__}"
-
-    return obj
+    # Inject type info for subsequent decoding operation.
+    return {**data.to_dict(), **{
+        '_type': f"{data.__module__}.{data.__class__.__name__}",
+    }}
 
 
 def register_type(cls):

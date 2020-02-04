@@ -40,7 +40,7 @@ _exec_generator()
     g_args=${args[@]:2:$args_len}
 
     # Execute generator.
-    pipenv run python $STESTS_GENERATORS/wg_$g_type/phase_$g_phase/generator.py $g_args
+    pipenv run python $STESTS_GENERATORS/wg_$g_type/phase_$g_phase $g_args
 }
 
 # WG-100: ERC-20 auction.

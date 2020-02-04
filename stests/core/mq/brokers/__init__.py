@@ -30,6 +30,7 @@ def get_broker() -> Broker:
     :returns: A configured message broker.
 
     """
+    # factory = FACTORIES["REDIS"]
     try:
         factory = FACTORIES[EnvVars.TYPE]
     except KeyError:
