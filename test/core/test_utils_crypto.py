@@ -6,8 +6,8 @@ from stests.core.utils import crypto
 FIXTURES = {
     'KeyEncoding',
     'get_key_pair',
-    'get_public_key_pem',
-    'get_private_key_pem'
+    'get_pbk_pem_from_bytes',
+    'get_pvk_pem_from_bytes'
 }
 
 

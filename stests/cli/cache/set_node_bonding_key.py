@@ -2,40 +2,43 @@ import argparse
 
 from stests.core import cache
 from stests.core.types import Network
-from stests.core.types import NetworkLifetime
+from stests.core.types import NetworkType
 from stests.core.types import Node
 from stests.core.types import NodeType
+from stests.core.utils import args_validator
 from stests.core.utils import defaults
+from stests.core.utils import logger
 
 
-# Set CLI argument parser.
-ARGS = argparse.ArgumentParser(
-    f"Uploads node information to stests cache."
-)
+from stests.core.types import Account
+from stests.core.types import AccountType
+from stests.core.types import NetworkIdentifier
+from stests.core.types import NodeIdentifier
+from stests.core.utils import crypto
 
-# Set CLI argument: network identifer.
+
+# CLI argument parser.
+ARGS = argparse.ArgumentParser(f"Upload node bonding provate key to stests.")
+
+# CLI argument: network name.
 ARGS.add_argument(
-    "--network-id",
-    help="Identifier of network being tested.",
-    dest="network_id",
-    type=str,
-    default=defaults.NETWORK_ID
+    "network",
+    help="Network name {type}{id}, e.g. lrt1.",
+    type=args_validator.validate_network_name
+    )
+    
+# CLI argument: node index.
+ARGS.add_argument(
+    "index",
+    help="Node index - must be between 1 and 999.",
+    type=args_validator.validate_node_index
     )
 
-# Set CLI argument: Node identifer.
+# Set CLI argument: private key in PEM format.
 ARGS.add_argument(
-    "--node-index",
-    help="Identifier of node being tested.",
-    dest="node_index",
-    type=str,
-    default=defaults.NODE_ID
-    )
-
-# Set CLI argument: Node's private key PEM file.
-ARGS.add_argument(
-    "--private-key-pem-file",
-    help="The node's private key PEM file.",
-    dest="pvk_pem_fpath",
+    "pem_path",
+    default=defaults.NODE_HOST,
+    help="Path to the node's private key in PEM format.",
     type=str
     )
 
@@ -46,45 +49,30 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    cache.set_node(get_node(args))
+    # Set identifiers.
+    network_id = NetworkIdentifier.create(args.network)
+    node_id = NodeIdentifier.create(args.network, args.index)
 
+    # Set network.
+    network = cache.get_network(network_id)
+    if network is None:
+        raise ValueError("Unregistered network.")
 
-def get_node(args):
-    """Returns domain object instance deserialised from CLI args.
+    # Set node.
+    node = cache.get_node(node_id)
+    if node is None:
+        raise ValueError("Unregistered node.")
+
+    # Set account.
+    pvk_hex = crypto.get_pvk_hex_from_pem_file(args.pem_path)
+
     
-    """
-    node = Node()
-    node.host = args.host
-    node.name = args.name
-    node.network_id = args.network_id
-    node.port = args.port
-    node.typeof = NodeType[args.typeof]
 
-    return node
+    print(pvk_hex)
 
+    AccountType.BOND
 
-def get_network(args):
-    """Pulls network information from cache.
-    
-    """
-    with get_store() as store:
-        return store.get(
-            args.network_id
-        )
-
-
-def get_network_cache_key(network):
-    """Returns cache key to use.
-    
-    """
-    return f"{network.name}"
-
-
-def get_network_cache_data(network):
-    """Returns cache data to persist in cache.
-    
-    """
-    return json.dumps(encoder.encode(network), indent=4)
+    logger.log("Node bonding key successfully registered")
 
 
 # Entry point.

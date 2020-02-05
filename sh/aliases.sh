@@ -23,6 +23,7 @@ alias stests-workers-reset-logs=$STESTS_SH/workers_reset_logs.sh
 
 # Cache interaction commands.
 alias stests-set-network='cd $STESTS_HOME && pipenv run python $STESTS_CLI/cache/set_network.py'
+alias stests-set-network-faucet-key='cd $STESTS_HOME && pipenv run python $STESTS_CLI/cache/set_network_faucet_key.py'
 alias stests-set-node='cd $STESTS_HOME && pipenv run python $STESTS_CLI/cache/set_node.py'
 alias stests-set-node-bonding-key='cd $STESTS_HOME && pipenv run python $STESTS_CLI/cache/set_node_bonding_key.py'
 

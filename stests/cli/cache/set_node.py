@@ -21,7 +21,7 @@ ARGS.add_argument(
     type=args_validator.validate_network_name
     )
     
-# CLI argument: network index.
+# CLI argument: node index.
 ARGS.add_argument(
     "index",
     help="Node index - must be between 1 and 999.",

@@ -38,7 +38,7 @@ class PrivateKey(Key):
     @property
     def as_pem(self) -> str:
         """Key as pem string."""
-        return crypto.get_private_key_pem(self.as_bytes)
+        return crypto.get_pvk_pem_from_bytes(self.as_bytes)
 
 
 @dataclass
@@ -49,7 +49,7 @@ class PublicKey(Key):
     @property
     def as_pem(self) -> str:
         """Returns key as pem string."""
-        return crypto.get_public_key_pem(self.as_bytes)
+        return crypto.get_pbk_pem_from_bytes(self.as_bytes)
 
 
 @dataclass_json

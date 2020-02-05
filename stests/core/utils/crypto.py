@@ -1,3 +1,4 @@
+import base64
 import enum
 import typing
 
@@ -61,8 +62,24 @@ def get_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str,
     return pvk, pbk
 
 
-def get_public_key_pem(pbk_bytes):
-    """Returns public key in PEM format.
+def get_pbk_bytes_from_pem_file(fpath):
+    """Returns public key (bytes) pulled from a PEM file.
+    
+    """
+    return _get_bytes_from_pem_file(fpath)
+
+
+def get_pbk_hex_from_pem_file(fpath):
+    """Returns public key (hex) pulled from a PEM file.
+    
+    """
+    as_bytes = get_pbk_bytes_from_pem_file(fpath)
+
+    return as_bytes.hex()
+
+
+def get_pbk_pem_from_bytes(pbk_bytes):
+    """Returns public key (pem) from bytes.
     
     """
     return Ed25519PublicKey.from_public_bytes(pbk_bytes).public_bytes(
@@ -71,8 +88,24 @@ def get_public_key_pem(pbk_bytes):
         )
 
 
-def get_private_key_pem(pvk_bytes):
-    """Returns private key in PEM format.
+def get_pvk_bytes_from_pem_file(fpath):
+    """Returns private key (bytes) pulled from a PEM file.
+    
+    """
+    return _get_bytes_from_pem_file(fpath)
+
+
+def get_pvk_hex_from_pem_file(fpath):
+    """Returns private key (hex) pulled from a PEM file.
+    
+    """
+    as_bytes = get_pvk_bytes_from_pem_file(fpath)
+
+    return as_bytes.hex()
+
+
+def get_pvk_pem_from_bytes(pvk_bytes):
+    """Returns private key (pem) from bytes.
     
     """
     return Ed25519PrivateKey.from_private_bytes(pvk_bytes).private_bytes(
@@ -80,3 +113,15 @@ def get_private_key_pem(pvk_bytes):
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption()
     )
+
+
+def _get_bytes_from_pem_file(fpath):
+    """Returns bytes from a pem file.
+    
+    """
+    with open(fpath, 'r') as fstream:
+        as_pem = fstream.readlines()
+    as_b64 = [l for l in as_pem if l and not l.startswith("-----")][0].strip()
+    as_bytes = base64.b64decode(as_b64)
+
+    return len(as_bytes) % 32 == 0 and as_bytes[:32] or as_bytes[-32:]

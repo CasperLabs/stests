@@ -42,7 +42,7 @@ class NetworkIdentifier:
         typeof = NetworkType[name_raw[:3].upper()]
         name = f"{typeof.name}-{str(index).zfill(2)}"
 
-        return NetworkIdentifier(name, name_raw, index, typeof)
+        return cls(name, name_raw, index, typeof)
 
 
 @dataclass_json
@@ -69,7 +69,9 @@ class NodeIdentifier:
         """Factory method: leveraged in both live & test settings.
 
         """
-        return NodeIdentifier.create(NetworkIdentifier.create(network_name), node)
+        network = NetworkIdentifier.create(network_name)
+
+        return cls(network, node)
 
 
 @dataclass_json

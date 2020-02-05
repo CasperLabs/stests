@@ -6,6 +6,7 @@ from stests.core.utils import encoder
 from stests.core.utils import logger
 
 
+
 def do_delete(store: typing.Callable, key: str):
     """Wraps redis.delete command.
     
@@ -15,6 +16,21 @@ def do_delete(store: typing.Callable, key: str):
     """
     logger.log(f"CACHE :: delete :: {key}")
     store.delete(key)
+
+
+def do_get(store: typing.Callable, key: str) -> typing.Any:
+    """Wraps redis.get command.
+    
+    :param store: Cache store connection wrapper.
+    :param key: Key of item to be cached.
+
+    """
+    logger.log(f"CACHE :: get :: {key}")
+    obj = store.get(key)
+    if obj is None:
+        logger.log(f"CACHE :: get :: {key} :: not found")
+    else:
+        return encoder.decode(json.loads(obj))
 
 
 def do_set(store: typing.Callable, key: str, data: typing.Any):
@@ -27,17 +43,6 @@ def do_set(store: typing.Callable, key: str, data: typing.Any):
     """
     logger.log(f"CACHE :: set :: {key}")
     store.set(key, json.dumps(encoder.encode(data), indent=4))
-
-
-def do_get(store: typing.Callable, key: str) -> typing.Any:
-    """Wraps redis.get command.
-    
-    :param store: Cache store connection wrapper.
-    :param key: Key of item to be cached.
-
-    """
-    logger.log(f"CACHE :: get :: {key}")
-    return encoder.decode(json.loads(store.get(key)))
 
 
 def get_key(namespace: str, item_key: str) -> str:
