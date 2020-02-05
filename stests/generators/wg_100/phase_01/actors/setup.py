@@ -19,13 +19,14 @@ _QUEUE = f"{metadata.TYPE}.phase_01.setup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_flush_cache(ctx: GeneratorContext):   
-    """Flushes cache of all previous run data.
+def do_reset_cache(ctx: GeneratorContext):   
+    """Resets cache in preparation for a new run.
     
     """
     # Flush previous cahce data.
     cache.flush_namespace(ctx.cache_key)
 
+    # Cache.
     cache.set_run(ctx)
 
     # Chain.

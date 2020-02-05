@@ -37,7 +37,6 @@ def do_get(store: typing.Callable, key: str) -> typing.Any:
 
     """
     logger.log(f"CACHE :: get :: {key}")
-    print(store.get(key))
     return encoder.decode(json.loads(store.get(key)))
 
 

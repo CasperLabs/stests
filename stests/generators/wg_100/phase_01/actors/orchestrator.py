@@ -5,10 +5,10 @@ from stests.generators.wg_100 import metadata
 from stests.generators.wg_100.phase_01.actors.auction import do_start_auction
 from stests.generators.wg_100.phase_01.actors.setup import do_create_account
 from stests.generators.wg_100.phase_01.actors.setup import do_deploy_contract
-from stests.generators.wg_100.phase_01.actors.setup import do_flush_cache
 from stests.generators.wg_100.phase_01.actors.setup import do_fund_contract
 from stests.generators.wg_100.phase_01.actors.setup import do_fund_faucet
 from stests.generators.wg_100.phase_01.actors.setup import do_fund_user
+from stests.generators.wg_100.phase_01.actors.setup import do_reset_cache
 
 
 # Queue to which message will be dispatched.
@@ -24,14 +24,14 @@ def execute(ctx):
     :param ctx: Contextual information passed along flow of execution.
     
     """
-    do_flush_cache.send_with_options(
+    do_reset_cache.send_with_options(
         args=(ctx, ), 
-        on_success=on_flush_cache
+        on_success=on_reset_cache
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_flush_cache(_, ctx):
+def on_reset_cache(_, ctx):
     """Callback: on_flush_cache.
     
     """
