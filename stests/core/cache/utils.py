@@ -52,7 +52,7 @@ def get_key(namespace: str, item_key: str) -> str:
     return f"{namespace}:{item_key}"
 
 
-def flush_namespace(ns: str) -> bool:
+def flush_namespace(store: typing.Callable, namespace: str) -> bool:
     """Clears a namespace.
 
     :param ns: namespace i.e your:prefix
@@ -60,12 +60,11 @@ def flush_namespace(ns: str) -> bool:
 
     """
     CHUNK_SIZE = 5000
-    with get_store() as store:
-        cursor = '0'
-        ns_keys = ns + '*'
-        while cursor != 0:
-            cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
-            if keys:
-                store.delete(*keys)
+    cursor = '0'
+    ns_keys = namespace + '*'
+    while cursor != 0:
+        cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
+        if keys:
+            store.delete(*keys)
 
     return True

@@ -5,7 +5,7 @@ from stests.core.utils import encoder
 
 
 
-def _set_instance(instance):
+def _do_set(instance):
     """Sink function to push instances of domain types.
     
     """
@@ -17,16 +17,16 @@ def _set_instance(instance):
 
 
 # Append account information.
-set_account = _set_instance
+set_account = _do_set
 
 
 # Append network information.
-set_network = _set_instance
+set_network = _do_set
 
 
 # Append node information.
-set_node = _set_instance
+set_node = _do_set
 
 
 # Append run information.
-set_run = _set_instance
+set_run = _do_set
