@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 from stests.core.types.network import NetworkReference
+from stests.core.utils import defaults
 
 
 
@@ -23,6 +24,14 @@ class GeneratorReference:
     def cache_key(self):
         """Returns key to be used when caching an instance."""
         return f"{self.typeof}:R-{str(self.run).zfill(5)}"
+
+
+    @classmethod
+    def create(cls, run=defaults.GENERATOR_RUN, typeof="WG-XXX"):
+        """Factory method: leveraged in both live & test settings.
+        
+        """
+        return GeneratorReference(run, typeof)
 
 
 @dataclass_json
@@ -53,3 +62,21 @@ class GeneratorContext:
         """Returns information required to disambiguate between generator runs."""
         return GeneratorReference(self.run, self.typeof)
 
+
+    @classmethod
+    def create(
+        cls,
+        network=defaults.NETWORK_NAME,
+        node=defaults.NODE_INDEX,
+        run=defaults.GENERATOR_RUN,
+        typeof="WG-XXX"
+        ):
+        """Factory method: leveraged in both live & test settings.
+        
+        """
+        return GeneratorContext(
+            NetworkReference.create(network),
+            node,
+            run,
+            typeof
+            )

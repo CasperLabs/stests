@@ -1,32 +1,36 @@
-# Default account index (>=1, <=99999999).
+# Account: index (>=1, <=99999999).
 ACCOUNT_INDEX: int = 1
 
-# Default network identifier when running tests.
+# Generator: run (>=1, <=65536).
+GENERATOR_RUN = 1
+
+# Network: identifier when running tests.
 NETWORK_ID = "LOC-01"
 
-# Default network index (>=1, <=99).
+# Network: index (>=1, <=99).
 NETWORK_INDEX: int = 1
 
-# Default network name.
+# Network: name.
 NETWORK_NAME = "LOC-01"
 
-# Default raw network name.
+# Network: name (raw).
 NETWORK_NAME_RAW = "loc1"
 
-# Default network index (one based).
+# Network: index (one based).
 NETWORK_TYPE: str = "LOC"
 
-# Default node index (>=1, <=999).
+# Node: index (>=1, <=999).
 NODE_INDEX: int = 1
 
-# Default node name.
+# Node: name.
 NODE_NAME = "NODE-0001"
 
-# Default node host.
+# Node: host.
 NODE_HOST = "localhost"
 
-# Default node port.
+# Node: port.
 NODE_PORT = 40400
 
-# Default node type.
+# Node: type.
 NODE_TYPE = "FULL"
+

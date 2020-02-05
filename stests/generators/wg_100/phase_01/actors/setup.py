@@ -23,8 +23,8 @@ def do_reset_cache(ctx: GeneratorContext):
     """Resets cache in preparation for a new run.
     
     """
-    # Flush previous cahce data.
-    cache.flush_namespace(ctx.cache_key)
+    # Flush previous cache data.
+    cache.flush_run(ctx)
 
     # Cache.
     cache.set_run(ctx)
