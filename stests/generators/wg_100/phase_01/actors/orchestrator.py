@@ -26,7 +26,7 @@ def execute(ctx):
     """
     do_reset_cache.send_with_options(
         args=(ctx, ), 
-        # on_success=on_reset_cache
+        on_success=on_reset_cache
         )
 
 

@@ -7,7 +7,9 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.types import Account
 from stests.core.types import AccountType
-from stests.core.types import GeneratorContext
+from stests.core.types import GeneratorRun
+from stests.core.types import AccountIdentifier
+
 from stests.core.utils import resources
 from stests.generators.wg_100 import defaults
 from stests.generators.wg_100 import metadata
@@ -19,7 +21,7 @@ _QUEUE = f"{metadata.TYPE}.phase_01.setup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_reset_cache(ctx: GeneratorContext):   
+def do_reset_cache(ctx: GeneratorRun):   
     """Resets cache in preparation for a new run.
     
     """
@@ -29,23 +31,23 @@ def do_reset_cache(ctx: GeneratorContext):
     # Cache.
     cache.set_run(ctx)
 
-    # d = NodeReference(ctx.network, ctx.node)
-    # print(cache.get_node(d))
+    print(cache.get_network(ctx.get_network_identifier()))
+    print(cache.get_node(ctx.get_node_identifier()))
 
     # Chain.
     return ctx
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_create_account(ctx: GeneratorContext, index: int, typeof: AccountType):
+def do_create_account(ctx: GeneratorRun, index: int, typeof: AccountType):
     """Creates an account for use during the course of the simulation.
     
     """
     # Instantiate.
     account = Account.create(
         index=index,
-        generator=ctx.get_reference(),
-        network=ctx.network,
+        generator=ctx.get_run_identifier(),
+        network=ctx.get_network_identifier(),
         typeof=typeof
         )
 

@@ -3,8 +3,8 @@ import datetime
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.types import GeneratorContext
-from stests.core.types import NetworkReference
+from stests.core.types import GeneratorRun
+from stests.core.types import NetworkIdentifier
 from stests.core.types import get_isodatetime_field
 from stests.core.types import get_uuid_field
 from stests.core.utils import encoder
@@ -50,7 +50,7 @@ class Arguments:
 
 @dataclass_json
 @dataclass
-class Context(GeneratorContext):
+class Context(GeneratorRun):
     # Arguments derived from command line.
     args: Arguments
 
@@ -66,7 +66,7 @@ class Context(GeneratorContext):
         """
         return Context(
             args=args,
-            network=NetworkReference.create(network),
+            network=NetworkIdentifier.create(network),
             node=node,
             typeof=typeof.upper(),
             run=run

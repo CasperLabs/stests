@@ -6,15 +6,15 @@ from stests.core.types.enums import NodeStatus
 from stests.core.types.enums import NodeType
 
 from stests.core.types.account import Account
-from stests.core.types.generator import GeneratorContext
+from stests.core.types.generator_run import GeneratorRun
 from stests.core.types.key_pair import KeyPair
 from stests.core.types.network import Network
 from stests.core.types.node import Node
 
-from stests.core.types.references import AccountReference
-from stests.core.types.references import GeneratorReference
-from stests.core.types.references import NodeReference
-from stests.core.types.references import NetworkReference
+from stests.core.types.identifiers import AccountIdentifier
+from stests.core.types.identifiers import GeneratorRunIdentifier
+from stests.core.types.identifiers import NodeIdentifier
+from stests.core.types.identifiers import NetworkIdentifier
 
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
@@ -23,14 +23,18 @@ from stests.core.types.utils import get_uuid_field
 # Domain classes.
 CLASSES = {
     Account,
-    AccountReference,
-    GeneratorContext,
-    GeneratorReference,
+    GeneratorRun,
     KeyPair,
     Network,
-    NetworkReference,
     Node,
-    NodeReference
+}
+
+# Domain class instance identifiers.
+IDENTIFIERS = {
+    AccountIdentifier,
+    GeneratorRunIdentifier,
+    NetworkIdentifier,
+    NodeIdentifier,
 }
 
 # Domain enums.
@@ -44,4 +48,4 @@ ENUMS = {
 }
 
 # Domain model.
-TYPESET = CLASSES | ENUMS
+TYPESET = CLASSES | IDENTIFIERS | ENUMS

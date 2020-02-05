@@ -6,7 +6,8 @@ from stests.core.types.account import Account
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import NodeStatus
 from stests.core.types.enums import NodeType
-from stests.core.types.references import NetworkReference
+from stests.core.types.identifiers import NetworkIdentifier
+from stests.core.types.identifiers import NodeIdentifier
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
@@ -30,7 +31,7 @@ class Node:
     index: int
 
     # Associated network reference information.
-    network: NetworkReference
+    network: NetworkIdentifier
 
     # Node's external facing GRPC port.
     port: int
@@ -59,6 +60,13 @@ class Node:
         return f"{self.network.cache_key}.NODE:{str(self.index).zfill(4)}"
 
 
+    def get_identifier(self) -> NodeIdentifier:
+        """Returns information required for identification purposes.
+        
+        """
+        return NodeIdentifier(self.network, self.index)
+
+
     @classmethod
     def get_key(cls, index: int) -> str:
         """Returns node's key for identification purposes.
@@ -81,6 +89,6 @@ class Node:
         """Factory method: leveraged in both live & test settings.
         
         """
-        network = NetworkReference.create(network)
+        network = NetworkIdentifier.create(network)
 
         return Node(account, host, index, network, port, status, typeof)

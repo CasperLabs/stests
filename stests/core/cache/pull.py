@@ -8,7 +8,7 @@ from stests.core.types import Account
 from stests.core.types import AccountType
 from stests.core.types import Node
 from stests.core.types import Network
-from stests.core.types import NetworkReference
+from stests.core.types import NetworkIdentifier
 
 
 
@@ -29,6 +29,10 @@ def _do_get(key_ref):
         return do_get(store, key)
 
 
+# Get account information.
+get_account = _do_get
+
+
 # Get network information.
 get_network = _do_get
 
@@ -37,27 +41,5 @@ get_network = _do_get
 get_node = _do_get
 
 
-
-
-def get_account(
-    network_id: str,
-    namespace: str,
-    typeof: AccountType,
-    index: int
-    ) -> Account:
-    """Retrieves an account from cache store.
-
-    :param network_id: Identifier of network being tested.
-    :param namespace: Cache key namespace.
-    :param typeof: Type of account to be retrieved.
-    :param index: Index of account.
-    :returns: A previously cached account.
-
-    """    
-    # Set keyspace.
-    namespace = f"{namespace}.account.{str(typeof).split('.')[-1]}"
-    key = get_key(network_id, namespace, str(index).zfill(7))
-
-    # Pull from store.
-    with get_store() as store:
-        return do_get(store, key)
+# Get node information.
+get_run = _do_get

@@ -6,6 +6,7 @@ from datetime import datetime
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import NetworkStatus
 from stests.core.types.enums import NetworkType
+from stests.core.types.identifiers import NetworkIdentifier
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
@@ -50,6 +51,13 @@ class Network:
     def key(self):
         """Returns network's key for identification purposes."""
         return Network.get_key(self.typeof, self.index)
+
+
+    def get_identifier(self) -> NetworkIdentifier:
+        """Returns information required for identification purposes.
+        
+        """
+        return NetworkIdentifier(self.name, self.name_raw, self.index, self.typeof)
 
 
     @classmethod

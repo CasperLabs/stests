@@ -4,7 +4,7 @@ from datetime import datetime
 
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import DeployStatus
-from stests.core.types.network import NetworkReference
+from stests.core.types.network import NetworkIdentifier
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 

@@ -6,9 +6,10 @@ from datetime import datetime
 from stests.core.types.enums import AccountStatus
 from stests.core.types.enums import AccountType
 from stests.core.types.enums import get_enum_field
+from stests.core.types.identifiers import AccountIdentifier
+from stests.core.types.identifiers import GeneratorRunIdentifier
+from stests.core.types.identifiers import NetworkIdentifier
 from stests.core.types.key_pair import KeyPair
-from stests.core.types.references import GeneratorReference
-from stests.core.types.references import NetworkReference
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
@@ -23,7 +24,7 @@ class Account:
     
     """
     # Associated generator reference information.
-    generator: GeneratorReference
+    generator: GeneratorRunIdentifier
 
     # Numerical index to distinguish between accounts within same context.
     index: int
@@ -32,7 +33,7 @@ class Account:
     key_pair: KeyPair
 
     # Associated network reference information.
-    network: NetworkReference
+    network: NetworkIdentifier
 
     # Current account status.
     status: AccountStatus = get_enum_field(AccountStatus)
@@ -55,6 +56,13 @@ class Account:
         return key + f":ACCOUNTS:{self.typeof.name}:{str(self.index).zfill(6)}"
 
 
+    def get_identifier(self) -> AccountIdentifier:
+        """Returns information required for identification purposes.
+        
+        """
+        return AccountIdentifier(self.generator, self.index, self.network, self.typeof)
+
+
     @classmethod
     def create(
         cls,
@@ -69,7 +77,7 @@ class Account:
         
         """
         key_pair=key_pair or KeyPair.create()
-        network = network if isinstance(network, NetworkReference) else NetworkReference.create(network)
+        network = network if isinstance(network, NetworkIdentifier) else NetworkIdentifier.create(network)
         typeof = typeof or random.choice(list(AccountType))
 
         return Account(generator, index, key_pair, network, status, typeof)
