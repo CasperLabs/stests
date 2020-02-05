@@ -1,9 +1,9 @@
 import datetime
+import uuid
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 from stests.core.types.network import NetworkReference
-from stests.core.types.utils import get_isodatetime_field
 
 
 
@@ -46,7 +46,7 @@ class GeneratorContext:
     @property
     def cache_key(self):
         """Returns key to be used when caching an instance."""
-        return f"{self.network.cache_key}:{self.get_reference().cache_key}"
+        return f"{self.network.cache_key}.{self.get_reference().cache_key}:CTX"
 
 
     def get_reference(self):

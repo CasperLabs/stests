@@ -1,9 +1,12 @@
 import argparse
+import datetime
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 from stests.core.types import GeneratorContext
 from stests.core.types import NetworkReference
+from stests.core.types import get_isodatetime_field
+from stests.core.types import get_uuid_field
 from stests.core.utils import encoder
 
 
@@ -29,7 +32,6 @@ class Arguments:
     # Initial user account CLX balance.
     user_initial_clx_balance: int
 
-
     @staticmethod
     def create(args: argparse.Namespace):
         """Simple factory method.
@@ -49,7 +51,13 @@ class Arguments:
 @dataclass_json
 @dataclass
 class Context(GeneratorContext):
+    # Arguments derived from command line.
     args: Arguments
+
+    # Standard fields.
+    _ts_created: datetime = get_isodatetime_field(True)
+    _ts_updated: datetime = get_isodatetime_field(True)   
+    _uid: str = get_uuid_field(True) 
 
     @classmethod
     def create(cls, args: Arguments, network: str, node: int, run: int, typeof: str):
@@ -65,5 +73,6 @@ class Context(GeneratorContext):
         )
 
 
-# Framework requirement in support of serialisation scenarios.
+# Framework requirement to support serialisation scenarios.
+encoder.register_type(Arguments)
 encoder.register_type(Context)

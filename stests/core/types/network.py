@@ -10,6 +10,7 @@ from stests.core.types.enums import NetworkOperatorType
 from stests.core.types.enums import NetworkStatus
 from stests.core.types.enums import NetworkType
 from stests.core.types.utils import get_isodatetime_field
+from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
 
 
@@ -38,9 +39,10 @@ class Network:
     # Type of network, e.g. local, lrt, proof-of-concept ...etc.
     typeof: NetworkType = get_enum_field(NetworkType)
 
-    # Standard time stamps.
+    # Standard fields.
     _ts_created: datetime = get_isodatetime_field(True)
     _ts_updated: datetime = get_isodatetime_field(True)
+    _uid: str = get_uuid_field(True) 
 
     @property
     def cache_key(self):

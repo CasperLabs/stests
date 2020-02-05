@@ -9,6 +9,7 @@ from stests.core.types.enums import NodeStatus
 from stests.core.types.enums import NodeType
 from stests.core.types.network import NetworkReference
 from stests.core.types.utils import get_isodatetime_field
+from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
 
 
@@ -41,9 +42,10 @@ class Node:
     # Type of node in terms of it's degree of consensus participation.
     typeof: NodeType = get_enum_field(NodeType)
     
-    # Standard time stamps.
+    # Standard fields.
     _ts_created: datetime = get_isodatetime_field(True)
     _ts_updated: datetime = get_isodatetime_field(True)
+    _uid: str = get_uuid_field(True) 
 
 
     @property

@@ -45,8 +45,6 @@ def encode(data: typing.Any) -> typing.Any:
     """Encodes input data in readiness for dispatch over wire.
     
     """
-    from stests.core.types.generator import GeneratorContext
-
     if isinstance(data, tuple):
         return tuple(map(encode, data))
 
@@ -73,4 +71,5 @@ def register_type(cls):
     if cls not in TYPESET:
         TYPESET = TYPESET | { cls, }
         TYPEMAP[f"{cls.__module__}.{cls.__name__}"] = cls
+        print(cls, cls in TYPESET)
 

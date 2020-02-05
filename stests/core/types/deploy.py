@@ -6,6 +6,7 @@ from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import DeployStatus
 from stests.core.types.network import NetworkReference
 from stests.core.types.utils import get_isodatetime_field
+from stests.core.types.utils import get_uuid_field
 
 
 
@@ -21,9 +22,10 @@ class Deploy:
     # Deploy's processing status.
     status: DeployStatus = get_enum_field(DeployStatus)
 
-    # Standard time stamps.
+    # Standard fields.
     _ts_created: datetime = get_isodatetime_field(True)
     _ts_updated: datetime = get_isodatetime_field(True)
+    _uid: str = get_uuid_field(True) 
 
 
     @staticmethod

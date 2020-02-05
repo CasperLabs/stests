@@ -23,8 +23,10 @@ def do_flush_cache(ctx: GeneratorContext):
     """Flushes cache of all previous run data.
     
     """
-    # Instantiate.
+    # Flush previous cahce data.
     cache.flush_namespace(ctx.cache_key)
+
+    cache.set_run(ctx)
 
     # Chain.
     return ctx

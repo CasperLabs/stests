@@ -12,6 +12,7 @@ from stests.core.types.network import NetworkReference
 from stests.core.types.enums import get_enum_field
 from stests.core.types.key_pair import KeyPair
 from stests.core.types.utils import get_isodatetime_field
+from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
 
 
@@ -41,9 +42,10 @@ class Account:
     # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
     typeof: AccountType = get_enum_field(AccountType)
 
-    # Standard time stamps.
+    # Standard fields.
     _ts_created: datetime = get_isodatetime_field(True)
     _ts_updated: datetime = get_isodatetime_field(True)
+    _uid: str = get_uuid_field(True) 
 
 
     @property

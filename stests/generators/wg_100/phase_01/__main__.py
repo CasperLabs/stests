@@ -89,15 +89,12 @@ ARGS.add_argument(
     )
 
 
-
+# Instantiate context & execute workflow.
 args=ARGS.parse_args()
-
-ctx = Context.create(
+orchestrator.execute(Context.create(
     args=Arguments.create(args),
     network=args.network,
     node=args.node,
     run=args.run,
     typeof=metadata.TYPE    
-    )
-
-orchestrator.execute(ctx)
+    ))

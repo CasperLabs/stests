@@ -14,6 +14,10 @@ from stests.core.types.network import Network
 from stests.core.types.network import NetworkReference
 from stests.core.types.node import Node
 
+from stests.core.types.utils import get_isodatetime_field
+from stests.core.types.utils import get_uuid_field
+
+
 # Domain classes.
 CLASSES = {
     Account,

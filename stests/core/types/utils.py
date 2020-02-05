@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import field
 from dataclasses_json import config
 from datetime import datetime
@@ -30,4 +31,23 @@ def get_isodatetime_field(set_default=False):
     )
 
 
+def get_uuid_field(set_default=False):
+    """Returns a UUID4 field.
+    
+    :param default_factory: Factory method when underlying field value is initialised.
 
+    """
+    if set_default == True:
+        return field(
+            default_factory=uuid.uuid4,
+            metadata=config(
+                encoder=str,
+                decoder=uuid.UUID
+            )
+        )
+    return field(
+        metadata=config(
+            encoder=str,
+            decoder=uuid.UUID
+        )
+    )
