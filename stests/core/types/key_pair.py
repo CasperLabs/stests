@@ -54,7 +54,7 @@ class PublicKey(Key):
 
 @dataclass_json
 @dataclass
-class KeyPair():
+class KeyPair:
     """Represents a digital key pair used for identification, signature and verification purposes.
     
     """
@@ -64,15 +64,27 @@ class KeyPair():
     # Public key used for account addressing & digital signature verification purposes.
     public_key: PublicKey
 
+
     @classmethod
-    def create(cls, pvk=None, pbk=None):
-        """Factory: returns an instance for testing purposes.
+    def create(cls, pvk_hex=None, pbk_hex=None):
+        """Factory: returns an instance derived from .
         
         """
-        if (not pvk and pbk) or (pvk and not pbk):
+        if (not pvk_hex and pbk_hex) or (pvk_hex and not pbk_hex):
             raise ValueError("Must either specify both keys or none at all.")
         
-        if not pvk and not pbk:
-            pvk, pbk = crypto.get_key_pair(crypto.KeyEncoding.HEX)
+        if not pvk_hex and not pbk_hex:
+            pvk_hex, pbk_hex = crypto.generate_key_pair(crypto.KeyEncoding.HEX)
 
-        return KeyPair(PrivateKey(pvk), PublicKey(pbk))
+        return cls(PrivateKey(pvk_hex), PublicKey(pbk_hex))
+
+    
+    @classmethod
+    def create_from_pvk_pem_file(cls, fpath):
+        """Factory: returns an instance derived from a private key PEM file.
+        
+        """
+        pvk_hex, pbk_hex = crypto.get_key_pair_from_pvk_pem_file(fpath, crypto.KeyEncoding.HEX)
+
+        return cls.create(pvk_hex, pbk_hex)
+

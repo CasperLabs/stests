@@ -28,12 +28,12 @@ class Deploy:
     _uid: str = get_uuid_field(True) 
 
 
-    @staticmethod
-    def create():
+    @classmethod
+    def create(cls):
         """Factory: returns an instance for testing purposes.
         
         """
-        return Deploy(
+        return cls(
             hash_id="6ff843ba685842aa82031d3f53c48b66326df7639a63d128974c5c14f31a0f33343a8c65551134ed1ae0f2b0dd2bb495dc81039e3eeb0aa1bb0388bbeac29183",
             status=DeployStatus.NULL
         )

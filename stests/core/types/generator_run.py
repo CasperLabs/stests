@@ -87,5 +87,5 @@ class GeneratorRun:
         """Factory method: leveraged in both live & test settings.
         
         """
-        return GeneratorRun(NetworkIdentifier.create(network), node, run, typeof)
+        return cls(NetworkIdentifier.create(network), node, run, typeof)
 

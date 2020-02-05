@@ -4,6 +4,7 @@ from stests.core import cache
 from stests.core.types import Network
 from stests.core.types import NetworkType
 from stests.core.types import Node
+from stests.core.types import NetworkIdentifier
 from stests.core.types import NodeType
 from stests.core.utils import args_validator
 from stests.core.utils import defaults
@@ -14,34 +15,19 @@ from stests.core.utils import logger
 # CLI argument parser.
 ARGS = argparse.ArgumentParser(f"Upload node information to stests.")
 
-# CLI argument: network name.
+# CLI argument: node reference.
 ARGS.add_argument(
-    "network",
-    help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network_name
-    )
-    
-# CLI argument: node index.
-ARGS.add_argument(
-    "index",
-    help="Node index - must be between 1 and 999.",
-    type=args_validator.validate_node_index
+    "node",
+    help="Node name: {network-type}{network-index}:{node-index}.",
+    type=args_validator.validate_node_name
     )
 
 # Set CLI argument: node host.
 ARGS.add_argument(
-    "host",
+    "address",
     default=defaults.NODE_HOST,
-    help="Node host.",
-    type=str
-    )
-
-# Set CLI argument: node port.
-ARGS.add_argument(
-    "port",
-    default=defaults.NODE_PORT,
-    help="Node public GRPC port.",
-    type=args_validator.validate_node_port
+    help="Node public network address: {host}:{port}.",
+    type=args_validator.validate_node_address
     )
 
 # Set CLI argument: node type.
@@ -59,14 +45,25 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    instance = Node.create(
-        host=args.host,
-        index=args.index,  
-        network=args.network,
-        port=args.port,
-        typeof = NodeType[args.typeof.upper()]
+    # Unpack arguments.
+    host = args.address.split(':')[0]
+    index = int(args.node.split(':')[-1])
+    network=NetworkIdentifier.create(args.node.split(':')[0])
+    port = int(args.address.split(':')[-1])
+    typeof = NodeType[args.typeof.upper()]
+
+    # Instantiate.
+    node = Node.create(
+        host=host,
+        index=index,  
+        network=network,
+        port=port,
+        typeof=typeof
     )
-    cache.set_node(instance)    
+    
+    # Encache.
+    cache.set_node(node)    
+
     logger.log("Node information successfully registered")
 
 

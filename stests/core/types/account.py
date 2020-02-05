@@ -50,9 +50,8 @@ class Account:
     @property
     def cache_key(self) -> str:
         """Returns key to be used when caching an instance."""
-        key = self.network.cache_key
-        if self.generator:
-            key += f".{self.generator.cache_key}"
+        key = self.generator.cache_key if self.generator else self.network.cache_key
+
         return key + f":ACCOUNTS:{self.typeof.name}:{str(self.index).zfill(6)}"
 
 
@@ -80,5 +79,5 @@ class Account:
         network = network if isinstance(network, NetworkIdentifier) else NetworkIdentifier.create(network)
         typeof = typeof or random.choice(list(AccountType))
 
-        return Account(generator, index, key_pair, network, status, typeof)
+        return cls(generator, index, key_pair, network, status, typeof)
 

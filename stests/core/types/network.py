@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from datetime import datetime
 
+from stests.core.types.account import Account
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import NetworkStatus
 from stests.core.types.enums import NetworkType
@@ -19,6 +20,10 @@ class Network:
     """A test network.
     
     """
+    # Bonding account associated with node.
+    # TODO: review ?
+    faucet: Account
+
     # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
     index: int
     
@@ -42,10 +47,12 @@ class Network:
     _ts_updated: datetime = get_isodatetime_field(True)
     _uid: str = get_uuid_field(True) 
 
+
     @property
     def cache_key(self):
         """Returns key to be used when caching an instance."""
         return f"{self.typeof.name}-{str(self.index).zfill(2)}"
+
 
     @property
     def key(self):
@@ -68,8 +75,10 @@ class Network:
         return f"{typeof.name}-{str(index).zfill(2)}"
 
 
-    @staticmethod
+    @classmethod
     def create(
+        cls,
+        faucet=None,
         index=defaults.NETWORK_INDEX,
         nodeset=[],
         status=NetworkStatus.NULL,
@@ -81,5 +90,4 @@ class Network:
         name = f"{typeof.name}-{str(index).zfill(2)}"
         name_raw = f"{typeof.name.lower()}{index}"
 
-        return Network(index, name, name_raw, nodeset, status, typeof)
-
+        return cls(faucet, index, name, name_raw, nodeset, status, typeof)

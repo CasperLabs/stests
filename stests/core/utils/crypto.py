@@ -16,7 +16,7 @@ class KeyEncoding(enum.Enum):
     PEM = enum.auto()
 
 
-def get_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
+def generate_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
     """Returns an ED25519 key pair, each key is a 32 byte array.
 
     :rtype: 2 member tuple: (private key, public key)
@@ -26,40 +26,29 @@ def get_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str,
     if not isinstance(encoding, KeyEncoding):
         raise ValueError(f"Unsupported key encoding: {encoding}")
 
-    # Create new key pair.
+    # Instantiate.
     pvk = ed25519.Ed25519PrivateKey.generate()
-    pbk = pvk.public_key()
 
-    # PEM.
-    if encoding == KeyEncoding.PEM:
-        return \
-            pvk.private_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PrivateFormat.PKCS8,
-                encryption_algorithm=serialization.NoEncryption()
-            ), \
-            pbk.public_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo
-            )  
+    # Encode.
+    return _get_key_pair(pvk, encoding)
 
-    # Encode -> bytes.
-    pvk = pvk.private_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PrivateFormat.Raw,
-        encryption_algorithm=serialization.NoEncryption()
-    )
-    pbk = pbk.public_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PublicFormat.Raw
-    )
 
-    # HEX.
-    if encoding == KeyEncoding.HEX:
-        return pvk.hex(), pbk.hex()
+def get_key_pair_from_pvk_bytes(pvk_bytes, encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
+    """Returns a key pair derived from an existing private key.
+    
+    """
+    pvk = ed25519.Ed25519PrivateKey.from_private_bytes(pvk_bytes)
 
-    # BYTES.
-    return pvk, pbk
+    return _get_key_pair(pvk, encoding)
+
+
+def get_key_pair_from_pvk_pem_file(fpath, encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
+    """Returns a key pair derived from an existing private key.
+    
+    """
+    pvk_bytes = get_pvk_bytes_from_pem_file(fpath)
+
+    return get_key_pair_from_pvk_bytes(pvk_bytes, encoding)
 
 
 def get_pbk_bytes_from_pem_file(fpath):
@@ -125,3 +114,41 @@ def _get_bytes_from_pem_file(fpath):
     as_bytes = base64.b64decode(as_b64)
 
     return len(as_bytes) % 32 == 0 and as_bytes[:32] or as_bytes[-32:]
+
+
+def _get_key_pair(pvk: ed25519.Ed25519PrivateKey, encoding: KeyEncoding) -> typing.Tuple[str, str]:
+    """Maps private key to an encoded key pair.
+    
+    """
+    pbk = pvk.public_key()
+
+    # PEM.
+    if encoding == KeyEncoding.PEM:
+        return \
+            pvk.private_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.PKCS8,
+                encryption_algorithm=serialization.NoEncryption()
+            ), \
+            pbk.public_bytes(
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo
+            )  
+
+    # Encode -> bytes.
+    pvk = pvk.private_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PrivateFormat.Raw,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    pbk = pbk.public_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PublicFormat.Raw
+    )
+
+    # HEX.
+    if encoding == KeyEncoding.HEX:
+        return pvk.hex(), pbk.hex()
+
+    # BYTES.
+    return pvk, pbk

@@ -1,43 +1,33 @@
 import argparse
 
 from stests.core import cache
-from stests.core.types import Network
-from stests.core.types import NetworkType
-from stests.core.types import Node
-from stests.core.types import NodeType
+from stests.core.types import Account
+from stests.core.types import AccountStatus
+from stests.core.types import AccountType
+from stests.core.types import KeyPair
+from stests.core.types import NetworkIdentifier
+from stests.core.types import NodeIdentifier
 from stests.core.utils import args_validator
+from stests.core.utils import args_validator
+from stests.core.utils import crypto
 from stests.core.utils import defaults
 from stests.core.utils import logger
 
 
-from stests.core.types import Account
-from stests.core.types import AccountType
-from stests.core.types import NetworkIdentifier
-from stests.core.types import NodeIdentifier
-from stests.core.utils import crypto
-
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser(f"Upload node bonding provate key to stests.")
+ARGS = argparse.ArgumentParser(f"Register a node's bonding key with stests.")
 
-# CLI argument: network name.
+# CLI argument: node reference.
 ARGS.add_argument(
-    "network",
-    help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network_name
-    )
-    
-# CLI argument: node index.
-ARGS.add_argument(
-    "index",
-    help="Node index - must be between 1 and 999.",
-    type=args_validator.validate_node_index
+    "node",
+    help="Node name: {network-type}{network-index}:{node-index}.",
+    type=args_validator.validate_node_name
     )
 
 # Set CLI argument: private key in PEM format.
 ARGS.add_argument(
     "pem_path",
-    default=defaults.NODE_HOST,
     help="Path to the node's private key in PEM format.",
     type=str
     )
@@ -49,9 +39,14 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
+    # Unpack arguments.
+    network_name = args.node.split(':')[0]
+    node_index = int(args.node.split(':')[-1])
+    pem_path = args.pem_path
+
     # Set identifiers.
-    network_id = NetworkIdentifier.create(args.network)
-    node_id = NodeIdentifier.create(args.network, args.index)
+    network_id = NetworkIdentifier.create(network_name)
+    node_id = NodeIdentifier.create(network_name, node_index)
 
     # Set network.
     network = cache.get_network(network_id)
@@ -63,14 +58,16 @@ def main(args):
     if node is None:
         raise ValueError("Unregistered node.")
 
-    # Set account.
-    pvk_hex = crypto.get_pvk_hex_from_pem_file(args.pem_path)
+    # Set node account.
+    node.account = Account.create(
+        key_pair=KeyPair.create_from_pvk_pem_file(args.pem_path),
+        network=network_id,
+        typeof=AccountType.BOND,
+        status=AccountStatus.ACTIVE
+        )
 
-    
-
-    print(pvk_hex)
-
-    AccountType.BOND
+    # Cache.
+    cache.set_node(node)
 
     logger.log("Node bonding key successfully registered")
 

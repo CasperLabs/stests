@@ -100,7 +100,7 @@ class GeneratorRunIdentifier:
         """Factory method: leveraged in both live & test settings.
         
         """
-        return GeneratorRunIdentifier(run, typeof)
+        return cls(run, typeof)
 
 
 @dataclass_json

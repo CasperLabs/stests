@@ -30,7 +30,8 @@ def decode(data: typing.Any) -> typing.Any:
         return list(map(decode, data))
 
     if isinstance(data, dict) and '_type' in data:
-        return TYPEMAP[data['_type']].from_dict(data)
+        dclass = TYPEMAP[data['_type']]
+        return dclass.from_dict(data)
 
     if isinstance(data, dict):
         return {k: decode(v) for k, v in data.items()}        

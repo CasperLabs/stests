@@ -12,13 +12,21 @@ NETWORK_IDX_MAX = 99
 NODE_IDX_MIN = 1
 NODE_IDX_MAX = 999
 
-# Node port min/max.
-NODE_PORT_MIN = 1
-NODE_PORT_MAX = 65536
+# Port min/max.
+PORT_MIN = 1
+PORT_MAX = 65536
 
 # Generarator run index min/max.
 GENERATOR_RUN_IDX_MIN = 1
 GENERATOR_RUN_IDX_MAX = 65536
+
+
+def validate_host(value):
+    """Argument verifier: host.
+    
+    """
+    # TODO: validate against a regex or 3rd party lib.
+    pass
 
 
 def validate_network_idx(value):
@@ -37,8 +45,36 @@ def validate_network_name(value):
     try:
         validate_enum(name[:3].upper(), NetworkType, "Network")
     except argparse.ArgumentError:
-        raise argparse.ArgumentError("Invalid network name: prefix shou")
+        raise argparse.ArgumentError("Invalid network name")
     validate_int(name[3:], NETWORK_IDX_MIN, NETWORK_IDX_MAX, "Network")
+
+    return name
+
+
+def validate_node_address(value):
+    """Argument verifier: node address.
+    
+    """
+    address = str(value)
+    parts = address.split(":")
+    if len(parts) != 2:
+        raise argparse.ArgumentError("Invalid node address")
+    validate_host(parts[0])
+    validate_port(parts[1])
+
+    return address
+
+
+def validate_node_name(value):
+    """Argument verifier: node name.
+    
+    """
+    name = str(value)
+    parts = name.split(":")
+    if len(parts) != 2:
+        raise argparse.ArgumentError("Invalid node name")
+    validate_network_name(name.split(":")[0])
+    validate_node_index(name.split(":")[1])
 
     return name
 
@@ -50,11 +86,11 @@ def validate_node_index(value):
     return validate_int(value, NODE_IDX_MIN, NODE_IDX_MAX, "Node")
 
 
-def validate_node_port(value):
-    """Argument verifier: node port.
+def validate_port(value):
+    """Argument verifier: port.
     
     """
-    return validate_int(value, NODE_PORT_MIN, NODE_PORT_MAX, "Node Port")
+    return validate_int(value, PORT_MIN, PORT_MAX, "Port")
 
 
 def validate_generator_run_idx(value):
@@ -71,7 +107,7 @@ def validate_enum(value, enum_type, typeof):
     try:
         enum_type[value]
     except KeyError:
-        err = f"expected {' | '.join([i.name for i in enum_type])}"
+        err = f"expected {' | '.join([i.name.lower() for i in enum_type])}"
         raise argparse.ArgumentTypeError(err)
 
 

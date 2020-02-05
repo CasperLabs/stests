@@ -28,7 +28,7 @@ def do_get(store: typing.Callable, key: str) -> typing.Any:
     logger.log(f"CACHE :: get :: {key}")
     obj = store.get(key)
     if obj is None:
-        logger.log(f"CACHE :: get :: {key} :: not found")
+        logger.log_warning(f"CACHE :: get :: {key} :: not found")
     else:
         return encoder.decode(json.loads(obj))
 

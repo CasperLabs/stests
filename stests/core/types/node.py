@@ -89,6 +89,7 @@ class Node:
         """Factory method: leveraged in both live & test settings.
         
         """
-        network = NetworkIdentifier.create(network)
+        if not isinstance(network, NetworkIdentifier):
+            network = NetworkIdentifier.create(network)
 
-        return Node(account, host, index, network, port, status, typeof)
+        return cls(account, host, index, network, port, status, typeof)
