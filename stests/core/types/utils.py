@@ -39,15 +39,6 @@ def get_uuid_field(set_default=False):
     """
     if set_default == True:
         return field(
-            default_factory=uuid.uuid4,
-            metadata=config(
-                encoder=str,
-                decoder=uuid.UUID
-            )
+            default_factory=lambda: str(uuid.uuid4()),
         )
-    return field(
-        metadata=config(
-            encoder=str,
-            decoder=uuid.UUID
-        )
-    )
+    return field()

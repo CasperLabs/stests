@@ -1,16 +1,14 @@
-import enum
 import random
-import typing
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from datetime import datetime
 
 from stests.core.types.enums import AccountStatus
 from stests.core.types.enums import AccountType
-from stests.core.types.generator import GeneratorReference
-from stests.core.types.network import NetworkReference
 from stests.core.types.enums import get_enum_field
 from stests.core.types.key_pair import KeyPair
+from stests.core.types.references import GeneratorReference
+from stests.core.types.references import NetworkReference
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
@@ -75,3 +73,4 @@ class Account:
         typeof = typeof or random.choice(list(AccountType))
 
         return Account(generator, index, key_pair, network, status, typeof)
+

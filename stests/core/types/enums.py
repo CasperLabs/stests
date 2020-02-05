@@ -43,15 +43,6 @@ class GeneratorExecutionStatus(enum.Enum):
     ERROR = enum.auto()
 
 
-class NetworkOperatorType(enum.Enum):
-    """Enumeration over set of network operator types.
-    
-    """
-    LOCAL = enum.auto()
-    INTERNAL = enum.auto()
-    EXTERNAL = enum.auto()
-
-
 class NetworkStatus(enum.Flag):
     """Flag over set of network states.
     

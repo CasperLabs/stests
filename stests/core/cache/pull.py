@@ -8,6 +8,34 @@ from stests.core.types import Account
 from stests.core.types import AccountType
 from stests.core.types import Node
 from stests.core.types import Network
+from stests.core.types import NetworkReference
+
+
+
+def _do_get(key_ref):
+    """Sink function to retrieve instances of domain types.
+    
+    """
+    # Parse key.
+    try:
+        key_ref.cache_key
+    except AttributeError:
+        key = key_ref
+    else:
+        key = key_ref.cache_key
+
+    # Return cache contents.
+    with get_store() as store:
+        return do_get(store, key)
+
+
+# Get network information.
+get_network = _do_get
+
+
+# Get node information.
+get_node = _do_get
+
 
 
 
@@ -29,36 +57,6 @@ def get_account(
     # Set keyspace.
     namespace = f"{namespace}.account.{str(typeof).split('.')[-1]}"
     key = get_key(network_id, namespace, str(index).zfill(7))
-
-    # Pull from store.
-    with get_store() as store:
-        return do_get(store, key)
-
-
-def get_network(network_key: str) -> Network:
-    """Retrieves network information from cache store.
-
-    :param network_key: Network's key.
-    :returns: Cached network information.
-
-    """    
-    # Set cache key.
-    key = f"{network_key}"
-
-    # Pull from store.
-    with get_store() as store:
-        return do_get(store, key)
-
-
-def get_node(network_id: str, node_id: str) -> Node:
-    """Retrieves node information from cache store.
-
-    :param str: ID of network.
-    :returns: Cached network information.
-
-    """    
-    # Set key.
-    key = network_id
 
     # Pull from store.
     with get_store() as store:

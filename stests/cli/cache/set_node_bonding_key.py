@@ -3,7 +3,6 @@ import argparse
 from stests.core import cache
 from stests.core.types import Network
 from stests.core.types import NetworkLifetime
-from stests.core.types import NetworkOperatorType
 from stests.core.types import Node
 from stests.core.types import NodeType
 from stests.core.utils import defaults

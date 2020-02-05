@@ -29,6 +29,9 @@ def do_reset_cache(ctx: GeneratorContext):
     # Cache.
     cache.set_run(ctx)
 
+    # d = NodeReference(ctx.network, ctx.node)
+    # print(cache.get_node(d))
+
     # Chain.
     return ctx
 

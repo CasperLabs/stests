@@ -1,4 +1,3 @@
-import enum
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 from datetime import datetime
@@ -7,7 +6,7 @@ from stests.core.types.account import Account
 from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import NodeStatus
 from stests.core.types.enums import NodeType
-from stests.core.types.network import NetworkReference
+from stests.core.types.references import NetworkReference
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults

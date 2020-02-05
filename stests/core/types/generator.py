@@ -1,37 +1,10 @@
-import datetime
-import uuid
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.types.network import NetworkReference
+from stests.core.types.references import GeneratorReference
+from stests.core.types.references import NetworkReference
 from stests.core.utils import defaults
 
-
-
-@dataclass_json
-@dataclass
-class GeneratorReference:
-    """Encpasulates enough information to identify a generator run.
-    
-    """
-    # Numerical index to distinguish between multiple runs of the same generator.
-    run: int
-
-    # Type of generator, e.g. WG-100 ...etc.
-    typeof: str
-
-    @property
-    def cache_key(self):
-        """Returns key to be used when caching an instance."""
-        return f"{self.typeof}:R-{str(self.run).zfill(5)}"
-
-
-    @classmethod
-    def create(cls, run=defaults.GENERATOR_RUN, typeof="WG-XXX"):
-        """Factory method: leveraged in both live & test settings.
-        
-        """
-        return GeneratorReference(run, typeof)
 
 
 @dataclass_json
@@ -74,9 +47,7 @@ class GeneratorContext:
         """Factory method: leveraged in both live & test settings.
         
         """
-        return GeneratorContext(
-            NetworkReference.create(network),
-            node,
-            run,
-            typeof
-            )
+        network = NetworkReference.create(network)
+
+        return GeneratorContext(network, node, run, typeof)
+
