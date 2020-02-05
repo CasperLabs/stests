@@ -25,7 +25,28 @@ setup_env_vars()
 # Setup python executable.
 setup_python()
 {
-    log "stack setup :: TODD setup python via pyenv and pipenv ?"
+    # Install pyenv.
+    curl https://pyenv.run | bash
+    cat $STESTS_TEMPLATES/pyenv_completion.txt >> ~/.bashrc
+
+    # Via pyenv, install python.
+    pyenv install $STESTS_PYTHON_VERSION
+
+    # Via pyenv, set stests local python.
+    cd $STESTS_HOME
+    pyenv local $STESTS_PYTHON_VERSION
+
+    # Via pipenv, stests venv.
+    pip install -U pipenv
+    pipenv sync
+
+    log "stack setup :: python venv setup"
+}
+
+# Setup daemons.
+setup_daemons()
+{
+    log "stack setup :: TODD setup daemons ?"
 }
 
 # Invoke entry point.

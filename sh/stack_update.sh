@@ -8,7 +8,7 @@ main()
 {
     log "stack update :: starts ..."
 
-    # update_source
+    update_source
     update_env_vars
 
     log "stack update :: complete"
@@ -26,7 +26,7 @@ update_source()
 update_env_vars()
 {
 	if [ -f $HOME/.stests ]; then
-		declare backup=$HOME/.stests-"`date +%Y-%m-%d`"
+		declare backup=$HOME/.stests-backup-"`date +%Y-%m-%d`"
 		cp $HOME/.stests $backup
 		log "stack update :: env vars file backup --> "$backup
 	fi
