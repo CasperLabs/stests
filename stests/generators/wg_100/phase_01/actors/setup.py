@@ -18,14 +18,13 @@ from stests.generators.wg_100 import metadata
 _QUEUE = f"{metadata.TYPE}.phase_01.setup"
 
 
-
 @dramatiq.actor(queue_name=_QUEUE)
 def do_flush_cache(ctx: GeneratorContext):   
     """Flushes cache of all previous run data.
     
     """
     # Instantiate.
-    cache.flush_ns(ctx.cache_key)
+    cache.flush_namespace(ctx.cache_key)
 
     # Chain.
     return ctx

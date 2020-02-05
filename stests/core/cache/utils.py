@@ -53,18 +53,17 @@ def get_key(namespace: str, item_key: str) -> str:
     return f"{namespace}:{item_key}"
 
 
-CHUNK_SIZE = 5000
+def flush_namespace(ns: str) -> bool:
+    """Clears a namespace.
 
-def flush_ns(ns):
+    :param ns: namespace i.e your:prefix
+    :returns: True if cleared.
+
     """
-    Clears a namespace
-    :param ns: str, namespace i.e your:prefix
-    :return: int, cleared keys
-    """
-    cursor = '0'
-    ns_keys = ns + '*'
-    print(ns_keys)
+    CHUNK_SIZE = 5000
     with get_store() as store:
+        cursor = '0'
+        ns_keys = ns + '*'
         while cursor != 0:
             cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
             if keys:

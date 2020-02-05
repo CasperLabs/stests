@@ -20,6 +20,8 @@ _QUEUE = f"{metadata.TYPE}.phase_01.orchestrator"
 
 def execute(ctx):
     """Orchestrates execution of WG-100 workflow.
+
+    :param ctx: Contextual information passed along flow of execution.
     
     """
     do_flush_cache.send_with_options(
@@ -30,6 +32,9 @@ def execute(ctx):
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_flush_cache(_, ctx):
+    """Callback: on_flush_cache.
+    
+    """
     do_create_account.send_with_options(
         args=(ctx, 1, AccountType.FAUCET),
         on_success=on_create_faucet_account
@@ -38,6 +43,9 @@ def on_flush_cache(_, ctx):
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_create_faucet_account(_, ctx):
+    """Callback: on_create_faucet_account.
+    
+    """
     do_create_account.send_with_options(
         args=(ctx, 1, AccountType.CONTRACT),
         on_success=on_create_contract_account
@@ -46,11 +54,12 @@ def on_create_faucet_account(_, ctx):
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_create_contract_account(_, ctx):
-    def get_message(index):
-        return do_create_account.message(ctx, index, AccountType.USER)
-
+    """Callback: on_create_contract_account.
+    
+    """
     def get_messages():
-        return list(map(get_message, range(1, ctx.args.user_accounts + 1)))
+        for index in range(1, ctx.args.user_accounts + 1):
+            yield do_create_account.message(ctx, index, AccountType.USER)
 
     g = dramatiq.group(get_messages())
     g.add_completion_callback(on_create_user_accounts.message(ctx))
@@ -59,25 +68,34 @@ def on_create_contract_account(_, ctx):
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_create_user_accounts(ctx):
+    """Callback: on_create_user_accounts.
+    
+    """
     do_fund_faucet.send_with_options(
-        args=(ctx, ), on_success=on_fund_faucet
+        args=(ctx, ),
+        on_success=on_fund_faucet
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_fund_faucet(_, ctx):
+    """Callback: on_fund_faucet.
+    
+    """
     do_fund_contract.send_with_options(
-        args=(ctx, ), on_success=on_fund_contract
+        args=(ctx, ),
+        on_success=on_fund_contract
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_fund_contract(_, ctx):
-    def get_message(idx):
-        return do_fund_user.message(ctx, idx)
-
+    """Callback: on_fund_contract.
+    
+    """
     def get_messages():
-        return list(map(get_message, range(1, ctx.args.user_accounts + 1)))
+        for index in range(1, ctx.args.user_accounts + 1):
+            yield do_fund_user.message(ctx, index)
 
     g = dramatiq.group(get_messages())
     g.add_completion_callback(on_fund_users.message(ctx))
@@ -86,19 +104,29 @@ def on_fund_contract(_, ctx):
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_fund_users(ctx):
+    """Callback: on_fund_users.
+    
+    """
     do_deploy_contract.send_with_options(
-        args=(ctx, ), on_success=on_deploy_contract
+        args=(ctx, ),
+        on_success=on_deploy_contract
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_deploy_contract(_, ctx):
+    """Callback: on_deploy_contract.
+    
+    """
     do_start_auction.send_with_options(
-        args=(ctx, ), on_success=on_start_auction
+        args=(ctx, ),
+        on_success=on_start_auction
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
 def on_start_auction(_, ctx):
+    """Callback: on_start_auction.
+    
+    """
     print("TIME TO GO HOME")
-
