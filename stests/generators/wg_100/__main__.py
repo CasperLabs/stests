@@ -6,8 +6,7 @@ import dramatiq
 
 from stests.core import mq
 from stests.core.utils import args_validator
-from stests.generators.wg_100 import defaults
-from stests.generators.wg_100 import metadata
+from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_01.actors import orchestrator
 from stests.generators.wg_100.phase_01.ctx import Arguments
 from stests.generators.wg_100.phase_01.ctx import Context
@@ -15,7 +14,7 @@ from stests.generators.wg_100.phase_01.ctx import Context
 
 
 # Set command line arguments.
-ARGS = argparse.ArgumentParser(f"Executes {metadata.DESCRIPTION} workflow.")
+ARGS = argparse.ArgumentParser(f"Executes {constants.DESCRIPTION} workflow.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -46,46 +45,46 @@ ARGS.add_argument(
 # CLI argument: token name.
 ARGS.add_argument(
     "--token-name",
-    help=f"Name of ERC-20 token.  Default={defaults.TOKEN_NAME}",
+    help=f"Name of ERC-20 token.  Default={constants.TOKEN_NAME}",
     dest="token_name",
     type=str,
-    default=defaults.TOKEN_NAME
+    default=constants.TOKEN_NAME
     )
 
 # CLI argument: token supply.
 ARGS.add_argument(
     "--token-supply",
-    help=f"Amount of ERC-20 token to be issued. Default={defaults.TOKEN_SUPPLY}",
+    help=f"Amount of ERC-20 token to be issued. Default={constants.TOKEN_SUPPLY}",
     dest="token_supply",
     type=int,
-    default=defaults.TOKEN_SUPPLY
+    default=constants.TOKEN_SUPPLY
     )
 
 # CLI argument: user accounts.
 ARGS.add_argument(
     "--user-accounts",
-    help=f"Number of user accounts to generate. Default={defaults.USER_ACCOUNTS}",
+    help=f"Number of user accounts to generate. Default={constants.USER_ACCOUNTS}",
     dest="user_accounts",
     type=int,
-    default=defaults.USER_ACCOUNTS
+    default=constants.USER_ACCOUNTS
     )
 
 # CLI argument: bids / user.
 ARGS.add_argument(
     "--user-bids",
-    help=f"Number of bids per user to submit. Default={defaults.USER_BIDS}",
+    help=f"Number of bids per user to submit. Default={constants.USER_BIDS}",
     dest="user_bids",
     type=int,
-    default=defaults.USER_BIDS
+    default=constants.USER_BIDS
     )
 
 # CLI argument: initial CLX balance.
 ARGS.add_argument(
     "--user-initial-clx-balance",
-    help=f"Initial CLX balance of user accounts. Default={defaults.USER_INITIAL_CLX_BALANCE}",
+    help=f"Initial CLX balance of user accounts. Default={constants.USER_INITIAL_CLX_BALANCE}",
     dest="user_initial_clx_balance",
     type=int,
-    default=defaults.USER_INITIAL_CLX_BALANCE
+    default=constants.USER_INITIAL_CLX_BALANCE
     )
 
 
@@ -96,5 +95,5 @@ orchestrator.execute(Context.create(
     network=args.network,
     node=args.node,
     run=args.run,
-    typeof=metadata.TYPE    
+    typeof=constants.TYPE    
     ))

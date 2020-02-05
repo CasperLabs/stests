@@ -1,3 +1,17 @@
+# --------------------------------------------------------------------
+# METADATA
+# --------------------------------------------------------------------
+
+# Workload description.
+DESCRIPTION = "ERC-20 Token Auction"
+
+# Workload type.
+TYPE = "WG-100"
+
+# --------------------------------------------------------------------
+# DEFAULTS
+# --------------------------------------------------------------------
+
 # Default name of ERC20 token for which an auction is being simulated.
 TOKEN_NAME = "ABC"
 

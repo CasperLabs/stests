@@ -11,13 +11,12 @@ from stests.core.types import GeneratorRun
 from stests.core.types import AccountIdentifier
 
 from stests.core.utils import resources
-from stests.generators.wg_100 import defaults
-from stests.generators.wg_100 import metadata
+from stests.generators.wg_100 import constants
 
 
 
 # Queue to which message will be dispatched.
-_QUEUE = f"{metadata.TYPE}.phase_01.setup"
+_QUEUE = f"{constants.TYPE}.phase_01.setup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -118,7 +117,7 @@ def do_deploy_contract(ctx):
     
     """
     print("TODO: do_deploy_contract :: 1. pull account.  2. Dispatch deploy.  3. Monitor deploy.")
-    binary_fpath = resources.get_wasm_path(defaults.WASM_CONTRACT_FILENAME)
+    binary_fpath = resources.get_wasm_path(constants.WASM_CONTRACT_FILENAME)
     print(binary_fpath)
     return ctx
 

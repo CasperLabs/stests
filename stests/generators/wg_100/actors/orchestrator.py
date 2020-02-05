@@ -1,7 +1,7 @@
 import dramatiq
 
 from stests.core.types import AccountType
-from stests.generators.wg_100 import metadata
+from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_01.actors.auction import do_start_auction
 from stests.generators.wg_100.phase_01.actors.setup import do_create_account
 from stests.generators.wg_100.phase_01.actors.setup import do_deploy_contract
@@ -12,7 +12,7 @@ from stests.generators.wg_100.phase_01.actors.setup import do_reset_cache
 
 
 # Queue to which message will be dispatched.
-_QUEUE = f"{metadata.TYPE}.phase_01.orchestrator"
+_QUEUE = f"{constants.TYPE}.phase_01.orchestrator"
 
 
 # TODO: chunk user account creating/funding ?
