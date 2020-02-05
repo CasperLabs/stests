@@ -36,4 +36,4 @@ mkdir -p $STESTS_OPS/daemon
 mkdir -p $STESTS_OPS/logs
 
 # Activate aliases
-source $STESTS_SH/aliases.sh
+source $STESTS_SH/env/set_aliases.sh
