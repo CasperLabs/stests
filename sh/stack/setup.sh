@@ -17,9 +17,9 @@ main()
 # Setup environment vars.
 setup_env_vars()
 {
-    cp $STESTS_PATH_TEMPLATES/stests_env.sh $HOME/.stests
-    . $HOME/.stests
-    log "stack setup :: env vars file --> "$HOME/.stests 
+    cp $STESTS_PATH_TEMPLATES/stests_vars.sh $STESTS_PATH_VARS
+    . $STESTS_PATH_VARS
+    log "stack setup :: env vars file --> "$STESTS_PATH_VARS 
 }
 
 # Setup python executable.
@@ -41,12 +41,6 @@ setup_python()
     pipenv sync
 
     log "stack setup :: python venv setup"
-}
-
-# Setup daemons.
-setup_daemons()
-{
-    log "stack setup :: TODD setup daemons ?"
 }
 
 # Invoke entry point.

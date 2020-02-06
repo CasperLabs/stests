@@ -10,6 +10,7 @@ main()
 
     update_source
     update_env_vars
+    update_venv
 
     log "stack update :: complete"
 }
@@ -25,21 +26,22 @@ update_source()
 # Update environment variables.
 update_env_vars()
 {
-	if [ -f $HOME/.stests ]; then
-		declare backup=$HOME/.stests-backup-"`date +%Y-%m-%d`"
-		cp $HOME/.stests $backup
+	if [ -f $STESTS_PATH_VARS ]; then
+		declare backup=$STESTS_PATH_VARS-"`date +%Y-%m-%d`"
+		cp $STESTS_PATH_VARS $backup
 		log "stack update :: env vars file backup --> "$backup
 	fi
 
-    cp $STESTS_PATH_TEMPLATES/stests_env.sh $HOME/.stests
-    log "stack update :: new env vars file --> "$HOME/.stests
+    cp $STESTS_PATH_TEMPLATES/stests_env.sh $STESTS_PATH_VARS
+    log "stack update :: new env vars file --> "$STESTS_PATH_VARS
 }
 
-# Update source code.
+# Update virtual environment.
 update_venv()
 {
     log "stack update :: updating python venv"
-    # TODO: pipenv sync
+    cd $STESTS_HOME
+    pipenv sync
 }
 
 # Invoke entry point.

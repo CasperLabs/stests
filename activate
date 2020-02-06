@@ -13,7 +13,7 @@ source $STESTS_HOME/sh/env/set_paths.sh
 # ###############################################################
 
 # Import environment vars.
-source $HOME/.stests
+source $STESTS_PATH_ROOT/vars
 
 # ###############################################################
 # ALIASES
