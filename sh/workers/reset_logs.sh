@@ -8,6 +8,8 @@ main()
 {
     log "workers :: resetting logs ..."
 
+	rm $STESTS_PATH_OPS/logs/*.log
+
     # TODO
 }
 
