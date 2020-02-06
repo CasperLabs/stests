@@ -2,7 +2,7 @@
 # Helper function
 # ###############################################################
 
-_exec_cmd()
+function _exec_cmd()
 {
     # Destructure command script & args.
     args=($@)
@@ -20,7 +20,6 @@ _exec_cmd()
 # ALIASES: stack 
 # ###############################################################
 
-alias stests-stack-setup=$STESTS_PATH_SH/stack/setup.sh
 alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 
 # ###############################################################
@@ -46,7 +45,7 @@ alias stests-set-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/set_node_bon
 # ALIASES: generators
 # ###############################################################
 
-_exec_generator()
+function _exec_generator()
 {
     # Destructure generator type & args.
     args=($@)

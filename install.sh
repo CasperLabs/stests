@@ -254,6 +254,7 @@ function install_venv()
 	declare repo_dir="$(get_repo_dir)"
 	pushd $repo_dir
 	pipenv install
+	pipenv install supervisor
 	popd
 }
 

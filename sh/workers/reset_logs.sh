@@ -4,7 +4,7 @@
 source $STESTS_PATH_SH/utils.sh
 
 # Main entry point.
-main()
+function main()
 {
     log "workers :: resetting logs ..."
 

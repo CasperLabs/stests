@@ -11,7 +11,7 @@ export STESTS_PYTHON_VERSION=3.8.1
 # ###############################################################
 
 # Wraps standard echo by adding application prefix.
-log()
+function log()
 {
     # Set timestamp.
 	declare now=`date +%Y-%m-%dT%H:%M:%S:000000`

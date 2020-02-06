@@ -4,7 +4,7 @@
 source $STESTS_PATH_SH/utils.sh
 
 # Main entry point.
-main()
+function main()
 {
 	supervisorctl -c $STESTS_PATH_OPS/config/supervisord.conf status all
 }
