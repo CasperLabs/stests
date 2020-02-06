@@ -116,13 +116,11 @@ function tidyup()
 # Notify user upon installation.
 function notify()
 {
-	declare install_dir="$(get_install_dir)"
-
 	log_banner
 	echo "1. stests has been successfully installed."
 	echo ""
 	echo "2. Activate the shell:"
-	echo "      source $install_dir/activate
+	echo "      source $(get_install_dir)/activate
 	echo ""
 	echo "3. Register a network & node:"
 	echo "      stests-set-network loc1
