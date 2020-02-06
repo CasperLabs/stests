@@ -18,8 +18,10 @@ class EnvVars:
     PORT = env.get_var('BROKER_REDIS_PORT', 6379, int)
 
 
-
 def get_mware():
+    """Returns a broker middleware designed to support callbacks when processing groups of messages.
+    
+    """
     return GroupCallbacks(
         RedisBackend(client=redis.Redis(db=EnvVars.DB, host=EnvVars.HOST, port=EnvVars.PORT))
     )

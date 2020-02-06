@@ -19,14 +19,14 @@ export STESTS_CACHE_REDIS_HOST="localhost"
 export STESTS_CACHE_REDIS_PORT=6379
 
 # --------------------------------------------------------------------
-# Message Broker
+# Broker
 # --------------------------------------------------------------------
 
 # type (REDIS | RABBIT | STUB)
 export STESTS_BROKER_TYPE="REDIS"
 
 # --------------------------------------------------------------------
-# Message Broker: REDIS
+# Broker: REDIS
 # --------------------------------------------------------------------
 
 # Broker -> REDIS -> db #
@@ -36,10 +36,10 @@ export STESTS_BROKER_REDIS_DB=0
 export STESTS_BROKER_REDIS_HOST=localhost
 
 # Broker -> REDIS -> port
-export STESTS_BROKER_REDIS_PORT=5672
+export STESTS_BROKER_REDIS_PORT=6379
 
 # --------------------------------------------------------------------
-# Message Broker: RABBIT
+# Broker: RABBIT
 # --------------------------------------------------------------------
 
 # Broker -> RABBIT -> host
@@ -65,3 +65,16 @@ export STESTS_BROKER_RABBIT_USER_PWD=clabs
 
 # Broker -> RABBIT -> virtual host
 export STESTS_BROKER_RABBIT_VHOST=CLABS
+
+# --------------------------------------------------------------------
+# Broker Middleware: REDIS
+# --------------------------------------------------------------------
+
+# Broker Middleware -> REDIS -> db #
+export STESTS_MWARE_REDIS_DB=0
+
+# Broker Middleware -> REDIS -> host
+export STESTS_MWARE_REDIS_HOST=localhost
+
+# Broker Middleware -> REDIS -> port
+export STESTS_MWARE_REDIS_PORT=6379
