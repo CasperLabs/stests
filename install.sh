@@ -116,20 +116,23 @@ function tidyup()
 # Notify user upon installation.
 function notify()
 {
+	declare install_dir="$(get_install_dir)"
+
 	log_banner
 	echo "1. stests has been successfully installed."
 	echo ""
-	echo "2. Register a network:"
-	echo "      stests-set-network loc1
+	echo "2. Activate the shell:"
+	echo "      source $install_dir/activate
 	echo ""
-	echo "2. Register a node:"
+	echo "3. Register a network & node:"
+	echo "      stests-set-network loc1
 	echo "      stests-set-node loc1:1 localhost:40400 full
 	echo ""
-	echo "3. Run stests worker processes:"
+	echo "4. Run workers"
 	echo "      stests-workers-run
 	echo ""
-	echo "4. Run stests workload generator:"
-	echo "      stests-wg-100 --network loc1 --run 1 --user-accounts 100
+	echo "4. Run workload generator"
+	echo "      stests-wg-100 --network loc1 --run 1 --user-accounts 10
 	log_banner
 }
 
@@ -187,6 +190,7 @@ function install()
 	install_repo
 	install_evars
 	install_activator
+	install_venv
 }
 
 # Install repo.
@@ -231,6 +235,17 @@ function install_activator()
 
 	source $bashrc_file
 	source ${repo_dir}/activate
+}
+
+# Install venv.
+function install_venv()
+{
+	log '... virtual environment'
+
+	declare repo_dir="$(get_repo_dir)"
+	pushd $repo_dir
+	pipenv sync
+	popd
 }
 
 # ---------------------------------------------------------------
