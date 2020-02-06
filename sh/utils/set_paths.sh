@@ -11,6 +11,9 @@ export STESTS_PATH_GENERATORS=$STESTS_HOME/stests/generators
 export STESTS_PATH_RESOURCES=$STESTS_HOME/resources
 export STESTS_PATH_TEMPLATES=$STESTS_HOME/resources/templates
 
+# Set python path.
+export PYTHONPATH=$STESTS_HOME:$PYTHONPATH
+
 # Ensure shell scripts are executable.
 chmod a+x $STESTS_PATH_SH/*.sh
 
