@@ -120,17 +120,17 @@ function notify()
 	echo "1. stests has been successfully installed."
 	echo ""
 	echo "2. Activate the shell:"
-	echo "      source $(get_install_dir)/activate
+	echo "      source $(get_install_dir)/activate"
 	echo ""
 	echo "3. Register a network & node:"
-	echo "      stests-set-network loc1
-	echo "      stests-set-node loc1:1 localhost:40400 full
+	echo "      stests-set-network loc1"
+	echo "      stests-set-node loc1:1 localhost:40400 full"
 	echo ""
 	echo "4. Run workers"
-	echo "      stests-workers-run
+	echo "      stests-workers-run"
 	echo ""
 	echo "4. Run workload generator"
-	echo "      stests-wg-100 --network loc1 --run 1 --user-accounts 10
+	echo "      stests-wg-100 --network loc1 --run 1 --user-accounts 10"
 	log_banner
 }
 
