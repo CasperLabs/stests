@@ -64,11 +64,11 @@ function get_install_dir()
 {
 	declare os_type="$(get_os)"
 	if [[ $os_type == $_OS_LINUX* ]]; then
-        echo "/opt/casperlabs/stests"
+        echo "/opt/casperlabs"
 	elif [[ $os_type == $_OS_MACOSX ]]; then
-		echo "$HOME/casperlabs/stests"
+		echo "$HOME/casperlabs"
 	else
-		echo "$HOME/casperlabs/stests"
+		echo "$HOME/casperlabs"
 	fi
 }
 
@@ -140,7 +140,7 @@ function notify()
 # Verify installation can proceeed.
 function verify {
 	log_banner
-	log 'verifying:'
+	log 'verifying system:'
 
 	verify_previous
 	verify_prequisites
@@ -148,7 +148,7 @@ function verify {
 
 # Verify pre-requisites.
 function verify_prequisites {
-	log '... prequisites:'
+	log '... prequisites'
 
 	# Git.
 	command -v git >/dev/null 2>&1 || { echo >&2 "Please install git. https://www.atlassian.com/git/tutorials/install-git"; exit 1; }
