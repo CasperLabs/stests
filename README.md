@@ -25,7 +25,9 @@ CLS network developer & DevOps community.
 Installation
 --------
 
-TODO
+```
+curl https://raw.githubusercontent.com/CasperLabs/stests/master/install.sh | bash
+```
 
 Usage
 --------
