@@ -11,8 +11,9 @@ _exec_cmd()
     s_args=${args[@]:1:$args_len}
 
     # Execute script.
-    cd $STESTS_HOME
+    pushd $STESTS_HOME
     pipenv run python $s_path $s_args
+    popd
 }
 
 # ###############################################################
