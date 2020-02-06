@@ -64,7 +64,7 @@ function get_install_dir()
 {
 	declare os_type="$(get_os)"
 	if [[ $os_type == $_OS_LINUX* ]]; then
-        echo "/opt/casperlabs"
+		echo "$HOME/casperlabs"
 	elif [[ $os_type == $_OS_MACOSX ]]; then
 		echo "$HOME/casperlabs"
 	else
