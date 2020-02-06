@@ -120,7 +120,7 @@ function notify()
 	echo "1. stests has been successfully installed."
 	echo ""
 	echo "2. Activate the shell:"
-	echo "      source $(get_install_dir)/activate"
+	echo "      source $(get_repo_dir)/activate"
 	echo ""
 	echo "3. Register a network & node:"
 	echo "      stests-set-network loc1"
@@ -253,7 +253,7 @@ function install_venv()
 
 	declare repo_dir="$(get_repo_dir)"
 	pushd $repo_dir
-	pipenv sync
+	pipenv install
 	popd
 }
 

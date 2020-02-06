@@ -20,6 +20,7 @@ NAME = "stests"
 
 # Library 3rd party python dependencies.
 REQUIRES = [
+    'casperlabs_client',
     'cryptography',
     'dataclasses-json',
     'redis',
