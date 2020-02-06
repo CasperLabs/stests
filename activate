@@ -6,7 +6,7 @@
 export STESTS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Import paths.
-source $STESTS_HOME/sh/env/set_paths.sh
+source $STESTS_HOME/sh/utils/set_paths.sh
 
 # ###############################################################
 # ENV
@@ -20,4 +20,4 @@ source $STESTS_PATH_ROOT/vars
 # ###############################################################
 
 # Import aliases
-source $STESTS_PATH_SH/env/set_aliases.sh
+source $STESTS_PATH_SH/utils/set_aliases.sh
