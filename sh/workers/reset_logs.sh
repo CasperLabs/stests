@@ -6,7 +6,7 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 main()
 {
-    log "WORKERS :: resetting logs ..."
+    log "workers :: resetting logs ..."
 
     # TODO
 }
