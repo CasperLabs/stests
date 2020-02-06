@@ -1,16 +1,31 @@
 # ###############################################################
+# Helper function
+# ###############################################################
+
+_exec_cmd()
+{
+    # Destructure command script & args.
+    args=($@)
+    args_len=${#args[@]}
+    s_path=${args[0]}
+    s_args=${args[@]:1:$args_len}
+
+    # Execute script.
+    cd $STESTS_HOME
+    pipenv run python $s_path $s_args
+}
+
+# ###############################################################
 # ALIASES: stack 
 # ###############################################################
 
-# Stack commands.
-alias stests-stack-setup=$STESTS_PATH_SH/stack_setup.sh
-alias stests-stack-update=$STESTS_PATH_SH/stack_update.sh
+alias stests-stack-setup=$STESTS_PATH_SH/stack/setup.sh
+alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 
 # ###############################################################
 # ALIASES: workers
 # ###############################################################
 
-# Workers commands.
 alias stests-workers-run=$STESTS_PATH_SH/workers/run.sh
 alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
@@ -21,11 +36,10 @@ alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 # ALIASES: cache
 # ###############################################################
 
-# Cache interaction commands.
-alias stests-set-network='cd $STESTS_HOME && pipenv run python $STESTS_PATH_CLI/cache/set_network.py'
-alias stests-set-network-faucet-key='cd $STESTS_HOME && pipenv run python $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
-alias stests-set-node='cd $STESTS_HOME && pipenv run python $STESTS_PATH_CLI/cache/set_node.py'
-alias stests-set-node-bonding-key='cd $STESTS_HOME && pipenv run python $STESTS_PATH_CLI/cache/set_node_bonding_key.py'
+alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
+alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
+alias stests-set-node='_exec_cmd $STESTS_PATH_CLI/cache/set_node.py'
+alias stests-set-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/set_node_bonding_key.py'
 
 # ###############################################################
 # ALIASES: generators
@@ -33,15 +47,17 @@ alias stests-set-node-bonding-key='cd $STESTS_HOME && pipenv run python $STESTS_
 
 _exec_generator()
 {
-    # Destructure generator type, pahse & args.
+    # Destructure generator type & args.
     args=($@)
     args_len=${#args[@]}
     g_type=${args[0]}
-    g_phase=${args[1]}
-    g_args=${args[@]:2:$args_len}
+    g_args=${args[@]:1:$args_len}
+
 
     # Execute generator.
-    pipenv run python $STESTS_PATH_GENERATORS/wg_$g_type $g_args
+    log "workload generator WG-"$g_type
+    _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
+    log "... execution complete"
 }
 
 # WG-100: ERC-20 auction.

@@ -40,6 +40,6 @@ def get_broker() -> Broker:
     for mware in get_middleware():
         broker.add_middleware(mware)
 
-    logger.log(f"{EnvVars.TYPE} MQ broker connection established")
+    logger.log(f"... established connection to {EnvVars.TYPE} MQ broker")
 
     return broker

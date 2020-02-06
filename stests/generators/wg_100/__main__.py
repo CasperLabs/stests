@@ -6,6 +6,7 @@ import dramatiq
 
 from stests.core import mq
 from stests.core.utils import args_validator
+from stests.core.utils import logger
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors import orchestrator
 from stests.generators.wg_100.ctx import Arguments
@@ -87,13 +88,23 @@ ARGS.add_argument(
     default=constants.USER_INITIAL_CLX_BALANCE
     )
 
-# Execute generator by passing execution context into orchestrator.
-args=ARGS.parse_args()
-ctx = Context.create(
-    args=Arguments.create(args),
-    network=args.network,
-    node=args.node,
-    run=args.run,
-    typeof=constants.TYPE    
-    )
-orchestrator.execute(ctx)
+
+def execute(args: argparse.Namespace):
+    """Entry point.
+    
+    """
+    logger.log("... instantiating execution context")
+    ctx: Context = Context.create(
+        args=Arguments.create(args),
+        network=args.network,
+        node=args.node,
+        run=args.run,
+        typeof=constants.TYPE    
+        )
+
+    logger.log("... invoking orchestrator")
+    orchestrator.execute(ctx)
+
+
+# Invoke entry point.
+execute(ARGS.parse_args())

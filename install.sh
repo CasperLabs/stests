@@ -224,6 +224,7 @@ function install_activator()
 	EOM
 
 	source $bashrc_file
+	source ${repo_dir}/activate
 }
 
 # ---------------------------------------------------------------
