@@ -25,11 +25,8 @@ setup_env_vars()
 # Setup python executable.
 setup_python()
 {
-    log "stack setup :: syncing venv"
-
     cd $STESTS_HOME
     pipenv sync
-
     log "stack setup :: python venv setup"
 }
 

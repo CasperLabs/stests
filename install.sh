@@ -153,6 +153,9 @@ function verify_prequisites {
 	# Git.
 	command -v git >/dev/null 2>&1 || { echo >&2 "Please install git. https://www.atlassian.com/git/tutorials/install-git"; exit 1; }
 
+	# Python3.
+	command -v python3 >/dev/null 2>&1 || { echo >&2 "Please install python3. https://www.python.org/downloads"; exit 1; }
+
 	# Pipenv.
 	command -v pipenv >/dev/null 2>&1 || { echo >&2 "Please install pipenv. https://pipenv.kennethreitz.org/en/latest/install/#installing-pipenv"; exit 1; }
 }
