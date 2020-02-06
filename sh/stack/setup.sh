@@ -25,24 +25,9 @@ setup_env_vars()
 # Setup python executable.
 setup_python()
 {
-    # Install pyenv.
-    curl https://pyenv.run | bash
-    cat $STESTS_PATH_TEMPLATES/pyenv_completion.txt >> ~/.bashrc
+    log "stack setup :: syncing venv"
 
-    # Activate pyenv.
-    export PATH="/root/.pyenv/bin:$PATH"
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-
-    # Via pyenv, install python.
-    pyenv install $STESTS_PYTHON_VERSION
-
-    # Via pyenv, set stests local python.
     cd $STESTS_HOME
-    pyenv local $STESTS_PYTHON_VERSION
-
-    # Via pipenv, stests venv.
-    pip install -U pipenv
     pipenv sync
 
     log "stack setup :: python venv setup"
