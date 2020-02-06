@@ -179,6 +179,7 @@ function install()
 	log 'installing:'
 
 	install_repo
+	install_evars
 	install_activator
 }
 
@@ -192,6 +193,16 @@ function install_repo()
 	pushd $install_dir
 	git clone -q $_REPO
 	popd
+}
+
+# Install vars.
+function install_evars()
+{
+	log '... environment vars'
+
+	declare repo_dir="$(get_repo_dir)"
+	mkdir -p $HOME/.casperlabs-stests
+	cp $repo_dir/resources/templates/stests_vars.sh $HOME/.casperlabs-stests/vars
 }
 
 # Install shell activator.
