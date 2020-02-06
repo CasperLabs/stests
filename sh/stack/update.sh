@@ -32,7 +32,7 @@ update_env_vars()
 		log "stack update :: env vars file backup --> "$backup
 	fi
 
-    cp $STESTS_PATH_TEMPLATES/stests_env.sh $STESTS_PATH_VARS
+    cp $STESTS_PATH_TEMPLATES/stests_vars.sh $STESTS_PATH_VARS
     log "stack update :: new env vars file --> "$STESTS_PATH_VARS
 }
 
