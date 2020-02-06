@@ -28,7 +28,7 @@ setup_python()
     # Install pyenv.
     curl https://pyenv.run | bash
     cat $STESTS_PATH_TEMPLATES/pyenv_completion.txt >> ~/.bashrc
-    . ~/.bashrc
+    source ~/.bashrc
 
     # Via pyenv, install python.
     pyenv install $STESTS_PYTHON_VERSION
