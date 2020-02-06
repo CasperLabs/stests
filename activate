@@ -5,15 +5,8 @@
 # Set home.
 export STESTS_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Set shortcuts.
-export STESTS_SH=$STESTS_HOME/sh
-export STESTS_SRC=$STESTS_HOME/stests
-export STESTS_CLI=$STESTS_HOME/stests/cli
-export STESTS_GENERATORS=$STESTS_HOME/stests/generators
-export STESTS_OPS=$STESTS_HOME/ops
-export STESTS_RESOURCES=$STESTS_HOME/resources
-export STESTS_TEMPLATES=$STESTS_HOME/resources/templates
-
+# Import paths.
+source $STESTS_HOME/sh/env/set_paths.sh
 
 # ###############################################################
 # ENV
@@ -23,17 +16,8 @@ export STESTS_TEMPLATES=$STESTS_HOME/resources/templates
 source $HOME/.stests
 
 # ###############################################################
-# OPERATIONS
+# ALIASES
 # ###############################################################
 
-# Ensure shell scripts are executable.
-chmod a+x $STESTS_SH/*.sh
-
-# Ensure ops directories exist
-mkdir -p $STESTS_OPS
-mkdir -p $STESTS_OPS/config
-mkdir -p $STESTS_OPS/daemon
-mkdir -p $STESTS_OPS/logs
-
-# Activate aliases
-source $STESTS_SH/env/set_aliases.sh
+# Import aliases
+source $STESTS_PATH_SH/env/set_aliases.sh

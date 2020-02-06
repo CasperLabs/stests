@@ -1,5 +1,5 @@
-from stests.core.mq.initialiser import init as init_broker
+from stests.core.mq import initialiser
 
 
 # Auto-initialise.
-init_broker()
+initialiser.execute()

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import utils.
-source $STESTS_SH/utils.sh
+source $STESTS_PATH_SH/utils.sh
 
 # Main entry point.
 main()

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import utils.
-source $STESTS_SH/utils.sh
+source $STESTS_PATH_SH/utils.sh
 
 # Main entry point.
 main()
@@ -17,7 +17,7 @@ main()
 # Setup environment vars.
 setup_env_vars()
 {
-    cp $STESTS_TEMPLATES/stests_env.sh $HOME/.stests
+    cp $STESTS_PATH_TEMPLATES/stests_env.sh $HOME/.stests
     . $HOME/.stests
     log "stack setup :: env vars file --> "$HOME/.stests 
 }
@@ -27,7 +27,7 @@ setup_python()
 {
     # Install pyenv.
     curl https://pyenv.run | bash
-    cat $STESTS_TEMPLATES/pyenv_completion.txt >> ~/.bashrc
+    cat $STESTS_PATH_TEMPLATES/pyenv_completion.txt >> ~/.bashrc
 
     # Via pyenv, install python.
     pyenv install $STESTS_PYTHON_VERSION

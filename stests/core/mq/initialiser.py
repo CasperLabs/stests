@@ -5,13 +5,10 @@ from stests.core.mq import encoder
 
 
 
-def init() -> dramatiq:
-    """Wires dramatiq to message broker.
+def execute():
+    """Initialises dramatiq library.
     
-    :returns: Pointer to a configured dramatiq instance.
-
     """
+    # Simply broker & encoder.
     dramatiq.set_broker(brokers.get_broker())
     dramatiq.set_encoder(encoder)
-
-    return dramatiq

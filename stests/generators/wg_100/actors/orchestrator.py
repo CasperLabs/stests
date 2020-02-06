@@ -2,13 +2,13 @@ import dramatiq
 
 from stests.core.types import AccountType
 from stests.generators.wg_100 import constants
-from stests.generators.wg_100.phase_01.actors.auction import do_start_auction
-from stests.generators.wg_100.phase_01.actors.setup import do_create_account
-from stests.generators.wg_100.phase_01.actors.setup import do_deploy_contract
-from stests.generators.wg_100.phase_01.actors.setup import do_fund_contract
-from stests.generators.wg_100.phase_01.actors.setup import do_fund_faucet
-from stests.generators.wg_100.phase_01.actors.setup import do_fund_user
-from stests.generators.wg_100.phase_01.actors.setup import do_reset_cache
+from stests.generators.wg_100.actors.auction import do_start_auction
+from stests.generators.wg_100.actors.setup import do_create_account
+from stests.generators.wg_100.actors.setup import do_deploy_contract
+from stests.generators.wg_100.actors.setup import do_fund_contract
+from stests.generators.wg_100.actors.setup import do_fund_faucet
+from stests.generators.wg_100.actors.setup import do_fund_user
+from stests.generators.wg_100.actors.setup import do_reset_cache
 
 
 # Queue to which message will be dispatched.

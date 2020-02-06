@@ -7,9 +7,9 @@ import dramatiq
 from stests.core import mq
 from stests.core.utils import args_validator
 from stests.generators.wg_100 import constants
-from stests.generators.wg_100.phase_01.actors import orchestrator
-from stests.generators.wg_100.phase_01.ctx import Arguments
-from stests.generators.wg_100.phase_01.ctx import Context
+from stests.generators.wg_100.actors import orchestrator
+from stests.generators.wg_100.ctx import Arguments
+from stests.generators.wg_100.ctx import Context
 
 
 
@@ -87,13 +87,13 @@ ARGS.add_argument(
     default=constants.USER_INITIAL_CLX_BALANCE
     )
 
-
-# Instantiate context & execute workflow.
+# Execute generator by passing execution context into orchestrator.
 args=ARGS.parse_args()
-orchestrator.execute(Context.create(
+ctx = Context.create(
     args=Arguments.create(args),
     network=args.network,
     node=args.node,
     run=args.run,
     typeof=constants.TYPE    
-    ))
+    )
+orchestrator.execute(ctx)

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Import utils.
-source $STESTS_SH/utils.sh
+source $STESTS_PATH_SH/utils.sh
 
 # Main entry point.
 main()
@@ -31,8 +31,15 @@ update_env_vars()
 		log "stack update :: env vars file backup --> "$backup
 	fi
 
-    cp $STESTS_TEMPLATES/stests_env.sh $HOME/.stests
+    cp $STESTS_PATH_TEMPLATES/stests_env.sh $HOME/.stests
     log "stack update :: new env vars file --> "$HOME/.stests
+}
+
+# Update source code.
+update_venv()
+{
+    log "stack update :: updating python venv"
+    # TODO: pipenv sync
 }
 
 # Invoke entry point.
