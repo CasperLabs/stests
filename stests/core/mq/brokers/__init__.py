@@ -3,7 +3,6 @@ from dramatiq.broker import Broker
 from stests.core.mq.brokers import rabbitmq
 from stests.core.mq.brokers import redis
 from stests.core.mq.brokers import stub
-from stests.core.mq.middleware import get_middleware
 from stests.core.utils import env
 from stests.core.utils import logger
 from stests.core.utils.exceptions import InvalidEnvironmentVariable
@@ -37,8 +36,6 @@ def get_broker() -> Broker:
         raise InvalidEnvironmentVariable("BROKER_TYPE", EnvVars.TYPE, FACTORIES)
 
     broker = factory.get_broker()
-    for mware in get_middleware():
-        broker.add_middleware(mware)
 
     logger.log(f"... established connection to {EnvVars.TYPE} MQ broker")
 

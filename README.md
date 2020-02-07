@@ -26,7 +26,7 @@ Installation
 --------
 
 ```
-curl https://raw.githubusercontent.com/CasperLabs/stests/master/install.sh | bash
+curl https://raw.githubusercontent.com/CasperLabs/stests/master/installer | bash
 ```
 
 Usage

@@ -1,7 +1,5 @@
 from stests.core.cache.stores import get_store
 from stests.core.cache.utils import do_set
-from stests.core.utils import encoder
-
 
 
 
@@ -9,8 +7,10 @@ def _do_set(instance):
     """Sink function to push instances of domain types.
     
     """
-    if type(instance) not in encoder.TYPESET:
-        raise TypeError("Instance to be cached is not a domain type.")
+    try:
+        instance.cache_key
+    except AttributeError:
+        raise TypeError("Instance to be cached must expose a cache key.")
 
     with get_store() as store:
         do_set(store, instance.cache_key, instance)
@@ -30,3 +30,6 @@ set_node = _do_set
 
 # Append run information.
 set_run = _do_set
+
+# Append run status information.
+set_run_status = _do_set

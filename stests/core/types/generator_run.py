@@ -32,7 +32,7 @@ class GeneratorRun:
     @property
     def cache_key(self):
         """Returns key to be used when caching an instance."""
-        return self.get_run_identifier().cache_key
+        return self.get_identifier().cache_key
 
 
     def get_account_identifier(self, index: int, typeof: AccountType) -> AccountIdentifier:
@@ -40,7 +40,7 @@ class GeneratorRun:
         
         """
         return AccountIdentifier(
-            self.get_run_identifier(),
+            self.get_identifier(),
             index,
             self.get_network_identifier(),
             typeof
@@ -65,7 +65,7 @@ class GeneratorRun:
             )
 
 
-    def get_run_identifier(self) -> GeneratorRunIdentifier:
+    def get_identifier(self) -> GeneratorRunIdentifier:
         """Returns an identifier pertaining to the generator.
         
         """
@@ -89,3 +89,23 @@ class GeneratorRun:
         """
         return cls(NetworkIdentifier.create(network), node, run, typeof)
 
+
+@dataclass_json
+@dataclass
+class GeneratorRunStatus:
+    """Generator workflow status - as distinct from execution status.
+    
+    """
+    # Associated generator run information.
+    run: GeneratorRunIdentifier
+
+    # New status.
+    status: str
+
+    # Moment in time when status change occurred.
+    timestamp: int
+
+    @property
+    def cache_key(self):
+        """Returns key to be used when caching an instance."""
+        return f"{self.run.cache_key}:events:{self.timestamp}"

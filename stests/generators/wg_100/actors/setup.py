@@ -30,9 +30,6 @@ def do_reset_cache(ctx: GeneratorRun):
     # Cache.
     cache.set_run(ctx)
 
-    print(cache.get_network(ctx.get_network_identifier()))
-    print(cache.get_node(ctx.get_node_identifier()))
-
     # Chain.
     return ctx
 
@@ -45,7 +42,7 @@ def do_create_account(ctx: GeneratorRun, index: int, typeof: AccountType):
     # Instantiate.
     account = Account.create(
         index=index,
-        generator=ctx.get_run_identifier(),
+        generator=ctx.get_identifier(),
         network=ctx.get_network_identifier(),
         typeof=typeof
         )

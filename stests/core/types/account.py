@@ -52,7 +52,7 @@ class Account:
         """Returns key to be used when caching an instance."""
         key = self.generator.cache_key if self.generator else self.network.cache_key
 
-        return key + f":ACCOUNTS:{self.typeof.name}:{str(self.index).zfill(6)}"
+        return key + f":data:ACCOUNTS:{self.typeof.name}:{str(self.index).zfill(6)}"
 
 
     def get_identifier(self) -> AccountIdentifier:

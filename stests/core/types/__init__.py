@@ -7,6 +7,7 @@ from stests.core.types.enums import NodeType
 
 from stests.core.types.account import Account
 from stests.core.types.generator_run import GeneratorRun
+from stests.core.types.generator_run import GeneratorRunStatus
 from stests.core.types.key_pair import KeyPair
 from stests.core.types.network import Network
 from stests.core.types.node import Node
@@ -24,6 +25,7 @@ from stests.core.types.utils import get_uuid_field
 CLASSES = {
     Account,
     GeneratorRun,
+    GeneratorRunStatus,
     KeyPair,
     Network,
     Node,
