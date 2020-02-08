@@ -13,6 +13,9 @@ from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
 
 
+from stests.core.types.meta import TypeMetadata
+
+
 
 @dataclass_json
 @dataclass

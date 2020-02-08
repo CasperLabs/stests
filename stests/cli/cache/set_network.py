@@ -1,9 +1,8 @@
 import argparse
 
 from stests.core import cache
-from stests.core.types import Network
-from stests.core.types import NetworkType
 from stests.core.utils import args_validator
+from stests.core.utils import factory
 from stests.core.utils import logger
 
 
@@ -24,11 +23,9 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    instance = Network.create(
-        index=int(args.network[3:]),
-        typeof=NetworkType[args.network[:3].upper()]
-    )
-    cache.set_network(instance)
+    # Instantiate & cache.
+    cache.set_network(factory.get_network(args.network))
+
     logger.log("Network information successfully registered")
 
 

@@ -4,10 +4,11 @@ import typing
 from stests.core.types import ENUMS
 from stests.core.types import TYPESET as CORE_TYPESET
 
+from stests.core.domain import TYPESET as DOMAIN_TYPESET
 
 
 # Set typeset.
-TYPESET = CORE_TYPESET
+TYPESET = CORE_TYPESET | DOMAIN_TYPESET
 
 # Map: domain type keys -> domain type.  
 TYPEMAP = {f"{i.__module__}.{i.__name__}": i for i in TYPESET}

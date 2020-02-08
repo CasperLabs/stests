@@ -1,5 +1,6 @@
 from stests.core.cache.stores import get_store
 from stests.core.cache.utils import do_set
+from stests.core.cache.keys import get_key
 
 
 
@@ -7,13 +8,11 @@ def _do_set(instance):
     """Sink function to push instances of domain types.
     
     """
-    try:
-        instance.cache_key
-    except AttributeError:
-        raise TypeError("Instance to be cached must expose a cache key.")
-
     with get_store() as store:
-        do_set(store, instance.cache_key, instance)
+        if hasattr(instance, "cache_key"):
+            do_set(store, instance.cache_key, instance)
+        else:
+            do_set(store, get_key(instance), instance)
 
 
 # Append account information.

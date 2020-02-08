@@ -4,12 +4,12 @@ from stests.core import cache
 from stests.core.types import Network
 from stests.core.types import NetworkType
 from stests.core.types import Node
-from stests.core.types import NetworkIdentifier
 from stests.core.types import NodeType
+
 from stests.core.utils import args_validator
 from stests.core.utils import defaults
+from stests.core.utils import factory
 from stests.core.utils import logger
-
 
 
 # CLI argument parser.
@@ -48,21 +48,18 @@ def main(args):
     # Unpack arguments.
     host = args.address.split(':')[0]
     index = int(args.node.split(':')[-1])
-    network=NetworkIdentifier.create(args.node.split(':')[0])
+    network=args.node.split(':')[0]
     port = int(args.address.split(':')[-1])
     typeof = NodeType[args.typeof.upper()]
 
-    # Instantiate.
-    node = Node.create(
+    # Instantiate & cache.
+    cache.set_node(factory.get_node(
         host=host,
         index=index,  
-        network=network,
+        network_id=factory.get_network_identifier(network),
         port=port,
         typeof=typeof
-    )
-    
-    # Encache.
-    cache.set_node(node)    
+    ))
 
     logger.log("Node information successfully registered")
 

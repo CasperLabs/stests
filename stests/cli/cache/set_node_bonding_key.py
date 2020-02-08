@@ -1,16 +1,12 @@
 import argparse
 
 from stests.core import cache
-from stests.core.types import Account
-from stests.core.types import AccountStatus
-from stests.core.types import AccountType
-from stests.core.types import KeyPair
-from stests.core.types import NetworkIdentifier
-from stests.core.types import NodeIdentifier
-from stests.core.utils import args_validator
+from stests.core.domain import AccountStatus
+from stests.core.domain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
 from stests.core.utils import defaults
+from stests.core.utils import factory
 from stests.core.utils import logger
 
 
@@ -39,32 +35,30 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Unpack arguments.
-    network_name = args.node.split(':')[0]
-    node_index = int(args.node.split(':')[-1])
-    pem_path = args.pem_path
-
-    # Set identifiers.
-    network_id = NetworkIdentifier.create(network_name)
-    node_id = NodeIdentifier.create(network_name, node_index)
-
     # Set network.
+    network_name = args.node.split(':')[0]
+    network_id = factory.get_network_identifier(network_name)
     network = cache.get_network(network_id)
     if network is None:
         raise ValueError("Unregistered network.")
 
     # Set node.
+    node_index = int(args.node.split(':')[-1])
+    node_id = factory.get_node_identifier(network_id, node_index)
     node = cache.get_node(node_id)
     if node is None:
         raise ValueError("Unregistered node.")
 
-    # Set node account.
-    node.account = Account.create(
-        key_pair=KeyPair.create_from_pvk_pem_file(args.pem_path),
-        network=network_id,
+    # Set key pair.
+    private_key, public_key = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
+
+    # Set node's bonding account.
+    node.account = factory.get_account(
+        private_key=private_key,
+        public_key=public_key,
         typeof=AccountType.BOND,
-        status=AccountStatus.ACTIVE
-        )
+        status=AccountStatus.ACTIVE,
+    )
 
     # Cache.
     cache.set_node(node)

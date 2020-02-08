@@ -8,6 +8,8 @@ from stests.core.types.network import NetworkIdentifier
 from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 
+from stests.core.types.meta import TypeMetadata
+
 
 
 @dataclass_json
@@ -22,10 +24,8 @@ class Deploy:
     # Deploy's processing status.
     status: DeployStatus = get_enum_field(DeployStatus)
 
-    # Standard fields.
-    _ts_created: datetime = get_isodatetime_field(True)
-    _ts_updated: datetime = get_isodatetime_field(True)
-    _uid: str = get_uuid_field(True) 
+    # Associated metadata.
+    meta: TypeMetadata
 
 
     @classmethod

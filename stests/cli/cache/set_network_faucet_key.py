@@ -10,6 +10,7 @@ from stests.core.types import NodeIdentifier
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
 from stests.core.utils import defaults
+from stests.core.utils import factory
 from stests.core.utils import logger
 
 
@@ -38,22 +39,22 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Unpack arguments.
-    network_id = NetworkIdentifier.create(args.network)
-    pem_path = args.pem_path
-
     # Set network.
+    network_id = factory.get_network(args.network)
     network = cache.get_network(network_id)
     if network is None:
         raise ValueError("Unregistered network.")
 
-    # Set network faucet.
-    network.faucet = Account.create(
-        key_pair=KeyPair.create_from_pvk_pem_file(pem_path),
-        network=network_id,
+    # Set key pair.
+    private_key, public_key = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
+
+    # Set network's faucet account.
+    network.faucet = factory.get_account(
+        private_key=private_key,
+        public_key=public_key,
         typeof=AccountType.FAUCET,
-        status=AccountStatus.ACTIVE
-        )
+        status=AccountStatus.ACTIVE,
+    )
 
     # Cache.
     cache.set_network(network)

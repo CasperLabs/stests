@@ -14,6 +14,7 @@ from stests.core.types.utils import get_isodatetime_field
 from stests.core.types.utils import get_uuid_field
 from stests.core.utils import defaults
 
+from stests.core.types.meta import TypeMetadata
 
 
 
@@ -23,17 +24,11 @@ class Account:
     """An account that maps to an address upon target chain.
     
     """
-    # Associated generator reference information.
-    generator: GeneratorRunIdentifier
-
     # Numerical index to distinguish between accounts within same context.
     index: int
 
     # Associated cryptographic key pair for signing/verification/authentication.
     key_pair: KeyPair
-
-    # Associated network reference information.
-    network: NetworkIdentifier
 
     # Current account status.
     status: AccountStatus = get_enum_field(AccountStatus)
@@ -41,10 +36,8 @@ class Account:
     # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
     typeof: AccountType = get_enum_field(AccountType)
 
-    # Standard fields.
-    _ts_created: datetime = get_isodatetime_field(True)
-    _ts_updated: datetime = get_isodatetime_field(True)
-    _uid: str = get_uuid_field(True) 
+    # Associated metadata.
+    meta: TypeMetadata
 
 
     @property
