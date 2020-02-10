@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.domain.enums import get_enum_field
 from stests.core.domain.enums import DeployStatus
-from stests.core.domain.meta import TypeMetadata
+from stests.core.utils.domain import get_enum_field
+from stests.core.utils.domain import TypeMetadata
 
 
 
@@ -20,4 +20,4 @@ class Deploy:
     status: DeployStatus = get_enum_field(DeployStatus)
 
     # Associated metadata.
-    meta: TypeMetadata
+    meta: TypeMetadata = TypeMetadata()

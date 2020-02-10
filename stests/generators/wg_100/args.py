@@ -1,12 +1,7 @@
 import argparse
-import datetime
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.types import GeneratorRun
-from stests.core.types import NetworkIdentifier
-from stests.core.types import get_isodatetime_field
-from stests.core.types import get_uuid_field
 from stests.core.utils import encoder
 
 
@@ -32,14 +27,14 @@ class Arguments:
     # Initial user account CLX balance.
     user_initial_clx_balance: int
 
-    @staticmethod
-    def create(args: argparse.Namespace):
+    @classmethod
+    def create(cls, args: argparse.Namespace):
         """Simple factory method.
 
         :param args: Parsed command line arguments.
 
         """
-        return Arguments(
+        return cls(
             token_name='token_name' in args and args.token_name,
             token_supply='token_supply' in args and args.token_supply,
             user_accounts='user_accounts' in args and args.user_accounts,
@@ -48,31 +43,5 @@ class Arguments:
         )
 
 
-@dataclass_json
-@dataclass
-class Context(GeneratorRun):
-    # Arguments derived from command line.
-    args: Arguments
-
-    # Standard fields.
-    _ts_created: datetime = get_isodatetime_field(True)
-    _ts_updated: datetime = get_isodatetime_field(True)   
-    _uid: str = get_uuid_field(True) 
-
-    @classmethod
-    def create(cls, args: Arguments, network: str, node: int, run: int, typeof: str):
-        """Simple factory method.
-
-        """
-        return Context(
-            args=args,
-            network=NetworkIdentifier.create(network),
-            node=node,
-            typeof=typeof.upper(),
-            run=run
-        )
-
-
 # Framework requirement to support serialisation scenarios.
 encoder.register_type(Arguments)
-encoder.register_type(Context)

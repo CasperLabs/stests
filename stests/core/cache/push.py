@@ -1,6 +1,6 @@
-from stests.core.cache.stores import get_store
-from stests.core.cache.utils import do_set
-from stests.core.cache.keys import get_key
+from stests.core.cache import keyspace
+from stests.core.cache import stores
+from stests.core.cache import utils
 
 
 
@@ -8,11 +8,9 @@ def _do_set(instance):
     """Sink function to push instances of domain types.
     
     """
-    with get_store() as store:
-        if hasattr(instance, "cache_key"):
-            do_set(store, instance.cache_key, instance)
-        else:
-            do_set(store, get_key(instance), instance)
+    key = keyspace.get_key(instance)
+    with stores.get_store() as store:
+        utils.do_set(store, key, instance)
 
 
 # Append account information.
@@ -27,8 +25,9 @@ set_network = _do_set
 set_node = _do_set
 
 
-# Append run information.
-set_run = _do_set
+# Append run context information.
+set_run_context = _do_set
 
-# Append run status information.
-set_run_status = _do_set
+
+# Append run event information.
+set_run_event = _do_set

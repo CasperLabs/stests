@@ -6,11 +6,11 @@ import dramatiq
 
 from stests.core import mq
 from stests.core.utils import args_validator
+from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors import orchestrator
-from stests.generators.wg_100.ctx import Arguments
-from stests.generators.wg_100.ctx import Context
+from stests.generators.wg_100.args import Arguments
 
 
 
@@ -94,13 +94,17 @@ def execute(args: argparse.Namespace):
     
     """
     logger.log("... instantiating execution context")
-    ctx: Context = Context.create(
-        args=Arguments.create(args),
-        network=args.network,
-        node=args.node,
-        run=args.run,
-        typeof=constants.TYPE    
-        )
+
+    network_id = factory.get_network_identifier(args.network)
+    node_id = factory.get_node_identifier(network_id, args.node)
+
+    ctx = factory.get_run_context(
+        Arguments.create(args),
+        args.run,
+        network_id,
+        node_id,
+        constants.TYPE
+    )
 
     logger.log("... invoking orchestrator")
     orchestrator.execute(ctx)

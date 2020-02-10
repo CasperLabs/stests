@@ -2,13 +2,10 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 from stests.core.domain.account import Account
-from stests.core.domain.enums import get_enum_field
 from stests.core.domain.enums import NodeStatus
 from stests.core.domain.enums import NodeType
-from stests.core.domain.meta import TypeMetadata
-from stests.core.utils import defaults
-
-
+from stests.core.utils.domain import get_enum_field
+from stests.core.utils.domain import TypeMetadata
 
 
 
@@ -40,8 +37,8 @@ class Node:
     typeof: NodeType = get_enum_field(NodeType)
 
     # Associated metadata.
-    meta: TypeMetadata
-
+    meta: TypeMetadata = TypeMetadata()
+    
     @property
     def key(self) -> str:
         """Returns node's key for identification purposes."""

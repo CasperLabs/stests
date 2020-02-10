@@ -1,76 +1,107 @@
+import enum
 import inspect
 import typing
 
-from stests.core.types import ENUMS
-from stests.core.types import TYPESET as CORE_TYPESET
-
-from stests.core.domain import TYPESET as DOMAIN_TYPESET
 
 
-# Set typeset.
-TYPESET = CORE_TYPESET | DOMAIN_TYPESET
+# Set: supported enum values.  
+ENUM_TYPE_SET = set()
 
-# Map: domain type keys -> domain type.  
-TYPEMAP = {f"{i.__module__}.{i.__name__}": i for i in TYPESET}
+# Map: enum keys -> enums.  
+ENUM_VALUE_MAP = dict()
 
-# Map: domain enum keys -> enum.  
-ENUMMAP = dict()
-for i in ENUMS:
-    for j in i:
-        ENUMMAP[str(j)] = j    
+# Map: dataclass typekey -> dataclass type.  
+DCLASS_MAP = dict()
+
+# Set: supported dataclass types.  
+DCLASS_SET = set()
 
 
-def decode(data: typing.Any) -> typing.Any:
-    """Decodes input data dispatched over wire.
+def decode(obj: typing.Any) -> typing.Any:
+    """Decodes previously encoded information.
     
     """
-    if isinstance(data, tuple):
-        return tuple(map(decode, data))
+    if isinstance(obj, tuple):
+        return tuple(map(decode, obj))
 
-    if isinstance(data, list):
-        return list(map(decode, data))
+    if isinstance(obj, list):
+        return list(map(decode, obj))
 
-    if isinstance(data, dict) and '_type' in data:
-        dclass = TYPEMAP[data['_type']]
-        return dclass.from_dict(data)
+    if isinstance(obj, dict) and 'meta' in obj and 'typekey' in obj['meta']:
+        return decode_registered_dclass(obj)
 
-    if isinstance(data, dict):
-        return {k: decode(v) for k, v in data.items()}        
+    if isinstance(obj, dict):
+        return {k: decode(v) for k, v in obj.items()}        
 
-    if isinstance(data, str) and data in ENUMMAP:
-        return ENUMMAP[data]
+    if isinstance(obj, str) and obj in ENUM_VALUE_MAP:
+        return ENUM_VALUE_MAP[obj]
+
+    return obj
+
+
+def decode_registered_dclass(obj):
+    dclass_type = DCLASS_MAP[obj['meta']['typekey']]
+    data = dclass_type.from_dict(obj)
+
+    for k, v in obj.items():
+        if isinstance(v, dict) and 'meta' in v and 'typekey' in v['meta']:
+            setattr(data, k, decode_registered_dclass(v))
 
     return data
 
 
 def encode(data: typing.Any) -> typing.Any:
-    """Encodes input data in readiness for dispatch over wire.
+    """Encodes input data in readiness for downstream processing.
     
     """
+    if isinstance(data, dict):
+        return {k: encode(v) for k, v in data.items()}
+
     if isinstance(data, tuple):
         return tuple(map(encode, data))
 
     if isinstance(data, list):
         return list(map(encode, data))
 
-    if type(data) not in TYPESET:
-        return data
+    if type(data) in DCLASS_SET:
+        return encode_registered_dclass(data, data.to_dict())
 
-    if type(data) in ENUMS:
+    if type(data) in ENUM_TYPE_SET:
         return str(data)
 
-    # Inject type info for subsequent decoding operation.
-    return {**data.to_dict(), **{
-        '_type': f"{data.__module__}.{data.__class__.__name__}",
-    }}
+    if str(data) in ENUM_VALUE_MAP:
+        return str(data)
+
+    return data
+
+
+def encode_registered_dclass(data, obj):
+    """Encodes a data class that has been previously registered with the encoder.
+    
+    """
+    # Inject typekey for subsequent roundtrip.
+    obj['meta'] = obj.get('meta', {})
+    obj['meta']['typekey'] = f"{data.__module__}.{data.__class__.__name__}"
+
+    # Recurse through properties that are also registered data classes.
+    for i in [i for i in dir(data) if not i.startswith('_') and 
+                                      type(getattr(data, i)) in DCLASS_SET]:
+        encode_registered_dclass(getattr(data, i), obj[i])
+
+    return obj
 
 
 def register_type(cls):
     """Workflows need to extend the typeset so as to ensure that arguments are decoded/encoded correctly.
     
     """
-    global TYPESET
-    if cls not in TYPESET:
-        TYPESET = TYPESET | { cls, }
-        TYPEMAP[f"{cls.__module__}.{cls.__name__}"] = cls
+    global ENUM_TYPE_SET
+    global DCLASS_SET
 
+    if issubclass(cls, (enum.Enum, enum.Flag)):
+        ENUM_TYPE_SET = ENUM_TYPE_SET | {cls, }
+        for i in cls:
+            ENUM_VALUE_MAP[str(i)] = i
+    else:
+        DCLASS_MAP[f"{cls.__module__}.{cls.__name__}"] = cls
+        DCLASS_SET = DCLASS_SET | { cls, }

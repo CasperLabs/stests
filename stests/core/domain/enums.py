@@ -1,6 +1,4 @@
 import enum
-from dataclasses import field
-from dataclasses_json import config
 
 
 
@@ -81,22 +79,13 @@ class NodeType(enum.Enum):
     READ_ONLY = enum.auto()
 
 
-def get_enum_field(enum: enum.Enum, default: str=None) -> field:
-    """Returns an enumeration dataclass field with implicit encoding support.
-    
-    :param enum: An enum or flag being declared within a dataclass.
-    :param default: Dataclass field's default value.
-
-    """
-    if default is not None:
-        return field(
-            default = default,
-            metadata=config(
-                encoder=lambda x: str(x),
-                decoder=lambda x: enum[x.split('.')[-1]]
-            ))
-    return field(
-        metadata=config(
-            encoder=lambda x: str(x),
-            decoder=lambda x: enum[x.split('.')[-1]]
-        ))
+# Full set of enums.
+ENUM_SET = {
+    AccountStatus,
+    AccountType,
+    DeployStatus,
+    NetworkStatus,
+    NetworkType,
+    NodeStatus,
+    NodeType,
+}

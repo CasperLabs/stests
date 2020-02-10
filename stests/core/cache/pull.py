@@ -1,14 +1,6 @@
-from stests.core.cache.push import set_network
-from stests.core.cache.stores import get_store
-from stests.core.cache.utils import do_get
-from stests.core.cache.utils import do_set
-from stests.core.cache.keys import get_key
-
-from stests.core.types import Account
-from stests.core.types import AccountType
-from stests.core.types import Node
-from stests.core.types import Network
-from stests.core.types import NetworkIdentifier
+from stests.core.cache import keyspace
+from stests.core.cache import stores
+from stests.core.cache import utils
 
 
 
@@ -16,11 +8,9 @@ def _do_get(key_ref):
     """Sink function to retrieve instances of domain types.
     
     """
-    with get_store() as store:
-        if hasattr(key_ref, 'cache_key'):
-            return do_get(store, key_ref.cache_key)
-        else:
-            return do_get(store, get_key(key_ref))
+    key = keyspace.get_key(key_ref)
+    with stores.get_store() as store:
+        return utils.do_get(store, key)
 
 
 # Get account information.

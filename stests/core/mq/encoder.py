@@ -1,8 +1,8 @@
+import inspect
 import json
 import typing
 
 from stests.core.utils import encoder as _encoder
-from stests.core.utils.encoder import decode as _decode
 
 
 
@@ -17,26 +17,7 @@ def encode(data: MessageData) -> bytes:
     :returns: Bytestream for dispatch.
     
     """
-    return json.dumps(_encode(data), separators=(",", ":")).encode("utf-8")
-
-
-def _encode(obj: typing.Any) -> typing.Any:
-    """Encode message data.
-    
-    """
-    if isinstance(obj, dict):
-        return {k: _encode(v) for k, v in obj.items()}
-        
-    if isinstance(obj, tuple):
-        return tuple(map(_encode, obj))
-
-    if isinstance(obj, list):
-        return list(map(_encode, obj))
-
-    if type(obj) in _encoder.TYPESET:
-        return _encoder.encode(obj)
-
-    return obj
+    return json.dumps(_encoder.encode(data), separators=(",", ":")).encode("utf-8")
 
 
 def decode(data: bytes) -> MessageData:

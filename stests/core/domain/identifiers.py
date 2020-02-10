@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.types.enums import get_enum_field
 from stests.core.types.enums import AccountType
 from stests.core.types.enums import NetworkType
-from stests.core.utils import defaults
+from stests.core.utils.domain import get_enum_field
 
 
 
@@ -37,7 +36,7 @@ class NodeIdentifier:
     network: NetworkIdentifier
 
     # Node index.
-    node: int
+    index: int
 
 
 @dataclass_json
@@ -82,3 +81,11 @@ class AccountIdentifier:
         if self.generator:
             key += f".{self.generator.cache_key}"
         return key + f":ACCOUNTS:{self.typeof.name}:{str(self.index).zfill(6)}"
+
+
+# Domain identifiers.
+IDENTIFIER_SET = {
+    NetworkIdentifier,
+    NodeIdentifier,
+    RunIdentifier,
+}

@@ -1,4 +1,8 @@
+import datetime
+import typing
+
 from stests.core.domain import Account
+from stests.core.domain import AccountForRun
 from stests.core.domain import AccountStatus
 from stests.core.domain import AccountType
 from stests.core.domain import Network
@@ -9,7 +13,11 @@ from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
 from stests.core.domain import NodeType
 from stests.core.domain import NodeStatus
-from stests.core.domain import TypeMetadata
+from stests.core.domain import RunContext
+from stests.core.domain import RunEvent
+from stests.core.domain import RunInfo
+from stests.core.utils import crypto
+from stests.core.utils.domain import TypeMetadata
 
 
 
@@ -19,34 +27,50 @@ def get_account(
     typeof: AccountType,
     status: AccountStatus = AccountStatus.NEW
     ) -> Account:
-    """Simple factory that returns an account domain object instance.
+    """Returns an account domain object instance.
     
-    :param name_raw: Network name, e.g. lrt1
-    :returns: A network instance.
-
     """
     return Account(
-        meta=TypeMetadata(),
         private_key=private_key,
         public_key=public_key,
         status=status or AccountStatus.NEW,
-        typeof=typeof
+        typeof=typeof,
+        meta=TypeMetadata()
         )
 
 
-def get_network(name_raw: str) -> Network:
-    """Simple factory that returns a network domain object instance.
+def get_account_for_run(
+    ctx: RunContext,
+    index: int,
+    typeof: AccountType
+    ) -> AccountForRun:
+    """Returns a run account domain object instance.
     
-    :param name_raw: Network name, e.g. lrt1
-    :returns: A network instance.
+    """
+    private_key, public_key = crypto.generate_key_pair(crypto.KeyEncoding.HEX)
+    run_info=get_run_info(ctx)
+    status = AccountStatus.NEW
 
+    return AccountForRun(
+        index=index,
+        private_key=private_key,
+        public_key=public_key,
+        run_info=run_info,
+        status=status,
+        typeof=typeof,
+        meta=TypeMetadata()
+        )
+        
+
+def get_network(name_raw: str) -> Network:
+    """Returns a network domain object instance.
+    
     """
     network_id = get_network_identifier(name_raw)
 
     return Network(
         faucet=None,
         index=network_id.index,
-        meta=TypeMetadata(),
         name=network_id.name,
         name_raw=name_raw,
         status=NetworkStatus.NULL,
@@ -55,11 +79,8 @@ def get_network(name_raw: str) -> Network:
 
 
 def get_network_identifier(name_raw: str) -> NetworkIdentifier:
-    """Simple factory that returns a network identifier domain object instance.
+    """Returns a network identifier domain object instance.
     
-    :param name_raw: Network name, e.g. lrt1
-    :returns: A network identifier instance.
-
     """
     name_raw = name_raw.lower()
     index=int(name_raw[3:])
@@ -69,18 +90,20 @@ def get_network_identifier(name_raw: str) -> NetworkIdentifier:
     return NetworkIdentifier(name)
 
 
-def get_node(host: str, index: int, network_id: NetworkIdentifier, port: int, typeof: NodeType) -> Node:
-    """Simple factory that returns a node domain object instance.
+def get_node(
+    host: str,
+    index: int,
+    network_id: NetworkIdentifier,
+    port: int,
+    typeof: NodeType
+    ) -> Node:
+    """Returns a node domain object instance.
     
-    :param name: Network name, e.g. lrt1
-    :returns: A network instance.
-
     """
     return Node(
         account=None,
         host=host,
         index=index,
-        meta=TypeMetadata(),
         network=network_id.name,
         port=port,
         typeof=typeof,
@@ -88,11 +111,57 @@ def get_node(host: str, index: int, network_id: NetworkIdentifier, port: int, ty
     )
 
 
-def get_node_identifier(network_id: NetworkIdentifier, index: int) -> NodeIdentifier:
-    """Simple factory that returns a network identifier domain object instance.
+def get_node_identifier(
+    network_id: NetworkIdentifier,
+    index: int
+    ) -> NodeIdentifier:
+    """Returns a node identifier.
     
-    :param name: Network name, e.g. lrt1
-    :returns: A network identifier instance.
-
     """
     return NodeIdentifier(network_id, index)
+
+
+def get_run_info(ctx: RunContext) -> RunInfo:
+    """Domain instance factory: run info.
+    
+    """
+    return RunInfo(
+        index=ctx.index,
+        network=ctx.network,
+        node=ctx.node,
+        typeof=ctx.typeof
+    )
+
+
+def get_run_context(
+    args: typing.Any,
+    index: int,
+    network_id: NetworkIdentifier,
+    node_id: NodeIdentifier,
+    typeof: str
+    ) -> RunContext:
+    """Domain instance factory: run context.
+    
+    """
+    return RunContext(
+        args=args,
+        index=index,
+        network=network_id.name,
+        node=node_id.index,
+        typeof=typeof
+    )
+
+def get_run_event(
+    ctx: RunContext,
+    name: str
+    ) -> RunEvent:
+    """Domain instance factory: run event.
+    
+    """
+    run_info=get_run_info(ctx)
+
+    return RunEvent(
+        run_info=run_info,
+        name=name,
+        timestamp=datetime.datetime.now().timestamp()
+    )

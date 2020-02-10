@@ -61,6 +61,9 @@ def on_create_contract_account(_, ctx):
         for index in range(1, ctx.args.user_accounts + 1):
             yield do_create_account.message(ctx, index, AccountType.USER)
 
+    print(888)
+    print(ctx)
+
     g = dramatiq.group(get_messages())
     g.add_completion_callback(on_create_user_accounts.message(ctx))
     g.run()

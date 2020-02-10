@@ -5,11 +5,14 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
+
 from stests.core.types import Account
 from stests.core.types import AccountType
 from stests.core.types import GeneratorRun
 from stests.core.types import AccountIdentifier
 
+from stests.core.domain import RunContext
+from stests.core.utils import factory
 from stests.core.utils import resources
 from stests.generators.wg_100 import constants
 
@@ -20,7 +23,7 @@ _QUEUE = f"{constants.TYPE}.phase_01.setup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_reset_cache(ctx: GeneratorRun):   
+def do_reset_cache(ctx: RunContext):   
     """Resets cache in preparation for a new run.
     
     """
@@ -28,24 +31,19 @@ def do_reset_cache(ctx: GeneratorRun):
     cache.flush_run(ctx)
 
     # Cache.
-    cache.set_run(ctx)
+    cache.set_run_context(ctx)
 
     # Chain.
     return ctx
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_create_account(ctx: GeneratorRun, index: int, typeof: AccountType):
+def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     """Creates an account for use during the course of the simulation.
     
     """
     # Instantiate.
-    account = Account.create(
-        index=index,
-        generator=ctx.get_identifier(),
-        network=ctx.get_network_identifier(),
-        typeof=typeof
-        )
+    account = factory.get_account_for_run(ctx, index, typeof)
 
     # Cache.
     cache.set_account(account)
