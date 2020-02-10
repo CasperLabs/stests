@@ -27,7 +27,7 @@ def decode(obj: typing.Any) -> typing.Any:
     if isinstance(obj, list):
         return list(map(decode, obj))
 
-    if isinstance(obj, dict) and 'meta' in obj and 'typekey' in obj['meta']:
+    if isinstance(obj, dict) and 'meta' in obj and 'type_key' in obj['meta']:
         return decode_registered_dclass(obj)
 
     if isinstance(obj, dict):
@@ -40,11 +40,11 @@ def decode(obj: typing.Any) -> typing.Any:
 
 
 def decode_registered_dclass(obj):
-    dclass_type = DCLASS_MAP[obj['meta']['typekey']]
+    dclass_type = DCLASS_MAP[obj['meta']['type_key']]
     data = dclass_type.from_dict(obj)
 
     for k, v in obj.items():
-        if isinstance(v, dict) and 'meta' in v and 'typekey' in v['meta']:
+        if isinstance(v, dict) and 'meta' in v and 'type_key' in v['meta']:
             setattr(data, k, decode_registered_dclass(v))
 
     return data
@@ -81,7 +81,7 @@ def encode_registered_dclass(data, obj):
     """
     # Inject typekey for subsequent roundtrip.
     obj['meta'] = obj.get('meta', {})
-    obj['meta']['typekey'] = f"{data.__module__}.{data.__class__.__name__}"
+    obj['meta']['type_key'] = f"{data.__module__}.{data.__class__.__name__}"
 
     # Recurse through properties that are also registered data classes.
     for i in [i for i in dir(data) if not i.startswith('_') and 

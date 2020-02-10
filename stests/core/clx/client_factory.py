@@ -1,9 +1,9 @@
 import casperlabs_client
-from stests.core.types import GeneratorRun
+from stests.core.domain import RunContext
 
 
 
-def get_client(ctx: GeneratorRun) -> casperlabs_client.CasperLabsClient:
+def get_client(ctx: RunContext) -> casperlabs_client.CasperLabsClient:
     """Factory method to return configured clabs client.
     
     """

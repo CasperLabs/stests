@@ -78,7 +78,7 @@ class TypeMetadata:
     
     """
     # Type key of associated object used in serialisation scenarios.
-    typekey: str = None
+    type_key: str = None
 
     # Timestamp: create.
     ts_created: datetime = get_isodatetime_field(True)

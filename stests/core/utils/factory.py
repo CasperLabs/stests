@@ -1,21 +1,7 @@
 import datetime
 import typing
 
-from stests.core.domain import Account
-from stests.core.domain import AccountForRun
-from stests.core.domain import AccountStatus
-from stests.core.domain import AccountType
-from stests.core.domain import Network
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import NetworkStatus
-from stests.core.domain import NetworkType
-from stests.core.domain import Node
-from stests.core.domain import NodeIdentifier
-from stests.core.domain import NodeType
-from stests.core.domain import NodeStatus
-from stests.core.domain import RunContext
-from stests.core.domain import RunEvent
-from stests.core.domain import RunInfo
+from stests.core.domain import *
 from stests.core.utils import crypto
 from stests.core.utils.domain import TypeMetadata
 
@@ -150,6 +136,7 @@ def get_run_context(
         node=node_id.index,
         typeof=typeof
     )
+
 
 def get_run_event(
     ctx: RunContext,

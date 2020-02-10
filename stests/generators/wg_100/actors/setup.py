@@ -1,16 +1,8 @@
-import time
-
-import casperlabs_client as pyclx
 import dramatiq
 
 from stests.core import cache
 from stests.core import clx
-
-from stests.core.types import Account
-from stests.core.types import AccountType
-from stests.core.types import GeneratorRun
-from stests.core.types import AccountIdentifier
-
+from stests.core.domain import AccountType
 from stests.core.domain import RunContext
 from stests.core.utils import factory
 from stests.core.utils import resources

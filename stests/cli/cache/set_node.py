@@ -1,11 +1,7 @@
 import argparse
 
 from stests.core import cache
-from stests.core.types import Network
-from stests.core.types import NetworkType
-from stests.core.types import Node
-from stests.core.types import NodeType
-
+from stests.core.domain import NodeType
 from stests.core.utils import args_validator
 from stests.core.utils import defaults
 from stests.core.utils import factory

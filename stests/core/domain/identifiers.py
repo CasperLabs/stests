@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.types.enums import AccountType
-from stests.core.types.enums import NetworkType
+from stests.core.domain.enums import AccountType
+from stests.core.domain.enums import NetworkType
 from stests.core.utils.domain import get_enum_field
 
 

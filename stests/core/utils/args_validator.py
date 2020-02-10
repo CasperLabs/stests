@@ -1,6 +1,6 @@
 import argparse
 
-from stests.core.types.enums import NetworkType
+from stests.core.domain import NetworkType
 
 
 

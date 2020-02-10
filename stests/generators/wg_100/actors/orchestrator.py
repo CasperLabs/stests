@@ -1,6 +1,6 @@
 import dramatiq
 
-from stests.core.types import AccountType
+from stests.core.domain import AccountType
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors.auction import do_start_auction
 from stests.generators.wg_100.actors.setup import do_create_account

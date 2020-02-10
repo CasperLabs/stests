@@ -5,7 +5,6 @@ from stests.core.domain import AccountStatus
 from stests.core.domain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
-from stests.core.utils import defaults
 from stests.core.utils import factory
 from stests.core.utils import logger
 
@@ -56,8 +55,8 @@ def main(args):
     node.account = factory.get_account(
         private_key=private_key,
         public_key=public_key,
-        typeof=AccountType.BOND,
         status=AccountStatus.ACTIVE,
+        typeof=AccountType.BOND
     )
 
     # Cache.

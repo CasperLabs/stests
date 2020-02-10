@@ -1,15 +1,10 @@
 import argparse
 
 from stests.core import cache
-from stests.core.types import Account
-from stests.core.types import AccountStatus
-from stests.core.types import AccountType
-from stests.core.types import KeyPair
-from stests.core.types import NetworkIdentifier
-from stests.core.types import NodeIdentifier
+from stests.core.domain import AccountStatus
+from stests.core.domain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
-from stests.core.utils import defaults
 from stests.core.utils import factory
 from stests.core.utils import logger
 

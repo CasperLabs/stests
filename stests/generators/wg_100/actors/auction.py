@@ -5,8 +5,6 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.types import Account
-from stests.core.types import AccountType
 from stests.generators.wg_100 import constants
 
 

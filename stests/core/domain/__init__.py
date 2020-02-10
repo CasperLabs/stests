@@ -19,7 +19,7 @@ DCLASS_SET = {
     RunInfo,
 }
 
-# Register types with encoder.
+# Register domain types with encoder.
 from stests.core.utils import encoder
 for i in DCLASS_SET | IDENTIFIER_SET | ENUM_SET:
     encoder.register_type(i)
