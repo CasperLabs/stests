@@ -10,16 +10,18 @@ from stests.core.domain.run import *
 # Domain classes.
 DCLASS_SET = {
     Account,
-    AccountForRun,
     Deploy,
     Network,
     Node,
+    
     RunContext,
     RunEvent,
-    RunInfo,
 }
+
+# Full domain type set.
+TYPE_SET = DCLASS_SET | IDENTIFIER_SET | ENUM_SET
 
 # Register domain types with encoder.
 from stests.core.utils import encoder
-for i in DCLASS_SET | IDENTIFIER_SET | ENUM_SET:
+for i in TYPE_SET:
     encoder.register_type(i)

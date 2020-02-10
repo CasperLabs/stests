@@ -8,15 +8,20 @@ from stests.core.utils.domain import TypeMetadata
 
 
 def get_account(
-    private_key: str, 
-    public_key: str,
     typeof: AccountType,
+    index: int = 1,
+    private_key: str = None, 
+    public_key: str = None,
     status: AccountStatus = AccountStatus.NEW
     ) -> Account:
     """Returns an account domain object instance.
     
     """
+    if private_key is None:
+        private_key, public_key = crypto.generate_key_pair(crypto.KeyEncoding.HEX)        
+
     return Account(
+        index=index or 1,
         private_key=private_key,
         public_key=public_key,
         status=status or AccountStatus.NEW,
@@ -24,29 +29,6 @@ def get_account(
         meta=TypeMetadata()
         )
 
-
-def get_account_for_run(
-    ctx: RunContext,
-    index: int,
-    typeof: AccountType
-    ) -> AccountForRun:
-    """Returns a run account domain object instance.
-    
-    """
-    private_key, public_key = crypto.generate_key_pair(crypto.KeyEncoding.HEX)
-    run_info=get_run_info(ctx)
-    status = AccountStatus.NEW
-
-    return AccountForRun(
-        index=index,
-        private_key=private_key,
-        public_key=public_key,
-        run_info=run_info,
-        status=status,
-        typeof=typeof,
-        meta=TypeMetadata()
-        )
-        
 
 def get_network(name_raw: str) -> Network:
     """Returns a network domain object instance.
@@ -107,18 +89,6 @@ def get_node_identifier(
     return NodeIdentifier(network_id, index)
 
 
-def get_run_info(ctx: RunContext) -> RunInfo:
-    """Domain instance factory: run info.
-    
-    """
-    return RunInfo(
-        index=ctx.index,
-        network=ctx.network,
-        node=ctx.node,
-        typeof=ctx.typeof
-    )
-
-
 def get_run_context(
     args: typing.Any,
     index: int,
@@ -138,17 +108,14 @@ def get_run_context(
     )
 
 
-def get_run_event(
-    ctx: RunContext,
-    name: str
-    ) -> RunEvent:
+def get_run_event(ctx: RunContext, event: str) -> RunEvent:
     """Domain instance factory: run event.
     
     """
-    run_info=get_run_info(ctx)
-
     return RunEvent(
-        run_info=run_info,
-        name=name,
+        event=event,
+        network=ctx.network,
+        run_index=ctx.index,
+        run_typeof=ctx.typeof,
         timestamp=datetime.datetime.now().timestamp()
     )

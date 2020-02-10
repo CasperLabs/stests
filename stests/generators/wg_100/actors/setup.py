@@ -35,10 +35,10 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     
     """
     # Instantiate.
-    account = factory.get_account_for_run(ctx, index, typeof)
+    account = factory.get_account(index=index, typeof=typeof)
 
     # Cache.
-    cache.set_account(account)
+    cache.set_account(ctx, account)
 
     # Chain.
     return ctx

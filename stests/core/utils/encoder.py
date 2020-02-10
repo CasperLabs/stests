@@ -28,7 +28,7 @@ def decode(obj: typing.Any) -> typing.Any:
         return list(map(decode, obj))
 
     if isinstance(obj, dict) and 'meta' in obj and 'type_key' in obj['meta']:
-        return decode_registered_dclass(obj)
+        return _decode_registered_dclass(obj)
 
     if isinstance(obj, dict):
         return {k: decode(v) for k, v in obj.items()}        
@@ -39,13 +39,17 @@ def decode(obj: typing.Any) -> typing.Any:
     return obj
 
 
-def decode_registered_dclass(obj):
+def _decode_registered_dclass(obj):
+    """Decodes a registered data class instance.
+    
+    """
     dclass_type = DCLASS_MAP[obj['meta']['type_key']]
     data = dclass_type.from_dict(obj)
 
+    # Recursively ensure child domain model instances are also decoded.
     for k, v in obj.items():
         if isinstance(v, dict) and 'meta' in v and 'type_key' in v['meta']:
-            setattr(data, k, decode_registered_dclass(v))
+            setattr(data, k, _decode_registered_dclass(v))
 
     return data
 
@@ -64,7 +68,7 @@ def encode(data: typing.Any) -> typing.Any:
         return list(map(encode, data))
 
     if type(data) in DCLASS_SET:
-        return encode_registered_dclass(data, data.to_dict())
+        return _encode_registered_dclass(data, data.to_dict())
 
     if type(data) in ENUM_TYPE_SET:
         return str(data)
@@ -75,7 +79,7 @@ def encode(data: typing.Any) -> typing.Any:
     return data
 
 
-def encode_registered_dclass(data, obj):
+def _encode_registered_dclass(data, obj):
     """Encodes a data class that has been previously registered with the encoder.
     
     """
@@ -86,7 +90,7 @@ def encode_registered_dclass(data, obj):
     # Recurse through properties that are also registered data classes.
     for i in [i for i in dir(data) if not i.startswith('_') and 
                                       type(getattr(data, i)) in DCLASS_SET]:
-        encode_registered_dclass(getattr(data, i), obj[i])
+        _encode_registered_dclass(getattr(data, i), obj[i])
 
     return obj
 

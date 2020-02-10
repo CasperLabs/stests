@@ -1,17 +1,21 @@
 import inspect
 
-from stests.core.types import CLASSES
-from stests.core.types import ENUMS
-from stests.core.types import TYPESET
+from stests.core import domain
 from stests.core.utils import encoder
+from test.core import utils_factory as factory
+
+
+
 
 
 FIXTURES = {
     'decode',
     'encode',
     'register_type',
-    'TYPESET',
-    'TYPEMAP'
+    'ENUM_TYPE_SET',
+    'ENUM_VALUE_MAP',
+    'DCLASS_MAP',
+    'DCLASS_SET',
 }
 
 
@@ -28,15 +32,15 @@ def test_02():
 
 
 def test_03():
-    """Test all domain types registered in typemap."""
-    for i in encoder.TYPEMAP.values():
-        assert i in encoder.TYPESET
+    """Test all data class types are registered in data class map."""
+    for i in encoder.DCLASS_MAP.values():
+        assert i in encoder.DCLASS_SET
 
 
 def test_04():
-    """Test all domain types registered in typemap."""
-    for i in TYPESET:
-        assert(i in encoder.TYPEMAP.values())
+    """Test all data class map entries are in data class set."""
+    for i in encoder.DCLASS_SET:
+        assert(i in encoder.DCLASS_MAP.values())
 
 
 def test_05():
@@ -44,25 +48,26 @@ def test_05():
     class Example():
         pass
     encoder.register_type(Example)
-    assert Example in encoder.TYPESET
-    assert Example in encoder.TYPEMAP.values()
+    assert Example in encoder.DCLASS_SET
+    assert Example in encoder.DCLASS_MAP.values()
 
 
 def test_06():
-    """Test all domain classes can be encoded."""
-    for i in (i.create() for i in CLASSES):
+    """Test all domain data classes can be encoded."""
+    for i in (_get_test_dclass_instances()):
         assert isinstance(encoder.encode(i), dict)
 
 
 def test_07():
     """Test a collection of domain classes can be encoded."""
     for typeof in (tuple, list):
-        collection = typeof(i.create() for i in CLASSES)
+        collection = typeof(_get_test_dclass_instances())
         encoded = encoder.encode(collection)
         assert isinstance(encoded, typeof)
         for i in encoded:
             assert isinstance(i, dict)
-            assert '_type' in i
+            assert 'meta' in i
+            assert 'type_key' in i['meta']
 
 
 def test_08():
@@ -73,14 +78,14 @@ def test_08():
 
 def test_09():
     """Test enum members are converted to strings."""
-    for i in ENUMS:
+    for i in domain.ENUM_SET:
         for j in i:
             assert encoder.encode(j) == str(j)
 
 
 def test_10():
     """Test round-trip over domain model instances."""
-    for i in (i.create() for i in CLASSES):
+    for i in _get_test_dclass_instances():
         k = encoder.decode(encoder.encode(i))
         assert isinstance(k, type(i))
 
@@ -88,5 +93,9 @@ def test_10():
 def test_10():
     """Test round-trip over domain model instance collections."""
     for ctype in (tuple, list):
-        c = encoder.decode(encoder.encode(ctype(i.create() for i in CLASSES)))
+        c = encoder.decode(encoder.encode(ctype(_get_test_dclass_instances())))
         assert isinstance(c, ctype)
+
+
+def _get_test_dclass_instances():
+    return (factory.get_instance(i) for i in domain.DCLASS_SET)
