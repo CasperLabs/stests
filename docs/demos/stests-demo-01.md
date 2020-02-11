@@ -1,152 +1,87 @@
-0. Pre-Demo
-
-    ```
-    rm -rf $CLABS_OPS
-    mkdir -p $CLABS_OPS
-    delete MQ vhost
-    flush cache
-    ```
-
-1. Test Platform Specification
-
-    - open
-    - navigate to section: NETWORK types
-    - navigate to workload generators: WG-100
-
-2. Redis Desktop Manager
+1. Redis Desktop Manager
 
     - open UI
-    - show null db
+    - show db
 
-3. Rabbit MQ Broker
+2. Rabbit MQ Broker
 
     - open UI
-    - show null broker 
-    - create vhost: 
-        - DEV-LOC-01
-    - set vhost permission -> clabs-mq-stests-user
-    - show empty queues
+    - show vhost 
 
-4.  Initialise chain resources: DEV-LOC-01
+3.  Initialise chain & standalone node
 
     ```
-    printenv | grep CLABS | sort
-    ls $CLABS_OPS
-
-    cl-stests-init-chain-resources DEV-LOC-01
-
+    clabs-init-chain-resources lrt-01
     ls $CLABS_OPS/chains
-    ls $CLABS_OPS/chains/DEV-LOC-01
-    ls $CLABS_OPS/chains/DEV-LOC-01/nodes
+    ls $CLABS_OPS/chains/lrt-01    
 
-    vi $CLABS_OPS/chains/DEV-LOC-01/chainspec/genesis/csv/accounts.csv
+    clabs-init-node-resources lrt-01 001
+
+    ls $CLABS_OPS/chains/lrt-01/nodes/node-001
+    ls $CLABS_OPS/chains/lrt-01/nodes/node-001/certs
+    ls $CLABS_OPS/chains/lrt-01/nodes/node-001/keys
+
+    vi $CLABS_OPS/chains/lrt-01/chainspec/genesis/accounts.csv        
     ```
 
-5.  Cache chain info
+4.  Register network + node with stests
 
     ```
-    cl-stests-set-network --help
-    cl-stests-set-network --network-id DEV-LOC-01 --lifetime SINGLETON --operator-type LOCAL
+    stests-set-network lrt1
+    stests-set-node lrt1:1  localhost:40401 full
+    stests-set-node-bonding-key lrt1:1 $CLABS_OPS/chains/lrt-01/nodes/node-001/keys/validator-private.pem
     ```
 
-6.  Initialise node resources
+5. Open Redis 
+
+    - show network & node entries
+
+6.  In terminal 1, start execution engine
 
     ```
-    cl-stests-init-node-resources DEV-LOC-01 001
-
-    ls $CLABS_OPS/chains/DEV-LOC-01/nodes/node-001
-    ls $CLABS_OPS/chains/DEV-LOC-01/nodes/node-001/certs
-    ls $CLABS_OPS/chains/DEV-LOC-01/nodes/node-001/keys
-
-    vi $CLABS_OPS/chains/DEV-LOC-01/chainspec/genesis/csv/accounts.csv        
+    clabs-run-ee lrt-01 001
     ```
 
-7.  Cache node info
+7.  In terminal 2, start node
 
     ```
-    cl-stests-set-node --help
-    cl-stests-set-node --network-id DEV-LOC-01 --name NODE-001 --host localhost --port 40400 --typeof FULL
+    clabs-run-node-standalone lrt-01 001
     ```
 
-8.  Start execution engine (in new terminal)
+8. In terminal 3, launch stests worker daemon
 
     ```
-    cl-stests-run-ee DEV-LOC-01 001
+    stests-workers-run
+    stests-workers-status
     ```
 
-    - show control_ee.sh file
+9. Open RabbitMQ 
 
-9.  Start node (in new terminal)
+    - show queues + consumers
 
-    ```
-    cl-stests-run-node-standalone DEV-LOC-01 001
-    ```
-
-    - show control_node.sh file
-
-10. New shell: workflow phase 01
+10. In terminal 4, launch stests workload generator
 
     ```
-    cd $CLABS_HOME/stests
-    pipenv shell
-    python ./stests/generators/wg_100/phase_01/workflow --help
-    python ./stests/generators/wg_100/phase_01/workflow --network-id DEV-LOC-01 --user-accounts=5
+    stests-wg-100 --help
+    stests-wg-100 lrt1 --run 1 --user-accounts 5
     ```
 
-11. RabbitMQ broker 
-
-    - open UI
-    - show created queues
-    - show sample messages
-
-12. New shell: worker phase 01
-
-    ```
-    cd $CLABS_HOME/stests
-    pipenv shell
-    cd stests/generators/wg_100/phase_01
-    export STESTS_CONFIG_NETWORK_ID=DEV-LOC-01
-    dramatiq -p 1 -t 1 worker --path $CLABS_HOME/stests --watch $CLABS_HOME/stests/stests
-    ```
-
-13. EE & NODE terminals
+11. EE & NODE terminals
 
     - show logging output
 
-14. RabbitMQ broker 
+12. Open RabbitMQ 
 
-    - open UI
     - show empty queues
 
-15. Redis Desktop Manager  
+13. Open Redis
 
-    - open UI
-    - show cache contents
+    - show context, accounts, deploys, events entries
 
-16. Reopen shell for workflow
+14. In terminal 4, launch stests workload generator
 
     ```
-    cd $CLABS_HOME/stests
-    pipenv shell
-    python ./stests/generators/wg_100/phase_01/workflow --network-id DEV-LOC-01 workflow-id 1 --user-accounts=1000
+    stests-wg-100 lrt1 --run 2 --user-accounts 100
+    stests-wg-100 lrt1 --run 3 --user-accounts 1000
+    stests-wg-100 lrt1 --run 4 --user-accounts 10000
     ```
-
-17. Reopen shell for worker
-
-    - Show messages being processed
-
-18. Redis Desktop Manager  
-
-    - open UI
-    - show cache contents
-
-19. Code design
-
-    - core
-        - cache
-        - clx
-        - mq
-        - types
-    - generators
-        - wg_100
-    - scripts (cli)
