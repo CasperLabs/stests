@@ -71,7 +71,7 @@ def on_create_user_accounts(ctx):
     
     """
     do_fund_faucet.send_with_options(
-        args=(ctx, ),
+        args=(ctx, ctx.args.faucet_initial_clx_balance),
         on_success=on_fund_faucet
         )
 

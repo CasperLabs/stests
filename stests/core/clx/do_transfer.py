@@ -17,7 +17,7 @@ TX_GAS_PRICE = 1
 def execute(node: Node, cp1: Account, cp2: Account, amount: int) -> Deploy:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
-    :param node: Node to which transfer deploy will be dispathed.
+    :param node: Node to which transfer deploy will be dispatched.
     :param cp1: Account information of counter party 1.
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.

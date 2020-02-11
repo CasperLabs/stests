@@ -45,13 +45,22 @@ ARGS.add_argument(
 
 # CLI argument: initial CLX balance.
 ARGS.add_argument(
+    "--faucet-initial-clx-balance",
+    help=f"Initial CLX balance of faucet account. Default={constants.FAUCET_INITIAL_CLX_BALANCE}",
+    dest="faucet_initial_clx_balance",
+    type=int,
+    default=constants.FAUCET_INITIAL_CLX_BALANCE
+    )
+
+
+# CLI argument: initial CLX balance.
+ARGS.add_argument(
     "--contract-initial-clx-balance",
     help=f"Initial CLX balance of contract account. Default={constants.CONTRACT_INITIAL_CLX_BALANCE}",
     dest="contract_initial_clx_balance",
     type=int,
     default=constants.CONTRACT_INITIAL_CLX_BALANCE
     )
-
 
 # CLI argument: token name.
 ARGS.add_argument(
