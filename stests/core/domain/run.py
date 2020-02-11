@@ -37,20 +37,20 @@ class RunEvent:
     """Event information associated with a generator run.
     
     """
-    # Associated network reference.
-    network: str
-
     # Event name.
     event: str
 
-    # Moment in time when event occurred.
-    timestamp: int
+    # Associated network reference.
+    network: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: int
 
     # Type of generator, e.g. WG-100 ...etc.
     run_typeof: str
+
+    # Moment in time when event occurred.
+    timestamp: int
 
     # Associated metadata.
     meta: TypeMetadata = TypeMetadata()

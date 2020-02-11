@@ -92,10 +92,12 @@ def create_run_event() -> RunEvent:
     
     """
     return RunEvent(
-        name="on_wg_event",
-        timestamp=datetime.datetime.now().timestamp(),
-        run_info=get_run_info()
-    )
+        event="on_wg_event",
+        network="LOC-01",
+        run_index=1,
+        run_typeof="WG-XXX",
+        timestamp=datetime.datetime.now().timestamp()
+        )
 
 
 # Map: domain type to factory function.
