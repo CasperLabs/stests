@@ -107,11 +107,10 @@ def on_fund_users(ctx):
     """Callback: on_fund_users.
     
     """
-    print(777)
-    # do_deploy_contract.send_with_options(
-    #     args=(ctx, ),
-    #     on_success=on_deploy_contract
-    #     )
+    do_deploy_contract.send_with_options(
+        args=(ctx, ),
+        on_success=on_deploy_contract
+        )
 
 
 @dramatiq.actor(queue_name=_QUEUE)

@@ -29,8 +29,7 @@ def execute(node: Node, cp1: Account, cp2: Account, amount: int) -> Deploy:
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
         target_account_hex=cp2.public_key,
-
-        # TODO: allow these to be passed in via standard arguments pulled from ctx
+        # TODO: allow these to be passed in via standard arguments
         payment_amount=TX_FEE,
         gas_price=TX_GAS_PRICE
     )
