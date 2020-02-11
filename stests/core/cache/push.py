@@ -14,10 +14,17 @@ def _do_set(instance, key):
 
 # Append account information.
 def set_account(ctx, account):
-    """Append account information.
+    """Encaches domain opbject: Account.
     
     """
     _do_set(account, f"{keyspace.get_key(ctx)}:{keyspace.get_key(account)}")
+
+
+def set_deploy(ctx, deploy):
+    """Encaches domain opbject: Deploy.
+    
+    """
+    print(deploy)
 
 
 def set_network(network):
@@ -28,21 +35,21 @@ def set_network(network):
 
 
 def set_node(node):
-    """Append network information.
+    """Encaches domain opbject: Node.
     
     """
     _do_set(node, keyspace.get_key(node))
 
 
 def set_run_context(ctx):
-    """Append run context information.
+    """Encaches domain opbject: RunContext.
     
     """
     _do_set(ctx, f"{keyspace.get_key(ctx)}:context")
 
 
 def set_run_event(ctx, event):
-    """Append run event information.
+    """Encaches domain opbject: RunEvent.
     
     """
     _do_set(event, f"{keyspace.get_key(ctx)}:{keyspace.get_key(event)}")

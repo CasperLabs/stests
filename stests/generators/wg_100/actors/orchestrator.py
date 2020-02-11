@@ -82,11 +82,10 @@ def on_fund_faucet(_, ctx):
     """Callback: on_fund_faucet.
     
     """
-    print(777)
-    # do_fund_contract.send_with_options(
-    #     args=(ctx, ),
-    #     on_success=on_fund_contract
-    #     )
+    do_fund_contract.send_with_options(
+        args=(ctx, ),
+        on_success=on_fund_contract
+        )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -108,10 +107,11 @@ def on_fund_users(ctx):
     """Callback: on_fund_users.
     
     """
-    do_deploy_contract.send_with_options(
-        args=(ctx, ),
-        on_success=on_deploy_contract
-        )
+    print(777)
+    # do_deploy_contract.send_with_options(
+    #     args=(ctx, ),
+    #     on_success=on_deploy_contract
+    #     )
 
 
 @dramatiq.actor(queue_name=_QUEUE)

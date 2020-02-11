@@ -27,6 +27,7 @@ class DeployStatus(enum.Flag):
     
     """
     NULL = enum.auto()
+    DISPATCHED = enum.auto()
     FINALIZED = enum.auto()
     REJECTED = enum.auto()
 

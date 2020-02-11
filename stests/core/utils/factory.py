@@ -14,7 +14,7 @@ def create_account(
     public_key: str = None,
     status: AccountStatus = AccountStatus.NEW
     ) -> Account:
-    """Returns an account domain object instance.
+    """Returns a domain object instance: Account.
     
     """
     if private_key is None:
@@ -30,8 +30,18 @@ def create_account(
         )
 
 
+def create_deploy(hash_id: str, status: DeployStatus) -> Deploy:
+    """Returns a domain object instance: Deploy.
+    
+    """
+    return Deploy(
+        hash_id=hash_id,
+        status=status
+    )
+
+
 def create_network(name_raw: str) -> Network:
-    """Returns a network domain object instance.
+    """Returns a domain object instance: Network.
     
     """
     network_id = create_network_identifier(name_raw)
@@ -47,7 +57,7 @@ def create_network(name_raw: str) -> Network:
 
 
 def create_network_identifier(name_raw: str) -> NetworkIdentifier:
-    """Returns a network identifier domain object instance.
+    """Returns a domain object instance: NetworkIdentifier.
     
     """
     name_raw = name_raw.lower()
@@ -65,7 +75,7 @@ def create_node(
     port: int,
     typeof: NodeType
     ) -> Node:
-    """Returns a node domain object instance.
+    """Returns a domain object instance: Node.
     
     """
     return Node(
@@ -83,7 +93,7 @@ def create_node_identifier(
     network_id: NetworkIdentifier,
     index: int
     ) -> NodeIdentifier:
-    """Returns a node identifier.
+    """Returns a domain object instance: NodeIdentifier.
     
     """
     return NodeIdentifier(network_id, index)
@@ -96,7 +106,7 @@ def create_run_context(
     node_id: NodeIdentifier,
     typeof: str
     ) -> RunContext:
-    """Domain instance factory: run context.
+    """Returns a domain object instance: RunContext.
     
     """
     return RunContext(
@@ -109,7 +119,7 @@ def create_run_context(
 
 
 def create_run_event(ctx: RunContext, event: str) -> RunEvent:
-    """Domain instance factory: run event.
+    """Returns a domain object instance: RunEvent.
     
     """
     return RunEvent(

@@ -1,9 +1,12 @@
+import time
+
 import dramatiq
 
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
 from stests.core.domain import RunContext
+from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import factory
 from stests.core.utils import resources
@@ -46,64 +49,88 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_faucet(ctx):
+def do_fund_faucet(ctx: RunContext):
     """Funds account to be used as a faucet.
     
     """
-    # Set CLX node.
+    # Set node.
     # TODO: randomize if node index = 0.
-    network_id = factory.create_network_identifier("loc1")
-    node_id = factory.create_node_identifier(network_id, ctx.node)
-    node = cache.get_node(node_id)
+    node = cache.get_node(ctx.node_id)
 
-    print(node)
+    # Set faucet account.
+    faucet = cache.get_account(ctx, AccountType.FAUCET, 1)
 
-    # Set counter-parties.
-    validator = node.account
-    faucet = cache.get_account()
+    # Transfer CLX from node -> faucet.
+    deploy = clx.do_transfer(node, node.account, faucet, 100000000)
 
-    # Execute CLX transfer.
-    clx.do_transfer(ctx, 100000000, validator, faucet)
+    # Update cache.
+    cache.set_deploy(ctx, deploy)
+
+    # Temporary until properly hooking into streams.
+    time.sleep(3.0)
+
+    # Chain.
+    return ctx
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_contract(ctx):
+def do_fund_contract(ctx: RunContext):
     """Funds contract account (from faucet).
     
     """
-    print("TODO: do_fund_contract :: 1. pull accounts.  2. Dispatch transfer.  3. Monitor deploy.")
-    return ctx
+    # Set node.
+    # TODO: randomize if node index = 0.
+    node = cache.get_node(ctx.node_id)
 
-    # faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
-    # clx.do_transfer(
-    #     ctx,
-    #     10000000,
-    #     faucet.key_pair.private_key.as_pem_filepath,
-    #     faucet.key_pair.public_key.as_hex,
-    #     account.key_pair.public_key.as_hex
-    #     )
+    # Set faucet account.
+    faucet = cache.get_account(ctx, AccountType.FAUCET, 1)
+
+    # Set contract account.
+    contract = cache.get_account(ctx, AccountType.CONTRACT, 1)
+
+    # Transfer CLX from node -> faucet.
+    deploy = clx.do_transfer(node, faucet, contract, 10000000)
+
+    # Update cache.
+    cache.set_deploy(ctx, deploy)
+
+    # Temporary until properly hooking into streams.
+    time.sleep(3.0)
+
+    # Chain.
+    return ctx
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_user(ctx, idx):
+def do_fund_user(ctx: RunContext, account_index: int):
     """Funds user account (from faucet).
     
     """
-    print("TODO: do_fund_user :: 1. pull accounts.  2. Dispatch transfer.  3. Monitor deploy.")
-    return ctx
+    # Set node.
+    # TODO: randomize if node index = 0.
+    node = cache.get_node(ctx.node_id)
 
-    # faucet = cache.get_account(ctx.network_id, ctx.cache_namespace, AccountType.FAUCET, 0)
-    # clx.do_transfer(
-    #     ctx,
-    #     10000000,
-    #     faucet.key_pair.private_key.as_pem_filepath,
-    #     faucet.key_pair.public_key.as_hex,
-    #     account.key_pair.public_key.as_hex
-    #     )
+    # Set faucet account.
+    faucet = cache.get_account(ctx, AccountType.FAUCET, 1)
+
+    # Set user account.
+    user = cache.get_account(ctx, AccountType.USER, account_index)
+
+    # Transfer CLX from node -> faucet.
+    deploy = clx.do_transfer(node, faucet, user, 10000000)
+
+    # Update cache.
+    cache.set_deploy(ctx, deploy)
+
+    # Temporary until properly hooking into streams.
+    time.sleep(3.0)
+
+    # Chain.
+    return ctx
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_deploy_contract(ctx):
+def do_deploy_contract(ctx: RunContext):
     """Deploys smart contract to target network.
     
     """

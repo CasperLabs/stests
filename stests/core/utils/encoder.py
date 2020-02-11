@@ -88,7 +88,7 @@ def _encode_registered_dclass(data, obj):
     obj['meta']['type_key'] = f"{data.__module__}.{data.__class__.__name__}"
 
     # Recurse through properties that are also registered data classes.
-    for i in [i for i in dir(data) if not i.startswith('_') and 
+    for i in [i for i in dir(data) if i in obj and not i.startswith('_') and 
                                       type(getattr(data, i)) in DCLASS_SET]:
         _encode_registered_dclass(getattr(data, i), obj[i])
 
