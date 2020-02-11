@@ -62,11 +62,14 @@ def create_network_identifier(name_raw: str) -> NetworkIdentifier:
     
     """
     name_raw = name_raw.lower()
-    index=int(name_raw[3:])
-    typeof=name_raw[:3].upper()
-    name = f"{typeof}-{str(index).zfill(2)}"
+    for network_type in [i.name.lower() for i in NetworkType]:
+        if name_raw.startswith(network_type):
+            index=int(name_raw[len(network_type):])
+            typeof=name_raw[:len(network_type)].upper()
+            name = f"{typeof}-{str(index).zfill(2)}"
+            return NetworkIdentifier(name)
 
-    return NetworkIdentifier(name)
+    raise ValueError("Network identifier is unsupported")
 
 
 def create_node(

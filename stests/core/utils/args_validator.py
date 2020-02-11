@@ -40,13 +40,17 @@ def validate_network_name(value):
     """Argument verifier: network name.
     
     """
-    # TODO: use reg-ex.
     name = str(value)
-    try:
-        validate_enum(name[:3].upper(), NetworkType, "Network")
-    except argparse.ArgumentError:
+
+    # Validate prefix.
+    network_types = [i for i in NetworkType if name.startswith(i.name.lower())]
+    if not network_types:
         raise argparse.ArgumentError("Invalid network name")
-    validate_int(name[3:], NETWORK_IDX_MIN, NETWORK_IDX_MAX, "Network")
+
+    # Validate suffix.
+    network_type = network_types[0]
+    network_index = name[len(network_type.name):]
+    validate_int(network_index, NETWORK_IDX_MIN, NETWORK_IDX_MAX, "Network")
 
     return name
 
