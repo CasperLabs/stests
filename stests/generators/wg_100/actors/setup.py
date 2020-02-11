@@ -4,6 +4,7 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
 from stests.core.domain import RunContext
+from stests.core.domain import NodeIdentifier
 from stests.core.utils import factory
 from stests.core.utils import resources
 from stests.generators.wg_100 import constants
@@ -35,7 +36,7 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     
     """
     # Instantiate.
-    account = factory.get_account(index=index, typeof=typeof)
+    account = factory.create_account(index=index, typeof=typeof)
 
     # Cache.
     cache.set_account(ctx, account)
@@ -49,17 +50,20 @@ def do_fund_faucet(ctx):
     """Funds account to be used as a faucet.
     
     """
-    print("TODO: do_fund_faucet :: 1. pull accounts.  2. Dispatch transfer.  3. Monitor deploy.")
-    return ctx
+    # Set CLX node.
+    # TODO: randomize if node index = 0.
+    network_id = factory.create_network_identifier("loc1")
+    node_id = factory.create_node_identifier(network_id, ctx.node)
+    node = cache.get_node(node_id)
 
-    # clx.do_transfer(
-    #     ctx,
-    #     100000000,
-    #     ctx.validator_pvk_pem_fpath,
-    #     ctx.validator_pbk_hex,
-    #     account.key_pair.public_key.as_hex
-    #     )
+    print(node)
 
+    # Set counter-parties.
+    validator = node.account
+    faucet = cache.get_account()
+
+    # Execute CLX transfer.
+    clx.do_transfer(ctx, 100000000, validator, faucet)
 
 
 @dramatiq.actor(queue_name=_QUEUE)

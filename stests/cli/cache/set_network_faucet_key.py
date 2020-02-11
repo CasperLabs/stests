@@ -35,7 +35,7 @@ def main(args):
 
     """
     # Set network.
-    network_id = factory.get_network(args.network)
+    network_id = factory.create_network(args.network)
     network = cache.get_network(network_id)
     if network is None:
         raise ValueError("Unregistered network.")
@@ -44,7 +44,7 @@ def main(args):
     private_key, public_key = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
 
     # Set network's faucet account.
-    network.faucet = factory.get_account(
+    network.faucet = factory.create_account(
         private_key=private_key,
         public_key=public_key,
         typeof=AccountType.FAUCET,

@@ -95,10 +95,10 @@ def execute(args: argparse.Namespace):
     """
     logger.log("... instantiating execution context")
 
-    network_id = factory.get_network_identifier(args.network)
-    node_id = factory.get_node_identifier(network_id, args.node)
+    network_id = factory.create_network_identifier(args.network)
+    node_id = factory.create_node_identifier(network_id, args.node)
 
-    ctx = factory.get_run_context(
+    ctx = factory.create_run_context(
         Arguments.create(args),
         args.run,
         network_id,

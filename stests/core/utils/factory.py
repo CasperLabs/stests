@@ -7,7 +7,7 @@ from stests.core.utils.domain import TypeMetadata
 
 
 
-def get_account(
+def create_account(
     typeof: AccountType,
     index: int = 1,
     private_key: str = None, 
@@ -30,11 +30,11 @@ def get_account(
         )
 
 
-def get_network(name_raw: str) -> Network:
+def create_network(name_raw: str) -> Network:
     """Returns a network domain object instance.
     
     """
-    network_id = get_network_identifier(name_raw)
+    network_id = create_network_identifier(name_raw)
 
     return Network(
         faucet=None,
@@ -46,7 +46,7 @@ def get_network(name_raw: str) -> Network:
     )
 
 
-def get_network_identifier(name_raw: str) -> NetworkIdentifier:
+def create_network_identifier(name_raw: str) -> NetworkIdentifier:
     """Returns a network identifier domain object instance.
     
     """
@@ -58,7 +58,7 @@ def get_network_identifier(name_raw: str) -> NetworkIdentifier:
     return NetworkIdentifier(name)
 
 
-def get_node(
+def create_node(
     host: str,
     index: int,
     network_id: NetworkIdentifier,
@@ -79,7 +79,7 @@ def get_node(
     )
 
 
-def get_node_identifier(
+def create_node_identifier(
     network_id: NetworkIdentifier,
     index: int
     ) -> NodeIdentifier:
@@ -89,7 +89,7 @@ def get_node_identifier(
     return NodeIdentifier(network_id, index)
 
 
-def get_run_context(
+def create_run_context(
     args: typing.Any,
     index: int,
     network_id: NetworkIdentifier,
@@ -108,7 +108,7 @@ def get_run_context(
     )
 
 
-def get_run_event(ctx: RunContext, event: str) -> RunEvent:
+def create_run_event(ctx: RunContext, event: str) -> RunEvent:
     """Domain instance factory: run event.
     
     """

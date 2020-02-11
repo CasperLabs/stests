@@ -17,7 +17,7 @@ def do_persist_event(ctx, event_name):
     """Persists event information.
     
     """
-    cache.set_run_event(ctx, factory.get_run_event(ctx, event_name))
+    cache.set_run_event(ctx, factory.create_run_event(ctx, event_name))
 
 
 class OrchestrationEventMiddleware(dramatiq.Middleware):

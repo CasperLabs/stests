@@ -49,10 +49,10 @@ def main(args):
     typeof = NodeType[args.typeof.upper()]
 
     # Instantiate & cache.
-    cache.set_node(factory.get_node(
+    cache.set_node(factory.create_node(
         host=host,
         index=index,  
-        network_id=factory.get_network_identifier(network),
+        network_id=factory.create_network_identifier(network),
         port=port,
         typeof=typeof
     ))

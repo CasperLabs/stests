@@ -36,14 +36,14 @@ def main(args):
     """
     # Set network.
     network_name = args.node.split(':')[0]
-    network_id = factory.get_network_identifier(network_name)
+    network_id = factory.create_network_identifier(network_name)
     network = cache.get_network(network_id)
     if network is None:
         raise ValueError("Unregistered network.")
 
     # Set node.
     node_index = int(args.node.split(':')[-1])
-    node_id = factory.get_node_identifier(network_id, node_index)
+    node_id = factory.create_node_identifier(network_id, node_index)
     node = cache.get_node(node_id)
     if node is None:
         raise ValueError("Unregistered node.")
@@ -52,7 +52,7 @@ def main(args):
     private_key, public_key = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
 
     # Set node's bonding account.
-    node.account = factory.get_account(
+    node.account = factory.create_account(
         private_key=private_key,
         public_key=public_key,
         status=AccountStatus.ACTIVE,

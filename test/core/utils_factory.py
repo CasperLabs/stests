@@ -16,24 +16,23 @@ from stests.core.domain import NodeType
 
 from stests.core.domain import RunContext
 from stests.core.domain import RunEvent
-from stests.core.domain import RunInfo
 
 from stests.core.utils import crypto
 from stests.core.utils import factory
 
 
 
-def get_account(typeof: AccountType=None) -> Account:
+def create_account(typeof: AccountType=None) -> Account:
     """Factory function that returns a test account.
     
     """
-    return factory.get_account(
+    return factory.create_account(
         status=random.choice(list(AccountStatus)),
         typeof=typeof or random.choice(list(AccountType))
     )
 
 
-def get_deploy() -> Deploy:
+def create_deploy() -> Deploy:
     """Factory function that returns a test deploy.
     
     """
@@ -43,7 +42,7 @@ def get_deploy() -> Deploy:
     )
 
 
-def get_network() -> Network:
+def create_network() -> Network:
     """Factory function that returns a test network.
     
     """
@@ -51,7 +50,7 @@ def get_network() -> Network:
     typeof=NetworkType.LOC
 
     return Network(
-        faucet=get_account(AccountType.FAUCET),
+        faucet=create_account(AccountType.FAUCET),
         index=index,
         name=f"{typeof.name}-{str(index).zfill(2)}",
         name_raw=f"{typeof.name.lower()}{index}",
@@ -60,12 +59,12 @@ def get_network() -> Network:
     )
 
 
-def get_node() -> Node:
+def create_node() -> Node:
     """Factory function that returns a test node.
     
     """
     return Node(
-        account=get_account(AccountType.BOND),
+        account=create_account(AccountType.BOND),
         host="localhost",
         index=1,
         network="LOC-01",
@@ -75,7 +74,7 @@ def get_node() -> Node:
     )
 
 
-def get_run_context() -> RunContext:
+def create_run_context() -> RunContext:
     """Factory function that returns a test run context.
     
     """
@@ -88,7 +87,7 @@ def get_run_context() -> RunContext:
         )
 
 
-def get_run_event() -> RunEvent:
+def create_run_event() -> RunEvent:
     """Factory function that returns a test run event.
     
     """
@@ -99,27 +98,14 @@ def get_run_event() -> RunEvent:
     )
 
 
-def get_run_info() -> RunInfo:
-    """Factory function that returns a test run info.
-    
-    """
-    return RunInfo(
-        index=1,
-        network="LOC-01",
-        node=1,
-        typeof="WG-XXX"
-    )
-
-
 # Map: domain type to factory function.
 FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
-    Account: get_account,
-    Deploy: get_deploy,
-    Network: get_network,
-    Node: get_node,
-    RunContext: get_run_context,
-    RunEvent: get_run_event,
-    RunInfo: get_run_info
+    Account: create_account,
+    Deploy: create_deploy,
+    Network: create_network,
+    Node: create_node,
+    RunContext: create_run_context,
+    RunEvent: create_run_event,
 }
 
 

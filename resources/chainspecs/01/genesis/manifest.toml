@@ -20,7 +20,7 @@ pos-code-path = "./wasm/pos_install.wasm"
 
 # Path (absolute, or relative to the manifest) to the CSV file containing initial account balances and bonds.
 # To override the default values, create a file at ~/.casperlabs/chainspec/genesis/accounts.csv
-initial-accounts-path = "./csv/accounts.csv"
+initial-accounts-path = "./accounts.csv"
 
 [deploys]
 # 1 day

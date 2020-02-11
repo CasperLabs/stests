@@ -61,9 +61,6 @@ def on_create_contract_account(_, ctx):
         for index in range(1, ctx.args.user_accounts + 1):
             yield do_create_account.message(ctx, index, AccountType.USER)
 
-    print(888)
-    print(ctx)
-
     g = dramatiq.group(get_messages())
     g.add_completion_callback(on_create_user_accounts.message(ctx))
     g.run()
@@ -85,10 +82,11 @@ def on_fund_faucet(_, ctx):
     """Callback: on_fund_faucet.
     
     """
-    do_fund_contract.send_with_options(
-        args=(ctx, ),
-        on_success=on_fund_contract
-        )
+    print(777)
+    # do_fund_contract.send_with_options(
+    #     args=(ctx, ),
+    #     on_success=on_fund_contract
+    #     )
 
 
 @dramatiq.actor(queue_name=_QUEUE)

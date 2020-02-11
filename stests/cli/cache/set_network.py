@@ -24,7 +24,7 @@ def main(args):
 
     """
     # Instantiate & cache.
-    cache.set_network(factory.get_network(args.network))
+    cache.set_network(factory.create_network(args.network))
 
     logger.log("Network information successfully registered")
 

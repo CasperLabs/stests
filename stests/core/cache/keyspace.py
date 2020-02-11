@@ -22,10 +22,10 @@ def get_key(obj):
 
     if isinstance(obj, NodeIdentifier):
         key = get_key(obj.network)
-        return f"{key}.NODE:{str(obj.index).zfill(4)}"
+        return f"{key}.NODE:{str(obj.index).zfill(3)}"
 
     if isinstance(obj, Node):
-        return f"{obj.network}.NODE:{str(obj.index).zfill(4)}"
+        return f"{obj.network}.NODE:{str(obj.index).zfill(3)}"
 
     if isinstance(obj, RunContext):
         return f"{obj.network}.{obj.typeof}:R-{str(obj.index).zfill(3)}"
