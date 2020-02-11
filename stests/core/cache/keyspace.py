@@ -1,5 +1,6 @@
 from stests.core.domain import Account
 from stests.core.domain import AccountType
+from stests.core.domain import Deploy
 from stests.core.domain import Network
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
@@ -16,6 +17,9 @@ def get_key(obj):
     if isinstance(obj, Account):
         zfill = 6 if obj.typeof == AccountType.USER else 2
         return f"accounts:{obj.typeof.name}:{str(obj.index).zfill(zfill)}"
+
+    if isinstance(obj, Deploy):
+        return f"deploys:{obj.ts_dispatched}.{obj.hash_id}"
 
     if isinstance(obj, (Network, NetworkIdentifier)):
         return obj.name

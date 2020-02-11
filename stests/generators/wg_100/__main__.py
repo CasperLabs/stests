@@ -43,6 +43,16 @@ ARGS.add_argument(
     default=1
     )
 
+# CLI argument: initial CLX balance.
+ARGS.add_argument(
+    "--contract-initial-clx-balance",
+    help=f"Initial CLX balance of contract account. Default={constants.CONTRACT_INITIAL_CLX_BALANCE}",
+    dest="contract_initial_clx_balance",
+    type=int,
+    default=constants.CONTRACT_INITIAL_CLX_BALANCE
+    )
+
+
 # CLI argument: token name.
 ARGS.add_argument(
     "--token-name",

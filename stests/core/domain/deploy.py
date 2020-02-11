@@ -19,5 +19,8 @@ class Deploy:
     # Deploy's processing status.
     status: DeployStatus = get_enum_field(DeployStatus)
 
+    # Moment in time when  deploy dispatched to CLX network.
+    ts_dispatched: int
+
     # Associated metadata.
     meta: TypeMetadata = TypeMetadata()

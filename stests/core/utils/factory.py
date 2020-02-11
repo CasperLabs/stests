@@ -36,7 +36,8 @@ def create_deploy(hash_id: str, status: DeployStatus) -> Deploy:
     """
     return Deploy(
         hash_id=hash_id,
-        status=status
+        status=status,
+        ts_dispatched=None if status != DeployStatus.DISPATCHED else datetime.datetime.now().timestamp()
     )
 
 

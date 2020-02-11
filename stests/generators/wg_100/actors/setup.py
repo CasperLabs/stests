@@ -74,50 +74,27 @@ def do_fund_faucet(ctx: RunContext):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_contract(ctx: RunContext):
-    """Funds contract account (from faucet).
+def do_transfer_clx(
+    ctx: RunContext,
+    cp1_account_type: AccountType, 
+    cp1_account_index: int,
+    cp2_account_type: AccountType, 
+    cp2_account_index: int,
+    motes: int = 10000000
+    ):
+    """Performs a CLX transfer between 2 counterparties.
     
     """
     # Set node.
     # TODO: randomize if node index = 0.
     node = cache.get_node(ctx.node_id)
 
-    # Set faucet account.
-    faucet = cache.get_account(ctx, AccountType.FAUCET, 1)
-
-    # Set contract account.
-    contract = cache.get_account(ctx, AccountType.CONTRACT, 1)
+    # Set counterparties.
+    cp1 = cache.get_account(ctx, cp1_account_type, cp1_account_index)
+    cp2 = cache.get_account(ctx, cp2_account_type, cp2_account_index)
 
     # Transfer CLX from node -> faucet.
-    deploy = clx.do_transfer(node, faucet, contract, 10000000)
-
-    # Update cache.
-    cache.set_deploy(ctx, deploy)
-
-    # Temporary until properly hooking into streams.
-    time.sleep(3.0)
-
-    # Chain.
-    return ctx
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_fund_user(ctx: RunContext, account_index: int):
-    """Funds user account (from faucet).
-    
-    """
-    # Set node.
-    # TODO: randomize if node index = 0.
-    node = cache.get_node(ctx.node_id)
-
-    # Set faucet account.
-    faucet = cache.get_account(ctx, AccountType.FAUCET, 1)
-
-    # Set user account.
-    user = cache.get_account(ctx, AccountType.USER, account_index)
-
-    # Transfer CLX from node -> faucet.
-    deploy = clx.do_transfer(node, faucet, user, 10000000)
+    deploy = clx.do_transfer(node, cp1, cp2, motes)
 
     # Update cache.
     cache.set_deploy(ctx, deploy)

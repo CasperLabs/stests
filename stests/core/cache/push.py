@@ -24,7 +24,7 @@ def set_deploy(ctx, deploy):
     """Encaches domain opbject: Deploy.
     
     """
-    print(deploy)
+    _do_set(deploy, f"{keyspace.get_key(ctx)}:{keyspace.get_key(deploy)}")
 
 
 def set_network(network):

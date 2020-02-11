@@ -5,10 +5,9 @@ from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors.auction import do_start_auction
 from stests.generators.wg_100.actors.setup import do_create_account
 from stests.generators.wg_100.actors.setup import do_deploy_contract
-from stests.generators.wg_100.actors.setup import do_fund_contract
 from stests.generators.wg_100.actors.setup import do_fund_faucet
-from stests.generators.wg_100.actors.setup import do_fund_user
 from stests.generators.wg_100.actors.setup import do_reset_cache
+from stests.generators.wg_100.actors.setup import do_transfer_clx
 
 
 # Queue to which message will be dispatched.
@@ -82,10 +81,15 @@ def on_fund_faucet(_, ctx):
     """Callback: on_fund_faucet.
     
     """
-    do_fund_contract.send_with_options(
-        args=(ctx, ),
+    do_transfer_clx.send_with_options(
+        args=(
+            ctx,
+            AccountType.FAUCET, 1,
+            AccountType.CONTRACT, 1,
+            ctx.args.contract_initial_clx_balance
+            ),
         on_success=on_fund_contract
-        )
+    )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -95,7 +99,12 @@ def on_fund_contract(_, ctx):
     """
     def get_messages():
         for index in range(1, ctx.args.user_accounts + 1):
-            yield do_fund_user.message(ctx, index)
+            yield do_transfer_clx.message(
+                ctx,
+                AccountType.FAUCET, 1,
+                AccountType.USER, index,
+                ctx.args.user_initial_clx_balance
+            )
 
     g = dramatiq.group(get_messages())
     g.add_completion_callback(on_fund_users.message(ctx))
