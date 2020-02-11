@@ -1,13 +1,14 @@
 import dramatiq
 
 from stests.core.domain import AccountType
+from stests.generators.shared.actors.accounts import do_create_account
+from stests.generators.shared.actors.accounts import do_transfer_clx_and_verify
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors.auction import do_start_auction
-from stests.generators.wg_100.actors.setup import do_create_account
 from stests.generators.wg_100.actors.setup import do_deploy_contract
 from stests.generators.wg_100.actors.setup import do_fund_faucet
 from stests.generators.wg_100.actors.setup import do_reset_cache
-from stests.generators.wg_100.actors.setup import do_transfer_clx
+
 
 
 # Queue to which message will be dispatched.
@@ -81,7 +82,7 @@ def on_fund_faucet(_, ctx):
     """Callback: on_fund_faucet.
     
     """
-    do_transfer_clx.send_with_options(
+    do_transfer_clx_and_verify.send_with_options(
         args=(
             ctx,
             AccountType.FAUCET, 1,
@@ -99,7 +100,7 @@ def on_fund_contract(_, ctx):
     """
     def get_messages():
         for index in range(1, ctx.args.user_accounts + 1):
-            yield do_transfer_clx.message(
+            yield do_transfer_clx_and_verify.message(
                 ctx,
                 AccountType.FAUCET, 1,
                 AccountType.USER, index,
