@@ -47,7 +47,7 @@ class RunEvent:
     run_index: int
 
     # Type of generator, e.g. WG-100 ...etc.
-    run_typeof: str
+    run_type: str
 
     # Moment in time when event occurred.
     timestamp: int

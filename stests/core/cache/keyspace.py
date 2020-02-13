@@ -22,11 +22,13 @@ def get_key(obj):
     """Returns key derived from a domain type instance.
     
     """
+    try:
+        return _GLOBAL_COLLECTIONS[obj]
+    except (KeyError, TypeError):
+        pass
+
     if isinstance(obj, IDENTIFIER_SET):
         return obj.key
-
-    if obj in _GLOBAL_COLLECTIONS:
-        return _GLOBAL_COLLECTIONS[obj]
 
     if isinstance(obj, tuple) and len(obj) == 2:
         return _get_collection_key(obj)
@@ -52,7 +54,7 @@ def _get_item_key(obj):
         return f"global.node:{obj.network}:N-{str(obj.index).zfill(4)}"
 
     if isinstance(obj, RunContext):
-        return f"{obj.network}.{obj.typeof}:R-{str(obj.index).zfill(3)}"
+        return f"{obj.network_name}.{obj.run_type}:R-{str(obj.run_index).zfill(3)}"
 
     if isinstance(obj, RunEvent):
         return f"events:{obj.timestamp}.{obj.event}"

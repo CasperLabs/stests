@@ -29,8 +29,6 @@ def main(args):
     # Push.
     cache.set_network(network)
 
-    print(cache.get_networks())
-
     # Inform.
     logger.log(f"Network {args.network} was successfully registered")
 

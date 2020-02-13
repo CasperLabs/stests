@@ -106,20 +106,20 @@ def create_node_id(
 
 def create_run_context(
     args: typing.Any,
-    index: int,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
-    typeof: str
+    run_index: int,
+    run_type: str
     ) -> RunContext:
     """Returns a domain object instance: RunContext.
     
     """
     return RunContext(
         args=args,
-        index=index,
-        network=network_id.name,
-        node=node_id.index,
-        typeof=typeof
+        network_name=network_id.name,
+        node_index=node_id.index,
+        run_index=run_index,
+        run_type=run_type
     )
 
 
@@ -129,8 +129,8 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
     """
     return RunEvent(
         event=event,
-        network=ctx.network,
-        run_index=ctx.index,
-        run_typeof=ctx.typeof,
+        network_name=ctx.network_name,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
         timestamp=datetime.datetime.now().timestamp()
     )

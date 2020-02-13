@@ -1,19 +1,20 @@
 import dramatiq
 
 from stests.core.domain import AccountType
+
 from stests.generators.shared.actors.accounts import do_create_account
 from stests.generators.shared.actors.accounts import do_transfer_clx_and_verify
+from stests.generators.shared.actors.generator_run import do_cache_context
+from stests.generators.shared.actors.generator_run import do_flush_cache
+
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors.auction import do_start_auction
 from stests.generators.wg_100.actors.setup import do_deploy_contract
-from stests.generators.wg_100.actors.setup import do_flush_cache
 from stests.generators.wg_100.actors.setup import do_fund_faucet
 
 # Queue to which message will be dispatched.
 _QUEUE = f"{constants.TYPE}.orchestrator"
 
-
-# TODO: chunk user account creating/funding ?
 
 
 def execute(ctx):
@@ -22,6 +23,7 @@ def execute(ctx):
     :param ctx: Contextual information passed along flow of execution.
     
     """
+    # TODO: chunk user account creating/funding ?
     do_flush_cache.send_with_options(
         args=(ctx, ), 
         on_success=on_flush_cache
@@ -31,6 +33,17 @@ def execute(ctx):
 @dramatiq.actor(queue_name=_QUEUE)
 def on_flush_cache(_, ctx):
     """Callback: on_flush_cache.
+    
+    """
+    do_cache_context.send_with_options(
+        args=(ctx, ), 
+        on_success=on_cache_context
+        )
+
+
+@dramatiq.actor(queue_name=_QUEUE)
+def on_cache_context(_, ctx):
+    """Callback: on_cache_context.
     
     """
     do_create_account.send_with_options(
@@ -44,6 +57,7 @@ def on_create_faucet_account(_, ctx):
     """Callback: on_create_faucet_account.
     
     """
+    print(888)
     do_create_account.send_with_options(
         args=(ctx, 1, AccountType.CONTRACT),
         on_success=on_create_contract_account

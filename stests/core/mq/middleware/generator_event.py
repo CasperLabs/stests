@@ -19,9 +19,10 @@ class GeneratorEventMiddleware(dramatiq.Middleware):
            _get_actor_name(message).startswith("on_"):
             args = message.args if isinstance(message.args[0], RunContext) else message.args[0]['args']
             if isinstance(args[0], RunContext):
-                do_persist_generator_event.send_with_options(
-                    args=(args[0], _get_actor_name(message))
-                    )        
+                pass
+                # do_persist_generator_event.send_with_options(
+                #     args=(args[0], _get_actor_name(message))
+                #     )        
 
 
 def _get_actor_name(message):

@@ -110,21 +110,19 @@ ARGS.add_argument(
     )
 
 
-def execute(args: argparse.Namespace):
+def main(args: argparse.Namespace):
     """Entry point.
     
     """
-    logger.log("... instantiating execution context")
-
+    logger.log("... instantiating run context")
     network_id = factory.create_network_id(args.network)
     node_id = factory.create_node_id(network_id, args.node)
-
     ctx = factory.create_run_context(
-        Arguments.create(args),
-        args.run,
-        network_id,
-        node_id,
-        constants.TYPE
+        args=Arguments.create(args),
+        network_id=network_id,
+        node_id=node_id,
+        run_index=args.run,
+        run_type=constants.TYPE
     )
 
     logger.log("... invoking orchestrator")
@@ -132,4 +130,4 @@ def execute(args: argparse.Namespace):
 
 
 # Invoke entry point.
-execute(ARGS.parse_args())
+main(ARGS.parse_args())

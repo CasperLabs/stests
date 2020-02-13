@@ -21,36 +21,6 @@ _QUEUE = f"{constants.TYPE}.setup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_flush_cache(ctx: RunContext):   
-    """Flushes cache in preparation for a new run.
-    
-    """
-    # Flush previous cache data.
-    cache.flush_run(ctx)
-
-    # Cache.
-    cache.set_run_context(ctx)
-
-    # Chain.
-    return ctx
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
-    """Creates an account for use during the course of the simulation.
-    
-    """
-    # Instantiate.
-    account = factory.create_account(index=index, typeof=typeof)
-
-    # Cache.
-    cache.set_account(ctx, account)
-
-    # Chain.
-    return ctx
-
-
-@dramatiq.actor(queue_name=_QUEUE)
 def do_fund_faucet(ctx: RunContext, motes: int):
     """Funds account to be used as a faucet.
     
