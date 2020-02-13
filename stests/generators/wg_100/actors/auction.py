@@ -9,7 +9,7 @@ from stests.generators.wg_100 import constants
 
 
 # Queue to which message will be dispatched.
-_QUEUE = f"{constants.TYPE}.phase_01.auction"
+_QUEUE = f"{constants.TYPE}.auction"
 
 
 @dramatiq.actor(queue_name=_QUEUE)

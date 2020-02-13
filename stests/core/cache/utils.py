@@ -1,7 +1,7 @@
 import json
 import typing
 
-from stests.core.cache.stores import get_store
+from stests.core.cache import stores
 from stests.core.utils import encoder
 from stests.core.utils import logger
 
@@ -30,7 +30,21 @@ def do_get(store: typing.Callable, key: str) -> typing.Any:
     if obj is None:
         logger.log_warning(f"CACHE :: get :: {key} :: not found")
     else:
-        return encoder.decode(json.loads(obj))
+        return _decode_item(obj)
+
+
+def do_get_all(store: typing.Callable, search_key: str) -> typing.Any:
+    """Wraps redis.mget command.
+    
+    :param store: Cache store connection wrapper.
+    :param search_key: Key woth which to search cache.
+
+    """
+    logger.log(f"CACHE :: get :: {search_key}")
+    CHUNK_SIZE = 5000
+    _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
+
+    return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
 
 def do_set(store: typing.Callable, key: str, data: typing.Any):
@@ -41,8 +55,10 @@ def do_set(store: typing.Callable, key: str, data: typing.Any):
     :param data: Data to be cached.
 
     """
-    logger.log(f"CACHE :: set :: {key}")
+    logger.log(f"CACHE :: set :: key={key}")
     store.set(key, json.dumps(encoder.encode(data), indent=4))
+
+    return key
 
 
 def get_key(namespace: str, item_key: str) -> str:
@@ -73,3 +89,37 @@ def flush_namespace(store: typing.Callable, namespace: str) -> bool:
             store.delete(*keys)
 
     return True
+
+
+def _decode_item(obj):
+    """Returns a decoded encached domain object.
+    
+    """
+    return encoder.decode(json.loads(obj))
+
+
+def encache(func):
+    """Decorator to orthoganally encache domain objects.
+    
+    """
+    def wrapper(*args, **kwargs):
+        key, data = func(*args, **kwargs)
+        with stores.get_store() as store:
+            do_set(store, key, data)
+
+    return wrapper
+
+
+def decache(func):
+    """Decorator to orthoganally pull domain objects from cache.
+    
+    """
+    def wrapper(*args, **kwargs):
+        key = func(*args, **kwargs)
+        with stores.get_store() as store:
+            if key.endswith("*"):
+                return do_get_all(store, key)
+            else:
+                return do_get(store, key)
+
+    return wrapper

@@ -1,53 +1,89 @@
-from stests.core.cache import keyspace
-from stests.core.cache import stores
-from stests.core.cache import utils
+import typing
+
+from stests.core.cache.keyspace import get_key
+from stests.core.cache.utils import decache
+from stests.core.cache.identifiers import NetworkIdentifier
+from stests.core.cache.identifiers import NodeIdentifier
+from stests.core.domain import Account
 from stests.core.domain import AccountType
+from stests.core.domain import Network
+from stests.core.domain import Node
 from stests.core.domain import RunContext
+from stests.core.utils import factory
 
 
 
-def _do_get(key_ref):
-    """Sink function to retrieve instances of domain types.
+@decache
+def get_account(ctx: RunContext, account_type: AccountType, account_index: int) -> Account:
+    """Decaches domain object: Account.
     
     """
-    key = keyspace.get_key(key_ref)
-    with stores.get_store() as store:
-        return utils.do_get(store, key)
+    key = f"{get_key(ctx)}:"
+    zfill = 6 if obj.typeof == AccountType.USER else 2
+    key += f"accounts:{account_type.name}:{str(account_index).zfill(zfill)}"
+
+    return key
 
 
-def _do_get1(key):
-    """Sink function to retrieve instances of domain types.
+@decache
+def get_network(network_id: NetworkIdentifier) -> Network:
+    """Decaches domain object: Network.
     
     """
-    with stores.get_store() as store:
-        return utils.do_get(store, key)
+    return get_key(network_id)
 
 
-# Get account information.
-get_account = _do_get
-
-
-def get_account(ctx: RunContext, account_type: AccountType, account_index: int):
-    """Append run context information.
+def get_network_by_name(name: str) -> Network:
+    """Decaches domain object: Network.
     
     """
-    if account_type == AccountType.USER:
-        account_id = str(account_index).zfill(6)
-    else:
-        account_id = str(account_index).zfill(2)
+    return get_network(factory.create_network_id(name))
 
-    key = f"{ctx.network}.{ctx.run_type}:R-{str(ctx.run_index).zfill(3)}:accounts:{account_type.name}:{account_id}"
+
+@decache
+def get_networks() -> typing.List[Network]:
+    """Decaches domain objects: Network.
     
-    return _do_get1(key)
+    """
+    return get_key(typing.List[Network])
 
 
-# Get network information.
-get_network = _do_get
+@decache
+def get_node(node_id: NodeIdentifier) -> Node:
+    """Decaches domain object: Node.
+    
+    """
+    return get_key(node_id)
 
 
-# Get node information.
-get_node = _do_get
+@decache
+def get_ctx_node(ctx: RunContext) -> Node:
+    """Decaches domain object: Node.
+    
+    """
+    # if ctx.node_index == 0:
+    #     node_index = 1
+    # else:
+    # TODO: randomize if node index = 0.
+    key = f"global.network:{network_id.name}"
+
+    return key
 
 
-# Get node information.
-get_run = _do_get
+@decache
+def get_nodes(network_id: NetworkIdentifier) -> typing.List[Node]:
+    """Decaches domain objects: Node.
+    
+    """
+    return get_key((network_id, typing.List[Node]))
+
+
+@decache
+def get_run(ctx: RunContext) -> RunContext:
+    """Decaches domain object: RunContext.
+    
+    """
+    raise NotImplementedError()
+    key = f"{ctx.network_id.name}.{ctx.run_type}:R-{str(ctx.run_index).zfill(3)}"
+
+    return key

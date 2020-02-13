@@ -42,8 +42,7 @@ def do_transfer_clx(
     
     """
     # Set node.
-    # TODO: randomize if node index = 0.
-    node = cache.get_node(ctx.node_id)
+    node = cache.get_ctx_node(ctx)
 
     # Set counterparties.
     cp1 = cache.get_account(ctx, cp1_account_type, cp1_account_index)
@@ -75,8 +74,7 @@ def do_transfer_clx_and_verify(
 
     """
     # Set node.
-    # TODO: randomize if node index = 0.
-    node = cache.get_node(ctx.node_id)
+    node = cache.get_ctx_node(ctx)
 
     # Set counterparties.
     cp1 = cache.get_account(ctx, cp1_account_type, cp1_account_index)

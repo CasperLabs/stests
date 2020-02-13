@@ -1,27 +1,11 @@
-import datetime
-
 import dramatiq
-
-from stests.core import cache
 from stests.core.domain import RunContext
-from stests.core.utils import factory
+from stests.generators.shared.actors.events_generator import do_persist_generator_event
 
 
 
-# Queue to which message will be dispatched.
-_QUEUE = f"global.orchestration"
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_persist_event(ctx, event_name):
-    """Persists event information.
-    
-    """
-    cache.set_run_event(ctx, factory.create_run_event(ctx, event_name))
-
-
-class OrchestrationEventMiddleware(dramatiq.Middleware):
-    """Middleware to automatically persist orchestration events.
+class GeneratorEventMiddleware(dramatiq.Middleware):
+    """Middleware to automatically persist generator events.
     
     """
     def before_process_message(self, broker, message):
@@ -35,14 +19,13 @@ class OrchestrationEventMiddleware(dramatiq.Middleware):
            _get_actor_name(message).startswith("on_"):
             args = message.args if isinstance(message.args[0], RunContext) else message.args[0]['args']
             if isinstance(args[0], RunContext):
-                do_persist_event.send_with_options(
+                do_persist_generator_event.send_with_options(
                     args=(args[0], _get_actor_name(message))
                     )        
-            
+
 
 def _get_actor_name(message):
     """Returns actor name by parsing incoming message.
     
     """
     return str(message).split('(')[0]
-

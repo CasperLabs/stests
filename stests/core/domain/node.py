@@ -34,12 +34,8 @@ class Node:
     status: NodeStatus = get_enum_field(NodeStatus)
 
     # Type of node in terms of it's degree of consensus participation.
-    typeof: NodeType = get_enum_field(NodeType)
+    type: NodeType = get_enum_field(NodeType)
 
     # Associated metadata.
     meta: TypeMetadata = TypeMetadata()
     
-    @property
-    def key(self) -> str:
-        """Returns node's key for identification purposes."""
-        return str(self.index).zfill(4)

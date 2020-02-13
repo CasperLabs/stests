@@ -1,6 +1,7 @@
 import datetime
 import typing
 
+from stests.core.cache.identifiers import *
 from stests.core.domain import *
 from stests.core.utils import crypto
 from stests.core.utils.domain import TypeMetadata
@@ -45,19 +46,19 @@ def create_network(name_raw: str) -> Network:
     """Returns a domain object instance: Network.
     
     """
-    network_id = create_network_identifier(name_raw)
+    identifier = create_network_id(name_raw)
 
     return Network(
         faucet=None,
-        index=network_id.index,
-        name=network_id.name,
+        index=identifier.index,
+        name=identifier.name,
         name_raw=name_raw,
         status=NetworkStatus.NULL,
-        typeof=network_id.typeof
+        typeof=identifier.type
     )
 
 
-def create_network_identifier(name_raw: str) -> NetworkIdentifier:
+def create_network_id(name_raw: str) -> NetworkIdentifier:
     """Returns a domain object instance: NetworkIdentifier.
     
     """
@@ -67,7 +68,7 @@ def create_network_identifier(name_raw: str) -> NetworkIdentifier:
             index=int(name_raw[len(network_type):])
             typeof=name_raw[:len(network_type)].upper()
             name = f"{typeof}-{str(index).zfill(2)}"
-            return NetworkIdentifier(name)
+            return NetworkIdentifier(name=name)
 
     raise ValueError("Network identifier is unsupported")
 
@@ -77,7 +78,7 @@ def create_node(
     index: int,
     network_id: NetworkIdentifier,
     port: int,
-    typeof: NodeType
+    type: NodeType
     ) -> Node:
     """Returns a domain object instance: Node.
     
@@ -88,12 +89,12 @@ def create_node(
         index=index,
         network=network_id.name,
         port=port,
-        typeof=typeof,
+        type=type,
         status=NodeStatus.NULL
     )
 
 
-def create_node_identifier(
+def create_node_id(
     network_id: NetworkIdentifier,
     index: int
     ) -> NodeIdentifier:

@@ -1,4 +1,4 @@
-from stests.core.clx.client_factory import get_client
+from stests.core.clx.utils import get_client
 from stests.core.domain import Account
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus

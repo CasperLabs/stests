@@ -23,10 +23,16 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Instantiate & cache.
-    cache.set_network(factory.create_network(args.network))
+    # Instantiate.
+    network = factory.create_network(args.network)
 
-    logger.log("Network information successfully registered")
+    # Push.
+    cache.set_network(network)
+
+    print(cache.get_networks())
+
+    # Inform.
+    logger.log(f"Network {args.network} was successfully registered")
 
 
 # Entry point.

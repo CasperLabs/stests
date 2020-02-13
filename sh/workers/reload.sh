@@ -7,7 +7,7 @@ source $STESTS_PATH_SH/utils.sh
 function main()
 {
 	source $STESTS_PATH_SH/workers/stop.sh
-	source $STESTS_PATH_SH/workers/run.sh
+	source $STESTS_PATH_SH/workers/start.sh
 }
 
 # Invoke entry point.

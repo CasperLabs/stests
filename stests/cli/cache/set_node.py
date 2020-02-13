@@ -41,23 +41,27 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Unpack arguments.
+    # Unpack.
     host = args.address.split(':')[0]
     index = int(args.node.split(':')[-1])
     network=args.node.split(':')[0]
     port = int(args.address.split(':')[-1])
-    typeof = NodeType[args.typeof.upper()]
+    type = NodeType[args.typeof.upper()]
 
-    # Instantiate & cache.
-    cache.set_node(factory.create_node(
+    # Instantiate.
+    node = factory.create_node(
         host=host,
         index=index,  
-        network_id=factory.create_network_identifier(network),
+        network_id=factory.create_network_id(network),
         port=port,
-        typeof=typeof
-    ))
+        type=type
+    )
 
-    logger.log("Node information successfully registered")
+    # Push.
+    cache.set_node(node)
+
+    # Notify.
+    logger.log(f"Node {args.node} was successfully registered")
 
 
 # Entry point.

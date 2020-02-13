@@ -33,28 +33,28 @@ def main(args):
     
     :param args: Parsed CLI arguments.
 
-    """
-    # Set network.
-    network_id = factory.create_network(args.network)
-    network = cache.get_network(network_id)
+    """    
+    # Pull.
+    network = cache.get_network_by_name(args.network)
     if network is None:
         raise ValueError("Unregistered network.")
 
     # Set key pair.
-    private_key, public_key = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
+    pvk, pbk = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
 
-    # Set network's faucet account.
+    # Set faucet.
     network.faucet = factory.create_account(
-        private_key=private_key,
-        public_key=public_key,
+        private_key=pvk,
+        public_key=pbk,
         typeof=AccountType.FAUCET,
-        status=AccountStatus.ACTIVE,
+        status=AccountStatus.ACTIVE
     )
 
-    # Cache.
+    # Push.
     cache.set_network(network)
 
-    logger.log("Network faucet key successfully registered")
+    # Inform.
+    logger.log(f"Network {args.network} faucet key was successfully registered")
 
 
 # Entry point.

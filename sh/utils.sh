@@ -26,12 +26,12 @@ function log()
 			do
 				declare tabs+='\t'
 			done
-	    	echo -e $now" :: [INFO] :: [$$] :: STESTS :: "$tabs$1
+	    	echo -e $now" [INFO] [$$] :: STESTS :: "$tabs$1
 	    else
-	    	echo -e $now" :: [INFO] :: [$$] :: STESTS :: "$1
+	    	echo -e $now" [INFO] [$$] :: STESTS :: "$1
 	    fi
 	else
-	    echo -e $now" :: [INFO] :: [$$] :: STESTS :: "
+	    echo -e $now" [INFO] [$$] :: STESTS :: "
 	fi
 }
 

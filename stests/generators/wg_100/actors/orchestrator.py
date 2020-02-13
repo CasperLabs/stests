@@ -6,13 +6,11 @@ from stests.generators.shared.actors.accounts import do_transfer_clx_and_verify
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors.auction import do_start_auction
 from stests.generators.wg_100.actors.setup import do_deploy_contract
+from stests.generators.wg_100.actors.setup import do_flush_cache
 from stests.generators.wg_100.actors.setup import do_fund_faucet
-from stests.generators.wg_100.actors.setup import do_reset_cache
-
-
 
 # Queue to which message will be dispatched.
-_QUEUE = f"{constants.TYPE}.phase_01.orchestrator"
+_QUEUE = f"{constants.TYPE}.orchestrator"
 
 
 # TODO: chunk user account creating/funding ?
@@ -24,14 +22,14 @@ def execute(ctx):
     :param ctx: Contextual information passed along flow of execution.
     
     """
-    do_reset_cache.send_with_options(
+    do_flush_cache.send_with_options(
         args=(ctx, ), 
-        on_success=on_reset_cache
+        on_success=on_flush_cache
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_reset_cache(_, ctx):
+def on_flush_cache(_, ctx):
     """Callback: on_flush_cache.
     
     """

@@ -1,55 +1,69 @@
-from stests.core.cache import keyspace
-from stests.core.cache import stores
-from stests.core.cache import utils
+from stests.core.cache.keyspace import get_key
+from stests.core.cache.utils import encache
+from stests.core.domain import Account
+from stests.core.domain import Deploy
+from stests.core.domain import Network
+from stests.core.domain import Node
+from stests.core.domain import RunContext
+from stests.core.domain import RunEvent
 
 
 
-def _do_set(instance, key):
-    """Sink function to push instances of domain types.
+@encache
+def set_account(ctx: RunContext, account: Account):
+    """Encaches domain object: Account.
     
     """
-    with stores.get_store() as store:
-        utils.do_set(store, key, instance)
+    key = f"{get_key(ctx)}:{get_key(account)}"
+
+    return key, account
 
 
-# Append account information.
-def set_account(ctx, account):
-    """Encaches domain opbject: Account.
+@encache
+def set_deploy(ctx: RunContext, deploy: Deploy):
+    """Encaches domain object: Deploy.
     
     """
-    _do_set(account, f"{keyspace.get_key(ctx)}:{keyspace.get_key(account)}")
+    key = f"{get_key(ctx)}:{get_key(deploy)}"
+
+    return key, deploy
 
 
-def set_deploy(ctx, deploy):
-    """Encaches domain opbject: Deploy.
+@encache
+def set_network(network: Network):
+    """Encaches domain object: Network.
     
     """
-    _do_set(deploy, f"{keyspace.get_key(ctx)}:{keyspace.get_key(deploy)}")
+    key = f"global.network:{network.name}"
+
+    return key, network
 
 
-def set_network(network):
-    """Append network information.
+@encache
+def set_node(node: Node):
+    """Encaches domain object: Node.
     
     """
-    _do_set(network, keyspace.get_key(network))
+    key = f"global.node:{node.network}:N-{str(node.index).zfill(4)}"
+
+    return key, node
 
 
-def set_node(node):
-    """Encaches domain opbject: Node.
+@encache
+def set_run_context(ctx: RunContext):
+    """Encaches domain object: RunContext.
     
     """
-    _do_set(node, keyspace.get_key(node))
+    key = f"{get_key(ctx)}:context"
+
+    return key, ctx
 
 
-def set_run_context(ctx):
-    """Encaches domain opbject: RunContext.
+@encache
+def set_run_event(ctx: RunContext, evt: RunEvent):
+    """Encaches domain object: RunEvent.
     
     """
-    _do_set(ctx, f"{keyspace.get_key(ctx)}:context")
+    key = f"{get_key(ctx)}:{get_key(evt)}"
 
-
-def set_run_event(ctx, event):
-    """Encaches domain opbject: RunEvent.
-    
-    """
-    _do_set(event, f"{keyspace.get_key(ctx)}:{keyspace.get_key(event)}")
+    return key, evt

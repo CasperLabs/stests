@@ -3,8 +3,6 @@ from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 from stests.core.utils.domain import TypeMetadata
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import NodeIdentifier
 
 
 
@@ -17,36 +15,20 @@ class RunContext:
     # Associated run arguments.
     args: typing.Any
 
+    # Associated network.
+    network_name: str
+
+    # Associated node index.
+    node_index: int
+
     # Numerical index to distinguish between multiple runs of the same generator.
-    index: int
-
-    # Associated network reference.
-    network: str
-
-    # Associated node reference.
-    node: int
+    run_index: int
 
     # Type of generator, e.g. WG-100 ...etc.
-    typeof: str
+    run_type: str
 
     # Associated metadata.
     meta: TypeMetadata = TypeMetadata()
-
-    @property
-    def network_id(self) -> NetworkIdentifier:
-        return NetworkIdentifier(self.network)
-
-    @property
-    def node_id(self) -> NodeIdentifier:
-        return NodeIdentifier(self.network_id, self.node)
-
-    @property
-    def run_index(self) -> int:
-        return self.index
-
-    @property
-    def run_type(self) -> str:
-        return self.typeof
 
 
 @dataclass_json
@@ -58,8 +40,8 @@ class RunEvent:
     # Event name.
     event: str
 
-    # Associated network reference.
-    network: str
+    # Associated network.
+    network_name: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: int

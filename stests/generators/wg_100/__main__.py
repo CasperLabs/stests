@@ -4,10 +4,12 @@ from dataclasses_json import dataclass_json
 
 import dramatiq 
 
-from stests.core import mq
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
+
+from stests.core import mq
+
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors import orchestrator
 from stests.generators.wg_100.args import Arguments
@@ -39,7 +41,7 @@ ARGS.add_argument(
     "--run",
     dest="run",
     help="Generator run index - must be between 1 and 65536.",
-    type=args_validator.validate_generator_run_idx,
+    type=args_validator.validate_run_index,
     default=1
     )
 
@@ -114,8 +116,8 @@ def execute(args: argparse.Namespace):
     """
     logger.log("... instantiating execution context")
 
-    network_id = factory.create_network_identifier(args.network)
-    node_id = factory.create_node_identifier(network_id, args.node)
+    network_id = factory.create_network_id(args.network)
+    node_id = factory.create_node_id(network_id, args.node)
 
     ctx = factory.create_run_context(
         Arguments.create(args),
