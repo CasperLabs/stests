@@ -40,8 +40,8 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     cp2 = cache.get_account_by_ctx(ctx, account_index)
 
     # Set balances.
-    cp1_balance = clx.get_balance(node, cp1)
-    cp2_balance = clx.get_balance(node, cp2)
+    cp1_balance = clx.get_balance(ctx, cp1)
+    cp2_balance = clx.get_balance(ctx, cp2)
 
     # Transfer CLX from node -> faucet.
     deploy = clx.do_transfer(node, cp1, cp2, motes)
@@ -53,8 +53,8 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     time.sleep(4.0)
 
     # Assert balances.
-    assert clx.get_balance(node, cp1) <= cp1_balance - motes
-    assert clx.get_balance(node, cp2) == cp2_balance + motes
+    assert clx.get_balance(ctx, cp1) <= cp1_balance - motes
+    assert clx.get_balance(ctx, cp2) == cp2_balance + motes
 
     # Chain.
     return ctx

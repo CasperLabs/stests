@@ -1,8 +1,8 @@
-from stests.core.clx.utils import get_client
+from stests.core.clx.utils import get_client_from_ctx
 from stests.core.domain import Account
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
-from stests.core.domain import Node
+from stests.core.domain import RunContext
 from stests.core.utils import factory
 from stests.core.utils import logger
 
@@ -14,15 +14,15 @@ TX_FEE = 10000000
 TX_GAS_PRICE = 1
 
 
-def execute(node: Node, account: Account) -> int:
-    """Queries a node for an account balance.
+def execute(ctx: RunContext, account: Account) -> int:
+    """Queries network for an account balance.
 
-    :param node: Node to which query will be dispatched.
+    :param ctx: Contextual information passed along flow of execution.
     :param account: Account whose balance will be queried.
     :returns: Account balance.
 
     """
-    client = get_client(node)
+    client = get_client_from_ctx(ctx)
     try:
         balance = client.balance(
             address=account.public_key,

@@ -123,3 +123,15 @@ def decache(func):
                 return do_get(store, key)
 
     return wrapper
+
+
+def flushcache(func):
+    """Decorator to orthoganally flush domain objects from cache.
+    
+    """    
+    def wrapper(*args, **kwargs):
+        key = func(*args, **kwargs)
+        with stores.get_store() as store:
+            flush_namespace(store, key)
+
+    return wrapper
