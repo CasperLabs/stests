@@ -30,23 +30,16 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_transfer_clx(
-    ctx: RunContext,
-    cp1_account_type: AccountType, 
-    cp1_account_index: int,
-    cp2_account_type: AccountType, 
-    cp2_account_index: int,
-    motes: int
-    ):
+def do_transfer_clx(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
     """Performs a CLX transfer between 2 counterparties.
     
     """
     # Set node.
-    node = cache.get_ctx_node(ctx)
+    node = cache.get_node_by_ctx(ctx)
 
     # Set counterparties.
-    cp1 = cache.get_account(ctx, cp1_account_type, cp1_account_index)
-    cp2 = cache.get_account(ctx, cp2_account_type, cp2_account_index)
+    cp1 = cache.get_account_by_ctx(ctx, cp1_index)
+    cp2 = cache.get_account_by_ctx(ctx, cp2_index)
 
     # Transfer CLX from node -> faucet.
     deploy = clx.do_transfer(node, cp1, cp2, motes)
@@ -62,23 +55,16 @@ def do_transfer_clx(
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_transfer_clx_and_verify(
-    ctx: RunContext,
-    cp1_account_type: AccountType, 
-    cp1_account_index: int,
-    cp2_account_type: AccountType, 
-    cp2_account_index: int,
-    motes: int
-    ):
+def do_transfer_clx_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
     """Performs a CLX transfer between 2 counterparties & verifies transfers.
 
     """
     # Set node.
-    node = cache.get_ctx_node(ctx)
+    node = cache.get_node_by_ctx(ctx)
 
     # Set counterparties.
-    cp1 = cache.get_account(ctx, cp1_account_type, cp1_account_index)
-    cp2 = cache.get_account(ctx, cp2_account_type, cp2_account_index)
+    cp1 = cache.get_account_by_ctx(ctx, cp1_index)
+    cp2 = cache.get_account_by_ctx(ctx, cp2_index)
 
     # Set balances.
     cp1_balance = clx.get_balance(node, cp1)

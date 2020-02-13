@@ -41,8 +41,7 @@ def _get_item_key(obj):
     
     """
     if isinstance(obj, Account):
-        zfill = 6 if obj.typeof == AccountType.USER else 2
-        return f"accounts:{obj.typeof.name}:{str(obj.index).zfill(zfill)}"
+        return f"accounts:{str(obj.index).zfill(6)}"
 
     if isinstance(obj, Deploy):
         return f"deploys:{obj.ts_dispatched}.{obj.hash_id}"

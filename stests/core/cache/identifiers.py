@@ -57,6 +57,10 @@ class RunIdentifier:
     # Type of generator, e.g. WG-100 ...etc.
     type: str
 
+    @property
+    def key(self) -> str:
+        return f"{self.network.name}.{self.type}:R-{str(self.index).zfill(3)}"
+
 
 @dataclass
 class AccountIdentifier:
@@ -66,15 +70,16 @@ class AccountIdentifier:
     # Numerical index to distinguish between accounts within same context.
     index: int
 
-    # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
-    type: AccountType = get_enum_field(AccountType)
-
     # Associated run identifier.
     run: RunIdentifier
 
     @property
     def network_id(self) -> NetworkIdentifier:
         return this.run.network
+
+    @property
+    def key(self) -> str:
+        return f"{self.run.key}:accounts:{str(self.index).zfill(6)}"
 
 
 # Set of supported identifiers.

@@ -62,6 +62,11 @@ def create_network_id(name_raw: str) -> NetworkIdentifier:
     """Returns a domain object instance: NetworkIdentifier.
     
     """
+    # If name has already been parsed.
+    if name_raw.upper() == name_raw:
+        return NetworkIdentifier(name_raw)
+
+    # Parse raw name.
     name_raw = name_raw.lower()
     for network_type in [i.name.lower() for i in NetworkType]:
         if name_raw.startswith(network_type):
@@ -134,3 +139,14 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
         run_type=ctx.run_type,
         timestamp=datetime.datetime.now().timestamp()
     )
+
+
+def create_run_id(
+    network_id: NetworkIdentifier,
+    run_index: int,
+    run_type: str
+    ) -> RunIdentifier:
+    """Returns a domain object instance: NodeIdentifier.
+    
+    """
+    return RunIdentifier(network_id, run_index, run_type)

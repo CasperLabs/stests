@@ -21,16 +21,23 @@ _QUEUE = f"{constants.TYPE}.setup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_faucet(ctx: RunContext, motes: int):
+def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     """Funds account to be used as a faucet.
     
     """
+    # Set network.
+    network = cache.get_network_by_ctx(ctx)
+    if not network.faucet:
+        raise ValueError("Network faucet account does not exist.")
+
     # Set node.
-    node = cache.get_ctx_node(ctx)
+    node = cache.get_node_by_ctx(ctx)
+    if not node:
+        raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")
 
     # Set counterparties.
-    cp1 = node.account
-    cp2 = cache.get_account(ctx, AccountType.FAUCET, 1)
+    cp1 = network.faucet
+    cp2 = cache.get_account_by_ctx(ctx, account_index)
 
     # Set balances.
     cp1_balance = clx.get_balance(node, cp1)

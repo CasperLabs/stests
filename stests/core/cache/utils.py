@@ -55,7 +55,6 @@ def do_set(store: typing.Callable, key: str, data: typing.Any):
     :param data: Data to be cached.
 
     """
-    print(555)
     logger.log(f"CACHE :: set :: key={key}")
     store.set(key, json.dumps(encoder.encode(data), indent=4))
 
@@ -86,11 +85,8 @@ def flush_namespace(store: typing.Callable, namespace: str) -> bool:
     ns_keys = namespace + ':*'
     while cursor != 0:
         cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
-        print(ns_keys, keys)
         if keys:
             store.delete(*keys)
-
-    print(666)
 
     return True
 

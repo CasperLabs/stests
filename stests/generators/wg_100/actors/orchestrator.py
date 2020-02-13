@@ -1,6 +1,7 @@
 import dramatiq
 
 from stests.core.domain import AccountType
+from stests.core.domain import RunContext
 
 from stests.generators.shared.actors.accounts import do_create_account
 from stests.generators.shared.actors.accounts import do_transfer_clx_and_verify
@@ -15,9 +16,18 @@ from stests.generators.wg_100.actors.setup import do_fund_faucet
 # Queue to which message will be dispatched.
 _QUEUE = f"{constants.TYPE}.orchestrator"
 
+# Account index: faucet.
+ACC_INDEX_FAUCET = 1
+
+# Account index: contract.
+ACC_INDEX_CONTRACT = 2
+
+# Account index: users.
+ACC_INDEX_USERS = 3
 
 
-def execute(ctx):
+
+def execute(ctx: RunContext):
     """Orchestrates execution of WG-100 workflow.
 
     :param ctx: Contextual information passed along flow of execution.
@@ -31,7 +41,7 @@ def execute(ctx):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_flush_cache(_, ctx):
+def on_flush_cache(_, ctx: RunContext):
     """Callback: on_flush_cache.
     
     """
@@ -42,35 +52,34 @@ def on_flush_cache(_, ctx):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_cache_context(_, ctx):
+def on_cache_context(_, ctx: RunContext):
     """Callback: on_cache_context.
     
     """
     do_create_account.send_with_options(
-        args=(ctx, 1, AccountType.FAUCET),
+        args=(ctx, ACC_INDEX_FAUCET, AccountType.FAUCET),
         on_success=on_create_faucet_account
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_create_faucet_account(_, ctx):
+def on_create_faucet_account(_, ctx: RunContext):
     """Callback: on_create_faucet_account.
     
     """
-    print(888)
     do_create_account.send_with_options(
-        args=(ctx, 1, AccountType.CONTRACT),
+        args=(ctx, ACC_INDEX_CONTRACT, AccountType.CONTRACT),
         on_success=on_create_contract_account
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_create_contract_account(_, ctx):
+def on_create_contract_account(_, ctx: RunContext):
     """Callback: on_create_contract_account.
     
     """
     def get_messages():
-        for index in range(1, ctx.args.user_accounts + 1):
+        for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
             yield do_create_account.message(ctx, index, AccountType.USER)
 
     g = dramatiq.group(get_messages())
@@ -79,44 +88,36 @@ def on_create_contract_account(_, ctx):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_create_user_accounts(ctx):
+def on_create_user_accounts(ctx: RunContext):
     """Callback: on_create_user_accounts.
     
     """
     do_fund_faucet.send_with_options(
-        args=(ctx, ctx.args.faucet_initial_clx_balance),
+        args=(ctx, ACC_INDEX_FAUCET, ctx.args.faucet_initial_clx_balance),
         on_success=on_fund_faucet
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_fund_faucet(_, ctx):
+def on_fund_faucet(_, ctx: RunContext):
     """Callback: on_fund_faucet.
     
     """
     do_transfer_clx_and_verify.send_with_options(
-        args=(
-            ctx,
-            AccountType.FAUCET, 1,
-            AccountType.CONTRACT, 1,
-            ctx.args.contract_initial_clx_balance
-            ),
+        args=(ctx, ACC_INDEX_FAUCET, ACC_INDEX_CONTRACT, ctx.args.contract_initial_clx_balance),
         on_success=on_fund_contract
     )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_fund_contract(_, ctx):
+def on_fund_contract(_, ctx: RunContext):
     """Callback: on_fund_contract.
     
     """
     def get_messages():
-        for index in range(1, ctx.args.user_accounts + 1):
+        for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
             yield do_transfer_clx_and_verify.message(
-                ctx,
-                AccountType.FAUCET, 1,
-                AccountType.USER, index,
-                ctx.args.user_initial_clx_balance
+                ctx, ACC_INDEX_FAUCET, index, ctx.args.user_initial_clx_balance
             )
 
     g = dramatiq.group(get_messages())
@@ -125,7 +126,7 @@ def on_fund_contract(_, ctx):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_fund_users(ctx):
+def on_fund_users(ctx: RunContext):
     """Callback: on_fund_users.
     
     """
@@ -136,7 +137,7 @@ def on_fund_users(ctx):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_deploy_contract(_, ctx):
+def on_deploy_contract(_, ctx: RunContext):
     """Callback: on_deploy_contract.
     
     """
@@ -147,7 +148,7 @@ def on_deploy_contract(_, ctx):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_start_auction(_, ctx):
+def on_start_auction(_, ctx: RunContext):
     """Callback: on_start_auction.
     
     """

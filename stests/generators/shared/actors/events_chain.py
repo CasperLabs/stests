@@ -18,7 +18,7 @@ def do_stream_chain_events(ctx: RunContext):
     # Set node.
     # TODO: randomize if node index = 0.
     raise NotImplementedError()
-    node = cache.get_ctx_node(ctx)
+    node = cache.get_node_by_ctx(ctx)
 
     # Wire upto event streams.
     clx.stream_events(node, on_block_added=_on_block_added, on_block_finalized=_on_block_finalized)
