@@ -1,6 +1,7 @@
 from stests.core.cache.keyspace import get_key
 from stests.core.cache.utils import encache
 from stests.core.domain import Account
+from stests.core.domain import AccountTransfer
 from stests.core.domain import Deploy
 from stests.core.domain import Network
 from stests.core.domain import Node
@@ -17,6 +18,16 @@ def set_account(ctx: RunContext, account: Account):
     key = f"{get_key(ctx)}:{get_key(account)}"
 
     return key, account
+
+
+@encache
+def set_account_transfer(ctx: RunContext, transfer: AccountTransfer):
+    """Encaches domain object: AccountTransfer.
+    
+    """
+    key = f"{get_key(ctx)}:{get_key(transfer)}"
+
+    return key, transfer
 
 
 @encache

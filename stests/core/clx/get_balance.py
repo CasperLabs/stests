@@ -3,15 +3,10 @@ from stests.core.domain import Account
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import RunContext
+from stests.core.utils import defaults
 from stests.core.utils import factory
 from stests.core.utils import logger
 
-
-# Default transaction fee to apply.
-TX_FEE = 10000000
-
-# Default gas price to apply.
-TX_GAS_PRICE = 1
 
 
 def execute(ctx: RunContext, account: Account) -> int:

@@ -33,4 +33,3 @@ NODE_PORT = 40400
 
 # Node: type.
 NODE_TYPE = "FULL"
-

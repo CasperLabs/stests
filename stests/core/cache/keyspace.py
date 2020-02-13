@@ -3,6 +3,7 @@ import typing
 from stests.core.cache.identifiers import IDENTIFIER_SET
 from stests.core.cache.identifiers import NetworkIdentifier
 from stests.core.domain import Account
+from stests.core.domain import AccountTransfer
 from stests.core.domain import AccountType
 from stests.core.domain import Deploy
 from stests.core.domain import Network
@@ -42,6 +43,9 @@ def _get_item_key(obj):
     """
     if isinstance(obj, Account):
         return f"accounts:{str(obj.index).zfill(6)}"
+
+    if isinstance(obj, AccountTransfer):
+        return f"transfers.{obj.asset.lower()}:{obj.dhash}"
 
     if isinstance(obj, Deploy):
         return f"deploys:{obj.ts_dispatched}.{obj.hash_id}"

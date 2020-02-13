@@ -39,10 +39,11 @@ def do_transfer_clx(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int)
     cp2 = cache.get_account_by_ctx(ctx, cp2_index)
 
     # Transfer CLX from cp1 -> cp2.
-    deploy = clx.do_transfer(ctx, cp1, cp2, motes)
+    (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_deploy(ctx, deploy)
+    cache.set_account_transfer(ctx, transfer)
 
     # Temporary until properly hooking into streams.
     time.sleep(4.0)
@@ -65,10 +66,11 @@ def do_transfer_clx_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
     cp2_balance = clx.get_balance(ctx, cp2)
 
     # Transfer CLX from cp1 -> cp2.
-    deploy = clx.do_transfer(ctx, cp1, cp2, motes)
+    (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_deploy(ctx, deploy)
+    cache.set_account_transfer(ctx, transfer)
 
     # Temporary until properly hooking into streams.
     time.sleep(4.0)

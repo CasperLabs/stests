@@ -10,6 +10,7 @@ from stests.core.domain.run import *
 # Domain classes.
 DCLASS_SET = {
     Account,
+    AccountTransfer,
     Deploy,
     Network,
     Node,

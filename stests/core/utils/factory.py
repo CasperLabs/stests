@@ -31,6 +31,27 @@ def create_account(
         )
 
 
+def create_account_transfer(
+    amount: int,
+    asset: str,
+    cp1: Account,
+    cp2: Account,
+    dhash: str,
+    is_refundable: bool
+    ) -> AccountTransfer:
+    """Returns a domain object instance: AccountTransfer.
+    
+    """
+    return AccountTransfer(
+        amount=amount,
+        asset=asset or "CLX",
+        cp1_index=cp1.index,
+        cp2_index=cp2.index,
+        dhash=dhash,
+        is_refundable=is_refundable
+    )
+
+
 def create_deploy(hash_id: str, status: DeployStatus) -> Deploy:
     """Returns a domain object instance: Deploy.
     

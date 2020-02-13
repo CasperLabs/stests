@@ -36,3 +36,32 @@ class Account:
     @property
     def private_key_as_pem_filepath(self):
         return PrivateKey(self.private_key).as_pem_filepath
+
+
+
+@dataclass_json
+@dataclass
+class AccountTransfer:
+    """Encapsulates information pertaining to a CLX transfer between counterparties.
+    
+    """
+    # Amount in motes that was transferred.
+    amount: int
+
+    # Asset being transferred.
+    asset: str
+
+    # Counter-party 1 account index.
+    cp1_index: int
+
+    # Counter-party 2 account index.
+    cp2_index: int
+
+    # Associated deploy hash.
+    dhash: str
+
+    # Flag indicating whether a refund is required.
+    is_refundable: bool
+
+    # Associated metadata.
+    meta: TypeMetadata = TypeMetadata()

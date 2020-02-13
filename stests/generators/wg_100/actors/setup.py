@@ -39,10 +39,11 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     cp2_balance = clx.get_balance(ctx, cp2)
 
     # Transfer CLX from network faucet -> run faucet.
-    deploy = clx.do_transfer(ctx, cp1, cp2, motes)
+    (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_deploy(ctx, deploy)
+    cache.set_account_transfer(ctx, transfer)
 
     # Temporary until properly hooking into streams.
     time.sleep(4.0)

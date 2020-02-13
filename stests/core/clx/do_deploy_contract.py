@@ -1,11 +1,9 @@
 from stests.core.clx.utils import get_client
+from stests.core.clx import utils_defaults as defaults
 from stests.core.domain import Account
 from stests.core.domain import RunContext
 from stests.core.utils import logger
 
-
-TX_FEE = 10000000
-TX_GAS_PRICE = 1
 
 
 def execute(
