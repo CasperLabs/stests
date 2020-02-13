@@ -30,11 +30,6 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     if not network.faucet:
         raise ValueError("Network faucet account does not exist.")
 
-    # Set node.
-    node = cache.get_node_by_ctx(ctx)
-    if not node:
-        raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")
-
     # Set counterparties.
     cp1 = network.faucet
     cp2 = cache.get_account_by_ctx(ctx, account_index)
@@ -43,8 +38,8 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     cp1_balance = clx.get_balance(ctx, cp1)
     cp2_balance = clx.get_balance(ctx, cp2)
 
-    # Transfer CLX from node -> faucet.
-    deploy = clx.do_transfer(node, cp1, cp2, motes)
+    # Transfer CLX from network faucet -> run faucet.
+    deploy = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_deploy(ctx, deploy)

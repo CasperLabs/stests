@@ -34,15 +34,12 @@ def do_transfer_clx(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int)
     """Performs a CLX transfer between 2 counterparties.
     
     """
-    # Set node.
-    node = cache.get_node_by_ctx(ctx)
-
     # Set counterparties.
     cp1 = cache.get_account_by_ctx(ctx, cp1_index)
     cp2 = cache.get_account_by_ctx(ctx, cp2_index)
 
-    # Transfer CLX from node -> faucet.
-    deploy = clx.do_transfer(node, cp1, cp2, motes)
+    # Transfer CLX from cp1 -> cp2.
+    deploy = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_deploy(ctx, deploy)
@@ -59,9 +56,6 @@ def do_transfer_clx_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
     """Performs a CLX transfer between 2 counterparties & verifies transfers.
 
     """
-    # Set node.
-    node = cache.get_node_by_ctx(ctx)
-
     # Set counterparties.
     cp1 = cache.get_account_by_ctx(ctx, cp1_index)
     cp2 = cache.get_account_by_ctx(ctx, cp2_index)
@@ -70,8 +64,8 @@ def do_transfer_clx_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
     cp1_balance = clx.get_balance(ctx, cp1)
     cp2_balance = clx.get_balance(ctx, cp2)
 
-    # Transfer CLX from node -> faucet.
-    deploy = clx.do_transfer(node, cp1, cp2, motes)
+    # Transfer CLX from cp1 -> cp2.
+    deploy = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_deploy(ctx, deploy)
