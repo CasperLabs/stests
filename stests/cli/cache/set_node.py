@@ -46,7 +46,7 @@ def main(args):
     index = int(args.node.split(':')[-1])
     network=args.node.split(':')[0]
     port = int(args.address.split(':')[-1])
-    type = NodeType[args.typeof.upper()]
+    typeof = NodeType[args.typeof.upper()]
 
     # Instantiate.
     node = factory.create_node(
@@ -54,7 +54,7 @@ def main(args):
         index=index,  
         network_id=factory.create_network_id(network),
         port=port,
-        type=type
+        typeof=typeof
     )
 
     # Push.

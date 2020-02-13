@@ -34,7 +34,7 @@ class Node:
     status: NodeStatus = get_enum_field(NodeStatus)
 
     # Type of node in terms of it's degree of consensus participation.
-    type: NodeType = get_enum_field(NodeType)
+    typeof: NodeType = get_enum_field(NodeType)
 
     # Associated metadata.
     meta: TypeMetadata = TypeMetadata()

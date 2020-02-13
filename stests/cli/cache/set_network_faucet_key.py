@@ -44,6 +44,7 @@ def main(args):
 
     # Set faucet.
     network.faucet = factory.create_account(
+        index=0,
         private_key=pvk,
         public_key=pbk,
         typeof=AccountType.FAUCET,

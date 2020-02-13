@@ -102,7 +102,7 @@ def _validate_port(value):
     return _validate_int(value, PORT_MIN, PORT_MAX, "Port")
 
 
-def _validate_enum(value, enum_type, typeof):
+def _validate_enum(value, enum_type, type):
     """Validates a constrained integer value.
     
     """
@@ -113,7 +113,7 @@ def _validate_enum(value, enum_type, typeof):
         raise argparse.ArgumentTypeError(err)
 
 
-def _validate_int(value, min, max, typeof):
+def _validate_int(value, min, max, type):
     """Validates a constrained integer value.
     
     """
@@ -123,7 +123,7 @@ def _validate_int(value, min, max, typeof):
             if ivalue < min or ivalue > max:
                 raise ValueError()
     except ValueError:
-        err = f"{typeof} index must be an integer"
+        err = f"{type} index must be an integer"
         if min and max:
             err += f" between {min} and {max}"
         raise argparse.ArgumentTypeError(err)

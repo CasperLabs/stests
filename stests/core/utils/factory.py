@@ -22,7 +22,7 @@ def create_account(
         private_key, public_key = crypto.generate_key_pair(crypto.KeyEncoding.HEX)        
 
     return Account(
-        index=index or 1,
+        index=index if index is not None else 1,
         private_key=private_key,
         public_key=public_key,
         status=status or AccountStatus.NEW,
@@ -104,7 +104,7 @@ def create_node(
     index: int,
     network_id: NetworkIdentifier,
     port: int,
-    type: NodeType
+    typeof: NodeType
     ) -> Node:
     """Returns a domain object instance: Node.
     
@@ -115,7 +115,7 @@ def create_node(
         index=index,
         network=network_id.name,
         port=port,
-        type=type,
+        typeof=typeof,
         status=NodeStatus.NULL
     )
 

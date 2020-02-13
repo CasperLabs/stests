@@ -48,6 +48,7 @@ def main(args):
 
     # Set bonding account.
     node.account = factory.create_account(
+        index=-node_id.index,
         private_key=pvk,
         public_key=pbk,
         status=AccountStatus.ACTIVE,
