@@ -21,12 +21,12 @@ def execute(
     for event in _yield_events(node, on_block_added, on_block_finalized):
         if on_block_added and event.HasField("block_added"):
             added_block_hash = event.block_added.block.summary.block_hash.hex()
-            logger.log(f"Block added :: {added_block_hash}")
+            logger.log(f"PYCLX :: stream_events :: block added :: {added_block_hash}")
             on_block_added(added_block_hash)
 
         elif on_block_finalized and event.HasField("new_finalized_block"):
-            finalized_block_hash = event.new_finalized_block.block_hash
-            logger.log(f"Block finalized :: {finalized_block_hash}")
+            finalized_block_hash = event.new_finalized_block.block_hash.hex()
+            logger.log(f"PYCLX :: stream_events :: block finalized :: {finalized_block_hash}")
             on_block_finalized(finalized_block_hash)
 
 

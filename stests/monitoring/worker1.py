@@ -3,14 +3,17 @@ from stests.core import mq
 from stests.core.utils import factory
 
 
-
-# Initialise MQ sub-package.
+# Import MQ sub-package & initialise.
 mq.initialise(mq.BrokerMode.MONITORING)
-import stests.monitoring.chain.actors
 
+# Import actors.
+# import stests.monitoring.chain.actors
+
+# Import listeners.
+import stests.monitoring.chain.listeners
+from stests.monitoring.chain.listeners.stream_events import do_monitor_blocks
 
 # Iterate networks & raise begin monitoring event.
-from stests.monitoring.chain.actors.blocks import do_monitor_blocks
 for network in cache.get_networks():
     network_id = factory.create_network_id(network.name)
     do_monitor_blocks.send(network_id)
