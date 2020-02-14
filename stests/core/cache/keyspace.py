@@ -48,7 +48,7 @@ def _get_item_key(obj):
         return f"transfers.{obj.asset.lower()}:{obj.dhash}"
 
     if isinstance(obj, Deploy):
-        return f"deploys:{obj.ts_dispatched}.{obj.hash_id}"
+        return f"deploys:{obj.ts_dispatched}.{obj.dhash}"
 
     if isinstance(obj, Network):
         return f"global.network:{obj.name}"

@@ -107,6 +107,10 @@ def get_nodes(network_id: NetworkIdentifier) -> typing.List[Node]:
     return get_key((network_id, typing.List[Node]))
 
 
+def get_node_at_random(network_id: NetworkIdentifier):
+    return random.choice(get_nodes(network_id))
+
+
 @decache
 def get_run(ctx: RunContext) -> RunContext:
     """Decaches domain object: RunContext.

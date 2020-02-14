@@ -4,8 +4,8 @@ from dataclasses_json import dataclass_json
 from stests.core.domain.account import Account
 from stests.core.domain.enums import NetworkStatus
 from stests.core.domain.enums import NetworkType
+from stests.core.domain.meta import TypeMetadata
 from stests.core.utils.domain import get_enum_field
-from stests.core.utils.domain import TypeMetadata
 
 
 

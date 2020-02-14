@@ -4,17 +4,18 @@ from stests.core.domain import AccountType
 from stests.core.domain import RunContext
 
 from stests.generators.shared.actors.accounts import do_create_account
-from stests.generators.shared.actors.accounts import do_transfer_clx_and_verify
-from stests.generators.shared.actors.generator_run import do_cache_context
-from stests.generators.shared.actors.generator_run import do_flush_cache
+from stests.generators.shared.actors.accounts import do_fund_account_and_verify
+from stests.generators.shared.actors.spinup import do_cache_context
+from stests.generators.shared.actors.spinup import do_flush_cache
 
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.actors.auction import do_start_auction
-from stests.generators.wg_100.actors.setup import do_deploy_contract
-from stests.generators.wg_100.actors.setup import do_fund_faucet
+from stests.generators.wg_100.actors.spinup import do_deploy_contract
+from stests.generators.wg_100.actors.spinup import do_fund_faucet
+
 
 # Queue to which message will be dispatched.
-_QUEUE = f"{constants.TYPE}.orchestrator"
+_QUEUE = f"simulation.{constants.TYPE.lower()}.event"
 
 # Account index: faucet.
 ACC_INDEX_FAUCET = 1
@@ -103,7 +104,7 @@ def on_fund_faucet(_, ctx: RunContext):
     """Callback: on_fund_faucet.
     
     """
-    do_transfer_clx_and_verify.send_with_options(
+    do_fund_account_and_verify.send_with_options(
         args=(ctx, ACC_INDEX_FAUCET, ACC_INDEX_CONTRACT, ctx.args.contract_initial_clx_balance),
         on_success=on_fund_contract
     )
@@ -116,7 +117,7 @@ def on_fund_contract(_, ctx: RunContext):
     """
     def get_messages():
         for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
-            yield do_transfer_clx_and_verify.message(
+            yield do_fund_account_and_verify.message(
                 ctx, ACC_INDEX_FAUCET, index, ctx.args.user_initial_clx_balance
             )
 

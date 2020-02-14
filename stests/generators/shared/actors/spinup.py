@@ -6,7 +6,8 @@ from stests.core.domain import RunContext
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = f"global.generator.run"
+_QUEUE = f"simulation.spinup"
+
 
 
 @dramatiq.actor(queue_name=_QUEUE)

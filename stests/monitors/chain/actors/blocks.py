@@ -2,26 +2,25 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.domain import RunContext
+from stests.core.cache import NetworkIdentifier
 
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = f"global.events"
+_QUEUE = f"monitoring.chain"
 
 
-@dramatiq.actor(queue_name=f"{_QUEUE}.chain")
-def do_stream_chain_events(ctx: RunContext):   
+@dramatiq.actor(queue_name=f"{_QUEUE}.block")
+def do_monitor_blocks(network_id: NetworkIdentifier):   
     """Wires upto chain event streaming.
     
     """
     # Set node.
-    # TODO: randomize if node index = 0.
-    raise NotImplementedError()
-    node = cache.get_node_by_ctx(ctx)
+    node = cache.get_node_at_random(network_id)
+    print(node)
 
     # Wire upto event streams.
-    clx.stream_events(node, on_block_added=_on_block_added, on_block_finalized=_on_block_finalized)
+    clx.stream_events(node, _on_block_added, _on_block_finalized)
 
     # Chain.
     return ctx

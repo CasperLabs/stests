@@ -2,7 +2,7 @@ import typing
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
-from stests.core.utils.domain import TypeMetadata
+from stests.core.domain.meta import TypeMetadata
 
 
 

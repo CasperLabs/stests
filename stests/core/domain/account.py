@@ -4,8 +4,8 @@ from dataclasses_json import dataclass_json
 from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
 from stests.core.domain.key_pair import PrivateKey
+from stests.core.domain.meta import TypeMetadata
 from stests.core.utils.domain import get_enum_field
-from stests.core.utils.domain import TypeMetadata
 
     
 

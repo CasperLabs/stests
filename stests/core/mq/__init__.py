@@ -1,5 +1,2 @@
-from stests.core.mq import initialiser
-
-
-# Auto-initialise.
-initialiser.execute()
+from stests.core.mq.mode import BrokerMode
+from stests.core.mq.initialiser import execute as initialise

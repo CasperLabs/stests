@@ -4,14 +4,11 @@ from dataclasses_json import dataclass_json
 
 import dramatiq 
 
+from stests.core import mq
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
-
-from stests.core import mq
-
 from stests.generators.wg_100 import constants
-from stests.generators.wg_100.actors import orchestrator
 from stests.generators.wg_100.args import Arguments
 
 
@@ -114,7 +111,12 @@ def main(args: argparse.Namespace):
     """Entry point.
     
     """
-    logger.log("... instantiating run context")
+    # Initialise MQ sub-package & import actors in scope.
+    mq.initialise(mq.BrokerMode.SIMULATION)
+    import stests.generators.shared.actors
+    import stests.generators.wg_100.actors
+
+    # Set run context.
     network_id = factory.create_network_id(args.network)
     node_id = factory.create_node_id(network_id, args.node)
     ctx = factory.create_run_context(
@@ -125,8 +127,14 @@ def main(args: argparse.Namespace):
         run_type=constants.TYPE
     )
 
-    logger.log("... invoking orchestrator")
-    orchestrator.execute(ctx)
+    # Send spinup message.
+    logger.log("... spinup begins")
+    from stests.generators.wg_100.actors import events
+    from stests.generators.shared.actors import spinup
+    spinup.do_flush_cache.send_with_options(
+        args=(ctx, ), 
+        on_success=events.on_flush_cache
+        )
 
 
 # Invoke entry point.

@@ -11,7 +11,7 @@ from stests.core.utils import factory
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = f"global.accounts"
+_QUEUE = f"simulation.account"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -30,7 +30,7 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_transfer_clx(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
+def do_fund_account(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
     """Performs a CLX transfer between 2 counterparties.
     
     """
@@ -53,7 +53,7 @@ def do_transfer_clx(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_transfer_clx_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
+def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
     """Performs a CLX transfer between 2 counterparties & verifies transfers.
 
     """

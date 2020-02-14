@@ -4,7 +4,7 @@ import typing
 from stests.core.cache.identifiers import *
 from stests.core.domain import *
 from stests.core.utils import crypto
-from stests.core.utils.domain import TypeMetadata
+from stests.core.domain.meta import TypeMetadata
 
 
 
@@ -52,12 +52,13 @@ def create_account_transfer(
     )
 
 
-def create_deploy(hash_id: str, status: DeployStatus) -> Deploy:
+def create_deploy(dhash: str, status: DeployStatus) -> Deploy:
     """Returns a domain object instance: Deploy.
     
     """
     return Deploy(
-        hash_id=hash_id,
+        bhash=None,
+        dhash=dhash,
         status=status,
         ts_dispatched=None if status != DeployStatus.DISPATCHED else datetime.datetime.now().timestamp()
     )
@@ -104,7 +105,8 @@ def create_node(
     index: int,
     network_id: NetworkIdentifier,
     port: int,
-    typeof: NodeType
+    typeof: NodeType,
+    status=NodeStatus.HEALTHY
     ) -> Node:
     """Returns a domain object instance: Node.
     
@@ -115,8 +117,8 @@ def create_node(
         index=index,
         network=network_id.name,
         port=port,
-        typeof=typeof,
-        status=NodeStatus.NULL
+        status=status,
+        typeof=typeof
     )
 
 

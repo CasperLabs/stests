@@ -1,14 +1,10 @@
 import enum
 import uuid
-from dataclasses import dataclass
 from dataclasses import field
 from dataclasses_json import config
-from dataclasses_json import dataclass_json
 from datetime import datetime
 
 from marshmallow import fields
-
-from stests.core.utils import encoder
 
 
 
@@ -69,26 +65,3 @@ def get_uuid_field(set_default=False):
         )
     return field()
 
-
-
-@dataclass_json
-@dataclass
-class TypeMetadata:
-    """Meta information associated with all domain types.
-    
-    """
-    # Type key of associated object used in serialisation scenarios.
-    type_key: str = None
-
-    # Timestamp: create.
-    ts_created: datetime = get_isodatetime_field(True)
-
-    # Timestamp: update.
-    ts_updated: datetime = get_isodatetime_field(True)
-
-    # Universally unique identifier.
-    uid: str = get_uuid_field(True) 
-
-
-# Register type with encoder.
-encoder.register_type(TypeMetadata)

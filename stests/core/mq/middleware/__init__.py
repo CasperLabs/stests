@@ -2,24 +2,19 @@ import typing
 
 import dramatiq
 
-from stests.core.mq.middleware.group_callbacks import get_mware as GroupCallbacksMiddleware
-from stests.core.mq.middleware.generator_event import GeneratorEventMiddleware
-from stests.core.mq.middleware.results import get_mware as ResultsMiddleware
-from stests.core.mq.middleware.logger import LoggingMiddleware
+from stests.core.mq.mode import BrokerMode
 
 
 
-# Middleware to inject.
-MWARE = (
-    GeneratorEventMiddleware,
-    LoggingMiddleware,
-    # ResultsMiddleware,
-    GroupCallbacksMiddleware,
-)
-
-
-def get_middleware() -> typing.Tuple[dramatiq.Middleware]:
+def get_middleware(mode: BrokerMode) -> typing.Tuple[dramatiq.Middleware]:
     """Returns set of middleware to be injected into dramatiq.
+
+    :param mode: Mode in which MQ package is being used.
     
-    """
+    """    
+    if mode == BrokerMode.MONITORING:
+        from stests.core.mq.middleware.for_monitoring import MWARE
+    elif mode == BrokerMode.SIMULATION:
+        from stests.core.mq.middleware.for_simulation import MWARE
+
     return tuple(map(lambda T: T(), MWARE))

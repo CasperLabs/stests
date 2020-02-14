@@ -17,7 +17,7 @@ from stests.generators.wg_100 import constants
 
 
 # Queue to which message will be dispatched.
-_QUEUE = f"{constants.TYPE}.setup"
+_QUEUE = f"simulation.{constants.TYPE.lower()}.spinup"
 
 
 @dramatiq.actor(queue_name=_QUEUE)

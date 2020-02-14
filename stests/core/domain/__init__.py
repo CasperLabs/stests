@@ -1,6 +1,7 @@
 from stests.core.domain.account import *
 from stests.core.domain.deploy import *
 from stests.core.domain.enums import *
+from stests.core.domain.meta import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
 from stests.core.domain.run import *
@@ -19,8 +20,13 @@ DCLASS_SET = {
     RunEvent,
 }
 
+MCLASS_SET = {
+    TypeMetadata,
+    DeployMetadata,
+}
+
 # Full domain type set.
-TYPE_SET = DCLASS_SET | ENUM_SET
+TYPE_SET = DCLASS_SET | MCLASS_SET | ENUM_SET
 
 # Register domain types with encoder.
 from stests.core.utils import encoder

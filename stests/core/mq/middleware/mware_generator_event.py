@@ -1,6 +1,6 @@
 import dramatiq
 from stests.core.domain import RunContext
-from stests.generators.shared.actors.events_generator import do_persist_generator_event
+from stests.generators.shared.actors.events import do_persist_generator_event
 
 
 

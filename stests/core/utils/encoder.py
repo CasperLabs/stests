@@ -48,7 +48,7 @@ def _decode_registered_dclass(obj):
 
     # Recursively ensure child domain model instances are also decoded.
     for k, v in obj.items():
-        if isinstance(v, dict) and 'meta' in v and 'type_key' in v['meta']:
+        if isinstance(v, dict) and 'meta' in v and 'type_key' in v['meta']:            
             setattr(data, k, _decode_registered_dclass(v))
 
     return data

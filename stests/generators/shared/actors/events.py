@@ -7,10 +7,10 @@ from stests.core.utils import factory
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = f"global.events"
+_QUEUE = f"simulation.event"
 
 
-@dramatiq.actor(queue_name=f"{_QUEUE}.generator")
+@dramatiq.actor(queue_name=f"{_QUEUE}")
 def do_persist_generator_event(ctx: RunContext, event_name: str):
     """Persists event information.
     
