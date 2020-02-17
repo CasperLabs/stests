@@ -14,6 +14,7 @@ from stests.core.cache.pull import get_run
 
 from stests.core.cache.push import set_account
 from stests.core.cache.push import set_account_transfer
+from stests.core.cache.push import set_block
 from stests.core.cache.push import set_deploy
 from stests.core.cache.push import set_network
 from stests.core.cache.push import set_node

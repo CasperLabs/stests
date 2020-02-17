@@ -52,6 +52,33 @@ def create_account_transfer(
     )
 
 
+def create_block(
+    bhash: str,
+    deploy_cost_total: int,
+    deploy_count: int, 
+    deploy_gas_price_avg: int,
+    rank: int,
+    size_bytes: int,
+    timestamp: int,
+    validator_id: str
+    ) -> Block:
+    """Returns a domain object instance: Block.
+    
+    """
+    return Block(
+        bhash=bhash,
+        deploy_cost_total=deploy_cost_total,
+        deploy_count=deploy_count, 
+        deploy_gas_price_avg=deploy_gas_price_avg,
+        rank=rank,
+        size_bytes=size_bytes,
+        status=BlockStatus.NULL,
+        timestamp=timestamp,
+        validator_id=validator_id,
+        meta=TypeMetadata()
+        )
+
+
 def create_deploy(dhash: str, status: DeployStatus) -> Deploy:
     """Returns a domain object instance: Deploy.
     

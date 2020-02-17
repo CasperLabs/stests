@@ -16,6 +16,7 @@ class LoggingMiddleware(dramatiq.Middleware):
 
         """
         if exception is None:
+            return
             msg = f"ACTOR :: {_get_actor_name(message)} :: complete"
             _logger.log(msg)
         else:
@@ -30,6 +31,7 @@ class LoggingMiddleware(dramatiq.Middleware):
         :param message: A message being processed.
 
         """
+        return
         msg = f"ACTOR :: {_get_actor_name(message)} :: starts"
         _logger.log(msg)
 

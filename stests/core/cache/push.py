@@ -1,6 +1,8 @@
+from stests.core.cache.identifiers import NetworkIdentifier
 from stests.core.cache.keyspace import get_key
 from stests.core.cache.utils import encache
 from stests.core.domain import Account
+from stests.core.domain import Block
 from stests.core.domain import AccountTransfer
 from stests.core.domain import Deploy
 from stests.core.domain import Network
@@ -28,6 +30,16 @@ def set_account_transfer(ctx: RunContext, transfer: AccountTransfer):
     key = f"{get_key(ctx)}:{get_key(transfer)}"
 
     return key, transfer
+
+
+@encache
+def set_block(network_id: NetworkIdentifier, block: Block):
+    """Encaches domain object: Block.
+    
+    """
+    key = f"{network_id.name}:{get_key(block)}"
+
+    return key, block
 
 
 @encache

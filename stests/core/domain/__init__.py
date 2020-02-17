@@ -1,4 +1,5 @@
 from stests.core.domain.account import *
+from stests.core.domain.block import *
 from stests.core.domain.deploy import *
 from stests.core.domain.enums import *
 from stests.core.domain.meta import *
@@ -12,6 +13,7 @@ from stests.core.domain.run import *
 DCLASS_SET = {
     Account,
     AccountTransfer,
+    Block,
     Deploy,
     Network,
     Node,

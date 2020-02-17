@@ -22,6 +22,16 @@ class AccountType(enum.Enum):
     BOND = enum.auto()
 
 
+class BlockStatus(enum.Flag):
+    """Flag over set of block states.
+    
+    """
+    NULL = enum.auto()
+    ADDED = enum.auto()
+    FINALIZED = enum.auto()
+    REJECTED = enum.auto()
+
+
 class DeployStatus(enum.Flag):
     """Flag over set of deploy states.
     
@@ -84,6 +94,7 @@ class NodeType(enum.Enum):
 ENUM_SET = {
     AccountStatus,
     AccountType,
+    BlockStatus,
     DeployStatus,
     NetworkStatus,
     NetworkType,

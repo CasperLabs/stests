@@ -55,7 +55,7 @@ def do_set(store: typing.Callable, key: str, data: typing.Any):
     :param data: Data to be cached.
 
     """
-    logger.log(f"CACHE :: set :: key={key}")
+    logger.log(f"CACHE :: set :: {key}")
     store.set(key, json.dumps(encoder.encode(data), indent=4))
 
     return key
