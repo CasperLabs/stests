@@ -15,18 +15,6 @@ _QUEUE = f"simulation.account"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_cache_context(ctx: RunContext):   
-    """Pushes context to cache for downstream operations.
-    
-    """
-    # Cache.
-    cache.set_run_context(ctx)
-
-    # Chain.
-    return ctx
-    
-
-@dramatiq.actor(queue_name=_QUEUE)
 def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     """Creates an account for use during the course of the simulation.
     
@@ -36,18 +24,6 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
 
     # Cache.
     cache.set_account(ctx, account)
-
-    # Chain.
-    return ctx
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_flush_cache(ctx: RunContext):   
-    """Flushes cache in preparation for a new run.
-    
-    """
-    # Flush previous cache data.
-    cache.flush_run(ctx)
 
     # Chain.
     return ctx
@@ -82,11 +58,3 @@ def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
 
     # Chain.
     return ctx
-
-
-@dramatiq.actor(queue_name=f"{_QUEUE}")
-def do_persist_generator_event(ctx: RunContext, event_name: str):
-    """Persists event information.
-    
-    """
-    cache.set_run_event(ctx, factory.create_run_event(ctx, event_name))

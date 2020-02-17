@@ -8,7 +8,7 @@ export STESTS_PATH_SH=$STESTS_HOME/sh
 export STESTS_PATH_SRC=$STESTS_HOME/stests
 export STESTS_PATH_CLI=$STESTS_HOME/stests/cli
 export STESTS_PATH_GENERATORS=$STESTS_HOME/stests/generators
-export STESTS_PATH_MONITORING=$STESTS_HOME/stests/monitoring
+export STESTS_PATH_MONITORS=$STESTS_HOME/stests/monitors
 export STESTS_PATH_RESOURCES=$STESTS_HOME/resources
 export STESTS_PATH_TEMPLATES=$STESTS_HOME/resources/templates
 

@@ -5,12 +5,12 @@ from stests.core import clx
 from stests.core.cache import NetworkIdentifier
 from stests.core.utils import logger
 
-from stests.monitoring.chain.actors.blocks import do_process_added_block
-from stests.monitoring.chain.actors.blocks import do_process_finalized_block
+from stests.actors import do_process_added_block
+from stests.actors import do_process_finalized_block
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "monitoring.chain.block"
+_QUEUE = "monitoring.chain"
 
 
 @dramatiq.actor(queue_name=_QUEUE)

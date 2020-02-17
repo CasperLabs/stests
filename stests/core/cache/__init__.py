@@ -18,7 +18,7 @@ from stests.core.cache.push import set_deploy
 from stests.core.cache.push import set_network
 from stests.core.cache.push import set_node
 from stests.core.cache.push import set_run_context
-from stests.core.cache.push import set_run_event
+from stests.core.cache.push import set_event
 
 from stests.core.cache.identifiers import NetworkIdentifier
 

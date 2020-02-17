@@ -113,7 +113,10 @@ def main(args: argparse.Namespace):
     """
     # Initialise MQ sub-package & import actors in scope.
     mq.initialise(mq.BrokerMode.SIMULATION)
-    import stests.generators.shared.actors
+
+
+    # Import actors in scope.
+    import stests.actors
     import stests.generators.wg_100.orchestration
     import stests.generators.wg_100.phase_1
 
@@ -130,7 +133,7 @@ def main(args: argparse.Namespace):
 
     # Send spinup message.
     logger.log("... spinup begins")
-    from stests.generators.shared.actors import do_flush_cache
+    from stests.actors import do_flush_cache
     from stests.generators.wg_100.orchestration import on_flush_cache
     do_flush_cache.send_with_options(
         args=(ctx, ), 

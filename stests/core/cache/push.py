@@ -71,7 +71,7 @@ def set_run_context(ctx: RunContext):
 
 
 @encache
-def set_run_event(ctx: RunContext, evt: RunEvent):
+def set_event(ctx: RunContext, evt: RunEvent):
     """Encaches domain object: RunEvent.
     
     """
