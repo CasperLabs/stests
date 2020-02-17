@@ -7,7 +7,7 @@ from stests.core.cache import NetworkIdentifier
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "monitoring.chain.block"
+_QUEUE = "monitors"
 
 
 @dramatiq.actor(queue_name=_QUEUE)

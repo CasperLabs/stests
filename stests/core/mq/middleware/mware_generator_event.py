@@ -1,5 +1,5 @@
 import dramatiq
-from stests.actors import do_persist_event
+from stests.actors.misc import do_persist_event
 from stests.core.domain import RunContext
 
 
