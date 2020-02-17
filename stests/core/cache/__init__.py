@@ -7,8 +7,8 @@ from stests.core.cache.pull import get_network_by_ctx
 from stests.core.cache.pull import get_network_by_name
 from stests.core.cache.pull import get_networks
 from stests.core.cache.pull import get_node
-from stests.core.cache.pull import get_node_at_random
 from stests.core.cache.pull import get_node_by_ctx
+from stests.core.cache.pull import get_node_by_network_id
 from stests.core.cache.pull import get_nodes
 from stests.core.cache.pull import get_run
 

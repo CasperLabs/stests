@@ -1,4 +1,5 @@
-from stests.core.clx.do_deploy_contract import execute as do_deploy_contract
-from stests.core.clx.do_transfer import execute as do_transfer
-from stests.core.clx.get_balance import execute as get_balance
-from stests.core.clx.stream_events import execute as stream_events
+from stests.core.clx.deploy import do_deploy_contract
+from stests.core.clx.deploy import do_transfer
+from stests.core.clx.query import get_balance
+from stests.core.clx.query import get_block_info
+from stests.core.clx.stream import stream_events

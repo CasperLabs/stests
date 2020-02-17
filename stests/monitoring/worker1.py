@@ -6,9 +6,6 @@ from stests.core.utils import factory
 # Import MQ sub-package & initialise.
 mq.initialise(mq.BrokerMode.MONITORING)
 
-# Import actors.
-# import stests.monitoring.chain.actors
-
 # Import listeners.
 import stests.monitoring.chain.listeners
 from stests.monitoring.chain.listeners.stream_events import do_monitor_blocks

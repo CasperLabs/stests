@@ -6,7 +6,7 @@ from stests.core.utils import logger
 
 
 
-def execute(
+def stream_events(
     node: Node,
     on_block_added: typing.Callable = None,
     on_block_finalized: typing.Callable = None
@@ -35,9 +35,8 @@ def _yield_events(node, on_block_added, on_block_finalized):
     
     """
     # TODO: handle client disconnects.
-    client = get_client(node)
     logger.log(f"PYCLX :: stream_events :: connecting to node ...")
-    for event in client.stream_events(
+    for event in get_client(node).stream_events(
         block_added=on_block_added is not None,
         block_finalized=on_block_finalized is not None
         ):

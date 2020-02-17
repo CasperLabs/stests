@@ -1,4 +1,4 @@
-from stests.core.clx.utils import get_client_from_ctx
+from stests.core.clx.utils import get_client
 from stests.core.domain import Account
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
@@ -9,19 +9,20 @@ from stests.core.utils import logger
 
 
 
-def execute(ctx: RunContext, account: Account) -> int:
-    """Queries network for an account balance.
+def get_balance(ctx: RunContext, account: Account) -> int:
+    """Returns a chain account balance.
 
     :param ctx: Contextual information passed along flow of execution.
     :param account: Account whose balance will be queried.
+
     :returns: Account balance.
 
     """
-    client = get_client_from_ctx(ctx)
+    client = get_client(ctx)
     try:
         balance = client.balance(
             address=account.public_key,
-            block_hash=get_last_block_hash(client)
+            block_hash=_get_last_block_hash(client)
             )
     except Exception as err:
         if "Value not found: \" Key::Account" in err.details:
@@ -31,8 +32,21 @@ def execute(ctx: RunContext, account: Account) -> int:
         return balance
 
 
-def get_last_block_hash(client):
-    """Returns last blck hash by querying a node.
+def get_block_info(ctx: RunContext, bhash: str) -> int:
+    """Queries network for information pertaining to a specific block.
+
+    :param ctx: Contextual information passed along flow of execution.
+    :param bhash: Hash of a block.
+    :returns: Block information.
+
+    """
+    client = get_client(ctx)
+
+    return client.showBlock(block_hash_base16=bhash, full_view=False)
+
+
+def _get_last_block_hash(client):
+    """Returns a chain's last block hash.
     
     """
     last_block_info = next(client.showBlocks(1))

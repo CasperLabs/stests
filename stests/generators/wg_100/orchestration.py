@@ -3,15 +3,15 @@ import dramatiq
 from stests.core.domain import AccountType
 from stests.core.domain import RunContext
 
-from stests.generators.shared.actors.accounts import do_create_account
-from stests.generators.shared.actors.accounts import do_fund_account_and_verify
-from stests.generators.shared.actors.spinup import do_cache_context
-from stests.generators.shared.actors.spinup import do_flush_cache
+from stests.generators.shared.actors import do_cache_context
+from stests.generators.shared.actors import do_create_account
+from stests.generators.shared.actors import do_flush_cache
+from stests.generators.shared.actors import do_fund_account_and_verify
 
 from stests.generators.wg_100 import constants
-from stests.generators.wg_100.actors.auction import do_start_auction
-from stests.generators.wg_100.actors.spinup import do_deploy_contract
-from stests.generators.wg_100.actors.spinup import do_fund_faucet
+from stests.generators.wg_100.phase_1 import do_start_auction
+from stests.generators.wg_100.phase_1 import do_deploy_contract
+from stests.generators.wg_100.phase_1 import do_fund_faucet
 
 
 # Queue to which message will be dispatched.

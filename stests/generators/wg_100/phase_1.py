@@ -17,10 +17,10 @@ from stests.generators.wg_100 import constants
 
 
 # Queue to which message will be dispatched.
-_QUEUE = f"simulation.{constants.TYPE.lower()}.spinup"
+_QUEUE = f"simulation.{constants.TYPE.lower()}"
 
 
-@dramatiq.actor(queue_name=_QUEUE)
+@dramatiq.actor(queue_name=f"{_QUEUE}.spinup")
 def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     """Funds account to be used as a faucet.
     
@@ -56,7 +56,7 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     return ctx
 
 
-@dramatiq.actor(queue_name=_QUEUE)
+@dramatiq.actor(queue_name=f"{_QUEUE}.spinup")
 def do_deploy_contract(ctx: RunContext):
     """Deploys smart contract to target network.
     
@@ -66,4 +66,11 @@ def do_deploy_contract(ctx: RunContext):
     print(binary_fpath)
 
     # Chain.
+    return ctx
+
+
+@dramatiq.actor(queue_name=f"{_QUEUE}.auction")
+def do_start_auction(ctx):
+    print("TODO: do_start_auction :: 1. Establish transfer sequence.")
+
     return ctx

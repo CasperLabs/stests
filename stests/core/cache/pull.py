@@ -99,16 +99,25 @@ def get_node_by_ctx(ctx: RunContext) -> Node:
         return random.choice(nodes)
 
 
+def get_node_by_network_id(network_id: NetworkIdentifier) -> Node:
+    """Decaches domain object: Node.
+    
+    """
+    # Pull nodes.
+    nodes = get_nodes(network_id) 
+    if not nodes:
+        raise ValueError(f"Network {network_id.name} has no registered nodes.")
+    
+    # Select random node.
+    return random.choice(nodes)
+
+
 @decache
 def get_nodes(network_id: NetworkIdentifier) -> typing.List[Node]:
     """Decaches domain objects: Node.
     
     """
     return get_key((network_id, typing.List[Node]))
-
-
-def get_node_at_random(network_id: NetworkIdentifier):
-    return random.choice(get_nodes(network_id))
 
 
 @decache

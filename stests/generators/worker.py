@@ -4,4 +4,5 @@ mq.initialise(mq.BrokerMode.SIMULATION)
 
 # WG-100.
 import stests.generators.wg_100.args
-import stests.generators.wg_100.actors
+import stests.generators.wg_100.orchestration
+import stests.generators.wg_100.phase_1

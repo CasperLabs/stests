@@ -16,7 +16,7 @@ TYPE = "WG-100"
 CONTRACT_INITIAL_CLX_BALANCE = int(1e7)
 
 # Default faucet's initial CLX balance = 10m.
-FAUCET_INITIAL_CLX_BALANCE = int(1e8)
+FAUCET_INITIAL_CLX_BALANCE = int(1e10)
 
 # Default name of ERC20 token for which an auction is being simulated.
 TOKEN_NAME = "ABC"

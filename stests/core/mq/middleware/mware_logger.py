@@ -1,6 +1,5 @@
 import dramatiq
 
-from stests.core import cache
 from stests.core.utils import logger as _logger
 
 

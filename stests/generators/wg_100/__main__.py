@@ -114,7 +114,8 @@ def main(args: argparse.Namespace):
     # Initialise MQ sub-package & import actors in scope.
     mq.initialise(mq.BrokerMode.SIMULATION)
     import stests.generators.shared.actors
-    import stests.generators.wg_100.actors
+    import stests.generators.wg_100.orchestration
+    import stests.generators.wg_100.phase_1
 
     # Set run context.
     network_id = factory.create_network_id(args.network)
@@ -129,11 +130,11 @@ def main(args: argparse.Namespace):
 
     # Send spinup message.
     logger.log("... spinup begins")
-    from stests.generators.wg_100.actors import events
-    from stests.generators.shared.actors import spinup
-    spinup.do_flush_cache.send_with_options(
+    from stests.generators.shared.actors import do_flush_cache
+    from stests.generators.wg_100.orchestration import on_flush_cache
+    do_flush_cache.send_with_options(
         args=(ctx, ), 
-        on_success=events.on_flush_cache
+        on_success=on_flush_cache
         )
 
 

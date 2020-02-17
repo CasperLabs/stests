@@ -1,7 +1,7 @@
 import typing
 
-from stests.core.clx.utils import get_client_from_ctx
-from stests.core.clx import utils_defaults as defaults
+from stests.core.clx.utils import get_client
+from stests.core.clx import defaults
 from stests.core.domain import Account
 from stests.core.domain import AccountTransfer
 from stests.core.domain import Deploy
@@ -12,7 +12,7 @@ from stests.core.utils import logger
 
 
 
-def execute(
+def do_transfer(
     ctx: RunContext,
     cp1: Account,
     cp2: Account,
@@ -29,8 +29,7 @@ def execute(
     :returns: Dispatched deploy.
 
     """
-    client = get_client_from_ctx(ctx)
-    dhash = client.transfer(
+    dhash = get_client(ctx).transfer(
         amount=amount,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
@@ -46,3 +45,24 @@ def execute(
         factory.create_deploy(dhash, DeployStatus.DISPATCHED), 
         factory.create_account_transfer(amount, "CLX", cp1, cp2, dhash, is_refundable)
         )
+
+
+
+def do_deploy_contract(
+    ctx: RunContext,
+    account: Account,
+    wasm_filepath: str
+    ):
+    """Deploys a smart contract to chain.
+
+    :param ctx: Contextual information passed along the flow of execution.
+    :param account: Account to be associated with contract.
+    :param wasm_filepath: Path to smart contract's wasm file.
+    :returns: Deploy hash (in hex format).
+
+    """
+    pyclx = get_client(ctx)    
+
+    logger.log(f"TODO :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath}")
+
+    return "TODO: dispatch contract deploy"
