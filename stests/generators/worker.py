@@ -1,6 +1,6 @@
 # Import MQ sub-package & initialise.
 from stests.core import mq
-mq.initialise(mq.BrokerMode.SIMULATION)
+mq.initialise()
 
 # Import global actors.
 import stests.actors

@@ -12,9 +12,9 @@ def get_middleware(mode: BrokerMode) -> typing.Tuple[dramatiq.Middleware]:
     :param mode: Mode in which MQ package is being used.
     
     """    
-    if mode == BrokerMode.MONITORING:
-        from stests.core.mq.middleware.for_monitoring import MWARE
-    elif mode == BrokerMode.SIMULATION:
-        from stests.core.mq.middleware.for_simulation import MWARE
+    if mode == BrokerMode.ACTORS:
+        from stests.core.mq.middleware.for_actors import MWARE
+    elif mode == BrokerMode.MONITORS:
+        from stests.core.mq.middleware.for_monitors import MWARE
 
     return tuple(map(lambda T: T(), MWARE))

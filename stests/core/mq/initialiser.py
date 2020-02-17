@@ -8,7 +8,7 @@ from stests.core.mq.mode import BrokerMode
 
 
 
-def execute(mode: BrokerMode = BrokerMode.SIMULATION):
+def execute(mode: BrokerMode = BrokerMode.ACTORS):
     """Initialises dramatiq library.
 
     :param mode: Mode in which MQ package is being used.
