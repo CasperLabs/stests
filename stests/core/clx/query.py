@@ -31,7 +31,7 @@ def get_balance(ctx: RunContext, account: Account) -> int:
         return balance
 
 
-def get_block_info(network_id: NetworkIdentifier, bhash: str) -> Block:
+def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
     """Queries network for information pertaining to a specific block.
 
     :param ctx: Contextual information passed along flow of execution.

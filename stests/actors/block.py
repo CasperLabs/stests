@@ -28,7 +28,7 @@ def on_block_finalized(network_id: NetworkIdentifier, bhash: str):
     """
     # TODO: pull deploys, sync cache & notify downstream.
     # Set block info.
-    block = clx.get_block_info(network_id, bhash)
+    block = clx.get_block(network_id, bhash)
 
     # Set block status.
     block.status = BlockStatus.FINALIZED
