@@ -6,17 +6,19 @@ from stests.core.domain.meta import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
 from stests.core.domain.run import *
+from stests.core.domain.transfer import *
 
 
 
 # Domain classes.
 DCLASS_SET = {
     Account,
-    AccountTransfer,
+    Transfer,
     Block,
     Deploy,
     Network,
     Node,
+    Transfer,
     
     RunContext,
     RunEvent,

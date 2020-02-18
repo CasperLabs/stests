@@ -86,7 +86,7 @@ class AccountIdentifier:
 
     @property
     def key(self) -> str:
-        return f"{self.run.key}:accounts:{str(self.index).zfill(6)}"
+        return f"{self.run.key}:account:{str(self.index).zfill(6)}"
 
 
 # Set of supported identifiers.

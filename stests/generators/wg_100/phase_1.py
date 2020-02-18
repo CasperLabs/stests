@@ -43,7 +43,7 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
 
     # Update cache.
     cache.set_deploy(ctx, deploy)
-    cache.set_account_transfer(ctx, transfer)
+    cache.set_transfer(ctx, transfer)
 
     # Temporary until properly hooking into streams.
     time.sleep(4.0)

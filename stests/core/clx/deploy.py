@@ -3,7 +3,7 @@ import typing
 from stests.core.clx.utils import get_client
 from stests.core.clx import defaults
 from stests.core.domain import Account
-from stests.core.domain import AccountTransfer
+from stests.core.domain import Transfer
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import RunContext
@@ -18,7 +18,7 @@ def do_transfer(
     cp2: Account,
     amount: int,
     is_refundable: bool = True
-    ) -> typing.Tuple[Deploy, AccountTransfer]:
+    ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
     :param ctx: Contextual information passed along flow of execution.
@@ -43,7 +43,7 @@ def do_transfer(
 
     return (
         factory.create_deploy(dhash, DeployStatus.DISPATCHED), 
-        factory.create_account_transfer(amount, "CLX", cp1, cp2, dhash, is_refundable)
+        factory.create_transfer(amount, "CLX", cp1, cp2, dhash, is_refundable)
         )
 
 

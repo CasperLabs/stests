@@ -19,11 +19,11 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     """Creates an account for use during the course of the simulation.
     
     """
-    # Instantiate.
-    account = factory.create_account(index=index, typeof=typeof)
-
-    # Cache.
-    cache.set_account(ctx, account)
+    # Instantiate & encache.
+    cache.set_account(ctx, factory.create_account(
+        index=index,
+        typeof=typeof
+        ))
 
     # Chain.
     return ctx
@@ -47,7 +47,7 @@ def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
 
     # Update cache.
     cache.set_deploy(ctx, deploy)
-    cache.set_account_transfer(ctx, transfer)
+    cache.set_transfer(ctx, transfer)
 
     # Temporary until properly hooking into streams.
     time.sleep(4.0)

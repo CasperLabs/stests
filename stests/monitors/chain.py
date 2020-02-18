@@ -16,8 +16,8 @@ def do_monitor_blocks(network_id: NetworkIdentifier):
     """Wires upto chain event streaming.
     
     """
-    from stests.actors.block import on_block_added
-    from stests.actors.block import on_block_finalized
+    from stests.core.actors.block import on_block_added
+    from stests.core.actors.block import on_block_finalized
 
     # Set node.
     node = cache.get_node_by_network_id(network_id)

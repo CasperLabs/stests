@@ -24,7 +24,7 @@ def get_balance(ctx: RunContext, account: Account) -> int:
             block_hash=_get_last_block_hash(client)
             )
     except Exception as err:
-        if "Value not found: \" Key::Account" in err.details:
+        if "Failed to find base key at path" in err.details:
             return 0
         raise err
     else:
@@ -41,8 +41,6 @@ def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
     """
     client = get_client(network_id)
     info = client.showBlock(block_hash_base16=bhash, full_view=False)
-
-    # print(info)
 
     return factory.create_block(
         bhash=bhash,
@@ -65,11 +63,8 @@ def get_block_deploys(network_id: NetworkIdentifier, bhash: str) -> Block:
 
     """
     client = get_client(network_id)
-    info = client.showDeploys(block_hash_base16=bhash, full_view=False)
 
-
-    # TODO: convert to domain type
-    return info
+    return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=bhash, full_view=False))
 
 
 def _get_last_block_hash(client):

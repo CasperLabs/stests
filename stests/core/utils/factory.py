@@ -31,27 +31,6 @@ def create_account(
         )
 
 
-def create_account_transfer(
-    amount: int,
-    asset: str,
-    cp1: Account,
-    cp2: Account,
-    dhash: str,
-    is_refundable: bool
-    ) -> AccountTransfer:
-    """Returns a domain object instance: AccountTransfer.
-    
-    """
-    return AccountTransfer(
-        amount=amount,
-        asset=asset or "CLX",
-        cp1_index=cp1.index,
-        cp2_index=cp2.index,
-        dhash=dhash,
-        is_refundable=is_refundable
-    )
-
-
 def create_block(
     bhash: str,
     deploy_cost_total: int,
@@ -200,3 +179,25 @@ def create_run_id(
     
     """
     return RunIdentifier(network_id, run_index, run_type)
+
+
+def create_transfer(
+    amount: int,
+    asset: str,
+    cp1: Account,
+    cp2: Account,
+    dhash: str,
+    is_refundable: bool
+    ) -> Transfer:
+    """Returns a domain object instance: Transfer.
+    
+    """
+    return Transfer(
+        amount=amount,
+        asset=asset or "CLX",
+        cp1_index=cp1.index,
+        cp2_index=cp2.index,
+        dhash=dhash,
+        dhash_refund=None,
+        is_refundable=is_refundable
+    )
