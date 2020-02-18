@@ -32,7 +32,31 @@ curl https://raw.githubusercontent.com/CasperLabs/stests/master/installer | bash
 Usage
 --------
 
-TODO
+1.  Register network + faucet key:
+
+    ```
+    stests-set-network xxxy
+    stests-set-network-faucet-key xxxy path-to-faucet-private-key-pem-file
+    ```
+
+2.  Register nodes + node bonding keys:
+
+    ```
+    stests-set-node xxxy:1 host:port full
+    stests-set-node-bonding-key xxxy:1 path-to-validator-private-key-pem-file
+
+    stests-set-node xxxy:1 host:port full
+    stests-set-node-bonding-key xxxy:2 path-to-validator-private-key-pem-file
+
+    stests-set-node xxxy:1 host:port full
+    stests-set-node-bonding-key xxxy:3 path-to-validator-private-key-pem-file
+    ```
+
+3.  Start a generator:
+
+    ```
+    stests-wg-100 xxxy --run 1 --user-accounts 50
+    ```
 
 Further Information ?
 --------------------------------------
