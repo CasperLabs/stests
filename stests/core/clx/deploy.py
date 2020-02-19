@@ -44,7 +44,7 @@ def do_transfer(
 
     return (
         factory.create_deploy_for_run(ctx, deploy_hash, DeployStatus.DISPATCHED), 
-        factory.create_transfer(amount, "CLX", cp1, cp2, deploy_hash, is_refundable)
+        factory.create_transfer(ctx, amount, "CLX", cp1, cp2, deploy_hash, is_refundable)
         )
 
 

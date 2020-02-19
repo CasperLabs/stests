@@ -30,6 +30,18 @@ class Transfer(Entity):
     # Flag indicating whether a refund is required.
     is_refundable: bool
 
+    # Associated network.
+    network: str
+
+    # Associated node index.
+    node: int
+
+    # Numerical index to distinguish between multiple runs of the same generator.
+    run: int
+
+    # Type of generator, e.g. WG-100 ...etc.
+    run_type: str    
+
     # Type key of associated object used in serialisation scenarios.
     _type_key: str = None
 

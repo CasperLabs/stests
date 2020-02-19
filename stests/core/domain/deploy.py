@@ -19,6 +19,12 @@ class Deploy(Entity):
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
 
+    # Associated network.
+    network: str
+
+    # Associated node index.
+    node: int
+
     # Deploy's processing status.
     status: DeployStatus = get_enum_field(DeployStatus)
 
@@ -27,12 +33,6 @@ class Deploy(Entity):
 
     # Moment in time when deploy was finalized by CLX network.
     ts_finalized: int
-
-    # Associated network.
-    network: str
-
-    # Associated node index.
-    node: int
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run: int

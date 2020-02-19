@@ -233,6 +233,7 @@ def create_run_id(
 
 
 def create_transfer(
+    ctx: RunContext,
     amount: int,
     asset: str,
     cp1: Account,
@@ -250,5 +251,9 @@ def create_transfer(
         cp2_index=cp2.index,
         deploy_hash=deploy_hash,
         deploy_hash_refund=None,
-        is_refundable=is_refundable
+        is_refundable=is_refundable,
+        network=ctx.network,
+        node=ctx.node,
+        run=ctx.run,
+        run_type=ctx.run_type
     )

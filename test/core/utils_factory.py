@@ -99,7 +99,11 @@ def create_transfer() -> Transfer:
         cp2_index=2,
         deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
         deploy_hash_refund=None,
-        is_refundable=False
+        is_refundable=False,
+        network="lrt1",
+        node=1,
+        run=1,
+        run_type="WG-XXX"
         )
 
 
