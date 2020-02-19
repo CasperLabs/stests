@@ -71,7 +71,13 @@ def create_block(
         )
 
 
-def create_deploy(network_id: NetworkIdentifier, block_hash: str, block_rank: int, deploy_hash: str, status: DeployStatus) -> Deploy:
+def create_deploy(
+    network_id: NetworkIdentifier,
+    block_hash: str,
+    block_rank: int,
+    deploy_hash: str,
+    status: DeployStatus
+    ) -> Deploy:
     """Returns a domain object instance: Deploy.
     
     """
@@ -79,18 +85,21 @@ def create_deploy(network_id: NetworkIdentifier, block_hash: str, block_rank: in
         block_hash=block_hash,
         block_rank=block_rank,
         deploy_hash=deploy_hash,
-        status=status,
-        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
-        ts_finalized=dt.now().timestamp() if status == DeployStatus.FINALIZED else None,
-    
         network=network_id.name,
         node=None,
         run=None,
-        run_type=None
+        run_type=None,
+        status=status,
+        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
+        ts_finalized=dt.now().timestamp() if status == DeployStatus.FINALIZED else None    
     )
 
 
-def create_deploy_for_run(ctx: RunContext, deploy_hash: str, status: DeployStatus) -> Deploy:
+def create_deploy_for_run(
+    ctx: RunContext,
+    deploy_hash: str,
+    status: DeployStatus
+    ) -> Deploy:
     """Returns a domain object instance: Deploy.
 
     :param ctx: Generator run contextual information.
@@ -100,14 +109,13 @@ def create_deploy_for_run(ctx: RunContext, deploy_hash: str, status: DeployStatu
         block_hash=None,
         block_rank=None,
         deploy_hash=deploy_hash,
-        status=status,
-        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
-        ts_finalized=None,
-
         network=ctx.network,
         node=ctx.node,
         run=ctx.run,
         run_type=ctx.run_type,        
+        status=status,
+        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
+        ts_finalized=None,
     )
 
 

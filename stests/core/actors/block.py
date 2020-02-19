@@ -13,7 +13,7 @@ from stests.core.domain import NetworkIdentifier
 _QUEUE = "monitoring"
 
 
-@dramatiq.actor(queue_name=f"{_QUEUE}.on_block_finalized")
+@dramatiq.actor(queue_name=_QUEUE)
 def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):   
     """Event: raised whenever a block is finalized.
 
@@ -35,7 +35,7 @@ def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):
         on_deploy_finalized.send(network_id, block_hash, block.rank, deploy_hash)
 
 
-@dramatiq.actor(queue_name=f"{_QUEUE}.on_deploy_finalized")
+@dramatiq.actor(queue_name=_QUEUE)
 def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, block_rank: int, deploy_hash: str):   
     """Event: raised whenever a deploy is finalized.
     

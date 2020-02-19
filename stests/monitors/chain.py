@@ -8,7 +8,7 @@ from stests.core.utils import logger
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "monitors"
+_QUEUE = "monitoring"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
