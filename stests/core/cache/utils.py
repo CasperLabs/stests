@@ -7,22 +7,89 @@ from stests.core.utils import logger
 
 
 
-def do_delete(store: typing.Callable, key: str):
+def decache(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally pull domain objects from cache.
+
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+    
+    """
+    def wrapper(*args, **kwargs):
+        keypath = func(*args, **kwargs)
+        key = ":".join([str(i) for i in keypath])
+        with stores.get_store() as store:
+            if key.endswith("*"):
+                return _get_all(store, key)
+            else:
+                return _get(store, key)
+
+    return wrapper
+    
+
+def encache(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally push domain objects to cache.
+    
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+
+    """
+    def wrapper(*args, **kwargs):
+        keypath, data = func(*args, **kwargs)
+        key = ":".join([str(i) for i in keypath])
+        with stores.get_store() as store:
+            _set(store, key, data)
+
+    return wrapper
+
+
+def flushcache(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally flush domain objects from cache.
+    
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+
+    """    
+    def wrapper(*args, **kwargs):
+        for keypaths in func(*args, **kwargs):
+            key = ":".join([str(i) for i in keypaths])
+            with stores.get_store() as store:
+                _flush(store, key)
+
+    return wrapper
+    
+
+def _decode_item(as_json: str) -> typing.Any:
+    """Returns a decoded encached domain object(s).
+
+    :param as_json: JSON representation of cached domain object(s).
+
+    :returns: Domain object(s).
+
+    """
+    return encoder.decode(json.loads(as_json))
+    
+
+def _delete(store: typing.Callable, key: str):
     """Wraps redis.delete command.
     
     :param store: Cache store connection wrapper.
-    :param key: Key of item to be uncached.
+    :param key: Key of item to be deleted.
 
     """
     logger.log(f"CACHE :: delete :: {key}")
     store.delete(key)
 
 
-def do_get(store: typing.Callable, key: str) -> typing.Any:
+def _get(store: typing.Callable, key: str) -> typing.Any:
     """Wraps redis.get command.
     
     :param store: Cache store connection wrapper.
-    :param key: Key of item to be cached.
+    :param key: Key of item to be retrieved.
+
+    :returns: If a key match then decoded domain object(s), else None.
 
     """
     logger.log(f"CACHE :: get :: {key}")
@@ -33,11 +100,13 @@ def do_get(store: typing.Callable, key: str) -> typing.Any:
         return _decode_item(obj)
 
 
-def do_get_all(store: typing.Callable, search_key: str) -> typing.Any:
+def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]:
     """Wraps redis.mget command.
     
     :param store: Cache store connection wrapper.
     :param search_key: Key woth which to search cache.
+
+    :returns: If a key match then collection of decoded domain object(s), else None.
 
     """
     logger.log(f"CACHE :: get :: {search_key}")
@@ -47,12 +116,14 @@ def do_get_all(store: typing.Callable, search_key: str) -> typing.Any:
     return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
 
-def do_set(store: typing.Callable, key: str, data: typing.Any):
+def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
     """Wraps redis.set command.
     
     :param store: Cache store connection wrapper.
     :param key: Key of item to be cached.
     :param data: Data to be cached.
+
+    :returns: Cache key.
 
     """
     logger.log(f"CACHE :: set :: {key}")
@@ -61,106 +132,16 @@ def do_set(store: typing.Callable, key: str, data: typing.Any):
     return key
 
 
-def get_key(namespace: str, item_key: str) -> str:
-    """Returns fully qualified cache key.
-    
-    :param namespace: Namespace to prefix key with.
-    :param item_key: Key of item being cached.
+def _flush(store: typing.Callable, namespace: str):
+    """Flushes data from cache.
 
-    :returns: A fully qualified cache key.
+    :param namespace: Namespace to be flushed.
 
     """
-    return f"{namespace}:{item_key}"
-
-
-def flush_namespace(store: typing.Callable, namespace: str) -> bool:
-    """Clears a namespace.
-
-    :param ns: namespace i.e your:prefix
-    :returns: True if cleared.
-
-    """
-    CHUNK_SIZE = 5000
+    CHUNK_SIZE = 1000
     cursor = '0'
     ns_keys = namespace + ':*'
     while cursor != 0:
         cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
         if keys:
             store.delete(*keys)
-
-    return True
-
-
-def _decode_item(obj):
-    """Returns a decoded encached domain object.
-    
-    """
-    return encoder.decode(json.loads(obj))
-
-
-def encache(func):
-    """Decorator to orthoganally encache domain objects.
-    
-    """
-    def wrapper(*args, **kwargs):
-        key, data = func(*args, **kwargs)
-        with stores.get_store() as store:
-            do_set(store, key, data)
-
-    return wrapper
-
-
-def decache1(func):
-    """Decorator to orthoganally pull domain objects from cache.
-    
-    """
-    def wrapper(*args, **kwargs):
-        keys = func(*args, **kwargs)
-        key = ":".join([str(i) for i in keys])
-        with stores.get_store() as store:
-            if key.endswith("*"):
-                return do_get_all(store, key)
-            else:
-                return do_get(store, key)
-
-    return wrapper
-    
-
-def encache1(func):
-    """Decorator to orthoganally encache domain objects.
-    
-    """
-    def wrapper(*args, **kwargs):
-        keys, data = func(*args, **kwargs)
-        key = ":".join([str(i) for i in keys])
-        with stores.get_store() as store:
-            do_set(store, key, data)
-
-    return wrapper
-
-
-def decache(func):
-    """Decorator to orthoganally pull domain objects from cache.
-    
-    """
-    def wrapper(*args, **kwargs):
-        key = func(*args, **kwargs)
-        with stores.get_store() as store:
-            if key.endswith("*"):
-                return do_get_all(store, key)
-            else:
-                return do_get(store, key)
-
-    return wrapper
-
-
-def flushcache(func):
-    """Decorator to orthoganally flush domain objects from cache.
-    
-    """    
-    def wrapper(*args, **kwargs):
-        key = func(*args, **kwargs)
-        with stores.get_store() as store:
-            flush_namespace(store, key)
-
-    return wrapper

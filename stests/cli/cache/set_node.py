@@ -58,7 +58,7 @@ def main(args):
     )
 
     # Push.
-    cache.set_node(node)
+    cache.set_network_node(node)
 
     # Notify.
     logger.log(f"Node {args.node} was successfully registered")

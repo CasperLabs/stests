@@ -20,7 +20,7 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     
     """
     # Instantiate & encache.
-    cache.set_account(ctx, factory.create_account(
+    cache.set_run_account(ctx, factory.create_account(
         index=index,
         typeof=typeof
         ))
@@ -46,8 +46,8 @@ def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
     (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
-    cache.set_deploy(ctx, deploy)
-    cache.set_transfer(ctx, transfer)
+    cache.set_run_deploy(ctx, deploy)
+    cache.set_run_transfer(ctx, transfer)
 
     # Temporary until properly hooking into streams.
     time.sleep(4.0)

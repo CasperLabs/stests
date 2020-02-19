@@ -30,6 +30,14 @@ class RunContext:
     # Associated metadata.
     meta: TypeMetadata = TypeMetadata()
 
+    @property
+    def keypath(self):
+        return [
+            self.network_name,
+            self.run_type,
+            f"R-{str(self.run_index).zfill(3)}"            
+        ]
+
 
 @dataclass_json
 @dataclass

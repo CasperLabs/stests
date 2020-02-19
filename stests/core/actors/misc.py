@@ -16,7 +16,7 @@ def do_cache_context(ctx: RunContext):
     
     """
     # Cache.
-    cache.set_run(ctx)
+    cache.set_run_context(ctx)
 
     # Chain.
     return ctx

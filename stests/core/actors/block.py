@@ -24,7 +24,7 @@ def on_block_finalized(network_id: NetworkIdentifier, bhash: str):
     block.status = BlockStatus.FINALIZED
 
     # Encache.
-    cache.set_block(network_id, block)  
+    cache.set_network_block(network_id, block)  
 
     # Enqueue deploys.
     for dhash in clx.get_block_deploys(network_id, bhash):
