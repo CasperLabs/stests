@@ -1,3 +1,5 @@
+import typing
+
 from stests.core.cache.utils import encache
 from stests.core.domain import Account
 from stests.core.domain import Transfer
@@ -8,40 +10,64 @@ from stests.core.domain import RunEvent
 
 
 @encache
-def set_run_account(ctx: RunContext, account: Account):
+def set_run_account(ctx: RunContext, account: Account) -> typing.Tuple[typing.List[str], Account]:
     """Encaches domain object: Account.
     
+    :param ctx: Contextual information passed along flow of execution.
+    :param account: Account domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
     """
     return ["run-account"] + ctx.keypath + [str(account.index).zfill(6)], account
     
 
 @encache
-def set_run_context(ctx: RunContext):
+def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContext]:
     """Encaches domain object: RunContext.
     
+    :param ctx: Contextual information passed along flow of execution.
+
+    :returns: Keypath + domain object instance.
+
     """
     return ["run-context"] + ctx.keypath, ctx
 
 
 @encache
-def set_run_deploy(ctx: RunContext, deploy: Deploy):
+def set_run_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
+    :param ctx: Contextual information passed along flow of execution.
+    :param deploy: Deploy domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
     """
     return ["run-deploy"] + ctx.keypath + [f"{str(deploy.ts_dispatched)}.{deploy.dhash}"], deploy
 
 
 @encache
-def set_run_event(ctx: RunContext, evt: RunEvent):
+def set_run_event(ctx: RunContext, evt: RunEvent) -> typing.Tuple[typing.List[str], RunEvent]:
     """Encaches domain object: RunEvent.
     
+    :param ctx: Contextual information passed along flow of execution.
+    :param evt: RunEvent domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
     """
     return ["run-event"] + ctx.keypath + [f"{str(evt.timestamp)}.{evt.event}"], evt
 
 
 @encache
-def set_run_transfer(ctx: RunContext, transfer: Transfer):
+def set_run_transfer(ctx: RunContext, transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
     """Encaches domain object: Transfer.
     
+    :param ctx: Contextual information passed along flow of execution.
+    :param transfer: Transfer domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
     """
     return ["run-transfer"] + ctx.keypath + [transfer.asset.lower(), transfer.dhash], transfer
