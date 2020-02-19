@@ -35,8 +35,8 @@ def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
 
     """
     # Set counterparties.
-    cp1 = cache.get_account_by_ctx(ctx, cp1_index)
-    cp2 = cache.get_account_by_ctx(ctx, cp2_index)
+    cp1 = cache.get_run_account(ctx, cp1_index)
+    cp2 = cache.get_run_account(ctx, cp2_index)
 
     # Set balances.
     cp1_balance = clx.get_balance(ctx, cp1)

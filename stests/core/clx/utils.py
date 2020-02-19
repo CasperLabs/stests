@@ -18,7 +18,7 @@ def get_client(src: typing.Union[Node, RunContext, NetworkIdentifier]) -> pyclx.
     elif isinstance(src, NetworkIdentifier):
         node = cache.get_node_by_network_id(src)
     elif isinstance(src, RunContext):
-        node = cache.get_node_by_ctx(src)
+        node = cache.get_run_node(src)
 
     if not node:
         raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")

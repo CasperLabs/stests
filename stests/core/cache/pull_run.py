@@ -1,9 +1,14 @@
 import random
 import typing
 
+from stests.core.cache.pull_network import get_network
+from stests.core.cache.pull_network import get_nodes
 from stests.core.cache.utils import decache
 from stests.core.domain import Account
 from stests.core.domain import AccountIdentifier
+from stests.core.domain import Network
+from stests.core.domain import Node
+from stests.core.domain import NodeStatus
 from stests.core.domain import RunContext
 from stests.core.utils import factory
 
@@ -12,7 +17,11 @@ from stests.core.utils import factory
 @decache
 def get_account(account_id: AccountIdentifier) -> Account:
     """Decaches domain object: Account.
-    
+
+    :param account_id: An account identifier.
+
+    :returns: A cached account.
+
     """
     run = account_id.run
 
@@ -25,15 +34,56 @@ def get_account(account_id: AccountIdentifier) -> Account:
     ]
 
 
-def get_account_by_ctx(ctx: RunContext, index: int) -> Account:
+def get_run_account(ctx: RunContext, index: int) -> Account:
     """Decaches domain object: Account.
     
+    :param ctx: Contextual information passed along flow of execution.
+    :param index: Run specific account index. 
+
+    :returns: A cached account.
+
     """
-    account_id = factory.create_account_id(
+    return get_account(factory.create_account_id(
         index,
         ctx.network_name,
         ctx.run_index,
         ctx.run_type
-        )
+        ))
 
-    return get_account(account_id)
+
+def get_run_network(ctx: RunContext) -> Network:
+    """Decaches domain object: Network.
+    
+    :param ctx: Contextual information passed along flow of execution.
+
+    :returns: A registered network.
+
+    """
+    network_id = factory.create_network_id(ctx.network_name)
+
+    return get_network(network_id)
+
+
+def get_run_node(ctx: RunContext) -> Node:
+    """Decaches domain object: Node.
+    
+    :param ctx: Contextual information passed along flow of execution.
+
+    :returns: A registered node.
+
+    """
+    # Pull healthy nodes.
+    network_id = factory.create_network_id(ctx.network_name)
+    nodes = [i for i in get_nodes(network_id) if i.status == NodeStatus.HEALTHY] 
+    if not nodes:
+        raise ValueError(f"Network {network_id.name} has no registered healthy nodes.")
+    
+    # Select random if node index unspecified.
+    if ctx.node_index <= 0 or ctx.node_index is None:
+        return random.choice(nodes)
+
+    # Select specific with fallback to random.
+    try:
+        return nodes[ctx.node_index - 1]
+    except IndexError:
+        return random.choice(nodes)

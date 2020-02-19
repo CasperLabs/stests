@@ -26,13 +26,13 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     
     """
     # Set network.
-    network = cache.get_network_by_ctx(ctx)
+    network = cache.get_run_network(ctx)
     if not network.faucet:
         raise ValueError("Network faucet account does not exist.")
 
     # Set counterparties.
     cp1 = network.faucet
-    cp2 = cache.get_account_by_ctx(ctx, account_index)
+    cp2 = cache.get_run_account(ctx, account_index)
 
     # Set balances.
     cp1_balance = clx.get_balance(ctx, cp1)
