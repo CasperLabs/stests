@@ -38,7 +38,7 @@ class Deploy:
     node: int
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run_index: int
+    run: int
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str    

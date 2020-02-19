@@ -33,7 +33,7 @@ def create_account(
 def create_account_id(
     index: int,
     network: str,
-    run_index: int,
+    run: int,
     run_type: int,
     ) -> Account:
     """Returns a cache identifier: Account.
@@ -43,7 +43,7 @@ def create_account_id(
 
     return AccountIdentifier(
         index=index,
-        run=create_run_id(network_id, run_index, run_type)
+        run=create_run_id(network_id, run, run_type)
     )
 
 
@@ -88,7 +88,7 @@ def create_deploy(network_id: NetworkIdentifier, block_hash: str, block_rank: in
     
         network=network_id.name,
         node=None,
-        run_index=None,
+        run=None,
         run_type=None
     )
 
@@ -109,7 +109,7 @@ def create_deploy_for_run(ctx: RunContext, deploy_hash: str, status: DeployStatu
 
         network=ctx.network,
         node=ctx.node,
-        run_index=ctx.run_index,
+        run=ctx.run,
         run_type=ctx.run_type,        
     )
 
@@ -186,7 +186,7 @@ def create_run_context(
     args: typing.Any,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
-    run_index: int,
+    run: int,
     run_type: str
     ) -> RunContext:
     """Returns a domain object instance: RunContext.
@@ -196,7 +196,7 @@ def create_run_context(
         args=args,
         network=network_id.name,
         node=node_id.index,
-        run_index=run_index,
+        run=run,
         run_type=run_type
     )
 
@@ -210,7 +210,7 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
     return RunEvent(
         event=event,
         network=ctx.network,
-        run_index=ctx.run_index,
+        run=ctx.run,
         run_type=ctx.run_type,
         timestamp=datetime.datetime.now().timestamp()
     )
@@ -218,13 +218,13 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
 
 def create_run_id(
     network_id: NetworkIdentifier,
-    run_index: int,
+    run: int,
     run_type: str
     ) -> RunIdentifier:
     """Returns a cache identifier: NodeIdentifier.
     
     """
-    return RunIdentifier(network_id, run_index, run_type)
+    return RunIdentifier(network_id, run, run_type)
 
 
 def create_transfer(

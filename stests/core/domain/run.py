@@ -22,7 +22,7 @@ class RunContext:
     node: int
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run_index: int
+    run: int
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str
@@ -35,7 +35,7 @@ class RunContext:
         return [
             self.network,
             self.run_type,
-            f"R-{str(self.run_index).zfill(3)}"            
+            f"R-{str(self.run).zfill(3)}"            
         ]
 
 
@@ -52,7 +52,7 @@ class RunEvent:
     network: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run_index: int
+    run: int
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str

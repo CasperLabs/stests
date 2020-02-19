@@ -46,7 +46,7 @@ def get_run_account(ctx: RunContext, index: int) -> Account:
     return get_account(factory.create_account_id(
         index,
         ctx.network,
-        ctx.run_index,
+        ctx.run,
         ctx.run_type
         ))
 

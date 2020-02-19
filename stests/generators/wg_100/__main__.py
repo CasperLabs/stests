@@ -127,7 +127,7 @@ def main(args: argparse.Namespace):
         args=Arguments.create(args),
         network_id=network_id,
         node_id=node_id,
-        run_index=args.run,
+        run=args.run,
         run_type=constants.TYPE
     )
 
