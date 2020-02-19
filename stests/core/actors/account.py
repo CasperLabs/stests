@@ -24,7 +24,8 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
 
     """
     # Instantiate & encache.
-    cache.set_run_account(ctx, factory.create_account(
+    cache.set_run_account(ctx, factory.create_account_for_run(
+        ctx,
         index=index,
         typeof=typeof
         ))

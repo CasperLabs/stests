@@ -21,11 +21,35 @@ def create_account(
 
     return Account(
         index=index if index is not None else 1,
+        network=None,
+        node=None,
         private_key=private_key,
         public_key=public_key,
+        run=None,
+        run_type=None,
         status=status or AccountStatus.NEW,
         typeof=typeof
         )
+
+
+def create_account_for_run(
+    ctx:RunContext,
+    typeof: AccountType,
+    index: int = 1,
+    private_key: str = None, 
+    public_key: str = None,
+    status: AccountStatus = AccountStatus.NEW
+    ) -> Account:
+    """Returns a domain object instance: Account.
+    
+    """
+    account = create_account(typeof, index, private_key, public_key, status)
+    account.network = ctx.network
+    account.node = ctx.node
+    account.run = ctx.run
+    account.run_type = ctx.run_type
+
+    return account
 
 
 def create_account_id(

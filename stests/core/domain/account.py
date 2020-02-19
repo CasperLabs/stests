@@ -15,11 +15,23 @@ class Account(Entity):
     # Numerical index to distinguish between multiple accounts within same run.
     index: int
 
+    # Associated network.
+    network: str
+
+    # Associated node index.
+    node: int
+
     # Hexadecimal representation of private key used primarily in signing scenarios.
     private_key: str
 
     # Hexadecimal representation of public key used primarily in identity & verification scenarios.
     public_key: str
+
+    # Numerical index to distinguish between multiple runs of the same generator.
+    run: int
+
+    # Type of generator, e.g. WG-100 ...etc.
+    run_type: str    
 
     # Current account status.
     status: AccountStatus = get_enum_field(AccountStatus)
