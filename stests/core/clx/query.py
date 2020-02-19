@@ -1,3 +1,5 @@
+import typing
+
 from stests.core.clx.utils import get_client
 from stests.core.domain import Account
 from stests.core.domain import Block
@@ -34,8 +36,9 @@ def get_balance(ctx: RunContext, account: Account) -> int:
 def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
     """Queries network for information pertaining to a specific block.
 
-    :param ctx: Generator run contextual information.
+    :param network_id: A network identifier.
     :param bhash: Hash of a block.
+
     :returns: Block information.
 
     """
@@ -54,11 +57,12 @@ def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
         )
 
 
-def get_block_deploys(network_id: NetworkIdentifier, bhash: str) -> Block:
+def get_block_deploys(network_id: NetworkIdentifier, bhash: str) -> typing.List[str]:
     """Queries network for set of deploys associated with a specific block.
 
-    :param ctx: Generator run contextual information.
+    :param network_id: A network identifier.
     :param bhash: Hash of a block.
+
     :returns: Block information.
 
     """
@@ -67,7 +71,7 @@ def get_block_deploys(network_id: NetworkIdentifier, bhash: str) -> Block:
     return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=bhash, full_view=False))
 
 
-def _get_last_block_hash(client):
+def _get_last_block_hash(client) -> str:
     """Returns a chain's last block hash.
     
     """

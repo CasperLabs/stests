@@ -11,8 +11,13 @@ from stests.core.domain import RunContext
 
 def get_client(src: typing.Union[Node, RunContext, NetworkIdentifier]) -> pyclx.CasperLabsClient:
     """Factory method to return configured clabs client.
+
+    :param src: The source form which a network node will be derived.
+
+    :returns: A configured clabs client ready for use.
     
     """
+    # Pull node metadata from cache. 
     if isinstance(src, Node):
         node = src
     elif isinstance(src, NetworkIdentifier):

@@ -26,6 +26,7 @@ def do_transfer(
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
     :param is_refundable: Flag indicating whether a refund is required.
+
     :returns: Dispatched deploy.
 
     """
@@ -48,16 +49,13 @@ def do_transfer(
 
 
 
-def do_deploy_contract(
-    ctx: RunContext,
-    account: Account,
-    wasm_filepath: str
-    ):
+def do_deploy_contract(ctx: RunContext, account: Account, wasm_filepath: str):
     """Deploys a smart contract to chain.
 
     :param ctx: Generator run contextual information.
     :param account: Account to be associated with contract.
     :param wasm_filepath: Path to smart contract's wasm file.
+
     :returns: Deploy hash (in hex format).
 
     """

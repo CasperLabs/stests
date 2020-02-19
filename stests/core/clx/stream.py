@@ -6,11 +6,7 @@ from stests.core.utils import logger
 
 
 
-def stream_events(
-    node: Node,
-    on_block_added: typing.Callable = None,
-    on_block_finalized: typing.Callable = None
-    ):
+def stream_events(node: Node, on_block_added: typing.Callable = None, on_block_finalized: typing.Callable = None):
     """Hooks upto node streaming events.
 
     :param node: Node from which events will be streamed.
