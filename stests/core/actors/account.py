@@ -11,7 +11,7 @@ from stests.core.utils import factory
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = f"generators"
+_QUEUE = "generators.shared"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
