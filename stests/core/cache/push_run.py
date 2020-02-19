@@ -44,7 +44,7 @@ def set_run_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.List[
     :returns: Keypath + domain object instance.
 
     """
-    return ["run-deploy"] + ctx.keypath + [f"{str(deploy.ts_dispatched)}.{deploy.dhash}"], deploy
+    return ["run-deploy"] + ctx.keypath + [f"{str(deploy.ts_dispatched)}.{deploy.deploy_hash}"], deploy
 
 
 @encache
@@ -70,4 +70,4 @@ def set_run_transfer(ctx: RunContext, transfer: Transfer) -> typing.Tuple[typing
     :returns: Keypath + domain object instance.
 
     """
-    return ["run-transfer"] + ctx.keypath + [transfer.asset.lower(), transfer.dhash], transfer
+    return ["run-transfer"] + ctx.keypath + [transfer.asset.lower(), transfer.deploy_hash], transfer

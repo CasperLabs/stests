@@ -16,17 +16,13 @@ class GeneratorEventMiddleware(dramatiq.Middleware):
         :param message: A message being processed.
 
         """
+        actor_name = str(message).split('(')[0]
         if isinstance(message.args, tuple) and len(message.args) > 0 and \
-           _get_actor_name(message).startswith("on_"):
+           actor_name.startswith("on_") and \
+           actor_name != "on_run_event":
             args = message.args if isinstance(message.args[0], (RunContext, NetworkIdentifier)) else message.args[0]['args']
             if isinstance(args[0], RunContext):
                 on_run_event.send_with_options(
-                    args=(args[0], _get_actor_name(message))
+                    args=(args[0], actor_name)
                     )        
 
-
-def _get_actor_name(message):
-    """Returns actor name by parsing incoming message.
-    
-    """
-    return str(message).split('(')[0]

@@ -33,20 +33,20 @@ def get_balance(ctx: RunContext, account: Account) -> int:
         return balance
 
 
-def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
+def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
     """Queries network for information pertaining to a specific block.
 
     :param network_id: A network identifier.
-    :param bhash: Hash of a block.
+    :param block_hash: Hash of a block.
 
     :returns: Block information.
 
     """
     client = get_client(network_id)
-    info = client.showBlock(block_hash_base16=bhash, full_view=False)
+    info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
     return factory.create_block(
-        bhash=bhash,
+        block_hash=block_hash,
         deploy_cost_total=info.status.stats.deploy_cost_total,
         deploy_count=info.summary.header.deploy_count, 
         deploy_gas_price_avg=info.status.stats.deploy_gas_price_avg,
@@ -57,18 +57,18 @@ def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
         )
 
 
-def get_block_deploys(network_id: NetworkIdentifier, bhash: str) -> typing.List[str]:
+def get_block_deploys(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str]:
     """Queries network for set of deploys associated with a specific block.
 
     :param network_id: A network identifier.
-    :param bhash: Hash of a block.
+    :param block_hash: Hash of a block.
 
     :returns: Block information.
 
     """
     client = get_client(network_id)
 
-    return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=bhash, full_view=False))
+    return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=block_hash, full_view=False))
 
 
 def _get_last_block_hash(client) -> str:

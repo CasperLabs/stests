@@ -14,7 +14,7 @@ class Block:
     
     """
     # Block hash (blake2b) identifier.
-    bhash: str
+    block_hash: str
 
     # Motes spent during block processing.
     deploy_cost_total: str

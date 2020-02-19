@@ -30,7 +30,7 @@ def do_transfer(
     :returns: Dispatched deploy.
 
     """
-    dhash = get_client(ctx).transfer(
+    deploy_hash = get_client(ctx).transfer(
         amount=amount,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
@@ -40,13 +40,12 @@ def do_transfer(
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
 
-    logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {dhash}")
+    logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {deploy_hash}")
 
     return (
-        factory.create_deploy(dhash, DeployStatus.DISPATCHED), 
-        factory.create_transfer(amount, "CLX", cp1, cp2, dhash, is_refundable)
+        factory.create_deploy_for_run(ctx, deploy_hash, DeployStatus.DISPATCHED), 
+        factory.create_transfer(amount, "CLX", cp1, cp2, deploy_hash, is_refundable)
         )
-
 
 
 def do_deploy_contract(ctx: RunContext, account: Account, wasm_filepath: str):

@@ -14,16 +14,34 @@ class Deploy:
     
     """
     # Associated block hash in event of finalization. 
-    bhash: str
+    block_hash: str
+
+    # Associated block rank in event of finalization. 
+    block_rank: int
 
     # Deploy's payload signature hash (blake). 
-    dhash: str
+    deploy_hash: str
 
     # Deploy's processing status.
     status: DeployStatus = get_enum_field(DeployStatus)
 
-    # Moment in time when  deploy dispatched to CLX network.
+    # Moment in time when deploy dispatched to CLX network.
     ts_dispatched: int
+
+    # Moment in time when deploy was finalized by CLX network.
+    ts_finalized: int
+
+    # Associated network.
+    network_name: str
+
+    # Associated node index.
+    node_index: int
+
+    # Numerical index to distinguish between multiple runs of the same generator.
+    run_index: int
+
+    # Type of generator, e.g. WG-100 ...etc.
+    run_type: str    
 
     # Associated metadata.
     meta: TypeMetadata = TypeMetadata()

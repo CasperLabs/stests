@@ -15,6 +15,7 @@ def flush_run(ctx: RunContext) -> typing.Generator:
     
     """
     yield ["run-account"] + ctx.keypath
+    yield ["run-context"] + ctx.keypath
     yield ["run-deploy"] + ctx.keypath
     yield ["run-event"] + ctx.keypath
     yield ["run-transfer"] + ctx.keypath

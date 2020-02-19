@@ -14,6 +14,7 @@ from stests.core.cache.pull_run import get_run_node
 
 from stests.core.cache.push_network import set_network
 from stests.core.cache.push_network import set_network_block
+from stests.core.cache.push_network import set_network_deploy
 from stests.core.cache.push_network import set_network_node
 
 from stests.core.cache.push_run import set_run_account

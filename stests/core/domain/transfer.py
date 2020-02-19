@@ -24,10 +24,10 @@ class Transfer:
     cp2_index: int
 
     # Associated deploy hash.
-    dhash: str
+    deploy_hash: str
 
     # Associated deploy hash.
-    dhash_refund: str
+    deploy_hash_refund: str
 
     # Flag indicating whether a refund is required.
     is_refundable: bool

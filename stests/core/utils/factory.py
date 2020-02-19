@@ -48,7 +48,7 @@ def create_account_id(
 
 
 def create_block(
-    bhash: str,
+    block_hash: str,
     deploy_cost_total: int,
     deploy_count: int, 
     deploy_gas_price_avg: int,
@@ -61,7 +61,7 @@ def create_block(
     
     """
     return Block(
-        bhash=bhash,
+        block_hash=block_hash,
         deploy_cost_total=deploy_cost_total,
         deploy_count=deploy_count, 
         deploy_gas_price_avg=deploy_gas_price_avg,
@@ -74,15 +74,43 @@ def create_block(
         )
 
 
-def create_deploy(dhash: str, status: DeployStatus) -> Deploy:
+def create_deploy(network_id: NetworkIdentifier, block_hash: str, block_rank: int, deploy_hash: str, status: DeployStatus) -> Deploy:
     """Returns a domain object instance: Deploy.
     
     """
     return Deploy(
-        bhash=None,
-        dhash=dhash,
+        block_hash=block_hash,
+        block_rank=block_rank,
+        deploy_hash=deploy_hash,
         status=status,
-        ts_dispatched=None if status != DeployStatus.DISPATCHED else datetime.datetime.now().timestamp()
+        ts_dispatched=datetime.datetime.now().timestamp() if status == DeployStatus.DISPATCHED else None,
+        ts_finalized=datetime.datetime.now().timestamp() if status == DeployStatus.FINALIZED else None,
+    
+        network_name=network_id.name,
+        node_index=None,
+        run_index=None,
+        run_type=None
+    )
+
+
+def create_deploy_for_run(ctx: RunContext, deploy_hash: str, status: DeployStatus) -> Deploy:
+    """Returns a domain object instance: Deploy.
+
+    :param ctx: Generator run contextual information.
+
+    """
+    return Deploy(
+        block_hash=None,
+        block_rank=None,
+        deploy_hash=deploy_hash,
+        status=status,
+        ts_dispatched=datetime.datetime.now().timestamp() if status == DeployStatus.DISPATCHED else None,
+        ts_finalized=None,
+
+        network_name=ctx.network_name,
+        node_index=ctx.node_index,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,        
     )
 
 
@@ -175,6 +203,8 @@ def create_run_context(
 
 def create_run_event(ctx: RunContext, event: str) -> RunEvent:
     """Returns a domain object instance: RunEvent.
+
+    :param ctx: Generator run contextual information.
     
     """
     return RunEvent(
@@ -202,7 +232,7 @@ def create_transfer(
     asset: str,
     cp1: Account,
     cp2: Account,
-    dhash: str,
+    deploy_hash: str,
     is_refundable: bool
     ) -> Transfer:
     """Returns a domain object instance: Transfer.
@@ -213,7 +243,7 @@ def create_transfer(
         asset=asset or "CLX",
         cp1_index=cp1.index,
         cp2_index=cp2.index,
-        dhash=dhash,
-        dhash_refund=None,
+        deploy_hash=deploy_hash,
+        deploy_hash_refund=None,
         is_refundable=is_refundable
     )
