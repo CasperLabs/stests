@@ -1,7 +1,11 @@
+import abc
+import datetime
 import enum
 import uuid
+from dataclasses import dataclass
 from dataclasses import field
 from dataclasses_json import config
+from dataclasses_json import dataclass_json
 from datetime import datetime
 
 from marshmallow import fields
@@ -65,3 +69,11 @@ def get_uuid_field(set_default=False):
         )
     return field()
 
+
+@dataclass_json
+@dataclass
+class Entity(abc.ABC):
+    """Base class for all domain entities flowing through system.
+    
+    """
+    pass

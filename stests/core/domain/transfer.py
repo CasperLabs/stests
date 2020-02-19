@@ -1,13 +1,11 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
-from stests.core.domain.meta import TypeMetadata
+from stests.core.utils.domain import *
 
     
 
-@dataclass_json
 @dataclass
-class Transfer:
+class Transfer(Entity):
     """Encapsulates information pertaining to a CLX transfer between counterparties.
     
     """
@@ -32,5 +30,14 @@ class Transfer:
     # Flag indicating whether a refund is required.
     is_refundable: bool
 
-    # Associated metadata.
-    meta: TypeMetadata = TypeMetadata()
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: str = None
+
+    # Timestamp: create.
+    _ts_created: datetime = get_isodatetime_field(True)
+
+    # Timestamp: update.
+    _ts_updated: datetime = get_isodatetime_field(True)
+
+    # Universally unique identifier.
+    _uid: str = get_uuid_field(True) 

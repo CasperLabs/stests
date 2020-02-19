@@ -27,7 +27,7 @@ def decode(obj: typing.Any) -> typing.Any:
     if isinstance(obj, list):
         return list(map(decode, obj))
 
-    if isinstance(obj, dict) and 'meta' in obj and 'type_key' in obj['meta']:
+    if isinstance(obj, dict) and '_type_key' in obj:
         return _decode_registered_dclass(obj)
 
     if isinstance(obj, dict):
@@ -43,12 +43,12 @@ def _decode_registered_dclass(obj):
     """Decodes a registered data class instance.
     
     """
-    dclass_type = DCLASS_MAP[obj['meta']['type_key']]
+    dclass_type = DCLASS_MAP[obj['_type_key']]
     data = dclass_type.from_dict(obj)
 
     # Recursively ensure child domain model instances are also decoded.
     for k, v in obj.items():
-        if isinstance(v, dict) and 'meta' in v and 'type_key' in v['meta']:            
+        if isinstance(v, dict) and '_type_key' in v:            
             setattr(data, k, _decode_registered_dclass(v))
 
     return data
@@ -84,8 +84,7 @@ def _encode_registered_dclass(data, obj):
     
     """
     # Inject typekey for subsequent roundtrip.
-    obj['meta'] = obj.get('meta', {})
-    obj['meta']['type_key'] = f"{data.__module__}.{data.__class__.__name__}"
+    obj['_type_key'] = f"{data.__module__}.{data.__class__.__name__}"
 
     # Recurse through properties that are also registered data classes.
     for i in [i for i in dir(data) if i in obj and not i.startswith('_') and 

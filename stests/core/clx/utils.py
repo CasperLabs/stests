@@ -17,7 +17,7 @@ def get_client(src: typing.Union[Node, RunContext, NetworkIdentifier]) -> pyclx.
     :returns: A configured clabs client ready for use.
     
     """
-    # Pull node metadata from cache. 
+    # Pull node information from cache. 
     if isinstance(src, Node):
         node = src
     elif isinstance(src, NetworkIdentifier):

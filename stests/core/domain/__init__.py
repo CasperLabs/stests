@@ -3,10 +3,10 @@ from stests.core.domain.block import *
 from stests.core.domain.deploy import *
 from stests.core.domain.enums import *
 from stests.core.domain.identifiers import *
-from stests.core.domain.meta import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
-from stests.core.domain.run import *
+from stests.core.domain.run_context import *
+from stests.core.domain.run_event import *
 from stests.core.domain.transfer import *
 
 
@@ -20,9 +20,8 @@ DCLASS_SET = {
     Network,
     Node,
     Transfer,
-    
     RunContext,
-    RunEvent,
+    RunEvent
 }
 
 # Set of supported identifiers.
@@ -33,13 +32,8 @@ IDENTIFIER_SET = {
     RunIdentifier
 }
 
-MCLASS_SET = {
-    TypeMetadata,
-    DeployMetadata,
-}
-
 # Full domain type set.
-TYPE_SET = DCLASS_SET | IDENTIFIER_SET | MCLASS_SET | ENUM_SET
+TYPE_SET = DCLASS_SET | IDENTIFIER_SET | ENUM_SET
 
 # Register domain types with encoder.
 from stests.core.utils import encoder

@@ -1,32 +1,17 @@
+import typing
 from dataclasses import dataclass
 
-from stests.core.domain.enums import DeployStatus
 from stests.core.utils.domain import *
 
 
 
 @dataclass
-class Deploy(Entity):
-    """Encapsulates information pertaining to a deploy dispatched to a test network.
+class RunContext(Entity):
+    """Contextual information associated with each generator run.
     
     """
-    # Associated block hash in event of finalization. 
-    block_hash: str
-
-    # Associated block rank in event of finalization. 
-    block_rank: int
-
-    # Deploy's payload signature hash (blake). 
-    deploy_hash: str
-
-    # Deploy's processing status.
-    status: DeployStatus = get_enum_field(DeployStatus)
-
-    # Moment in time when deploy dispatched to CLX network.
-    ts_dispatched: int
-
-    # Moment in time when deploy was finalized by CLX network.
-    ts_finalized: int
+    # Associated run arguments.
+    args: typing.Any
 
     # Associated network.
     network: str
@@ -38,7 +23,15 @@ class Deploy(Entity):
     run: int
 
     # Type of generator, e.g. WG-100 ...etc.
-    run_type: str    
+    run_type: str
+
+    @property
+    def keypath(self):
+        return [
+            self.network,
+            self.run_type,
+            f"R-{str(self.run).zfill(3)}"            
+        ]
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: str = None

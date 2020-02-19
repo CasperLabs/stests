@@ -1,15 +1,12 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
 from stests.core.domain.enums import BlockStatus
-from stests.core.domain.meta import TypeMetadata
-from stests.core.utils.domain import get_enum_field
+from stests.core.utils.domain import *
 
     
 
-@dataclass_json
 @dataclass
-class Block:
+class Block(Entity):
     """A block proposed/finialized within the lifetime of a chain.
     
     """
@@ -40,5 +37,14 @@ class Block:
     # Validator identifier that proposed block.
     validator_id: str
 
-    # Associated metadata.
-    meta: TypeMetadata
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: str = None
+
+    # Timestamp: create.
+    _ts_created: datetime = get_isodatetime_field(True)
+
+    # Timestamp: update.
+    _ts_updated: datetime = get_isodatetime_field(True)
+
+    # Universally unique identifier.
+    _uid: str = get_uuid_field(True) 

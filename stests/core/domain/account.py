@@ -1,17 +1,14 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
 from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
 from stests.core.domain.key_pair import PrivateKey
-from stests.core.domain.meta import TypeMetadata
-from stests.core.utils.domain import get_enum_field
+from stests.core.utils.domain import *
 
-    
 
-@dataclass_json
+
 @dataclass
-class Account:
+class Account(Entity):
     """A non-designated account that maps to an address upon target chain.
     
     """
@@ -30,8 +27,17 @@ class Account:
     # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
     typeof: AccountType = get_enum_field(AccountType)
 
-    # Associated metadata.
-    meta: TypeMetadata
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: str = None
+
+    # Timestamp: create.
+    _ts_created: datetime = get_isodatetime_field(True)
+
+    # Timestamp: update.
+    _ts_updated: datetime = get_isodatetime_field(True)
+
+    # Universally unique identifier.
+    _uid: str = get_uuid_field(True) 
 
     @property
     def private_key_as_pem_filepath(self):

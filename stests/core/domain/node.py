@@ -1,17 +1,14 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
 from stests.core.domain.account import Account
 from stests.core.domain.enums import NodeStatus
 from stests.core.domain.enums import NodeType
-from stests.core.domain.meta import TypeMetadata
-from stests.core.utils.domain import get_enum_field
+from stests.core.utils.domain import *
 
 
 
-@dataclass_json
 @dataclass
-class Node:
+class Node(Entity):
     """Represents a node within a target network.
     
     """
@@ -35,7 +32,15 @@ class Node:
 
     # Type of node in terms of it's degree of consensus participation.
     typeof: NodeType = get_enum_field(NodeType)
-
-    # Associated metadata.
-    meta: TypeMetadata = TypeMetadata()
     
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: str = None
+
+    # Timestamp: create.
+    _ts_created: datetime = get_isodatetime_field(True)
+
+    # Timestamp: update.
+    _ts_updated: datetime = get_isodatetime_field(True)
+
+    # Universally unique identifier.
+    _uid: str = get_uuid_field(True) 

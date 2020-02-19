@@ -13,7 +13,6 @@
 
 6.  on-block-finalized
 
-    - store bhash + details (e.g. rank)
     - query clx.deploys-by-block
     - enqueue finalized deploys
 
@@ -40,3 +39,11 @@
 10. account-types
 
     DappUser, DappContract, ValidatorBond, NetworkFaucet, RunFaucet, NetworkContract
+
+11. ls cli commands to inspect cache
+
+12. rm cli commands to clean cache
+
+13. move run data to db2
+
+14. verify network & node before runing generator

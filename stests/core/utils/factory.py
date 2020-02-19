@@ -1,9 +1,8 @@
-import datetime
+from datetime import datetime as dt
 import typing
 
 from stests.core.domain import *
 from stests.core.utils import crypto
-from stests.core.domain.meta import TypeMetadata
 
 
 
@@ -25,8 +24,7 @@ def create_account(
         private_key=private_key,
         public_key=public_key,
         status=status or AccountStatus.NEW,
-        typeof=typeof,
-        meta=TypeMetadata()
+        typeof=typeof
         )
 
 
@@ -69,8 +67,7 @@ def create_block(
         size_bytes=size_bytes,
         status=BlockStatus.NULL,
         timestamp=timestamp,
-        validator_id=validator_id,
-        meta=TypeMetadata()
+        validator_id=validator_id
         )
 
 
@@ -83,8 +80,8 @@ def create_deploy(network_id: NetworkIdentifier, block_hash: str, block_rank: in
         block_rank=block_rank,
         deploy_hash=deploy_hash,
         status=status,
-        ts_dispatched=datetime.datetime.now().timestamp() if status == DeployStatus.DISPATCHED else None,
-        ts_finalized=datetime.datetime.now().timestamp() if status == DeployStatus.FINALIZED else None,
+        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
+        ts_finalized=dt.now().timestamp() if status == DeployStatus.FINALIZED else None,
     
         network=network_id.name,
         node=None,
@@ -104,7 +101,7 @@ def create_deploy_for_run(ctx: RunContext, deploy_hash: str, status: DeployStatu
         block_rank=None,
         deploy_hash=deploy_hash,
         status=status,
-        ts_dispatched=datetime.datetime.now().timestamp() if status == DeployStatus.DISPATCHED else None,
+        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
         ts_finalized=None,
 
         network=ctx.network,
@@ -212,7 +209,7 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
         network=ctx.network,
         run=ctx.run,
         run_type=ctx.run_type,
-        timestamp=datetime.datetime.now().timestamp()
+        timestamp=dt.now().timestamp()
     )
 
 
