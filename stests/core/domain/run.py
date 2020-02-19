@@ -16,7 +16,7 @@ class RunContext:
     args: typing.Any
 
     # Associated network.
-    network_name: str
+    network: str
 
     # Associated node index.
     node_index: int
@@ -33,7 +33,7 @@ class RunContext:
     @property
     def keypath(self):
         return [
-            self.network_name,
+            self.network,
             self.run_type,
             f"R-{str(self.run_index).zfill(3)}"            
         ]
@@ -49,7 +49,7 @@ class RunEvent:
     event: str
 
     # Associated network.
-    network_name: str
+    network: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: int

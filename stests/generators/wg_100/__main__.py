@@ -20,7 +20,7 @@ ARGS = argparse.ArgumentParser(f"Executes {constants.DESCRIPTION} workflow.")
 ARGS.add_argument(
     "network",
     help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network_name
+    type=args_validator.validate_network
     )
 
 # CLI argument: scope -> node index.

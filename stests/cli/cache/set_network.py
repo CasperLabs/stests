@@ -13,7 +13,7 @@ ARGS = argparse.ArgumentParser("Upload network information to stests.")
 ARGS.add_argument(
     "network",
     help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network_name
+    type=args_validator.validate_network
     )
 
 

@@ -35,7 +35,7 @@ def validate_network_index(value):
     return _validate_int(value, NETWORK_INDEX_MIN, NETWORK_INDEX_MAX, "Network")
 
 
-def validate_network_name(value):
+def validate_network(value):
     """Argument verifier: network name.
     
     """
@@ -81,7 +81,7 @@ def validate_node_name(value):
     parts = name.split(":")
     if len(parts) != 2:
         raise argparse.ArgumentError("Invalid node name")
-    validate_network_name(name.split(":")[0])
+    validate_network(name.split(":")[0])
     validate_node_index(name.split(":")[1])
 
     return name

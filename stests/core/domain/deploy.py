@@ -32,7 +32,7 @@ class Deploy:
     ts_finalized: int
 
     # Associated network.
-    network_name: str
+    network: str
 
     # Associated node index.
     node_index: int

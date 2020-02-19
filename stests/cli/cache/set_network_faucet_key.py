@@ -17,7 +17,7 @@ ARGS = argparse.ArgumentParser(f"Register a network's faucet key with stests.")
 ARGS.add_argument(
     "network",
     help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network_name
+    type=args_validator.validate_network
     )
 
 # Set CLI argument: private key in PEM format.

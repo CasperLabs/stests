@@ -45,7 +45,7 @@ def get_run_account(ctx: RunContext, index: int) -> Account:
     """
     return get_account(factory.create_account_id(
         index,
-        ctx.network_name,
+        ctx.network,
         ctx.run_index,
         ctx.run_type
         ))
@@ -59,7 +59,7 @@ def get_run_network(ctx: RunContext) -> Network:
     :returns: A registered network.
 
     """
-    network_id = factory.create_network_id(ctx.network_name)
+    network_id = factory.create_network_id(ctx.network)
 
     return get_network(network_id)
 
@@ -73,7 +73,7 @@ def get_run_node(ctx: RunContext) -> Node:
 
     """
     # Pull healthy nodes.
-    network_id = factory.create_network_id(ctx.network_name)
+    network_id = factory.create_network_id(ctx.network)
     nodes = [i for i in get_nodes(network_id) if i.status == NodeStatus.HEALTHY] 
     if not nodes:
         raise ValueError(f"Network {network_id.name} has no registered healthy nodes.")

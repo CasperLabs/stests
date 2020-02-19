@@ -86,7 +86,7 @@ def create_deploy(network_id: NetworkIdentifier, block_hash: str, block_rank: in
         ts_dispatched=datetime.datetime.now().timestamp() if status == DeployStatus.DISPATCHED else None,
         ts_finalized=datetime.datetime.now().timestamp() if status == DeployStatus.FINALIZED else None,
     
-        network_name=network_id.name,
+        network=network_id.name,
         node_index=None,
         run_index=None,
         run_type=None
@@ -107,7 +107,7 @@ def create_deploy_for_run(ctx: RunContext, deploy_hash: str, status: DeployStatu
         ts_dispatched=datetime.datetime.now().timestamp() if status == DeployStatus.DISPATCHED else None,
         ts_finalized=None,
 
-        network_name=ctx.network_name,
+        network=ctx.network,
         node_index=ctx.node_index,
         run_index=ctx.run_index,
         run_type=ctx.run_type,        
@@ -194,7 +194,7 @@ def create_run_context(
     """
     return RunContext(
         args=args,
-        network_name=network_id.name,
+        network=network_id.name,
         node_index=node_id.index,
         run_index=run_index,
         run_type=run_type
@@ -209,7 +209,7 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
     """
     return RunEvent(
         event=event,
-        network_name=ctx.network_name,
+        network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         timestamp=datetime.datetime.now().timestamp()
