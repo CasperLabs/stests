@@ -1,11 +1,9 @@
 import random
 import typing
 
+from stests.core.cache.utils import decache
 from stests.core.cache.identifiers import NetworkIdentifier
-from stests.core.cache.pull import get_account
-from stests.core.cache.pull import get_network
-from stests.core.cache.pull import get_nodes
-from stests.core.domain import Account
+from stests.core.cache.identifiers import NodeIdentifier
 from stests.core.domain import Network
 from stests.core.domain import Node
 from stests.core.domain import RunContext
@@ -13,18 +11,50 @@ from stests.core.utils import factory
 
 
 
-def get_account_by_ctx(ctx: RunContext, index: int) -> Account:
-    """Decaches domain object: Account.
+@decache
+def get_network(network_id: NetworkIdentifier) -> Network:
+    """Decaches domain object: Network.
     
     """
-    account_id = factory.create_account_id(
-        index,
-        ctx.network_name,
-        ctx.run_index,
-        ctx.run_type
-        )
+    return [
+        "network",
+        network_id.name
+    ]
 
-    return get_account(account_id)
+
+@decache
+def get_networks() -> typing.List[Network]:
+    """Decaches domain objects: Network.
+    
+    """
+    return ["network", "*"]
+
+
+@decache
+def get_node(node_id: NodeIdentifier) -> Node:
+    """Decaches domain object: Node.
+    
+    """
+    return [
+        "network-node",
+        node_id.network.name,
+        f"N-{str(node_id.index).zfill(4)}"
+    ]
+
+
+@decache
+def get_nodes(network_id: NetworkIdentifier=None) -> typing.List[Node]:
+    """Decaches domain objects: Node.
+    
+    """
+    if network_id is None:
+        return ["network-node", "*"]
+    else:
+        return [
+            "network-node",
+            network_id.name,
+            "N-*"
+        ]
 
 
 def get_network_by_ctx(ctx: RunContext) -> Network:
