@@ -35,7 +35,7 @@ class Deploy:
     network: str
 
     # Associated node index.
-    node_index: int
+    node: int
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: int

@@ -79,11 +79,11 @@ def get_run_node(ctx: RunContext) -> Node:
         raise ValueError(f"Network {network_id.name} has no registered healthy nodes.")
     
     # Select random if node index unspecified.
-    if ctx.node_index <= 0 or ctx.node_index is None:
+    if ctx.node <= 0 or ctx.node is None:
         return random.choice(nodes)
 
     # Select specific with fallback to random.
     try:
-        return nodes[ctx.node_index - 1]
+        return nodes[ctx.node - 1]
     except IndexError:
         return random.choice(nodes)

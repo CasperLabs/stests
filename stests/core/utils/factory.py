@@ -87,7 +87,7 @@ def create_deploy(network_id: NetworkIdentifier, block_hash: str, block_rank: in
         ts_finalized=datetime.datetime.now().timestamp() if status == DeployStatus.FINALIZED else None,
     
         network=network_id.name,
-        node_index=None,
+        node=None,
         run_index=None,
         run_type=None
     )
@@ -108,7 +108,7 @@ def create_deploy_for_run(ctx: RunContext, deploy_hash: str, status: DeployStatu
         ts_finalized=None,
 
         network=ctx.network,
-        node_index=ctx.node_index,
+        node=ctx.node,
         run_index=ctx.run_index,
         run_type=ctx.run_type,        
     )
@@ -195,7 +195,7 @@ def create_run_context(
     return RunContext(
         args=args,
         network=network_id.name,
-        node_index=node_id.index,
+        node=node_id.index,
         run_index=run_index,
         run_type=run_type
     )
