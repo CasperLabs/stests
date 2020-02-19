@@ -1,0 +1,42 @@
+1.  Monitoring - listeners
+
+2.  Monitoring - workers
+
+3.  set-network-contracts
+
+4.  erc-20
+
+    - deploy wasm & cache hash
+    - consider paymount amounts & gas-price
+
+5.  wg-100 orchestration mediated by chain events
+
+6.  on-block-finalized
+
+    - store bhash + details (e.g. rank)
+    - query clx.deploys-by-block
+    - enqueue finalized deploys
+
+    on-finialized-deploy
+
+    - store deploy-status
+    - get-next-generator-step
+    - enqueue message -> next-generator-step-actor
+
+7.  node health monitoring
+
+    - deploy buffer
+    - lfb distance
+    - state size
+
+8.  on-block-added
+
+    - ???
+
+9.  meta-data
+
+    DeployMetadata / EventMetadata / TransferMetadata / AccountMetadata
+
+10. account-types
+
+    DappUser, DappContract, ValidatorBond, NetworkFaucet, RunFaucet, NetworkContract
