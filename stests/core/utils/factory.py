@@ -99,6 +99,7 @@ def create_block(
 
 def create_deploy(
     network_id: NetworkIdentifier,
+    node: int,
     block_hash: str,
     block_rank: int,
     deploy_hash: str,
@@ -112,7 +113,7 @@ def create_deploy(
         block_rank=block_rank,
         deploy_hash=deploy_hash,
         network=network_id.name,
-        node=None,
+        node=node,
         run=None,
         run_type=None,
         status=status,

@@ -14,10 +14,11 @@ _QUEUE = "monitoring"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):   
+def on_block_finalized(network_id: NetworkIdentifier, node: int, block_hash: str):   
     """Event: raised whenever a block is finalized.
 
     :param network_id: Identifier of network upon which a block has been finalized.
+    :param node: Identifier of node reporting a finalized block.
     :param block_hash: Hash of finalized block.
 
     """
@@ -32,21 +33,22 @@ def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):
 
     # Enqueue deploys.
     for deploy_hash in clx.get_block_deploys(network_id, block_hash):
-        on_deploy_finalized.send(network_id, block_hash, block.rank, deploy_hash)
+        on_deploy_finalized.send(network_id, node, block_hash, block.rank, deploy_hash)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, block_rank: int, deploy_hash: str):   
+def on_deploy_finalized(network_id: NetworkIdentifier, node: int, block_hash: str, block_rank: int, deploy_hash: str):   
     """Event: raised whenever a deploy is finalized.
     
     :param network_id: Identifier of network upon which a block has been finalized.
+    :param node: Identifier of node reporting a finalized block.
     :param rank: Rank of finalized block.
     :param block_hash: Hash of finalized block.
     :param deploy_hash: Hash of finalized deploy.
 
     """
     # Set deploy info.
-    deploy = factory.create_deploy(network_id, block_hash, block_rank, deploy_hash, DeployStatus.FINALIZED)    
+    deploy = factory.create_deploy(network_id, node, block_hash, block_rank, deploy_hash, DeployStatus.FINALIZED)    
 
     # Encache.
     cache.set_network_deploy(network_id, deploy)  
