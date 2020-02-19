@@ -1,5 +1,5 @@
 import dramatiq
-from stests.core.actors.misc import do_persist_event
+from stests.core.actors.misc import on_run_event
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import RunContext
 
@@ -20,7 +20,7 @@ class GeneratorEventMiddleware(dramatiq.Middleware):
            _get_actor_name(message).startswith("on_"):
             args = message.args if isinstance(message.args[0], (RunContext, NetworkIdentifier)) else message.args[0]['args']
             if isinstance(args[0], RunContext):
-                do_persist_event.send_with_options(
+                on_run_event.send_with_options(
                     args=(args[0], _get_actor_name(message))
                     )        
 

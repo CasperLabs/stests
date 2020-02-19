@@ -9,7 +9,7 @@ from stests.core.domain import RunContext
 def flush_run(ctx: RunContext) -> typing.Generator:
     """Flushes previous run information.
 
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
 
     :returns: A generator of keypaths to be flushed.
     

@@ -13,7 +13,7 @@ from stests.core.domain import RunEvent
 def set_run_account(ctx: RunContext, account: Account) -> typing.Tuple[typing.List[str], Account]:
     """Encaches domain object: Account.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param account: Account domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
@@ -26,7 +26,7 @@ def set_run_account(ctx: RunContext, account: Account) -> typing.Tuple[typing.Li
 def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContext]:
     """Encaches domain object: RunContext.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
 
     :returns: Keypath + domain object instance.
 
@@ -38,7 +38,7 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
 def set_run_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param deploy: Deploy domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
@@ -51,7 +51,7 @@ def set_run_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.List[
 def set_run_event(ctx: RunContext, evt: RunEvent) -> typing.Tuple[typing.List[str], RunEvent]:
     """Encaches domain object: RunEvent.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param evt: RunEvent domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
@@ -64,7 +64,7 @@ def set_run_event(ctx: RunContext, evt: RunEvent) -> typing.Tuple[typing.List[st
 def set_run_transfer(ctx: RunContext, transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
     """Encaches domain object: Transfer.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param transfer: Transfer domain object instance to be cached.
 
     :returns: Keypath + domain object instance.

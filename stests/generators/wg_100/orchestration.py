@@ -31,8 +31,8 @@ ACC_INDEX_USERS = 3
 def execute(ctx: RunContext):
     """Orchestrates execution of WG-100 workflow.
 
-    :param ctx: Contextual information passed along flow of execution.
-    
+    :param ctx: Generator run contextual information.
+
     """
     # TODO: chunk user account creating/funding ?
     do_flush_cache.send_with_options(
@@ -45,6 +45,8 @@ def execute(ctx: RunContext):
 def on_flush_cache(_, ctx: RunContext):
     """Callback: on_flush_cache.
     
+    :param ctx: Generator run contextual information.
+
     """
     do_cache_context.send_with_options(
         args=(ctx, ), 
@@ -56,6 +58,8 @@ def on_flush_cache(_, ctx: RunContext):
 def on_cache_context(_, ctx: RunContext):
     """Callback: on_cache_context.
     
+    :param ctx: Generator run contextual information.
+
     """
     do_create_account.send_with_options(
         args=(ctx, ACC_INDEX_FAUCET, AccountType.FAUCET),
@@ -67,6 +71,8 @@ def on_cache_context(_, ctx: RunContext):
 def on_create_faucet_account(_, ctx: RunContext):
     """Callback: on_create_faucet_account.
     
+    :param ctx: Generator run contextual information.
+
     """
     do_create_account.send_with_options(
         args=(ctx, ACC_INDEX_CONTRACT, AccountType.CONTRACT),
@@ -78,6 +84,8 @@ def on_create_faucet_account(_, ctx: RunContext):
 def on_create_contract_account(_, ctx: RunContext):
     """Callback: on_create_contract_account.
     
+    :param ctx: Generator run contextual information.
+
     """
     def get_messages():
         for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
@@ -92,6 +100,8 @@ def on_create_contract_account(_, ctx: RunContext):
 def on_create_user_accounts(ctx: RunContext):
     """Callback: on_create_user_accounts.
     
+    :param ctx: Generator run contextual information.
+
     """
     do_fund_faucet.send_with_options(
         args=(ctx, ACC_INDEX_FAUCET, ctx.args.faucet_initial_clx_balance),
@@ -103,6 +113,8 @@ def on_create_user_accounts(ctx: RunContext):
 def on_fund_faucet(_, ctx: RunContext):
     """Callback: on_fund_faucet.
     
+    :param ctx: Generator run contextual information.
+
     """
     do_fund_account_and_verify.send_with_options(
         args=(ctx, ACC_INDEX_FAUCET, ACC_INDEX_CONTRACT, ctx.args.contract_initial_clx_balance),
@@ -114,6 +126,8 @@ def on_fund_faucet(_, ctx: RunContext):
 def on_fund_contract(_, ctx: RunContext):
     """Callback: on_fund_contract.
     
+    :param ctx: Generator run contextual information.
+
     """
     def get_messages():
         for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
@@ -130,6 +144,8 @@ def on_fund_contract(_, ctx: RunContext):
 def on_fund_users(ctx: RunContext):
     """Callback: on_fund_users.
     
+    :param ctx: Generator run contextual information.
+
     """
     do_deploy_contract.send_with_options(
         args=(ctx, ),
@@ -141,6 +157,8 @@ def on_fund_users(ctx: RunContext):
 def on_deploy_contract(_, ctx: RunContext):
     """Callback: on_deploy_contract.
     
+    :param ctx: Generator run contextual information.
+
     """
     do_start_auction.send_with_options(
         args=(ctx, ),
@@ -152,5 +170,7 @@ def on_deploy_contract(_, ctx: RunContext):
 def on_start_auction(_, ctx: RunContext):
     """Callback: on_start_auction.
     
+    :param ctx: Generator run contextual information.
+
     """
     print("TIME TO GO HOME")

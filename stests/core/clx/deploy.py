@@ -21,7 +21,7 @@ def do_transfer(
     ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param cp1: Account information of counter party 1.
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
@@ -55,7 +55,7 @@ def do_deploy_contract(
     ):
     """Deploys a smart contract to chain.
 
-    :param ctx: Contextual information passed along the flow of execution.
+    :param ctx: Generator run contextual information.
     :param account: Account to be associated with contract.
     :param wasm_filepath: Path to smart contract's wasm file.
     :returns: Deploy hash (in hex format).

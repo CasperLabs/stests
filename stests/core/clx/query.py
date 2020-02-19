@@ -11,7 +11,7 @@ from stests.core.utils import factory
 def get_balance(ctx: RunContext, account: Account) -> int:
     """Returns a chain account balance.
 
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param account: Account whose balance will be queried.
 
     :returns: Account balance.
@@ -34,7 +34,7 @@ def get_balance(ctx: RunContext, account: Account) -> int:
 def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
     """Queries network for information pertaining to a specific block.
 
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param bhash: Hash of a block.
     :returns: Block information.
 
@@ -57,7 +57,7 @@ def get_block(network_id: NetworkIdentifier, bhash: str) -> Block:
 def get_block_deploys(network_id: NetworkIdentifier, bhash: str) -> Block:
     """Queries network for set of deploys associated with a specific block.
 
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param bhash: Hash of a block.
     :returns: Block information.
 

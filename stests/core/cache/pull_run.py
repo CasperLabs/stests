@@ -37,7 +37,7 @@ def get_account(account_id: AccountIdentifier) -> Account:
 def get_run_account(ctx: RunContext, index: int) -> Account:
     """Decaches domain object: Account.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
     :param index: Run specific account index. 
 
     :returns: A cached account.
@@ -54,7 +54,7 @@ def get_run_account(ctx: RunContext, index: int) -> Account:
 def get_run_network(ctx: RunContext) -> Network:
     """Decaches domain object: Network.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
 
     :returns: A registered network.
 
@@ -67,7 +67,7 @@ def get_run_network(ctx: RunContext) -> Network:
 def get_run_node(ctx: RunContext) -> Node:
     """Decaches domain object: Node.
     
-    :param ctx: Contextual information passed along flow of execution.
+    :param ctx: Generator run contextual information.
 
     :returns: A registered node.
 
