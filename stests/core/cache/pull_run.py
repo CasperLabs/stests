@@ -2,8 +2,8 @@ import random
 import typing
 
 from stests.core.cache.utils import decache
-from stests.core.cache.identifiers import AccountIdentifier
 from stests.core.domain import Account
+from stests.core.domain import AccountIdentifier
 from stests.core.domain import RunContext
 from stests.core.utils import factory
 

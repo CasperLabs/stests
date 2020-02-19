@@ -23,5 +23,3 @@ from stests.core.cache.push_run import set_run_deploy
 from stests.core.cache.push_run import set_run_event
 from stests.core.cache.push_run import set_run_transfer
 
-from stests.core.cache.identifiers import NetworkIdentifier
-

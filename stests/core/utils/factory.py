@@ -1,7 +1,6 @@
 import datetime
 import typing
 
-from stests.core.cache.identifiers import *
 from stests.core.domain import *
 from stests.core.utils import crypto
 from stests.core.domain.meta import TypeMetadata

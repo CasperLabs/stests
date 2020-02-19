@@ -1,8 +1,8 @@
-from stests.core.cache import NetworkIdentifier
 from stests.core.clx.utils import get_client
 from stests.core.domain import Account
 from stests.core.domain import Block
 from stests.core.domain import BlockStatus
+from stests.core.domain import NetworkIdentifier
 from stests.core.domain import RunContext
 from stests.core.utils import factory
 

@@ -2,10 +2,10 @@ import random
 import typing
 
 from stests.core.cache.utils import decache
-from stests.core.cache.identifiers import NetworkIdentifier
-from stests.core.cache.identifiers import NodeIdentifier
 from stests.core.domain import Network
+from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
+from stests.core.domain import NodeIdentifier
 from stests.core.domain import RunContext
 from stests.core.utils import factory
 

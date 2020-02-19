@@ -4,7 +4,6 @@ from dataclasses_json import dataclass_json
 from stests.core.domain.enums import AccountType
 from stests.core.domain.enums import NetworkType
 from stests.core.utils.domain import get_enum_field
-from stests.core.utils import encoder
 
 
 
@@ -75,16 +74,3 @@ class AccountIdentifier:
     @property
     def network_id(self) -> NetworkIdentifier:
         return this.run.network
-
-
-# Set of supported identifiers.
-IDENTIFIER_SET = (
-    AccountIdentifier,
-    NetworkIdentifier,
-    NodeIdentifier,
-    RunIdentifier
-)
-
-# Ensure can be serialized.
-for kls in IDENTIFIER_SET:
-    encoder.register_type(kls)

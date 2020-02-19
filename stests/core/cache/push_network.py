@@ -1,7 +1,7 @@
-from stests.core.cache.identifiers import NetworkIdentifier
 from stests.core.cache.utils import encache
 from stests.core.domain import Block
 from stests.core.domain import Network
+from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
 
 

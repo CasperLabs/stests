@@ -3,8 +3,8 @@ import typing
 import casperlabs_client as pyclx
 
 from stests.core import cache
-from stests.core.cache import NetworkIdentifier
 from stests.core.domain import Node
+from stests.core.domain import NetworkIdentifier
 from stests.core.domain import RunContext
 
 
