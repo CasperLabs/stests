@@ -110,6 +110,35 @@ def encache(func):
     return wrapper
 
 
+def decache1(func):
+    """Decorator to orthoganally pull domain objects from cache.
+    
+    """
+    def wrapper(*args, **kwargs):
+        keys = func(*args, **kwargs)
+        key = ":".join([str(i) for i in keys])
+        with stores.get_store() as store:
+            if key.endswith("*"):
+                return do_get_all(store, key)
+            else:
+                return do_get(store, key)
+
+    return wrapper
+    
+
+def encache1(func):
+    """Decorator to orthoganally encache domain objects.
+    
+    """
+    def wrapper(*args, **kwargs):
+        keys, data = func(*args, **kwargs)
+        key = ":".join([str(i) for i in keys])
+        with stores.get_store() as store:
+            do_set(store, key, data)
+
+    return wrapper
+
+
 def decache(func):
     """Decorator to orthoganally pull domain objects from cache.
     

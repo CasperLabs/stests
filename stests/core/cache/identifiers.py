@@ -42,10 +42,6 @@ class NodeIdentifier:
 
     # Node index.
     index: int
-
-    @property
-    def key(self) -> str:
-        return f"global.node:{self.network.name}:N-{str(self.index).zfill(4)}"
  
 
 @dataclass_json
@@ -63,10 +59,6 @@ class RunIdentifier:
     # Type of generator, e.g. WG-100 ...etc.
     type: str
 
-    @property
-    def key(self) -> str:
-        return f"{self.network.name}.{self.type}:R-{str(self.index).zfill(3)}"
-
 
 @dataclass_json
 @dataclass
@@ -83,10 +75,6 @@ class AccountIdentifier:
     @property
     def network_id(self) -> NetworkIdentifier:
         return this.run.network
-
-    @property
-    def key(self) -> str:
-        return f"{self.run.key}:account:{str(self.index).zfill(6)}"
 
 
 # Set of supported identifiers.

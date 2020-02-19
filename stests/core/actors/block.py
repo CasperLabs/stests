@@ -12,27 +12,19 @@ from stests.core.domain import BlockStatus
 _QUEUE = "monitoring"
 
 
-@dramatiq.actor(queue_name=f"{_QUEUE}.on_block_added")
-def on_block_added(network_id: NetworkIdentifier, bhash: str):   
-    """Event: raised whenever a new block is added.
-    
-    """
-    pass
-
-
 @dramatiq.actor(queue_name=f"{_QUEUE}.on_block_finalized")
 def on_block_finalized(network_id: NetworkIdentifier, bhash: str):   
     """Event: raised whenever a block is finalized.
     
     """
-    # Set block info.
+    # Get block info.
     block = clx.get_block(network_id, bhash)
 
     # Set block status.
     block.status = BlockStatus.FINALIZED
 
-    # Update cache.
-    cache.set_block(network_id, block)
+    # Encache.
+    cache.set_block(network_id, block)  
 
     # Enqueue deploys.
     for dhash in clx.get_block_deploys(network_id, bhash):

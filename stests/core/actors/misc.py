@@ -16,7 +16,7 @@ def do_cache_context(ctx: RunContext):
     
     """
     # Cache.
-    cache.set_run_context(ctx)
+    cache.set_run(ctx)
 
     # Chain.
     return ctx
@@ -39,4 +39,4 @@ def do_persist_event(ctx: RunContext, event_name: str):
     """Persists event information.
     
     """
-    cache.set_event(ctx, factory.create_run_event(ctx, event_name))
+    cache.set_run_event(ctx, factory.create_run_event(ctx, event_name))

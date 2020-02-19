@@ -31,6 +31,23 @@ def create_account(
         )
 
 
+def create_account_id(
+    index: int,
+    network: str,
+    run_index: int,
+    run_type: int,
+    ) -> Account:
+    """Returns a cache identifier: Account.
+    
+    """
+    network_id = create_network_id(network)
+
+    return AccountIdentifier(
+        index=index,
+        run=create_run_id(network_id, run_index, run_type)
+    )
+
+
 def create_block(
     bhash: str,
     deploy_cost_total: int,
@@ -87,7 +104,7 @@ def create_network(name_raw: str) -> Network:
 
 
 def create_network_id(name_raw: str) -> NetworkIdentifier:
-    """Returns a domain object instance: NetworkIdentifier.
+    """Returns a cache identifier: NetworkIdentifier.
     
     """
     # If name has already been parsed.
@@ -132,7 +149,7 @@ def create_node_id(
     network_id: NetworkIdentifier,
     index: int
     ) -> NodeIdentifier:
-    """Returns a domain object instance: NodeIdentifier.
+    """Returns a cache identifier: NodeIdentifier.
     
     """
     return NodeIdentifier(network_id, index)
@@ -175,7 +192,7 @@ def create_run_id(
     run_index: int,
     run_type: str
     ) -> RunIdentifier:
-    """Returns a domain object instance: NodeIdentifier.
+    """Returns a cache identifier: NodeIdentifier.
     
     """
     return RunIdentifier(network_id, run_index, run_type)
