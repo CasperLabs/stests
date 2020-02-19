@@ -22,6 +22,7 @@ def create_block() -> Block:
         deploy_cost_total=int(1e7),
         deploy_count=1,
         deploy_gas_price_avg=1,
+        network="lrt1",
         rank=1,
         size_bytes=int(1e8),
         timestamp=dt.now().timestamp(),
