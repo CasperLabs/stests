@@ -46,6 +46,7 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
     info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
     return factory.create_block(
+        network_id=network_id,
         block_hash=block_hash,
         deploy_cost_total=info.status.stats.deploy_cost_total,
         deploy_count=info.summary.header.deploy_count, 

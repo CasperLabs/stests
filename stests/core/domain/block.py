@@ -22,6 +22,9 @@ class Block(Entity):
     # Average price of deploys.
     deploy_gas_price_avg: int
 
+    # Associated network.
+    network: str
+
     # Rank, aka height.
     rank: int
 

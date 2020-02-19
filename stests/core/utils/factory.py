@@ -70,6 +70,7 @@ def create_account_id(
 
 
 def create_block(
+    network_id: NetworkIdentifier,
     block_hash: str,
     deploy_cost_total: int,
     deploy_count: int, 
@@ -87,6 +88,7 @@ def create_block(
         deploy_cost_total=deploy_cost_total,
         deploy_count=deploy_count, 
         deploy_gas_price_avg=deploy_gas_price_avg,
+        network=network_id.name,
         rank=rank,
         size_bytes=size_bytes,
         status=BlockStatus.NULL,
