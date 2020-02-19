@@ -6,6 +6,10 @@ from stests.core import clx
 FIXTURES = {
     'do_deploy_contract',
     'do_transfer',
+    'get_balance',
+    'get_block',
+    'get_block_deploys',
+    'stream_events',
 }
 
 

@@ -1,51 +1,51 @@
 import datetime
 import random
 import typing
+from datetime import datetime as dt
 
-from stests.core.domain import Account
-from stests.core.domain import AccountStatus
-from stests.core.domain import AccountType
-from stests.core.domain import Deploy
-from stests.core.domain import DeployStatus
-from stests.core.domain import Network
-from stests.core.domain import NetworkStatus
-from stests.core.domain import NetworkType
-from stests.core.domain import Node
-from stests.core.domain import NodeStatus
-from stests.core.domain import NodeType
-
-from stests.core.domain import RunContext
-from stests.core.domain import RunEvent
-
+from stests.core.domain import *
 from stests.core.utils import crypto
 from stests.core.utils import factory
 
 
 
 def create_account(typeof: AccountType=None) -> Account:
-    """Factory function that returns a test account.
-    
-    """
     return factory.create_account(
         status=random.choice(list(AccountStatus)),
         typeof=typeof or random.choice(list(AccountType))
     )
 
 
+def create_block() -> Block:
+    return Block(
+        block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
+        deploy_cost_total=int(1e7),
+        deploy_count=1,
+        deploy_gas_price_avg=1,
+        rank=1,
+        size_bytes=int(1e8),
+        timestamp=dt.now().timestamp(),
+        validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",
+        status=random.choice(list(BlockStatus))
+    )
+
+
 def create_deploy() -> Deploy:
-    """Factory function that returns a test deploy.
-    
-    """
     return Deploy(
-        hash_id="6ff843ba685842aa82031d3f53c48b66326df7639a63d128974c5c14f31a0f33343a8c65551134ed1ae0f2b0dd2bb495dc81039e3eeb0aa1bb0388bbeac29183",
-        status=random.choice(list(DeployStatus))
+        block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
+        block_rank=1,
+        deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
+        network="lrt1",
+        node=1,
+        run=1,
+        run_type="WG-XXX",
+        status=random.choice(list(DeployStatus)),
+        ts_dispatched=None,
+        ts_finalized=None    
     )
 
 
 def create_network() -> Network:
-    """Factory function that returns a test network.
-    
-    """
     index=1
     typeof=NetworkType.LOC
 
@@ -60,9 +60,6 @@ def create_network() -> Network:
 
 
 def create_node() -> Node:
-    """Factory function that returns a test node.
-    
-    """
     return Node(
         account=create_account(AccountType.BOND),
         host="localhost",
@@ -75,46 +72,51 @@ def create_node() -> Node:
 
 
 def create_run_context() -> RunContext:
-    """Factory function that returns a test run context.
-    
-    """
     return RunContext(
         args=None,
-        index=1,
         network="LOC-01",
         node=1,
-        typeof="WG-XXX"
+        run=1,
+        run_type="WG-XXX"
         )
 
 
 def create_run_event() -> RunEvent:
-    """Factory function that returns a test run event.
-    
-    """
     return RunEvent(
         event="on_wg_event",
         network="LOC-01",
-        run_index=1,
-        run_typeof="WG-XXX",
-        timestamp=datetime.datetime.now().timestamp()
+        run=1,
+        run_type="WG-XXX",
+        timestamp=dt.now().timestamp()
+        )
+
+
+def create_transfer() -> Transfer:
+    return Transfer(
+        amount=int(1e7),
+        asset="CLX",
+        cp1_index=1,
+        cp2_index=2,
+        deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
+        deploy_hash_refund=None,
+        is_refundable=False
         )
 
 
 # Map: domain type to factory function.
 FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     Account: create_account,
+    Block: create_block,
     Deploy: create_deploy,
     Network: create_network,
     Node: create_node,
     RunContext: create_run_context,
     RunEvent: create_run_event,
+    Transfer: create_transfer
 }
 
 
 def get_instance(dcls: typing.Type) -> typing.Any:
-    """Factory function that returns a test domain object.
-    
-    """
     try:
         factory = FACTORIES[dcls]
     except KeyError:

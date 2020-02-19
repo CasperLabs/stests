@@ -66,8 +66,10 @@ def test_07():
         assert isinstance(encoded, typeof)
         for i in encoded:
             assert isinstance(i, dict)
-            assert 'meta' in i
-            assert 'type_key' in i['meta']
+            assert '_type_key' in i
+            assert '_ts_created' in i
+            assert '_ts_updated' in i
+            assert '_uid' in i
 
 
 def test_08():
