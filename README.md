@@ -22,42 +22,48 @@ Who uses stests ?
 CLS network developer & DevOps community.
 
 
+Requirements
+--------------------------------------
+
+    - python 3.7+
+    - redis
+
 Installation
---------
+--------------------------------------
 
 ```
 curl https://raw.githubusercontent.com/CasperLabs/stests/master/installer | bash
 ```
 
 Usage
---------
+--------------------------------------
 
 1.  Register network + faucet key:
 
     ```
-    stests-set-network loc1
-    stests-set-network-faucet-key loc1 path-to-faucet-private-key-pem-file
+    stests-set-network poc1
+    stests-set-network-faucet-key poc1 path-to-faucet-private-key-pem-file
     ```
 
 2.  Register nodes + node bonding keys:
 
     ```
-    stests-set-node loc1:1 {host}:{port} full
-    stests-set-node-bonding-key loc1:1 path-to-validator-private-key-pem-file
+    stests-set-node poc1:1 {host}:{port} full
+    stests-set-node-bonding-key poc1:1 path-to-validator-private-key-pem-file
 
-    stests-set-node loc1:1 {host}:{port} full
-    stests-set-node-bonding-key loc1:2 path-to-validator-private-key-pem-file
+    stests-set-node poc1:2 {host}:{port} full
+    stests-set-node-bonding-key poc1:2 path-to-validator-private-key-pem-file
 
-    stests-set-node loc1:1 {host}:{port} full
-    stests-set-node-bonding-key loc1:3 path-to-validator-private-key-pem-file
+    stests-set-node poc1:3 {host}:{port} full
+    stests-set-node-bonding-key poc1:3 path-to-validator-private-key-pem-file
     ```
 
 3.  Run a generator:
 
     ```
-    stests-wg-100 loc1 --run 1 --user-accounts 5
-    stests-wg-100 loc1 --run 2 --user-accounts 50
-    stests-wg-100 loc1 --run 3 --user-accounts 500
+    stests-wg-100 poc1 --run 1 --user-accounts 5
+    stests-wg-100 poc1 --run 2 --user-accounts 50
+    stests-wg-100 poc1 --run 3 --user-accounts 500
     ```
 
 Further Information ?
