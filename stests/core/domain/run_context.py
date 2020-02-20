@@ -25,14 +25,6 @@ class RunContext(Entity):
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str
 
-    @property
-    def keypath(self):
-        return [
-            self.network,
-            self.run_type,
-            f"R-{str(self.run).zfill(3)}"            
-        ]
-
     # Type key of associated object used in serialisation scenarios.
     _type_key: str = None
 

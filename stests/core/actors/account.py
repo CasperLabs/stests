@@ -23,12 +23,11 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     :param typeof: Account type.
 
     """
-    # Instantiate & encache.
-    cache.set_run_account(ctx, factory.create_account_for_run(
-        ctx,
-        index=index,
-        typeof=typeof
-        ))
+    # Instantiate.
+    account = factory.create_account_for_run(ctx, index=index, typeof=typeof)
+
+    # Encache.
+    cache.set_run_account(account)
 
     # Chain.
     return ctx

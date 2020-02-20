@@ -10,17 +10,22 @@ from stests.core.domain import RunEvent
 
 
 @encache
-def set_run_account(ctx: RunContext, account: Account) -> typing.Tuple[typing.List[str], Account]:
+def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
     """Encaches domain object: Account.
     
-    :param ctx: Generator run contextual information.
     :param account: Account domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
     """
-    return ["run-account"] + ctx.keypath + [str(account.index).zfill(6)], account
-    
+    return [
+        "run-account",
+        account.network,
+        account.run_type,
+        f"R-{str(account.run).zfill(3)}",
+        str(account.index).zfill(6)
+    ], account    
+
 
 @encache
 def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContext]:
@@ -31,7 +36,12 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
     :returns: Keypath + domain object instance.
 
     """
-    return ["run-context"] + ctx.keypath, ctx
+    return [
+        "run-context",
+        ctx.network,
+        ctx.run_type,
+        f"R-{str(ctx.run).zfill(3)}"
+    ], ctx
 
 
 @encache

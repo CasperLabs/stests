@@ -14,8 +14,16 @@ def flush_run(ctx: RunContext) -> typing.Generator:
     :returns: A generator of keypaths to be flushed.
     
     """
-    yield ["run-account"] + ctx.keypath
-    yield ["run-context"] + ctx.keypath
-    yield ["run-deploy"] + ctx.keypath
-    yield ["run-event"] + ctx.keypath
-    yield ["run-transfer"] + ctx.keypath
+    for collection in [
+        "account",
+        "context",
+        "deploy",
+        "event",
+        "transfer",
+    ]:
+        yield [
+            f"run-{collection}",
+            ctx.network,
+            ctx.run_type,
+            f"R-{str(ctx.run).zfill(3)}"            
+        ]
