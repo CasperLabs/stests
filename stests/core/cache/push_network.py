@@ -26,10 +26,9 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
 
 
 @encache_singleton
-def set_network_block(network_id: NetworkIdentifier, block: Block) -> typing.Tuple[typing.List[str], Block]:
+def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     """Encaches domain object: Block.
     
-    :param network_id: A network identifier.
     :param block: Block domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
@@ -37,7 +36,7 @@ def set_network_block(network_id: NetworkIdentifier, block: Block) -> typing.Tup
     """
     return [
         "network-block",
-        network_id.name,
+        block.network,
         f"{str(block.rank).zfill(7)}.{block.block_hash}"
     ], block
     
@@ -59,10 +58,9 @@ def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
 
 
 @encache_singleton
-def set_network_deploy(network_id: NetworkIdentifier, deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
+def set_network_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
-    :param network_id: A network identifier.
     :param block: Deploy domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
@@ -70,6 +68,6 @@ def set_network_deploy(network_id: NetworkIdentifier, deploy: Deploy) -> typing.
     """
     return [
         "network-deploy",
-        network_id.name,
+        deploy.network,
         f"{deploy.block_hash}.{deploy.deploy_hash}"
     ], deploy

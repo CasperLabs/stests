@@ -19,7 +19,7 @@ Launching a blockchain network within a hostile permission-less setting is non-t
 Who uses stests ?
 --------------------------------------
 
-CLS network developer & DevOps community.
+CLX network community.  This encompasses developers, validators, evaluators ... etc.
 
 
 Requirements

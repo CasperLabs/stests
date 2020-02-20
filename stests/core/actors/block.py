@@ -30,7 +30,7 @@ def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):
     block.status = BlockStatus.FINALIZED
 
     # Encache & escape if another stream handler has already processed this block.
-    _, already_processed = cache.set_network_block(network_id, block)  
+    _, already_processed = cache.set_network_block(block)  
     if not already_processed:
         return
 
@@ -53,7 +53,7 @@ def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, deploy_h
     deploy = factory.create_deploy(network_id, block_hash, deploy_hash, DeployStatus.FINALIZED)    
 
     # Encache & escape if another stream handler has already processed this deploy.
-    _, already_processed = cache.set_network_deploy(network_id, deploy)
+    _, already_processed = cache.set_network_deploy(deploy)
     if not already_processed:
         return
 
