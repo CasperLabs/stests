@@ -99,9 +99,7 @@ def create_block(
 
 def create_deploy(
     network_id: NetworkIdentifier,
-    node: int,
     block_hash: str,
-    block_rank: int,
     deploy_hash: str,
     status: DeployStatus
     ) -> Deploy:
@@ -110,10 +108,9 @@ def create_deploy(
     """
     return Deploy(
         block_hash=block_hash,
-        block_rank=block_rank,
         deploy_hash=deploy_hash,
         network=network_id.name,
-        node=node,
+        node=None,
         run=None,
         run_type=None,
         status=status,
@@ -134,7 +131,6 @@ def create_deploy_for_run(
     """
     return Deploy(
         block_hash=None,
-        block_rank=None,
         deploy_hash=deploy_hash,
         network=ctx.network,
         node=ctx.node,
@@ -266,7 +262,8 @@ def create_transfer(
     cp1: Account,
     cp2: Account,
     deploy_hash: str,
-    is_refundable: bool
+    is_refundable: bool,
+    status=TransferStatus.PENDING
     ) -> Transfer:
     """Returns a domain object instance: Transfer.
     
@@ -282,5 +279,6 @@ def create_transfer(
         network=ctx.network,
         node=ctx.node,
         run=ctx.run,
-        run_type=ctx.run_type
+        run_type=ctx.run_type,
+        status=status
     )

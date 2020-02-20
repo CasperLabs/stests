@@ -34,7 +34,6 @@ def create_block() -> Block:
 def create_deploy() -> Deploy:
     return Deploy(
         block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
-        block_rank=1,
         deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
         network="lrt1",
         node=1,
@@ -58,6 +57,10 @@ def create_network() -> Network:
         status=random.choice(list(NetworkStatus)),
         typeof=random.choice(list(NetworkType)),
     )
+
+
+def create_network_id() -> NetworkIdentifier:
+    return factory.create_network_id("lrt1")
 
 
 def create_node() -> Node:
@@ -104,7 +107,8 @@ def create_transfer() -> Transfer:
         network="lrt1",
         node=1,
         run=1,
-        run_type="WG-XXX"
+        run_type="WG-XXX",
+        status=TransferStatus.PENDING
         )
 
 

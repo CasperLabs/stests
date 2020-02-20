@@ -114,7 +114,6 @@ def main(args: argparse.Namespace):
     # Initialise MQ sub-package & import actors in scope.
     mq.initialise()
 
-
     # Import actors in scope.
     import stests.core.actors
     import stests.generators.wg_100.orchestration

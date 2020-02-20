@@ -56,8 +56,8 @@ def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
     (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
-    cache.set_run_deploy(ctx, deploy)
-    cache.set_run_transfer(ctx, transfer)
+    cache.set_run_deploy(deploy)
+    cache.set_run_transfer(transfer)
 
     # Temporary until properly hooking into streams.
     time.sleep(4.0)

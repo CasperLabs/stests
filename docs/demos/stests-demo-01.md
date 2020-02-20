@@ -28,7 +28,8 @@
 
     ```
     stests-set-network lrt1
-    stests-set-node lrt1:1  localhost:40401 full
+    stests-set-network-faucet-key lrt1 $CLABS_OPS/chains/lrt-01/nodes/node-001/keys/validator-private.pem
+    stests-set-node lrt1:1 localhost:40401 full
     stests-set-node-bonding-key lrt1:1 $CLABS_OPS/chains/lrt-01/nodes/node-001/keys/validator-private.pem
     ```
 

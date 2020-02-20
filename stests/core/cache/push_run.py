@@ -35,39 +35,55 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
 
 
 @encache
-def set_run_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
+def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
-    :param ctx: Generator run contextual information.
     :param deploy: Deploy domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
     """
-    return ["run-deploy"] + ctx.keypath + [f"{str(deploy.ts_dispatched)}.{deploy.deploy_hash}"], deploy
+    return [
+        "run-deploy",
+        deploy.network,
+        deploy.run_type,
+        f"R-{str(deploy.run).zfill(3)}",
+        f"{str(deploy.ts_dispatched)}.{deploy.deploy_hash}"
+    ], deploy
 
 
 @encache
-def set_run_event(ctx: RunContext, evt: RunEvent) -> typing.Tuple[typing.List[str], RunEvent]:
+def set_run_event(evt: RunEvent) -> typing.Tuple[typing.List[str], RunEvent]:
     """Encaches domain object: RunEvent.
     
-    :param ctx: Generator run contextual information.
     :param evt: RunEvent domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
     """
-    return ["run-event"] + ctx.keypath + [f"{str(evt.timestamp)}.{evt.event}"], evt
+    return [
+        "run-event",
+        evt.network,
+        evt.run_type,
+        f"R-{str(evt.run).zfill(3)}",
+        f"{str(evt.timestamp)}.{evt.event}"
+    ], evt
 
 
 @encache
-def set_run_transfer(ctx: RunContext, transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
+def set_run_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
     """Encaches domain object: Transfer.
     
-    :param ctx: Generator run contextual information.
     :param transfer: Transfer domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
     """
-    return ["run-transfer"] + ctx.keypath + [transfer.asset.lower(), transfer.deploy_hash], transfer
+    return [
+        "run-transfer",
+        transfer.network,
+        transfer.run_type,
+        f"R-{str(transfer.run).zfill(3)}",
+        transfer.asset.lower(),
+        transfer.deploy_hash
+    ], transfer

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from stests.core.utils.domain import *
+from stests.core.domain.enums import TransferStatus
 
     
 
@@ -41,6 +42,9 @@ class Transfer(Entity):
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str    
+
+    # Status of transfer.
+    status: TransferStatus = get_enum_field(TransferStatus)
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: str = None

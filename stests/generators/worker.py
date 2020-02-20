@@ -4,6 +4,7 @@ mq.initialise()
 
 # Import global actors.
 import stests.core.actors.account
+import stests.core.actors.correlation
 import stests.core.actors.block
 import stests.core.actors.misc
 

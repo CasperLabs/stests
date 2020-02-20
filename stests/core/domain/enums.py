@@ -90,6 +90,16 @@ class NodeType(enum.Enum):
     READ_ONLY = enum.auto()
 
 
+class TransferStatus(enum.Flag):
+    """Flag over set of transfer states.
+    
+    """
+    NULL = enum.auto()
+    PENDING = enum.auto()
+    ERROR = enum.auto()
+    COMPLETE = enum.auto()
+
+
 # Full set of enums.
 ENUM_SET = {
     AccountStatus,
@@ -100,4 +110,5 @@ ENUM_SET = {
     NetworkType,
     NodeStatus,
     NodeType,
+    TransferStatus,
 }

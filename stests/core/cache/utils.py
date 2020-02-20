@@ -19,7 +19,7 @@ def decache(func: typing.Callable) -> typing.Callable:
         keypath = func(*args, **kwargs)
         key = ":".join([str(i) for i in keypath])
         with stores.get_store() as store:
-            if key.endswith("*"):
+            if key.find("*") >= 0:
                 return _get_all(store, key)
             else:
                 return _get(store, key)
@@ -40,6 +40,25 @@ def encache(func: typing.Callable) -> typing.Callable:
         key = ":".join([str(i) for i in keypath])
         with stores.get_store() as store:
             _set(store, key, data)
+        return key
+
+    return wrapper
+
+
+def encache_singleton(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally push domain objects to cache (if they have not already been pushed).
+    
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+
+    """
+    def wrapper(*args, **kwargs):
+        keypath, data = func(*args, **kwargs)
+        key = ":".join([str(i) for i in keypath])
+        with stores.get_store() as store:
+            was_cached = _setnx(store, key, data)
+        return key, was_cached
 
     return wrapper
 
@@ -130,6 +149,21 @@ def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
     store.set(key, json.dumps(encoder.encode(data), indent=4))
 
     return key
+
+
+def _setnx(store: typing.Callable, key: str, data: typing.Any) -> typing.Tuple[str, bool]:
+    """Wraps redis.setnx command.
+    
+    :param store: Cache store connection wrapper.
+    :param key: Key of item to be cached.
+    :param data: Data to be cached.
+
+    :returns: True if .
+
+    """
+    logger.log(f"CACHE :: setnx :: {key}")
+    
+    return bool(store.setnx(key, json.dumps(encoder.encode(data), indent=4)))
 
 
 def _flush(store: typing.Callable, namespace: str):

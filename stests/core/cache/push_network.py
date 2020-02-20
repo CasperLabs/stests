@@ -1,6 +1,7 @@
 import typing
 
 from stests.core.cache.utils import encache
+from stests.core.cache.utils import encache_singleton
 from stests.core.domain import Block
 from stests.core.domain import Deploy
 from stests.core.domain import Network
@@ -24,7 +25,7 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     ], network
 
 
-@encache
+@encache_singleton
 def set_network_block(network_id: NetworkIdentifier, block: Block) -> typing.Tuple[typing.List[str], Block]:
     """Encaches domain object: Block.
     
@@ -57,7 +58,7 @@ def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     ], node
 
 
-@encache
+@encache_singleton
 def set_network_deploy(network_id: NetworkIdentifier, deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     

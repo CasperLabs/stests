@@ -13,9 +13,6 @@ class Deploy(Entity):
     # Associated block hash in event of finalization. 
     block_hash: str
 
-    # Associated block rank in event of finalization. 
-    block_rank: int
-
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
 

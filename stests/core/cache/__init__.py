@@ -9,6 +9,7 @@ from stests.core.cache.pull_network import get_nodes
 
 from stests.core.cache.pull_run import get_account
 from stests.core.cache.pull_run import get_run_account
+from stests.core.cache.pull_run import get_run_deploy_and_transfers
 from stests.core.cache.pull_run import get_run_network
 from stests.core.cache.pull_run import get_run_node
 

@@ -47,4 +47,4 @@ def on_run_event(ctx: RunContext, event_name: str):
 
     """
     # Encache.
-    cache.set_run_event(ctx, factory.create_run_event(ctx, event_name))
+    cache.set_run_event(factory.create_run_event(ctx, event_name))

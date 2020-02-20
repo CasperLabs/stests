@@ -6,10 +6,12 @@ from stests.core.cache.pull_network import get_nodes
 from stests.core.cache.utils import decache
 from stests.core.domain import Account
 from stests.core.domain import AccountIdentifier
+from stests.core.domain import Deploy
 from stests.core.domain import Network
 from stests.core.domain import Node
 from stests.core.domain import NodeStatus
 from stests.core.domain import RunContext
+from stests.core.domain import Transfer
 from stests.core.utils import factory
 
 
@@ -87,3 +89,15 @@ def get_run_node(ctx: RunContext) -> Node:
         return nodes[ctx.node - 1]
     except IndexError:
         return random.choice(nodes)
+
+
+@decache
+def get_run_deploy_and_transfers(dhash: str) -> typing.List[typing.Union[Deploy, Transfer]]:
+    """Decaches all deploys and/or transfers relating to a particular run/deploy combination.
+    
+    :param dhash: A deploy hash.
+
+    :returns: List of matching deploys and/or transfers.
+
+    """    
+    return [f"run-*{dhash}*"]
