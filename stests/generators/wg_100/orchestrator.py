@@ -5,9 +5,7 @@ from stests.core.domain import RunContext
 
 from stests.core.actors.account import do_create_account
 from stests.core.actors.account import do_fund_account_and_verify
-from stests.core.actors.misc import do_cache_context
-from stests.core.actors.misc import do_flush_cache
-
+from stests.core.actors.misc import do_reset_cache
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_1 import do_start_auction
 from stests.generators.wg_100.phase_1 import do_deploy_contract
@@ -33,80 +31,39 @@ def execute(ctx: RunContext):
 
     :param ctx: Generator run contextual information.
 
-    """
-    # TODO: chunk user account creating/funding ?
-    do_flush_cache.send_with_options(
-        args=(ctx, ), 
-        on_success=on_flush_cache
+    """    
+    do_reset_cache.send_with_options(
+        args=(ctx, ),
+        on_success=on_cache_reset
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_flush_cache(_, ctx: RunContext):
-    """Callback: on_flush_cache.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    do_cache_context.send_with_options(
-        args=(ctx, ), 
-        on_success=on_cache_context
-        )
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_cache_context(_, ctx: RunContext):
-    """Callback: on_cache_context.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    do_create_account.send_with_options(
-        args=(ctx, ACC_INDEX_FAUCET, AccountType.FAUCET),
-        on_success=on_create_faucet_account
-        )
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_create_faucet_account(_, ctx: RunContext):
-    """Callback: on_create_faucet_account.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    do_create_account.send_with_options(
-        args=(ctx, ACC_INDEX_CONTRACT, AccountType.CONTRACT),
-        on_success=on_create_contract_account
-        )
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_create_contract_account(_, ctx: RunContext):
-    """Callback: on_create_contract_account.
+def on_cache_reset(_, ctx: RunContext):
+    """Callback: on_cache_reset.
     
     :param ctx: Generator run contextual information.
 
     """
     def get_messages():
+        yield do_create_account.message(ctx, ACC_INDEX_FAUCET, AccountType.FAUCET)
+        yield do_create_account.message(ctx, ACC_INDEX_CONTRACT, AccountType.CONTRACT)
         for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
             yield do_create_account.message(ctx, index, AccountType.USER)
 
     g = dramatiq.group(get_messages())
-    g.add_completion_callback(on_create_user_accounts.message(ctx))
+    g.add_completion_callback(on_create_accounts.message(ctx))
     g.run()
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_create_user_accounts(ctx: RunContext):
-    """Callback: on_create_user_accounts.
+def on_create_accounts(ctx: RunContext):
+    """Callback: on_create_accounts.
     
     :param ctx: Generator run contextual information.
 
     """
-    do_fund_faucet.send_with_options(
-        args=(ctx, ACC_INDEX_FAUCET, ctx.args.faucet_initial_clx_balance),
-        on_success=on_fund_faucet
-        )
+    do_fund_faucet.send(ctx, ACC_INDEX_FAUCET, ctx.args.faucet_initial_clx_balance)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -116,10 +73,11 @@ def on_fund_faucet(_, ctx: RunContext):
     :param ctx: Generator run contextual information.
 
     """
-    do_fund_account_and_verify.send_with_options(
-        args=(ctx, ACC_INDEX_FAUCET, ACC_INDEX_CONTRACT, ctx.args.contract_initial_clx_balance),
-        on_success=on_fund_contract
-    )
+    print(777)
+    # do_fund_account_and_verify.send_with_options(
+    #     args=(ctx, ACC_INDEX_FAUCET, ACC_INDEX_CONTRACT, ctx.args.contract_initial_clx_balance),
+    #     on_success=on_fund_contract
+    # )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -174,3 +132,14 @@ def on_start_auction(_, ctx: RunContext):
 
     """
     print("TIME TO GO HOME")
+
+
+
+@dramatiq.actor(queue_name=_QUEUE, actor_name="on_wg100_deploy_finalized")
+def on_deploy_finalized(deploy_hash):
+    """Callback: on_start_auction.
+    
+    :param ctx: Generator run contextual information.
+
+    """
+    print(f"TIME TO GO HOME :: {deploy_hash}")

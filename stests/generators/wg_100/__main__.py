@@ -1,16 +1,12 @@
 import argparse
-from dataclasses import dataclass
-from dataclasses_json import dataclass_json
-
-import dramatiq 
 
 from stests.core import mq
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
+
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.args import Arguments
-
 
 
 # Set command line arguments.
@@ -111,14 +107,6 @@ def main(args: argparse.Namespace):
     """Entry point.
     
     """
-    # Initialise MQ sub-package & import actors in scope.
-    mq.initialise()
-
-    # Import actors in scope.
-    import stests.core.actors
-    import stests.generators.wg_100.orchestration
-    import stests.generators.wg_100.phase_1
-
     # Set run context.
     network_id = factory.create_network_id(args.network)
     node_id = factory.create_node_id(network_id, args.node)
@@ -130,14 +118,23 @@ def main(args: argparse.Namespace):
         run_type=constants.TYPE
     )
 
-    # Send spinup message.
-    logger.log("... spinup begins")
-    from stests.core.actors.misc import do_flush_cache
-    from stests.generators.wg_100.orchestration import on_flush_cache
-    do_flush_cache.send_with_options(
-        args=(ctx, ), 
-        on_success=on_flush_cache
-        )
+    # Initialise MQ broker.
+    mq.initialise()
+
+    # Import actors.
+    import stests.core.actors.account
+    import stests.core.actors.misc
+
+    import stests.generators.correlator
+
+    import stests.generators.wg_100.orchestrator
+    import stests.generators.wg_100.phase_1
+
+    from stests.generators.wg_100.orchestrator import execute
+
+    # Start workflow.
+    logger.log("... workload generator begins")
+    execute(ctx)
 
 
 # Invoke entry point.

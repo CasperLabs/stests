@@ -92,7 +92,7 @@ def get_run_node(ctx: RunContext) -> Node:
 
 
 @decache
-def get_run_deploy_and_transfers(dhash: str) -> typing.List[typing.Union[Deploy, Transfer]]:
+def get_run_deploy_entities(dhash: str) -> typing.List[typing.Union[Deploy, Transfer]]:
     """Decaches all deploys and/or transfers relating to a particular run/deploy combination.
     
     :param dhash: A deploy hash.

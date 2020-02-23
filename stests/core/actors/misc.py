@@ -11,28 +11,17 @@ _QUEUE = "generators.shared"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_cache_context(ctx: RunContext):   
-    """Pushes context to cache for downstream operations.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    # Cache.
-    cache.set_run_context(ctx)
-
-    # Chain.
-    return ctx
-    
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_flush_cache(ctx: RunContext):   
-    """Flushes cache in preparation for a new run.
+def do_reset_cache(ctx: RunContext):   
+    """Resets cache in preparation for a new run.
     
     :param ctx: Generator run contextual information.
 
     """
     # Flush previous cache data.
     cache.flush_run(ctx)
+
+    # Cache.
+    cache.set_run_context(ctx)
 
     # Chain.
     return ctx

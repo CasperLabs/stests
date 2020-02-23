@@ -6,6 +6,7 @@ from stests.core import cache
 from stests.core.domain import Node
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import RunContext
+from stests.core.utils import logger
 
 
 
@@ -27,6 +28,8 @@ def get_client(src: typing.Union[Node, RunContext, NetworkIdentifier]) -> pyclx.
 
     if not node:
         raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")
+
+    logger.log(f"PYCLX :: connecting to node :: {node.network} :: {node.host}:{node.port}")
 
     # TODO: get node id / client ssl cert.
     return pyclx.CasperLabsClient(

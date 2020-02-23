@@ -42,6 +42,14 @@ class DeployStatus(enum.Flag):
     REJECTED = enum.auto()
 
 
+class DeployType(enum.Flag):
+    """Flag over set of deploy types.
+    
+    """
+    NULL = enum.auto()
+    TRANSFER = enum.auto()
+
+
 class NetworkStatus(enum.Flag):
     """Flag over set of network states.
     
