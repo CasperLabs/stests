@@ -1,10 +1,11 @@
 import dramatiq
 
+from stests.core import cache
 from stests.core.domain import AccountType
 from stests.core.domain import RunContext
 
 from stests.core.actors.account import do_create_account
-from stests.core.actors.account import do_fund_account_and_verify
+from stests.core.actors.account import do_fund_account
 from stests.core.actors.misc import do_reset_cache
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_1 import do_start_auction
@@ -31,11 +32,24 @@ def execute(ctx: RunContext):
 
     :param ctx: Generator run contextual information.
 
-    """    
+    """ 
+    ctx.run_step == "reset_cache"
+    cache.set_run_context(ctx)
+
     do_reset_cache.send_with_options(
         args=(ctx, ),
         on_success=on_cache_reset
         )
+
+
+@dramatiq.actor(queue_name=_QUEUE, actor_name="on_wg100_deploy_finalized")
+def on_deploy_finalized(deploy_hash):
+    """Callback: on_start_auction.
+    
+    :param ctx: Generator run contextual information.
+
+    """    
+    print(f"TIME TO GO HOME :: {deploy_hash}")
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -45,6 +59,9 @@ def on_cache_reset(_, ctx: RunContext):
     :param ctx: Generator run contextual information.
 
     """
+    ctx.run_step == "create_accounts"
+    cache.set_run_context(ctx)
+
     def get_messages():
         yield do_create_account.message(ctx, ACC_INDEX_FAUCET, AccountType.FAUCET)
         yield do_create_account.message(ctx, ACC_INDEX_CONTRACT, AccountType.CONTRACT)
@@ -63,6 +80,9 @@ def on_create_accounts(ctx: RunContext):
     :param ctx: Generator run contextual information.
 
     """
+    ctx.run_step == "fund_faucet"
+    cache.set_run_context(ctx)
+
     do_fund_faucet.send(ctx, ACC_INDEX_FAUCET, ctx.args.faucet_initial_clx_balance)
 
 
@@ -73,8 +93,11 @@ def on_fund_faucet(_, ctx: RunContext):
     :param ctx: Generator run contextual information.
 
     """
+    ctx.run_step == "fund_contract"
+    cache.set_run_context(ctx)
+
     print(777)
-    # do_fund_account_and_verify.send_with_options(
+    # do_fund_account.send_with_options(
     #     args=(ctx, ACC_INDEX_FAUCET, ACC_INDEX_CONTRACT, ctx.args.contract_initial_clx_balance),
     #     on_success=on_fund_contract
     # )
@@ -89,7 +112,7 @@ def on_fund_contract(_, ctx: RunContext):
     """
     def get_messages():
         for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
-            yield do_fund_account_and_verify.message(
+            yield do_fund_account.message(
                 ctx, ACC_INDEX_FAUCET, index, ctx.args.user_initial_clx_balance
             )
 
@@ -134,12 +157,3 @@ def on_start_auction(_, ctx: RunContext):
     print("TIME TO GO HOME")
 
 
-
-@dramatiq.actor(queue_name=_QUEUE, actor_name="on_wg100_deploy_finalized")
-def on_deploy_finalized(deploy_hash):
-    """Callback: on_start_auction.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    print(f"TIME TO GO HOME :: {deploy_hash}")

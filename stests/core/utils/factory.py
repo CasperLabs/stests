@@ -115,14 +115,16 @@ def create_deploy(
         run_type=None,
         status=status,
         ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
-        ts_finalized=dt.now().timestamp() if status == DeployStatus.FINALIZED else None    
+        ts_finalized=dt.now().timestamp() if status == DeployStatus.FINALIZED else None,
+        typeof=DeployType.NULL,    
     )
 
 
 def create_deploy_for_run(
     ctx: RunContext,
     deploy_hash: str,
-    status: DeployStatus
+    status: DeployStatus,
+    typeof: DeployType
     ) -> Deploy:
     """Returns a domain object instance: Deploy.
 
@@ -139,6 +141,7 @@ def create_deploy_for_run(
         status=status,
         ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
         ts_finalized=None,
+        typeof=typeof
     )
 
 
@@ -225,6 +228,7 @@ def create_run_context(
         network=network_id.name,
         node=node_id.index,
         run=run,
+        run_step=None,
         run_type=run_type
     )
 

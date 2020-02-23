@@ -38,23 +38,12 @@ def do_fund_faucet(ctx: RunContext, account_index: int, motes: int):
     cp1 = network.faucet
     cp2 = cache.get_run_account(ctx, account_index)
 
-    # Set balances.
-    cp1_balance = clx.get_balance(ctx, cp1)
-    cp2_balance = clx.get_balance(ctx, cp2)
-
     # Transfer CLX from network faucet -> run faucet.
     (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_run_deploy(deploy)
     cache.set_run_transfer(transfer)
-
-    # Temporary until properly hooking into streams.
-    time.sleep(4.0)
-
-    # Assert balances.
-    assert clx.get_balance(ctx, cp1) <= cp1_balance - motes
-    assert clx.get_balance(ctx, cp2) == cp2_balance + motes
 
     # Chain.
     return ctx

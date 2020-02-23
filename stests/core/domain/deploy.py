@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from stests.core.domain.enums import DeployStatus
+from stests.core.domain.enums import DeployType
 from stests.core.utils.domain import *
 
 
@@ -22,6 +23,12 @@ class Deploy(Entity):
     # Associated node index.
     node: int
 
+    # Numerical index to distinguish between multiple runs of the same generator.
+    run: int
+
+    # Type of generator, e.g. WG-100 ...etc.
+    run_type: str    
+
     # Deploy's processing status.
     status: DeployStatus = get_enum_field(DeployStatus)
 
@@ -31,11 +38,8 @@ class Deploy(Entity):
     # Moment in time when deploy was finalized by CLX network.
     ts_finalized: int
 
-    # Numerical index to distinguish between multiple runs of the same generator.
-    run: int
-
-    # Type of generator, e.g. WG-100 ...etc.
-    run_type: str    
+    # Deploy's processing status.
+    typeof: DeployType = get_enum_field(DeployType)
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: str = None

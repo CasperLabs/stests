@@ -22,6 +22,9 @@ class RunContext(Entity):
     # Numerical index to distinguish between multiple runs of the same generator.
     run: int
 
+    # Curent step within the run.
+    run_step: str
+
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str
 

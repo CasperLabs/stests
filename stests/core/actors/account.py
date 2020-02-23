@@ -34,7 +34,7 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
+def do_fund_account(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
     """Performs a CLX transfer between 2 counterparties.
 
     :param ctx: Generator run contextual information.
@@ -47,23 +47,12 @@ def do_fund_account_and_verify(ctx: RunContext, cp1_index: int, cp2_index: int, 
     cp1 = cache.get_run_account(ctx, cp1_index)
     cp2 = cache.get_run_account(ctx, cp2_index)
 
-    # Set balances.
-    cp1_balance = clx.get_balance(ctx, cp1)
-    cp2_balance = clx.get_balance(ctx, cp2)
-
     # Transfer CLX from cp1 -> cp2.
     (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
     cache.set_run_deploy(deploy)
     cache.set_run_transfer(transfer)
-
-    # Temporary until properly hooking into streams.
-    time.sleep(4.0)
-
-    # Assert balances.
-    assert clx.get_balance(ctx, cp1) <= cp1_balance - motes
-    assert clx.get_balance(ctx, cp2) == cp2_balance + motes
 
     # Chain.
     return ctx

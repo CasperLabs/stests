@@ -114,6 +114,7 @@ ENUM_SET = {
     AccountType,
     BlockStatus,
     DeployStatus,
+    DeployType,
     NetworkStatus,
     NetworkType,
     NodeStatus,

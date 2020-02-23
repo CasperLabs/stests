@@ -6,6 +6,7 @@ from stests.core.domain import Account
 from stests.core.domain import Transfer
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
+from stests.core.domain import DeployType
 from stests.core.domain import RunContext
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -43,7 +44,7 @@ def do_transfer(
     logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {deploy_hash}")
 
     return (
-        factory.create_deploy_for_run(ctx, deploy_hash, DeployStatus.DISPATCHED), 
+        factory.create_deploy_for_run(ctx, deploy_hash, DeployStatus.DISPATCHED, DeployType.TRANSFER), 
         factory.create_transfer(ctx, amount, "CLX", cp1, cp2, deploy_hash, is_refundable)
         )
 
