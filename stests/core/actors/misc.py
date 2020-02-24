@@ -27,13 +27,3 @@ def do_reset_cache(ctx: RunContext):
     return ctx
 
 
-@dramatiq.actor(queue_name=f"{_QUEUE}")
-def on_run_event(ctx: RunContext, event_name: str):
-    """Event: raised whenever a run event is fired.
-    
-    :param ctx: Generator run contextual information.
-    :param event_name: Name of run event.
-
-    """
-    # Encache.
-    cache.set_run_event(factory.create_run_event(ctx, event_name))

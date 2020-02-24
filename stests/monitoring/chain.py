@@ -45,8 +45,6 @@ def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):
 
     # Encache.
     _, encached = cache.set_network_block(block)  
-
-    # Escape if another stream handler has already processed this block.
     if not encached:
         return
 
@@ -70,17 +68,13 @@ def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, deploy_h
 
     # Encache.
     _, encached = cache.set_network_deploy(network_deploy)
-
-    # Escape if another stream handler has already processed this deploy.
     if not encached:
         return
 
     # Set run specific deploy/transfer.
     entities = cache.get_run_deploy_entities(deploy_hash)
-
-    # Escape if there were no run specific deploys and/or transfers.
     if not entities:
-        # TODO: issue warning ?
+        logger.log_warning(f"Could not find finalized run deploy information: {block_hash} : {deploy_hash}")
         return
 
     # Encache updates. 
@@ -96,5 +90,4 @@ def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, deploy_h
             cache.set_run_transfer(entity)
 
     # Signal downstream.
-    print(123546, entity)
-    correlate_finalized_deploy.send(entity.run_type, deploy_hash)
+    correlate_finalized_deploy.send(entity.network, entity.run, entity.run_type, deploy_hash)

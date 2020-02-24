@@ -4,14 +4,7 @@ import typing
 from stests.core.cache.pull_network import get_network
 from stests.core.cache.pull_network import get_nodes
 from stests.core.cache.utils import decache
-from stests.core.domain import Account
-from stests.core.domain import AccountIdentifier
-from stests.core.domain import Deploy
-from stests.core.domain import Network
-from stests.core.domain import Node
-from stests.core.domain import NodeStatus
-from stests.core.domain import RunContext
-from stests.core.domain import Transfer
+from stests.core.domain import *
 from stests.core.utils import factory
 
 
@@ -101,3 +94,75 @@ def get_run_deploy_entities(dhash: str) -> typing.List[typing.Union[Deploy, Tran
 
     """    
     return [f"run-*{dhash}*"]
+
+
+@decache
+def get_run_deploys(dhash: str) -> typing.List[Deploy]:
+    """Decaches all deploys relating to a particular run/deploy combination.
+    
+    :param dhash: A deploy hash.
+
+    :returns: List of matching deploys.
+
+    """    
+    return [f"run-deploy*{dhash}*"]
+
+
+def get_run_deploy(dhash: str) -> typing.List[Deploy]:
+    """Decaches a run deploy.
+    
+    :param dhash: A deploy hash.
+
+    :returns: A run deploy.
+
+    """    
+    all = get_run_deploys(dhash)
+
+    return all[-1] if all else None
+
+
+def get_run_step_current(network, run, run_type) -> RunStep:
+    """Decaches domain object: RunStep.
+    
+    :param ctx: Generator run contextual information.
+
+    :returns: Cached run step information.
+
+    """
+    all = get_run_steps(network, run, run_type)
+    all = sorted(all, key=lambda i: i.timestamp)
+
+    return all[-1] if all else None
+
+
+@decache
+def get_run_context(network, run_index, run_type) -> RunContext:
+    """Decaches domain object: RunContext.
+    
+    :param ctx: Generator run contextual information.
+
+    :returns: Cached run context information.
+
+    """
+    return [
+        "run-context",
+        network,
+        run_type,
+        f"R-{str(run_index).zfill(3)}"
+    ]
+
+
+@decache
+def get_run_steps(network, run, run_type) -> typing.List[RunStep]:
+    """Decaches domain objects: RunStep.
+
+    :returns: List of run steps.
+    
+    """
+    return [
+        "run-step",
+        network,
+        run_type,
+        f"R-{str(run).zfill(3)}",
+        "*"
+        ]

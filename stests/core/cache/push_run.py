@@ -1,11 +1,7 @@
 import typing
 
 from stests.core.cache.utils import encache
-from stests.core.domain import Account
-from stests.core.domain import Transfer
-from stests.core.domain import Deploy
-from stests.core.domain import RunContext
-from stests.core.domain import RunEvent
+from stests.core.domain import *
 
 
 
@@ -78,6 +74,24 @@ def set_run_event(evt: RunEvent) -> typing.Tuple[typing.List[str], RunEvent]:
         f"R-{str(evt.run).zfill(3)}",
         f"{str(evt.timestamp)}.{evt.event}"
     ], evt
+
+
+@encache
+def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
+    """Encaches domain object: RunStep.
+    
+    :param evt: RunStep domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "run-step",
+        step.network,
+        step.run_type,
+        f"R-{str(step.run).zfill(3)}",
+        f"{str(step.timestamp)}.{step.step}"
+    ], step
 
 
 @encache

@@ -228,7 +228,6 @@ def create_run_context(
         network=network_id.name,
         node=node_id.index,
         run=run,
-        run_step=None,
         run_type=run_type
     )
 
@@ -245,6 +244,24 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
         run=ctx.run,
         run_type=ctx.run_type,
         timestamp=dt.now().timestamp()
+    )
+
+
+def create_run_step(ctx: RunContext, step: str) -> RunStep:
+    """Returns a domain object instance: RunStep.
+
+    :param ctx: Generator run contextual information.
+    
+    """
+    return RunStep(
+        step=step,
+        step_param=None,
+        network=ctx.network,
+        run=ctx.run,
+        run_type=ctx.run_type,
+        status=RunStepStatus.IN_PROGRESS,
+        timestamp=dt.now().timestamp(),
+        timestamp_end=None,
     )
 
 

@@ -1,5 +1,6 @@
 import datetime as dt
 import os
+import typing
 
 
 
@@ -35,7 +36,7 @@ def log_debug(msg: str):
     log(msg, LOG_LEVEL_DEBUG)
 
 
-def log_error(err: Exception):
+def log_error(err: typing.Union[str, Exception]):
     """Logs a runtime error.
 
     :param str err: Error to be written to log.
@@ -48,10 +49,10 @@ def log_error(err: Exception):
     log(msg, LOG_LEVEL_ERROR)
 
 
-def log_warning(err: Exception):
+def log_warning(err: typing.Union[str, Exception]):
     """Logs a runtime warning.
 
-    :param str err: Error to be written to log.
+    :param str err: Warning to be written to log.
 
     """
     if issubclass(BaseException, err.__class__):

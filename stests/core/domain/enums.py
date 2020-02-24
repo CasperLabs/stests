@@ -98,6 +98,16 @@ class NodeType(enum.Enum):
     READ_ONLY = enum.auto()
 
 
+class RunStepStatus(enum.Flag):
+    """Flag over set of run step states.
+    
+    """
+    NULL = enum.auto()
+    IN_PROGRESS = enum.auto()
+    COMPLETE = enum.auto()
+    ERROR = enum.auto()
+
+
 class TransferStatus(enum.Flag):
     """Flag over set of transfer states.
     
@@ -119,5 +129,6 @@ ENUM_SET = {
     NetworkType,
     NodeStatus,
     NodeType,
+    RunStepStatus,
     TransferStatus,
 }

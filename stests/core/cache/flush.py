@@ -19,6 +19,7 @@ def flush_run(ctx: RunContext) -> typing.Generator:
         "context",
         "deploy",
         "event",
+        "step",
         "transfer",
     ]:
         yield [

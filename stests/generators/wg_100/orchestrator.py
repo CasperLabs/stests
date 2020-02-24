@@ -1,30 +1,33 @@
+import inspect
+import typing
+from datetime import datetime as dt
+
 import dramatiq
 
 from stests.core import cache
-from stests.core.domain import AccountType
+from stests.core.utils import factory
 from stests.core.domain import RunContext
-
-from stests.core.actors.account import do_create_account
-from stests.core.actors.account import do_fund_account
-from stests.core.actors.misc import do_reset_cache
+from stests.core.domain import RunStep
+from stests.core.domain import RunStepStatus
 from stests.generators.wg_100 import constants
-from stests.generators.wg_100.phase_1 import do_start_auction
-from stests.generators.wg_100.phase_1 import do_deploy_contract
-from stests.generators.wg_100.phase_1 import do_fund_faucet
+from stests.generators.wg_100 import phase_1
+from stests.generators.wg_100 import phase_2
+
 
 
 # Queue to which message will be dispatched.
 _QUEUE = f"generators.{constants.TYPE.lower()}"
 
-# Account index: faucet.
-ACC_INDEX_FAUCET = 1
 
-# Account index: contract.
-ACC_INDEX_CONTRACT = 2
-
-# Account index: users.
-ACC_INDEX_USERS = 3
-
+PIPELINE = (
+    phase_1.do_init_cache,
+    phase_1.do_create_accounts,
+    phase_1.do_fund_faucet,
+    phase_1.do_fund_contract,
+    phase_1.do_fund_users,
+    phase_1.do_deploy_contract,
+    phase_2.do_start_auction,
+)
 
 
 def execute(ctx: RunContext):
@@ -33,127 +36,54 @@ def execute(ctx: RunContext):
     :param ctx: Generator run contextual information.
 
     """ 
-    ctx.run_step == "reset_cache"
-    cache.set_run_context(ctx)
+    # Flush previous cache data.
+    cache.flush_run(ctx)
 
-    do_reset_cache.send_with_options(
-        args=(ctx, ),
-        on_success=on_cache_reset
-        )
+    # Initiate pipeline.
+    PIPELINE[0].send(ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE, actor_name="on_wg100_deploy_finalized")
-def on_deploy_finalized(deploy_hash):
-    """Callback: on_start_auction.
-    
-    :param ctx: Generator run contextual information.
-
-    """    
-    print(f"TIME TO GO HOME :: {deploy_hash}")
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_cache_reset(_, ctx: RunContext):
-    """Callback: on_cache_reset.
+def on_deploy_finalized(network, run_index, run_type, deploy_hash):
+    """Callback: on_deploy_finalized.
     
     :param ctx: Generator run contextual information.
 
     """
-    ctx.run_step == "create_accounts"
-    cache.set_run_context(ctx)
-
-    def get_messages():
-        yield do_create_account.message(ctx, ACC_INDEX_FAUCET, AccountType.FAUCET)
-        yield do_create_account.message(ctx, ACC_INDEX_CONTRACT, AccountType.CONTRACT)
-        for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
-            yield do_create_account.message(ctx, index, AccountType.USER)
-
-    g = dramatiq.group(get_messages())
-    g.add_completion_callback(on_create_accounts.message(ctx))
-    g.run()
+    ctx = cache.get_run_context(network, run_index, run_type)
+    _do_step_next(ctx, PIPELINE)
 
 
-@dramatiq.actor(queue_name=_QUEUE)
-def on_create_accounts(ctx: RunContext):
-    """Callback: on_create_accounts.
-    
-    :param ctx: Generator run contextual information.
+def _get_actor_name(actor):
+    fn = actor.fn
+    m = inspect.getmodule(fn)
 
-    """
-    ctx.run_step == "fund_faucet"
-    cache.set_run_context(ctx)
-
-    do_fund_faucet.send(ctx, ACC_INDEX_FAUCET, ctx.args.faucet_initial_clx_balance)
+    return f"{m.__name__.split('.')[-1]}.{fn.__name__}"
 
 
-@dramatiq.actor(queue_name=_QUEUE)
-def on_fund_faucet(_, ctx: RunContext):
-    """Callback: on_fund_faucet.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    ctx.run_step == "fund_contract"
-    cache.set_run_context(ctx)
-
-    print(777)
-    # do_fund_account.send_with_options(
-    #     args=(ctx, ACC_INDEX_FAUCET, ACC_INDEX_CONTRACT, ctx.args.contract_initial_clx_balance),
-    #     on_success=on_fund_contract
-    # )
+def _get_next_actor(step, pipeline):
+    for idx, actor in enumerate(pipeline):
+        actor_name = _get_actor_name(actor)
+        if step.name == actor_name:
+            try:
+                return pipeline[idx + 1]
+            except IndexError:
+                return None
 
 
-@dramatiq.actor(queue_name=_QUEUE)
-def on_fund_contract(_, ctx: RunContext):
-    """Callback: on_fund_contract.
-    
-    :param ctx: Generator run contextual information.
+def _do_step_next(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
+    # Update current step.
+    step = cache.get_run_step_current(ctx.network, ctx.run_index, ctx.run_type)    
+    step.status = RunStepStatus.COMPLETE
+    step.timestamp_end = dt.now().timestamp()
+    cache.set_run_step(step)
 
-    """
-    def get_messages():
-        for index in range(ACC_INDEX_USERS, ctx.args.user_accounts + ACC_INDEX_USERS):
-            yield do_fund_account.message(
-                ctx, ACC_INDEX_FAUCET, index, ctx.args.user_initial_clx_balance
-            )
+    # Set next actor.
+    next_actor = _get_next_actor(step, pipeline)
 
-    g = dramatiq.group(get_messages())
-    g.add_completion_callback(on_fund_users.message(ctx))
-    g.run()
+    # Set next step.
+    next_step = factory.create_run_step(ctx, _get_actor_name(next_actor))
+    cache.set_run_step(next_step)
 
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_fund_users(ctx: RunContext):
-    """Callback: on_fund_users.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    do_deploy_contract.send_with_options(
-        args=(ctx, ),
-        on_success=on_deploy_contract
-        )
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_deploy_contract(_, ctx: RunContext):
-    """Callback: on_deploy_contract.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    do_start_auction.send_with_options(
-        args=(ctx, ),
-        on_success=on_start_auction
-        )
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_start_auction(_, ctx: RunContext):
-    """Callback: on_start_auction.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    print("TIME TO GO HOME")
-
-
+    # Enqueue next actor.
+    next_actor.send(ctx)
