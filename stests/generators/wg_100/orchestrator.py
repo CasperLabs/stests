@@ -35,7 +35,7 @@ def execute(ctx: RunContext):
 
     :param ctx: Generator run contextual information.
 
-    """ 
+    """     
     # Flush previous cache data.
     cache.flush_run(ctx)
 
@@ -54,23 +54,6 @@ def on_deploy_finalized(network, run_index, run_type, deploy_hash):
     _do_step_next(ctx, PIPELINE)
 
 
-def _get_actor_name(actor):
-    fn = actor.fn
-    m = inspect.getmodule(fn)
-
-    return f"{m.__name__.split('.')[-1]}.{fn.__name__}"
-
-
-def _get_next_actor(step, pipeline):
-    for idx, actor in enumerate(pipeline):
-        actor_name = _get_actor_name(actor)
-        if step.name == actor_name:
-            try:
-                return pipeline[idx + 1]
-            except IndexError:
-                return None
-
-
 def _do_step_next(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
     # Update current step.
     step = cache.get_run_step_current(ctx.network, ctx.run_index, ctx.run_type)    
@@ -87,3 +70,20 @@ def _do_step_next(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
 
     # Enqueue next actor.
     next_actor.send(ctx)
+
+
+def _get_next_actor(step, pipeline):
+    for idx, actor in enumerate(pipeline):
+        actor_name = _get_actor_name(actor)
+        if step.name == actor_name:
+            try:
+                return pipeline[idx + 1]
+            except IndexError:
+                return None
+
+
+def _get_actor_name(actor):
+    fn = actor.fn
+    m = inspect.getmodule(fn)
+
+    return f"{m.__name__.split('.')[-1]}.{fn.__name__}"
