@@ -45,17 +45,21 @@ def on_deploy_finalized(network, run_index, run_type, deploy_hash):
     _do_step_next(ctx, PIPELINE)
 
 
+def _verify_next_step(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
+    pass
+
+
 def _do_step_next(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
     """Executes next step in workflow.
     
     """ 
     # Update current step.
-    step = cache.get_run_step_current(ctx)        
+    step = cache.get_run_step(ctx)   
+    print(f"444 :: {step.name}")     
+
     step.status = RunStepStatus.COMPLETE
     step.timestamp_end = dt.now().timestamp()
     cache.set_run_step(step)
-
-    print(f"444 :: {step.name}")
 
     # Set next actor.
     next_actor = _get_next_actor(step, pipeline)
@@ -66,6 +70,12 @@ def _do_step_next(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
 
     # Enqueue next actor.
     next_actor.send(ctx)
+
+
+def _get_current_actor(step, pipeline):
+    for actor in pipeline:
+        if step.name == _get_actor_name(actor):
+            return actor
 
 
 def _get_next_actor(step, pipeline):

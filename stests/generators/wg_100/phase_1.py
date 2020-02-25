@@ -17,7 +17,6 @@ def do_init_cache(ctx: RunContext):
     :param ctx: Generator run contextual information.
 
     """
-    # Persist context.
     cache.set_run_context(ctx)
 
 
@@ -28,7 +27,6 @@ def do_create_accounts(ctx: RunContext) -> typing.Callable:
     :param ctx: Generator run contextual information.
 
     """
-    # Message factory.
     def get_messages():
         yield do_create_account.message(ctx, ACC_RUN_FAUCET, AccountType.FAUCET)
         yield do_create_account.message(ctx, ACC_RUN_CONTRACT, AccountType.CONTRACT)
@@ -75,7 +73,6 @@ def do_fund_users(ctx) -> typing.Callable:
     :param ctx: Generator run contextual information.
 
     """    
-    # Message factory.
     def get_messages():
         for acc_index in range(ACC_RUN_USERS, ctx.args.user_accounts + ACC_RUN_USERS):
             yield do_fund_account.message(
@@ -97,14 +94,8 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     :param typeof: Account type.
 
     """
-    # Instantiate.
     account = factory.create_account_for_run(ctx, index=index, typeof=typeof)
-
-    # Encache.
     cache.set_run_account(account)
-
-    # Chain.
-    return ctx
 
 
 @actorify(is_substep=True)
@@ -133,6 +124,3 @@ def do_fund_account(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int)
     # Update cache.
     cache.set_run_deploy(deploy)
     cache.set_run_transfer(transfer)
-
-    # Chain.
-    return ctx

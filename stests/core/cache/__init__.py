@@ -14,8 +14,8 @@ from stests.core.cache.pull_run import get_run_deploy_entities
 from stests.core.cache.pull_run import get_run_deploy
 from stests.core.cache.pull_run import get_run_network
 from stests.core.cache.pull_run import get_run_node
+from stests.core.cache.pull_run import get_run_step
 from stests.core.cache.pull_run import get_run_steps
-from stests.core.cache.pull_run import get_run_step_current
 
 
 from stests.core.cache.push_network import set_network

@@ -24,5 +24,9 @@ def correlate_finalized_deploy(network: str, run_index: int, run_type: str, depl
     :param deploy_hash: Hash of finalized deploy.
 
     """
-    if run_type in CORRELATION_HANDLERS:
-        CORRELATION_HANDLERS[run_type].send(network, run_index, run_type, deploy_hash)
+    try:
+        handler = CORRELATION_HANDLERS[run_type]
+    except KeyError:
+        pass
+    else:
+        handler.send(network, run_index, run_type, deploy_hash)

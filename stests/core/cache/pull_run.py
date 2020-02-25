@@ -121,7 +121,7 @@ def get_run_deploy(dhash: str) -> typing.List[Deploy]:
     return all[-1] if all else None
 
 
-def get_run_step_current(ctx: RunContext) -> RunStep:
+def get_run_step(ctx: RunContext) -> RunStep:
     """Decaches domain object: RunStep.
     
     :param ctx: Generator run contextual information.
