@@ -1,5 +1,6 @@
 import argparse
 
+from stests.core import cache
 from stests.core import mq
 from stests.core.utils import args_validator
 from stests.core.utils import factory
@@ -118,23 +119,24 @@ def main(args: argparse.Namespace):
         run_type=constants.TYPE
     )
 
+    # Flush previous cache data.
+    cache.flush_run(ctx)
+
     # Initialise MQ broker.
     mq.initialise()
 
     # Import actors.
-    import stests.core.actors.account
-    import stests.core.actors.misc
-
     import stests.generators.correlator
-
     import stests.generators.wg_100.orchestrator
     import stests.generators.wg_100.phase_1
-
-    from stests.generators.wg_100.orchestrator import execute
+    import stests.generators.wg_100.phase_2
 
     # Start workflow.
     logger.log("... workload generator begins")
-    execute(ctx)
+
+    # Execute first actor in pipeline.
+    from stests.generators.wg_100.orchestrator import PIPELINE
+    PIPELINE[0].send(ctx)
 
 
 # Invoke entry point.

@@ -1,5 +1,6 @@
 import inspect
 import functools
+import typing
 
 import dramatiq
 
@@ -12,7 +13,7 @@ from stests.core.utils import factory
 _QUEUE = f"generators.wg-100"
 
 
-def actorify(on_success=None):
+def actorify(on_success=None, is_step=True):
     """Decorator to orthoganally convert a function into an actor.
 
     :param on_success: Continuation function upon execution success.
@@ -31,23 +32,25 @@ def actorify(on_success=None):
             # Set context.
             ctx = args[0]
             
-            # Set step.
-            step = factory.create_run_step(ctx, actor_name)
-
             # Encache step.
-            cache.set_run_step(step)
+            if is_step:
+                step = factory.create_run_step(ctx, actor_name)
+                cache.set_run_step(step)
 
             # Invoke actor.
             result = func(*args, **kwargs)
 
-            # Run groups.
-            if isinstance(result, dramatiq.group):
-                g = result
-                if on_success:
-                    g.add_completion_callback(on_success().message(ctx))
-                g.run()
+            # Message factories --> dramatiq.group.
+            if inspect.isfunction(result):
+                result = dramatiq.group(result())
 
-            # Enqueue continuation.
+            # Groups.
+            if isinstance(result, dramatiq.group):
+                if on_success:
+                    result.add_completion_callback(on_success().message(ctx))
+                result.run()
+
+            # Continuation.
             elif on_success:
                 on_success().send(ctx)
 

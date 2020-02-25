@@ -2,10 +2,6 @@
 from stests.core import mq
 mq.initialise()
 
-# Import global actors.
-import stests.core.actors.account
-import stests.core.actors.misc
-
 # Import monitoring.
 import stests.monitoring.chain
 

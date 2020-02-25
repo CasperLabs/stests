@@ -25,22 +25,13 @@ PIPELINE = (
     phase_1.do_fund_faucet,
     phase_1.do_fund_contract,
     phase_1.do_fund_users,
-    phase_1.do_deploy_contract,
+    phase_2.do_deploy_contract,
     phase_2.do_start_auction,
 )
 
-
-def execute(ctx: RunContext):
-    """Orchestrates execution of WG-100 workflow.
-
-    :param ctx: Generator run contextual information.
-
-    """     
-    # Flush previous cache data.
-    cache.flush_run(ctx)
-
-    # Initiate pipeline.
-    PIPELINE[0].send(ctx)
+MAP = {
+    phase_1.do_fund_faucet: phase_1.do_fund_contract,
+}
 
 
 @dramatiq.actor(queue_name=_QUEUE, actor_name="on_wg100_deploy_finalized")
