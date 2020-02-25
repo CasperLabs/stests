@@ -24,15 +24,14 @@ def do_monitor_blocks(network_id: NetworkIdentifier):
     """Wires upto chain event streaming.
     
     """
-    # Wire upto event streams.
     clx.stream_events(
         network_id,
-        on_block_finalized=lambda block_hash: on_block_finalized.send(network_id, block_hash)
+        on_block_finalized=lambda block_hash: on_finalized_block.send(network_id, block_hash)
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):   
+def on_finalized_block(network_id: NetworkIdentifier, block_hash: str):   
     """Event: raised whenever a block is finalized.
 
     :param network_id: Identifier of network upon which a block has been finalized.
@@ -43,18 +42,18 @@ def on_block_finalized(network_id: NetworkIdentifier, block_hash: str):
     block = clx.get_block(network_id, block_hash)
     block.status = BlockStatus.FINALIZED
 
-    # Encache.
+    # Encache - skip duplicates.
     _, encached = cache.set_network_block(block)  
     if not encached:
         return
 
     # Enqueue finalized deploys.
     for deploy_hash in clx.get_block_deploys(network_id, block_hash):  
-        on_deploy_finalized.send(network_id, block_hash, deploy_hash, block.timestamp)
+        on_finalized_deploy.send(network_id, block_hash, deploy_hash, block.timestamp)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, deploy_hash: str, ts_finalized: int):   
+def on_finalized_deploy(network_id: NetworkIdentifier, block_hash: str, deploy_hash: str, ts_finalized: int):   
     """Event: raised whenever a deploy is finalized.
     
     :param network_id: Identifier of network upon which a block has been finalized.
@@ -64,20 +63,20 @@ def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, deploy_h
 
     """
     # Set network deploy.
-    network_deploy = factory.create_deploy(network_id, block_hash, deploy_hash, DeployStatus.FINALIZED)    
+    deploy = factory.create_deploy(network_id, block_hash, deploy_hash, DeployStatus.FINALIZED)    
 
-    # Encache.
-    _, encached = cache.set_network_deploy(network_deploy)
+    # Encache - skip duplicates.
+    _, encached = cache.set_network_deploy(deploy)
     if not encached:
         return
 
-    # Set run specific deploy/transfer.
+    # Set deploy related entities.
     entities = cache.get_run_deploy_entities(deploy_hash)
     if not entities:
         logger.log_warning(f"Could not find finalized run deploy information: {block_hash} : {deploy_hash}")
         return
 
-    # Encache updates. 
+    # Update deploy related entities.
     for entity in entities:
         if isinstance(entity, Deploy):
             entity.block_hash = block_hash
@@ -89,5 +88,7 @@ def on_deploy_finalized(network_id: NetworkIdentifier, block_hash: str, deploy_h
             entity.status = TransferStatus.COMPLETE
             cache.set_run_transfer(entity)
 
-    # Signal downstream.
-    correlate_finalized_deploy.send(entity.network, entity.run, entity.run_type, deploy_hash)
+    # Signal downstream to workload generator.
+    ctx = cache.get_run_context(entity.network, entity.run, entity.run_type)
+    if ctx:
+        correlate_finalized_deploy.send(ctx, deploy_hash)

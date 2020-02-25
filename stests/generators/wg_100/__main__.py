@@ -127,15 +127,15 @@ def main(args: argparse.Namespace):
 
     # Import actors.
     import stests.generators.correlator
-    import stests.generators.wg_100.orchestrator
     import stests.generators.wg_100.phase_1
     import stests.generators.wg_100.phase_2
+    import stests.generators.wg_100.step_incrementor
 
     # Start workflow.
     logger.log("... workload generator begins")
 
     # Execute first actor in pipeline.
-    from stests.generators.wg_100.orchestrator import PIPELINE
+    from stests.generators.wg_100.step_incrementor import PIPELINE
     PIPELINE[0].send(ctx)
 
 

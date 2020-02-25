@@ -12,11 +12,8 @@ from stests.core.domain import RunStepStatus
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100 import phase_1
 from stests.generators.wg_100 import phase_2
+from stests.generators.wg_100 import step_verifier
 
-
-
-# Queue to which message will be dispatched.
-_QUEUE = f"generators.{constants.TYPE.lower()}"
 
 
 PIPELINE = (
@@ -34,33 +31,15 @@ MAP = {
 }
 
 
-@dramatiq.actor(queue_name=_QUEUE, actor_name="on_wg100_deploy_finalized")
-def on_deploy_finalized(network, run_index, run_type, deploy_hash):
-    """Callback: on_deploy_finalized.
-    
-    :param ctx: Generator run contextual information.
-
-    """
-    ctx = cache.get_run_context(network, run_index, run_type)
-    _do_step_next(ctx, PIPELINE)
+def increment(ctx: RunContext, step: RunStep):
+    print(f"444 :: wg-100 :: increment")
+    _increment_step(ctx, step, PIPELINE)
 
 
-def _verify_next_step(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
-    pass
-
-
-def _do_step_next(ctx: RunContext, pipeline: typing.Tuple[dramatiq.actor]):
+def _increment_step(ctx: RunContext, step: RunStep, pipeline: typing.Tuple[dramatiq.actor]):
     """Executes next step in workflow.
     
     """ 
-    # Update current step.
-    step = cache.get_run_step(ctx)   
-    print(f"444 :: {step.name}")     
-
-    step.status = RunStepStatus.COMPLETE
-    step.timestamp_end = dt.now().timestamp()
-    cache.set_run_step(step)
-
     # Set next actor.
     next_actor = _get_next_actor(step, pipeline)
 
