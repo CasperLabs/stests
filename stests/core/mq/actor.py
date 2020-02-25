@@ -1,11 +1,13 @@
 import inspect
 import functools
 import typing
+from datetime import datetime as dt
 
 import dramatiq
 
 from stests.core import cache
 from stests.core.utils import factory
+from stests.core.domain import RunStepStatus
 
 
 
@@ -24,19 +26,14 @@ def actorify(on_success=None, is_substep=False):
     """
     def decorator_actorify(func):
 
-        @dramatiq.actor(queue_name=_QUEUE)
+        @dramatiq.actor(queue_name=_get_queue_name(func))
         @functools.wraps(func)
         def wrapper_actorify(*args, **kwargs):
-            # Set actor name.
-            actor_name = _get_actor_name(func)
-
             # Set context.
             ctx = args[0]
             
             # Encache step.
-            if not is_substep:
-                step = factory.create_run_step(ctx, actor_name)
-                cache.set_run_step(step)
+            step = _get_step(ctx, func) if not is_substep else None
 
             # Invoke actor.
             result = func(*args, **kwargs)
@@ -44,6 +41,10 @@ def actorify(on_success=None, is_substep=False):
             # Message factories --> dramatiq.group.
             if inspect.isfunction(result):
                 result = dramatiq.group(result())
+
+            # Update step.
+            if step and on_success:
+                _set_step(step)
 
             # Groups.
             if isinstance(result, dramatiq.group):
@@ -60,7 +61,39 @@ def actorify(on_success=None, is_substep=False):
     return decorator_actorify
 
 
-def _get_actor_name(actor):
+def _get_step(ctx, actor):
+    """Returns step information for downstream correlation.
+    
+    """
+    step_name = _get_step_name(actor)
+    step = factory.create_run_step(ctx, step_name)
+    cache.set_run_step(step)
+
+    return step
+
+
+def _get_step_name(actor):
+    """Returns a queue name derived from module in which actor is declared.
+    
+    """
     m = inspect.getmodule(actor)
 
     return f"{m.__name__.split('.')[-1]}.{actor.__name__}"
+
+
+def _get_queue_name(actor):
+    """Returns a queue name derived from module in which actor is declared.
+    
+    """
+    m = inspect.getmodule(actor)
+
+    return f"{m.__name__.split('.')[-2]}".replace('_', "-")
+
+
+def _set_step(step):
+    """Returns step information for downstream correlation.
+    
+    """
+    step.status = RunStepStatus.COMPLETE
+    step.timestamp_end = dt.now().timestamp()
+    cache.set_run_step(step)

@@ -121,7 +121,7 @@ def get_run_deploy(dhash: str) -> typing.List[Deploy]:
     return all[-1] if all else None
 
 
-def get_run_step_current(network, run, run_type) -> RunStep:
+def get_run_step_current(ctx: RunContext) -> RunStep:
     """Decaches domain object: RunStep.
     
     :param ctx: Generator run contextual information.
@@ -129,7 +129,7 @@ def get_run_step_current(network, run, run_type) -> RunStep:
     :returns: Cached run step information.
 
     """
-    all = get_run_steps(network, run, run_type)
+    all = get_run_steps(ctx)
     all = sorted(all, key=lambda i: i.timestamp)
 
     return all[-1] if all else None
@@ -153,16 +153,18 @@ def get_run_context(network, run_index, run_type) -> RunContext:
 
 
 @decache
-def get_run_steps(network, run, run_type) -> typing.List[RunStep]:
+def get_run_steps(ctx: RunContext) -> typing.List[RunStep]:
     """Decaches domain objects: RunStep.
+
+    :param ctx: Generator run contextual information.
 
     :returns: List of run steps.
     
     """
     return [
         "run-step",
-        network,
-        run_type,
-        f"R-{str(run).zfill(3)}",
+        ctx.network,
+        ctx.run_type,
+        f"R-{str(ctx.run_index).zfill(3)}",
         "*"
         ]
