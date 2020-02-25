@@ -88,7 +88,7 @@ def do_fund_users(ctx) -> typing.Callable:
     return get_messages
 
 
-@actorify(is_step=False)
+@actorify(is_substep=True)
 def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     """Creates an account for use during the course of a simulation.
 
@@ -107,7 +107,7 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     return ctx
 
 
-@actorify(is_step=False)
+@actorify(is_substep=True)
 def do_fund_account(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 

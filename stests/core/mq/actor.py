@@ -13,10 +13,11 @@ from stests.core.utils import factory
 _QUEUE = f"generators.wg-100"
 
 
-def actorify(on_success=None, is_step=True):
+def actorify(on_success=None, is_substep=False):
     """Decorator to orthoganally convert a function into an actor.
 
     :param on_success: Continuation function upon execution success.
+    :param is_substep: Flag indicating whether actor is a sub-step or not.
 
     :returns: Decorated function.
     
@@ -33,7 +34,7 @@ def actorify(on_success=None, is_step=True):
             ctx = args[0]
             
             # Encache step.
-            if is_step:
+            if not is_substep:
                 step = factory.create_run_step(ctx, actor_name)
                 cache.set_run_step(step)
 
