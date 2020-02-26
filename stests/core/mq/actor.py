@@ -1,6 +1,5 @@
 import inspect
 import functools
-import typing
 from datetime import datetime as dt
 
 import dramatiq
@@ -10,10 +9,6 @@ from stests.core.utils import factory
 from stests.core.domain import RunStepStatus
 from stests.core.cache import RunStepLock
 
-
-
-# Queue to which message will be dispatched.
-_QUEUE = f"generators.wg-100"
 
 
 def actorify(on_success=None, is_substep=False):
@@ -33,15 +28,12 @@ def actorify(on_success=None, is_substep=False):
             # Set context.
             ctx = args[0]
 
-            # All steps must be locked prior to execution.
+            # Abort step execution if a lock cannot be acquired.
             if not is_substep:
-                print(f"777 :: {ctx.run_step}")
                 if not _can_step(ctx, actor):
-                    print(f"888 :: {ctx.run_step}")
                     return
                 _set_step(ctx, actor)
-            
-            
+                        
             # Invoke actor.
             result = actor(*args, **kwargs)
 
@@ -81,7 +73,7 @@ def _can_step(ctx, actor):
     )
     _, acquired = cache.lock_run_step(lock)
 
-    print(f"222 :: {ctx.run_type} :: {step} :: {acquired}")
+    print(f"111 :: {ctx.run_type} :: {step} :: {acquired}")
 
     return acquired
 

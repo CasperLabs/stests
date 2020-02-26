@@ -1,7 +1,7 @@
 from stests.core.domain import RunContext
 from stests.core.domain import RunStep
 from stests.core.utils import logger
-from stests.generators.wg_100 import phase_1_verifier
+from stests.generators.wg_100 import step_verifier_phase_1 as phase_1_verifier
 
 
 

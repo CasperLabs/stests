@@ -58,7 +58,6 @@ def do_fund_contract(ctx: RunContext):
     :param ctx: Generator run contextual information.
 
     """
-    print(123456)
     do_fund_account.send(
         ctx,
         ACC_RUN_FAUCET,

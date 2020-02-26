@@ -9,11 +9,7 @@ def verify_do_fund_contract(ctx: RunContext, dhash: str):
     """Verifies that contract account is funded.
     
     """
-    is_verified = _is_deploy_finalized(ctx, dhash) and _is_transfer_complete(ctx, dhash)
-
-    print(f"verify_do_fund_contract :: {is_verified} :: {dhash}")
-
-    return is_verified
+    return _is_deploy_finalized(ctx, dhash) and _is_transfer_complete(ctx, dhash)
 
 
 def verify_do_fund_faucet(ctx: RunContext, dhash: str):
