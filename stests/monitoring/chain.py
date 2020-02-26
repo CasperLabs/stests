@@ -10,8 +10,7 @@ from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.core.utils import logger
-
-from stests.generators.correlator import correlate_finalized_deploy
+from stests.monitoring.correlator import correlate_finalized_deploy
 
 
 

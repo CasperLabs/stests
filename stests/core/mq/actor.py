@@ -35,9 +35,12 @@ def actorify(on_success=None, is_substep=False):
 
             # All steps must be locked prior to execution.
             if not is_substep:
+                print(f"777 :: {ctx.run_step}")
                 if not _can_step(ctx, actor):
+                    print(f"888 :: {ctx.run_step}")
                     return
                 _set_step(ctx, actor)
+            
             
             # Invoke actor.
             result = actor(*args, **kwargs)

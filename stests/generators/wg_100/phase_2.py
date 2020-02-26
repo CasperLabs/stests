@@ -18,10 +18,6 @@ from stests.generators.wg_100 import constants
 
 
 
-# Queue to which message will be dispatched.
-_QUEUE = f"generators.{constants.TYPE.lower()}"
-
-
 @actorify(on_success=lambda: do_start_auction)
 def do_deploy_contract(ctx: RunContext):
     """Deploys smart contract to target network.
@@ -34,7 +30,7 @@ def do_deploy_contract(ctx: RunContext):
     print(binary_fpath)
 
 
-@dramatiq.actor(queue_name=_QUEUE)
+@actorify()
 def do_start_auction(ctx):
     """Initialise auction phase.
     

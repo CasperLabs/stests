@@ -12,7 +12,7 @@ from stests.generators.wg_100 import step_verifier as wg_100_verifier
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "generators"
+_QUEUE = "correlator"
 
 # Map: run type --> run step incrementor.
 HANDLERS = {
