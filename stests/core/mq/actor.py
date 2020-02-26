@@ -106,7 +106,7 @@ def _get_queue_name(actor):
     """
     m = inspect.getmodule(actor)
 
-    return f"{m.__name__.split('.')[-2]}".replace('_', "-")
+    return f"{m.__name__.split('.')[-3]}".replace('_', "-")
 
 
 def _complete_step(ctx):

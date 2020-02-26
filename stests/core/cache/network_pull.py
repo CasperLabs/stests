@@ -80,19 +80,19 @@ def get_node_by_network_id(network_id: NetworkIdentifier) -> Node:
     
 
 @decache
-def get_nodes(network_id: NetworkIdentifier=None) -> typing.List[Node]:
+def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.List[Node]:
     """Decaches domain objects: Node.
 
-    :param network_id: A network identifier.
+    :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
     
     """
-    if network_id is None:
+    if network is None:
         return ["network-node", "*"]
     else:
         return [
             "network-node",
-            network_id.name,
+            network.name,
             "N-*"
         ]

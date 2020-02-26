@@ -31,8 +31,7 @@ class LoggingMiddleware(dramatiq.Middleware):
         :param message: A message being processed.
 
         """
-        return
-        msg = f"ACTOR :: {_get_actor_name(message)} :: starts"
+        msg = f"ACTOR :: {_get_actor_name(message)} :: executing ..."
         _logger.log(msg)
 
 

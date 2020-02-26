@@ -7,16 +7,15 @@ from stests.generators.wg_100 import constants
 
 
 
-@actorify(on_success=lambda: do_start_auction)
+@actorify()
 def do_deploy_contract(ctx: RunContext):
     """Deploys smart contract to target network.
     
     :param ctx: Generator run contextual information.
 
     """
-    print("TODO: do_deploy_contract :: 1. pull account.  2. Dispatch deploy.  3. Monitor deploy.")
     binary_fpath = resources.get_wasm_path(constants.WASM_CONTRACT_FILENAME)
-    print(binary_fpath)
+    print("TODO: phase_2")
 
 
 @actorify()

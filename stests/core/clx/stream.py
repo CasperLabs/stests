@@ -6,7 +6,11 @@ from stests.core.utils import logger
 
 
 
-def stream_events(network_id: NetworkIdentifier, on_block_added: typing.Callable = None, on_block_finalized: typing.Callable = None):
+def stream_events(
+    network_id: NetworkIdentifier,
+    on_block_added: typing.Callable = None,
+    on_block_finalized: typing.Callable = None
+    ):
     """Hooks upto network streaming events.
 
     :param network_id: A network identifier.
@@ -16,14 +20,14 @@ def stream_events(network_id: NetworkIdentifier, on_block_added: typing.Callable
     """
     for event in _yield_events(network_id, on_block_added, on_block_finalized):
         if on_block_added and event.HasField("block_added"):
-            added_block_hash = event.block_added.block.summary.block_hash.hex()
-            logger.log(f"PYCLX :: stream_events :: block added :: {added_block_hash}")
-            on_block_added(added_block_hash)
+            bhash = event.block_added.block.summary.block_hash.hex()
+            logger.log(f"PYCLX :: stream_events :: block added :: {bhash}")
+            on_block_added(bhash)
 
         elif on_block_finalized and event.HasField("new_finalized_block"):
-            finalized_block_hash = event.new_finalized_block.block_hash.hex()
-            logger.log(f"PYCLX :: stream_events :: block finalized :: {finalized_block_hash}")
-            on_block_finalized(finalized_block_hash)
+            bhash = event.new_finalized_block.block_hash.hex()
+            logger.log(f"PYCLX :: stream_events :: block finalized :: {bhash}")
+            on_block_finalized(bhash)
 
 
 def _yield_events(network_id: NetworkIdentifier, on_block_added, on_block_finalized):

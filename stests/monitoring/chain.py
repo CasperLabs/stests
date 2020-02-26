@@ -7,6 +7,7 @@ from stests.core.domain import BlockStatus
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import NetworkIdentifier
+from stests.core.domain import NodeIdentifier
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.core.utils import logger
@@ -19,26 +20,27 @@ _QUEUE = "monitoring"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_monitor_blocks(network_id: NetworkIdentifier):   
+def do_monitor_blocks(node_id: NodeIdentifier):   
     """Wires upto chain event streaming.
     
     """
+    network_id = node_id.network
     clx.stream_events(
-        network_id,
-        on_block_finalized=lambda block_hash: on_finalized_block.send(network_id, block_hash)
+        node_id.network,
+        on_block_finalized=lambda bhash: on_finalized_block.send(network_id, bhash)
         )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_finalized_block(network_id: NetworkIdentifier, block_hash: str):   
+def on_finalized_block(network_id: NetworkIdentifier, bhash: str):   
     """Event: raised whenever a block is finalized.
 
     :param network_id: Identifier of network upon which a block has been finalized.
-    :param block_hash: Hash of finalized block.
+    :param bhash: Hash of finalized block.
 
     """
     # Query block info & set block status accordingly.
-    block = clx.get_block(network_id, block_hash)
+    block = clx.get_block(network_id, bhash)
     block.status = BlockStatus.FINALIZED
 
     # Encache - skip duplicates.
@@ -47,22 +49,22 @@ def on_finalized_block(network_id: NetworkIdentifier, block_hash: str):
         return
 
     # Enqueue finalized deploys.
-    for deploy_hash in clx.get_block_deploys(network_id, block_hash):  
-        on_finalized_deploy.send(network_id, block_hash, deploy_hash, block.timestamp)
+    for dhash in clx.get_block_deploys(network_id, bhash):  
+        on_finalized_deploy.send(network_id, bhash, dhash, block.timestamp)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_finalized_deploy(network_id: NetworkIdentifier, block_hash: str, deploy_hash: str, ts_finalized: int):   
+def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, ts_finalized: int):   
     """Event: raised whenever a deploy is finalized.
     
     :param network_id: Identifier of network upon which a block has been finalized.
-    :param block_hash: Hash of finalized block.
-    :param deploy_hash: Hash of finalized deploy.
+    :param bhash: Hash of finalized block.
+    :param dhash: Hash of finalized deploy.
     :param ts_finalized: Moment in time when finalization occurred.
 
     """
     # Set network deploy.
-    deploy = factory.create_deploy(network_id, block_hash, deploy_hash, DeployStatus.FINALIZED)    
+    deploy = factory.create_deploy(network_id, bhash, dhash, DeployStatus.FINALIZED)    
 
     # Encache - skip duplicates.
     _, encached = cache.set_network_deploy(deploy)
@@ -70,11 +72,11 @@ def on_finalized_deploy(network_id: NetworkIdentifier, block_hash: str, deploy_h
         return
 
     # Update run deploy.
-    deploy = cache.get_run_deploy(deploy_hash)
+    deploy = cache.get_run_deploy(dhash)
     if not deploy:
-        logger.log_warning(f"Could not find finalized run deploy information: {block_hash} : {deploy_hash}")
+        logger.log_warning(f"Could not find finalized run deploy information: {bhash} : {dhash}")
         return
-    deploy.block_hash = block_hash
+    deploy.block_hash = bhash
     deploy.status = DeployStatus.FINALIZED
     deploy.ts_finalized = ts_finalized
     cache.set_run_deploy(deploy)
@@ -84,10 +86,10 @@ def on_finalized_deploy(network_id: NetworkIdentifier, block_hash: str, deploy_h
     cache.set_run_step_deploy(ctx, deploy)
 
     # Update transfer.
-    transfer = cache.get_run_transfer(deploy_hash)
+    transfer = cache.get_run_transfer(dhash)
     if transfer:
         transfer.status = TransferStatus.COMPLETE
         cache.set_run_transfer(transfer)
     
     # Signal downstream to workload generator.
-    correlate_finalized_deploy.send(ctx, deploy_hash)
+    correlate_finalized_deploy.send(ctx, dhash)
