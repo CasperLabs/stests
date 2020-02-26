@@ -1,3 +1,4 @@
+import typing
 from dataclasses import dataclass
 
 from stests.core.domain.enums import BlockStatus
@@ -41,7 +42,7 @@ class Block(Entity):
     validator_id: str
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: str = None
+    _type_key: typing.Union[None, str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

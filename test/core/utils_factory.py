@@ -41,7 +41,8 @@ def create_deploy() -> Deploy:
         run_type="WG-XXX",
         status=random.choice(list(DeployStatus)),
         ts_dispatched=None,
-        ts_finalized=None    
+        ts_finalized=None    ,
+        typeof=DeployType.NULL
     )
 
 
@@ -81,7 +82,8 @@ def create_run_context() -> RunContext:
         network="LOC-01",
         node=1,
         run=1,
-        run_type="WG-XXX"
+        run_type="WG-XXX",
+        run_step=None
         )
 
 
@@ -92,6 +94,17 @@ def create_run_event() -> RunEvent:
         run=1,
         run_type="WG-XXX",
         timestamp=dt.now().timestamp()
+        )
+
+def create_run_step() -> RunStep:
+    return RunStep(
+        network="LOC-01",
+        run=1,
+        run_type="WG-XXX",
+        status=RunStepStatus.IN_PROGRESS,
+        step="dolly",
+        timestamp=dt.now().timestamp(),
+        timestamp_end=None
         )
 
 
@@ -121,6 +134,7 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     Node: create_node,
     RunContext: create_run_context,
     RunEvent: create_run_event,
+    RunStep: create_run_step,
     Transfer: create_transfer
 }
 

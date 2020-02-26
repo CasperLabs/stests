@@ -1,5 +1,4 @@
 import typing
-
 from dataclasses import dataclass
 
 from stests.core.domain.enums import AccountStatus
@@ -42,7 +41,7 @@ class Account(Entity):
     typeof: AccountType = get_enum_field(AccountType)
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: str = None
+    _type_key: typing.Union[None, str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

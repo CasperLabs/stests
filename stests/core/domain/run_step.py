@@ -1,3 +1,4 @@
+import typing
 from dataclasses import dataclass
 
 from stests.core.domain.enums import RunStepStatus
@@ -29,10 +30,10 @@ class RunStep(Entity):
     timestamp: int
 
     # Moment in time when step completed.
-    timestamp_end: int
+    timestamp_end: typing.Union[None, int]
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: str = None
+    _type_key: typing.Union[None, str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

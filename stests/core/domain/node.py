@@ -1,3 +1,4 @@
+import typing
 from dataclasses import dataclass
 
 from stests.core.domain.account import Account
@@ -34,7 +35,7 @@ class Node(Entity):
     typeof: NodeType = get_enum_field(NodeType)
     
     # Type key of associated object used in serialisation scenarios.
-    _type_key: str = None
+    _type_key: typing.Union[None, str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)
