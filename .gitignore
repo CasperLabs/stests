@@ -131,3 +131,5 @@ dmypy.json
 
 # Temp sub-folder
 /tmp
+tmp.sh
+tmp.py
