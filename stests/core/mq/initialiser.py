@@ -4,15 +4,12 @@ import dramatiq
 
 from stests.core.mq.brokers import get_broker
 from stests.core.mq import encoder
-from stests.core.mq.mode import BrokerMode
 
 
 
-def execute(mode: BrokerMode = BrokerMode.ACTORS):
-    """Initialises dramatiq library.
+def execute():
+    """Initialises MQ broker & connects dramatiq library.
 
-    :param mode: Mode in which MQ package is being used.
-    
     """
     # Instantiate a broker.
     broker = get_broker()
@@ -20,8 +17,8 @@ def execute(mode: BrokerMode = BrokerMode.ACTORS):
 
     # Inject middleware.
     from stests.core.mq.middleware import get_middleware
-    for mware in get_middleware(mode):
+    for mware in get_middleware():
         broker.add_middleware(mware)
 
-    # Simply broker & encoder.
+    # Inject encoder.
     dramatiq.set_encoder(encoder)
