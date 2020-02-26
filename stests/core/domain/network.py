@@ -1,3 +1,4 @@
+import typing
 from dataclasses import dataclass
 
 from stests.core.domain.account import Account
@@ -13,7 +14,7 @@ class Network(Entity):
     
     """
     # Primary faucet associated with network.
-    faucet: Account
+    faucet: typing.Union[None, Account]
 
     # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
     index: int

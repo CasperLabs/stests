@@ -7,7 +7,7 @@ from stests.core.utils import logger
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("List networks within stests cache.")
+ARGS = argparse.ArgumentParser("Lists set of registered networks.")
 
 
 def main(args):

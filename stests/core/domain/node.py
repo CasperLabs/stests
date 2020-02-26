@@ -44,3 +44,7 @@ class Node(Entity):
 
     # Universally unique identifier.
     _uid: str = get_uuid_field(True) 
+
+    @property
+    def label(self):
+        return f"{self.network}:{self.index}"
