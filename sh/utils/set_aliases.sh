@@ -36,6 +36,9 @@ alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 # ALIASES: cache
 # ###############################################################
 
+alias stests-ls-networks='_exec_cmd $STESTS_PATH_CLI/cache/list_networks.py'
+alias stests-ls-nodes='_exec_cmd $STESTS_PATH_CLI/cache/list_nodes.py'
+
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
 alias stests-set-node='_exec_cmd $STESTS_PATH_CLI/cache/set_node.py'

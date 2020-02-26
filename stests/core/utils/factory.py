@@ -154,7 +154,7 @@ def create_network(name_raw: str) -> Network:
         index=identifier.index,
         name=identifier.name,
         name_raw=name_raw,
-        status=NetworkStatus.NULL,
+        status=NetworkStatus.HEALTHY,
         typeof=identifier.type
     )
 

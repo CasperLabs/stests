@@ -1,3 +1,5 @@
+import typing
+
 from dataclasses import dataclass
 
 from stests.core.domain.enums import AccountStatus
@@ -16,10 +18,10 @@ class Account(Entity):
     index: int
 
     # Associated network.
-    network: str
+    network: typing.Union[None, str]
 
     # Associated node index.
-    node: int
+    node: typing.Union[None, int]
 
     # Hexadecimal representation of private key used primarily in signing scenarios.
     private_key: str
@@ -28,10 +30,10 @@ class Account(Entity):
     public_key: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run: int
+    run: typing.Union[None, int]
 
     # Type of generator, e.g. WG-100 ...etc.
-    run_type: str    
+    run_type: typing.Union[None, str]
 
     # Current account status.
     status: AccountStatus = get_enum_field(AccountStatus)
