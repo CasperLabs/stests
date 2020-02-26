@@ -129,11 +129,10 @@ def main(args: argparse.Namespace):
     import stests.monitoring.correlator    
     import stests.generators.wg_100.phase_1
     import stests.generators.wg_100.phase_2
-    import stests.generators.wg_100.incrementor
 
     # Start workflow.
     logger.log("... workload generator begins")
-    from stests.generators.wg_100.incrementor import PIPELINE
+    from stests.generators.wg_100.correlator import PIPELINE
     PIPELINE[0].send(ctx)
 
 

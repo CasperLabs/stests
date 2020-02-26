@@ -6,6 +6,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core.utils import factory
+from stests.core.utils import logger
 from stests.core.domain import RunStepStatus
 from stests.core.cache import RunStepLock
 
@@ -72,8 +73,8 @@ def _can_step(ctx, actor):
         step=step
     )
     _, acquired = cache.lock_run_step(lock)
-
-    print(f"111 :: {ctx.run_type} :: {step} :: {acquired}")
+    if not acquired:
+        logger.log_warning(f"unacquired actor lock: {ctx.run_type} :: {step}")
 
     return acquired
 

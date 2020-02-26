@@ -5,21 +5,21 @@ from stests.core.domain import TransferStatus
 
 
 
-def verify_do_fund_contract(ctx: RunContext, dhash: str):
+def verify_fund_contract(ctx: RunContext, dhash: str):
     """Verifies that contract account is funded.
     
     """
     return _is_deploy_finalized(ctx, dhash) and _is_transfer_complete(ctx, dhash)
 
 
-def verify_do_fund_faucet(ctx: RunContext, dhash: str):
+def verify_fund_faucet(ctx: RunContext, dhash: str):
     """Verifies that faucet account is funded.
     
     """
     return _is_deploy_finalized(ctx, dhash) and _is_transfer_complete(ctx, dhash)
 
 
-def verify_do_fund_users(ctx: RunContext, dhash: str):
+def verify_fund_users(ctx: RunContext, dhash: str):
     """Verifies that user accounts are funded.
     
     """

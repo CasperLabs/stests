@@ -7,7 +7,11 @@
 4.  erc-20
 
     - deploy wasm & cache hash
-    - consider paymount amounts & gas-price
+    - open wasm 
+    - deploy wasm
+    - dispatch signed deploy
+    - cache uref
+    - contract-owner private key pem file
 
 5.  wg-100 orchestration mediated by chain events
 
