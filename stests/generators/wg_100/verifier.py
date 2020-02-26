@@ -1,7 +1,7 @@
 from stests.core.domain import RunContext
 from stests.core.domain import RunStep
 from stests.core.utils import logger
-from stests.generators.wg_100 import step_verifier_phase_1 as phase_1_verifier
+from stests.generators.wg_100 import verifier_phase_1 as phase_1_verifier
 
 
 
@@ -13,7 +13,7 @@ VERIFIERS = {
 }
 
 
-def verify(ctx: RunContext, deploy_hash: str) -> bool:
+def verify(ctx: RunContext, dhash: str) -> bool:
     """Verifies that a step has completed prior to incrementation.
     
     """
@@ -23,4 +23,4 @@ def verify(ctx: RunContext, deploy_hash: str) -> bool:
         logger.log_warning(f"{ctx.run_type} has no verifier for step {ctx.run_step}")
         return True
     else:
-        return verifier(ctx, deploy_hash)
+        return verifier(ctx, dhash)
