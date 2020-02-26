@@ -1,9 +1,10 @@
 import random
 import typing
 
-from stests.core.cache.pull_network import get_network
-from stests.core.cache.pull_network import get_nodes
+from stests.core.cache.network_pull import get_network
+from stests.core.cache.network_pull import get_nodes
 from stests.core.cache.utils import decache
+from stests.core.cache.utils import decache_count
 from stests.core.domain import *
 from stests.core.utils import factory
 
@@ -46,6 +47,48 @@ def get_run_account(ctx: RunContext, index: int) -> Account:
         ))
 
 
+@decache
+def get_run_context(network, run_index, run_type) -> RunContext:
+    """Decaches domain object: RunContext.
+    
+    :param ctx: Generator run contextual information.
+
+    :returns: Cached run context information.
+
+    """
+    return [
+        "run-context",
+        network,
+        run_type,
+        f"R-{str(run_index).zfill(3)}"
+    ]
+
+
+def get_run_deploy(dhash: str) -> Deploy:
+    """Decaches domain object: Deploy.
+    
+    :param dhash: A deploy hash.
+
+    :returns: A run deploy.
+
+    """    
+    deploys = get_run_deploys(dhash)
+
+    return deploys[-1] if deploys else None
+
+
+@decache
+def get_run_deploys(dhash: str) -> typing.List[Deploy]:
+    """Decaches collection of domain objects: Deploy.
+    
+    :param dhash: A deploy hash.
+
+    :returns: List of matching deploys.
+
+    """    
+    return [f"run-deploy*{dhash}*"]
+
+
 def get_run_network(ctx: RunContext) -> Network:
     """Decaches domain object: Network.
     
@@ -84,43 +127,6 @@ def get_run_node(ctx: RunContext) -> Node:
         return random.choice(nodes)
 
 
-@decache
-def get_run_deploy_entities(dhash: str) -> typing.List[typing.Union[Deploy, Transfer]]:
-    """Decaches all deploys and/or transfers relating to a particular run/deploy combination.
-    
-    :param dhash: A deploy hash.
-
-    :returns: List of matching deploys and/or transfers.
-
-    """    
-    return [f"run-*{dhash}*"]
-
-
-@decache
-def get_run_deploys(dhash: str) -> typing.List[Deploy]:
-    """Decaches all deploys relating to a particular run/deploy combination.
-    
-    :param dhash: A deploy hash.
-
-    :returns: List of matching deploys.
-
-    """    
-    return [f"run-deploy*{dhash}*"]
-
-
-def get_run_deploy(dhash: str) -> typing.List[Deploy]:
-    """Decaches a run deploy.
-    
-    :param dhash: A deploy hash.
-
-    :returns: A run deploy.
-
-    """    
-    all = get_run_deploys(dhash)
-
-    return all[-1] if all else None
-
-
 def get_run_step(ctx: RunContext) -> RunStep:
     """Decaches domain object: RunStep.
     
@@ -129,32 +135,34 @@ def get_run_step(ctx: RunContext) -> RunStep:
     :returns: Cached run step information.
 
     """
-    all = get_run_steps(ctx)
-    all = sorted(all, key=lambda i: i.timestamp)
+    steps = get_run_steps(ctx)
+    steps = sorted(steps, key=lambda i: i.timestamp)
 
-    return all[-1] if all else None
+    return steps[-1] if steps else None
 
 
-@decache
-def get_run_context(network, run_index, run_type) -> RunContext:
-    """Decaches domain object: RunContext.
+@decache_count
+def get_run_step_deploy_count(ctx: RunContext) -> int:
+    """Decaches count of domain object: Deploy.
     
     :param ctx: Generator run contextual information.
 
-    :returns: Cached run context information.
+    :returns: Count of run step deploys.
 
     """
     return [
-        "run-context",
-        network,
-        run_type,
-        f"R-{str(run_index).zfill(3)}"
+        "run-step-deploy",
+        ctx.network,
+        ctx.run_type,
+        f"R-{str(ctx.run_index).zfill(3)}",
+        ctx.run_step,
+        "*"
     ]
 
 
 @decache
 def get_run_steps(ctx: RunContext) -> typing.List[RunStep]:
-    """Decaches domain objects: RunStep.
+    """Decaches collection of domain objects: RunStep.
 
     :param ctx: Generator run contextual information.
 
@@ -168,3 +176,28 @@ def get_run_steps(ctx: RunContext) -> typing.List[RunStep]:
         f"R-{str(ctx.run_index).zfill(3)}",
         "*"
         ]
+
+
+def get_run_transfer(dhash: str) -> Transfer:
+    """Decaches domain object: Transfer.
+    
+    :param dhash: A deploy hash.
+
+    :returns: A run deploy.
+
+    """    
+    transfers = get_run_transfers(dhash)
+
+    return transfers[-1] if transfers else None
+
+
+@decache
+def get_run_transfers(dhash: str) -> typing.List[Transfer]:
+    """Decaches collection of domain objects: Transfer.
+    
+    :param dhash: A deploy hash.
+
+    :returns: Matched transfers.
+
+    """    
+    return [f"run-transfer*{dhash}*"]

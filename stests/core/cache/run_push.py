@@ -1,6 +1,7 @@
 import typing
 
 from stests.core.cache.utils import encache
+from stests.core.cache.utils import encache_singleton
 from stests.core.domain import *
 
 
@@ -36,7 +37,7 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
         "run-context",
         ctx.network,
         ctx.run_type,
-        f"R-{str(ctx.run).zfill(3)}"
+        f"R-{str(ctx.run_index).zfill(3)}"
     ], ctx
 
 
@@ -54,6 +55,26 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
         deploy.network,
         deploy.run_type,
         f"R-{str(deploy.run).zfill(3)}",
+        f"{str(deploy.ts_dispatched)}.{deploy.deploy_hash}"
+    ], deploy
+
+
+@encache
+def set_run_step_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
+    """Encaches domain object: Deploy.
+    
+    :param ctx: Generator run contextual information.
+    :param deploy: Deploy domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "run-step-deploy",
+        ctx.network,
+        ctx.run_type,
+        f"R-{str(ctx.run_index).zfill(3)}",
+        ctx.run_step,
         f"{str(deploy.ts_dispatched)}.{deploy.deploy_hash}"
     ], deploy
 
@@ -90,7 +111,7 @@ def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
         step.network,
         step.run_type,
         f"R-{str(step.run).zfill(3)}",
-        f"{str(step.timestamp)}.{step.step}"
+        step.step
     ], step
 
 

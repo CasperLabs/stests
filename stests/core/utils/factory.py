@@ -128,8 +128,6 @@ def create_deploy_for_run(
     ) -> Deploy:
     """Returns a domain object instance: Deploy.
 
-    :param ctx: Generator run contextual information.
-
     """
     return Deploy(
         block_hash=None,
@@ -228,6 +226,7 @@ def create_run_context(
         network=network_id.name,
         node=node_id.index,
         run=run,
+        run_step=None,
         run_type=run_type
     )
 
@@ -235,8 +234,6 @@ def create_run_context(
 def create_run_event(ctx: RunContext, event: str) -> RunEvent:
     """Returns a domain object instance: RunEvent.
 
-    :param ctx: Generator run contextual information.
-    
     """
     return RunEvent(
         event=event,
@@ -247,19 +244,16 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
     )
 
 
-def create_run_step(ctx: RunContext, step: str) -> RunStep:
+def create_run_step(ctx: RunContext, name: str) -> RunStep:
     """Returns a domain object instance: RunStep.
 
-    :param ctx: Generator run contextual information.
-    
     """
     return RunStep(
-        step=step,
-        step_param=None,
         network=ctx.network,
         run=ctx.run,
         run_type=ctx.run_type,
         status=RunStepStatus.IN_PROGRESS,
+        step=name,
         timestamp=dt.now().timestamp(),
         timestamp_end=None,
     )

@@ -25,6 +25,9 @@ class RunContext(Entity):
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str
 
+    # Current run step.
+    run_step: str
+
     # Type key of associated object used in serialisation scenarios.
     _type_key: str = None
 

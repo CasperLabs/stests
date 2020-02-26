@@ -26,7 +26,7 @@ ARGS.add_argument(
     dest="node",
     help="Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.",
     type=args_validator.validate_node_index,
-    default=1,
+    default=0,
     required=False
     )
 
@@ -126,7 +126,7 @@ def main(args: argparse.Namespace):
     mq.initialise()
 
     # Import actors.
-    import stests.generators.correlator
+    import stests.generators.correlator    
     import stests.generators.wg_100.phase_1
     import stests.generators.wg_100.phase_2
     import stests.generators.wg_100.step_incrementor

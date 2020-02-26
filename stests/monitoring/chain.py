@@ -70,25 +70,25 @@ def on_finalized_deploy(network_id: NetworkIdentifier, block_hash: str, deploy_h
     if not encached:
         return
 
-    # Set deploy related entities.
-    entities = cache.get_run_deploy_entities(deploy_hash)
-    if not entities:
+    # Update run deploy.
+    deploy = cache.get_run_deploy(deploy_hash)
+    if not deploy:
         logger.log_warning(f"Could not find finalized run deploy information: {block_hash} : {deploy_hash}")
         return
+    deploy.block_hash = block_hash
+    deploy.status = DeployStatus.FINALIZED
+    deploy.ts_finalized = ts_finalized
+    cache.set_run_deploy(deploy)
 
-    # Update deploy related entities.
-    for entity in entities:
-        if isinstance(entity, Deploy):
-            entity.block_hash = block_hash
-            entity.status = DeployStatus.FINALIZED
-            entity.ts_finalized = ts_finalized
-            cache.set_run_deploy(entity)
+    # Update run step deploy.
+    ctx = cache.get_run_context(deploy.network, deploy.run, deploy.run_type)
+    cache.set_run_step_deploy(ctx, deploy)
 
-        elif isinstance(entity, Transfer):
-            entity.status = TransferStatus.COMPLETE
-            cache.set_run_transfer(entity)
-
+    # Update transfer.
+    transfer = cache.get_run_transfer(deploy_hash)
+    if transfer:
+        transfer.status = TransferStatus.COMPLETE
+        cache.set_run_transfer(transfer)
+    
     # Signal downstream to workload generator.
-    ctx = cache.get_run_context(entity.network, entity.run, entity.run_type)
-    if ctx:
-        correlate_finalized_deploy.send(ctx, deploy_hash)
+    correlate_finalized_deploy.send(ctx, deploy_hash)

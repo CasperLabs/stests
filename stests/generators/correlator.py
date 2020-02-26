@@ -24,10 +24,8 @@ HANDLERS = {
 def correlate_finalized_deploy(ctx: RunContext, deploy_hash: str):   
     """Correlates a finalzied deploy with a workload generator correlation handler.
     
-    :param network: Network name.
-    :param run_index: Generator run index.
-    :param run_type: Generator run type.
-    :param deploy_hash: Hash of finalized deploy.
+    :param ctx: Generator run contextual information.
+    :param deploy_hash: Hash of a finalized deploy.
 
     """
     # Set handlers.
@@ -37,17 +35,17 @@ def correlate_finalized_deploy(ctx: RunContext, deploy_hash: str):
         logger.log_warning(f"{ctx.run_type} has no registered step verifier/incrementor")
         return
 
-    # Set step.
-    step = cache.get_run_step(ctx)   
+    # Verify & increment.
+    if verifier.verify(ctx, deploy_hash):
+        _complete_step(ctx)
+        incrementor.increment(ctx)
 
-    # Verify.
-    if not verifier.verify(ctx, step):
-        return
 
-    # Mark current step as complete.
+def _complete_step(ctx):
+    """Returns step information for downstream correlation.
+    
+    """
+    step = cache.get_run_step(ctx)
     step.status = RunStepStatus.COMPLETE
     step.timestamp_end = dt.now().timestamp()
     cache.set_run_step(step)
-
-    # Increment.
-    incrementor.increment(ctx, step)

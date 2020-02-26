@@ -5,7 +5,9 @@ from datetime import datetime as dt
 import dramatiq
 
 from stests.core import cache
+from stests.core.cache import RunStepLock
 from stests.core.utils import factory
+from stests.core.utils import logger
 from stests.core.domain import RunContext
 from stests.core.domain import RunStep
 from stests.core.domain import RunStepStatus
@@ -26,49 +28,76 @@ PIPELINE = (
     phase_2.do_start_auction,
 )
 
-MAP = {
-    phase_1.do_fund_faucet: phase_1.do_fund_contract,
-}
+
+def increment(ctx: RunContext):
+    """Performs a step increment by acquiring a step lock and dispatching a message to the step's actor.
+    
+    """
+    actor = _get_next_actor(ctx.run_step, PIPELINE)
+    if _can_step(ctx, actor):
+        _set_step(ctx, actor)
+        actor.send(ctx)
 
 
-def increment(ctx: RunContext, step: RunStep):
-    print(f"444 :: wg-100 :: increment")
-    _increment_step(ctx, step, PIPELINE)
+def _can_step(ctx, actor):
+    """Predicate to determine if next step within a workflow can be executed or not.
+    
+    """
+    step = _get_step(actor)
+    lock = RunStepLock(
+        network=ctx.network,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        step=step
+    )
+    _, acquired = cache.lock_run_step(lock)
+
+    print(f"111 :: {ctx.run_type} :: {step} :: {acquired}")
+
+    return acquired
 
 
-def _increment_step(ctx: RunContext, step: RunStep, pipeline: typing.Tuple[dramatiq.actor]):
+def _set_step(ctx: RunContext, actor: dramatiq.Actor):
     """Executes next step in workflow.
     
     """ 
-    # Set next actor.
-    next_actor = _get_next_actor(step, pipeline)
-
-    # Set next step.
-    next_step = factory.create_run_step(ctx, _get_actor_name(next_actor))
-    cache.set_run_step(next_step)
-
-    # Enqueue next actor.
-    next_actor.send(ctx)
+    step = _get_step(actor)
+    cache.set_run_step(
+        factory.create_run_step(ctx, step)
+    )
+    ctx.run_step = step
+    cache.set_run_context(ctx)
 
 
-def _get_current_actor(step, pipeline):
-    for actor in pipeline:
-        if step.name == _get_actor_name(actor):
-            return actor
+def _get_step(actor: dramatiq.Actor) -> str:
+    """Returns a queue name derived from module in which actor is declared.
+    
+    """
+    m = inspect.getmodule(actor.fn)
+
+    return f"{m.__name__.split('.')[-1]}.{actor.fn.__name__}"
 
 
 def _get_next_actor(step, pipeline):
+    """Derives next actor in pipeline.
+    
+    """
     for idx, actor in enumerate(pipeline):
         actor_name = _get_actor_name(actor)
-        if step.name == actor_name:
+        if step == actor_name:
             try:
                 return pipeline[idx + 1]
             except IndexError:
                 return None
 
 
-def _get_actor_name(actor):
+def _get_actor_name(actor: dramatiq.Actor) -> str:
+    """Gets name of actor so that it can be mapped to a step.
+    
+    """
     fn = actor.fn
     m = inspect.getmodule(fn)
 
     return f"{m.__name__.split('.')[-1]}.{fn.__name__}"
+
+

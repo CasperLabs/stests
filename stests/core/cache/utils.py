@@ -25,6 +25,22 @@ def decache(func: typing.Callable) -> typing.Callable:
                 return _get(store, key)
 
     return wrapper
+
+
+def decache_count(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally pull domain objects from cache.
+
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+    
+    """
+    def wrapper(*args, **kwargs):
+        keypath = func(*args, **kwargs)
+        key = ":".join([str(i) for i in keypath])
+        with stores.get_store() as store:
+            return _get_count(store, key)
+    return wrapper
     
 
 def encache(func: typing.Callable) -> typing.Callable:
@@ -41,6 +57,24 @@ def encache(func: typing.Callable) -> typing.Callable:
         with stores.get_store() as store:
             _set(store, key, data)
         return key
+
+    return wrapper
+
+
+def encache_lock(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally push domain objects to cache (if they have not already been pushed).
+    
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+
+    """
+    def wrapper(*args, **kwargs):
+        keypath, data = func(*args, **kwargs)
+        data = data.to_dict()
+        key = ":".join([str(i) for i in keypath])
+        with stores.get_store() as store:
+            return key, _setnx(store, key, data)
 
     return wrapper
 
@@ -135,6 +169,22 @@ def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]
     return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
 
+def _get_count(store: typing.Callable, search_key: str) -> int:
+    """Wraps redis.mget command.
+    
+    :param store: Cache store connection wrapper.
+    :param search_key: Key woth which to search cache.
+
+    :returns: If a key match then collection of decoded domain object(s), else None.
+
+    """
+    logger.log(f"CACHE :: get_count :: {search_key}")
+    CHUNK_SIZE = 5000
+    _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
+
+    return len(keys)
+
+
 def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
     """Wraps redis.set command.
     
@@ -162,7 +212,7 @@ def _setnx(store: typing.Callable, key: str, data: typing.Any) -> typing.Tuple[s
 
     """
     logger.log(f"CACHE :: setnx :: {key}")
-    
+
     return bool(store.setnx(key, json.dumps(encoder.encode(data), indent=4)))
 
 

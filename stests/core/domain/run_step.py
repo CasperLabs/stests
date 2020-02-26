@@ -10,12 +10,6 @@ class RunStep(Entity):
     """Step information associated with a generator run.
     
     """
-    # Step name.
-    step: str
-
-    # Step parameter.
-    step_param: str
-
     # Associated network.
     network: str
 
@@ -27,6 +21,9 @@ class RunStep(Entity):
 
     # Current status.
     status: RunStepStatus = get_enum_field(RunStepStatus)
+
+    # Step name.
+    step: str
 
     # Moment in time when step occurred.
     timestamp: int

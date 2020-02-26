@@ -15,15 +15,17 @@ def flush_run(ctx: RunContext) -> typing.Generator:
     
     """
     for collection in [
-        "account",
-        "context",
-        "deploy",
-        "event",
-        "step",
-        "transfer",
+        "lock-run-step",
+        "run-account",
+        "run-context",
+        "run-deploy",
+        "run-event",
+        "run-step",
+        "run-step-deploy",
+        "run-transfer",
     ]:
         yield [
-            f"run-{collection}",
+            collection,
             ctx.network,
             ctx.run_type,
             f"R-{str(ctx.run).zfill(3)}"            
