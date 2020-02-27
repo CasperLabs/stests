@@ -17,6 +17,7 @@ tox = "*"
 supervisor = "*"
 apscheduler = "*"
 casperlabs-client = "*"
+typing-inspect = "*"
 
 [requires]
 python_version = "3.7"

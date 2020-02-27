@@ -4,6 +4,7 @@ import enum
 import inspect
 import json
 import typing
+import typing_inspect
 
 from stests.core.utils import logger
 
@@ -57,6 +58,9 @@ def decode(obj: typing.Any) -> typing.Any:
     """Decodes previously encoded information.
     
     """
+    if isinstance(obj, PRIMITIVES):
+        return obj
+
     if isinstance(obj, tuple):
         return tuple(map(decode, obj))
 
@@ -64,7 +68,7 @@ def decode(obj: typing.Any) -> typing.Any:
         return list(map(decode, obj))
 
     if isinstance(obj, dict) and '_type_key' in obj:
-        return _decode_registered_dclass(obj)
+        return _decode_dclass(obj)
 
     if isinstance(obj, dict):
         return {k: decode(v) for k, v in obj.items()}        
@@ -75,7 +79,7 @@ def decode(obj: typing.Any) -> typing.Any:
     return obj
 
 
-def _decode_registered_dclass(obj):
+def _decode_dclass(obj):
     """Decodes a registered data class instance.
     
     """
@@ -86,14 +90,38 @@ def _decode_registered_dclass(obj):
     for field in dataclasses.fields(dcls):
         if field.name not in obj:
             continue
+
+        field_value = obj[field.name]
+        if isinstance(field_value, type(None)):
+            continue 
+
+        field_type = _get_field_type(field)
+        if field_type is datetime.datetime:
+            obj[field.name] = datetime.datetime.fromtimestamp(field_value)
+
         elif field.type in ENUM_TYPE_SET:
             obj[field.name] = field.type[obj[field.name]]
-        elif isinstance(obj[field.name], dict) and '_type_key' in obj[field.name]:            
-            obj[field.name] = _decode_registered_dclass(obj[field.name])
+    
+        elif field_type in DCLASS_SET:
+            obj[field.name] = _decode_dclass(obj[field.name])
+
         else:
             obj[field.name] = decode(obj[field.name])
 
     return dcls(**obj)
+
+
+def _get_field_type(field):
+    """Returns a dataclass field type.
+    
+    """
+    # For optional fields the dataclass type annotation Union needs to be deconstruacture.
+    if typing_inspect.get_origin(field.type) is typing.Union:
+        type_args = typing_inspect.get_args(field.type)
+        for type_arg in [i for i in type_args if i not in (type(None), )]:
+            return type_arg
+    else:
+        return field.type
 
 
 def encode(data: typing.Any) -> typing.Any:
@@ -116,7 +144,7 @@ def encode(data: typing.Any) -> typing.Any:
         return list(map(encode, data))
 
     if type(data) in DCLASS_SET:
-        return _encode_registered_dclass(data, dataclasses.asdict(data))
+        return _encode_dclass(data, dataclasses.asdict(data))
 
     if type(data) in ENUM_TYPE_SET:
         return data.name
@@ -126,7 +154,7 @@ def encode(data: typing.Any) -> typing.Any:
     return data
 
 
-def _encode_registered_dclass(data, obj):
+def _encode_dclass(data, obj):
     """Encodes a data class that has been previously registered with the encoder.
     
     """
@@ -136,7 +164,7 @@ def _encode_registered_dclass(data, obj):
     # Recurse through properties that are also registered data classes.
     for i in [i for i in dir(data) if i in obj and not i.startswith('_') and 
                                       type(getattr(data, i)) in DCLASS_SET]:
-        _encode_registered_dclass(getattr(data, i), obj[i])
+        _encode_dclass(getattr(data, i), obj[i])
 
     return encode(obj)
 
