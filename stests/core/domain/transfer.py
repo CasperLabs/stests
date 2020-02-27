@@ -27,7 +27,7 @@ class Transfer(Entity):
     deploy_hash: str
 
     # Associated deploy hash.
-    deploy_hash_refund: typing.Union[None, str]
+    deploy_hash_refund: typing.Optional[str]
 
     # Flag indicating whether a refund is required.
     is_refundable: bool
@@ -48,7 +48,7 @@ class Transfer(Entity):
     status: TransferStatus
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

@@ -34,16 +34,16 @@ class Deploy(Entity):
     status: DeployStatus
 
     # Moment in time when deploy dispatched to CLX network.
-    ts_dispatched: typing.Union[None, int]
+    ts_dispatched: typing.Optional[int]
 
     # Moment in time when deploy was finalized by CLX network.
-    ts_finalized: typing.Union[None, int]
+    ts_finalized: typing.Optional[int]
 
     # Deploy's processing status.
     typeof: DeployType
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

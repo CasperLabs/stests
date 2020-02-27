@@ -11,7 +11,7 @@ class RunContext(Entity):
     
     """
     # Associated run arguments.
-    args: typing.Union[None, typing.Any]
+    args: typing.Optional[typing.Any]
 
     # Associated network.
     network: str
@@ -26,10 +26,10 @@ class RunContext(Entity):
     run_type: str
 
     # Current run step.
-    run_step: typing.Union[None, str]
+    run_step: typing.Optional[str]
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

@@ -14,7 +14,7 @@ class NetworkIdentifier:
     name: str   
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     @property
     def index(self) -> int:
@@ -41,7 +41,7 @@ class NodeIdentifier:
     index: int
  
      # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
 
 @dataclass
@@ -59,7 +59,7 @@ class RunIdentifier:
     type: str
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
 
 @dataclass
@@ -74,7 +74,7 @@ class AccountIdentifier:
     run: RunIdentifier
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     @property
     def network_id(self) -> NetworkIdentifier:

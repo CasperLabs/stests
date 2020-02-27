@@ -17,10 +17,10 @@ class Account(Entity):
     index: int
 
     # Associated network.
-    network: typing.Union[None, str]
+    network: typing.Optional[str]
 
     # Associated node index.
-    node: typing.Union[None, int]
+    node: typing.Optional[int]
 
     # Hexadecimal representation of private key used primarily in signing scenarios.
     private_key: str
@@ -29,10 +29,10 @@ class Account(Entity):
     public_key: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run: typing.Union[None, int]
+    run: typing.Optional[int]
 
     # Type of generator, e.g. WG-100 ...etc.
-    run_type: typing.Union[None, str]
+    run_type: typing.Optional[str]
 
     # Current account status.
     status: AccountStatus
@@ -41,7 +41,7 @@ class Account(Entity):
     typeof: AccountType
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

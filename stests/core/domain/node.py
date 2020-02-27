@@ -14,7 +14,7 @@ class Node(Entity):
     
     """
     # Bonding account associated with node.
-    account: typing.Union[None, Account]
+    account: typing.Optional[Account]
 
     # Node's host address.
     host: str
@@ -35,7 +35,7 @@ class Node(Entity):
     typeof: NodeType
     
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)

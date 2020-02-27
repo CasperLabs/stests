@@ -14,7 +14,7 @@ class Network(Entity):
     
     """
     # Primary faucet associated with network.
-    faucet: typing.Union[None, Account]
+    faucet: typing.Optional[Account]
 
     # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
     index: int
@@ -32,7 +32,7 @@ class Network(Entity):
     typeof: NetworkType
 
     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Union[None, str] = None
+    _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
     _ts_created: datetime = get_isodatetime_field(True)
