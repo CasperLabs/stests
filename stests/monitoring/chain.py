@@ -1,16 +1,14 @@
+from datetime import datetime
+
 import dramatiq
 from dramatiq.middleware import TimeLimitExceeded
 
 from stests.core import cache
 from stests.core import clx
 from stests.core.utils import factory
-from stests.core.domain import BlockStatus
-from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
-from stests.core.domain import Transfer
-from stests.core.domain import TransferStatus
 from stests.core.utils import logger
 from stests.monitoring.correlator import correlate_finalized_deploy
 
@@ -58,7 +56,7 @@ def on_finalized_block(network_id: NetworkIdentifier, bhash: str):
     """
     # Query block info & set block status accordingly.
     block = clx.get_block(network_id, bhash)
-    block.status = BlockStatus.FINALIZED
+    block.update_on_finalization()
 
     # Encache - skip duplicates.
     _, encached = cache.set_network_block(block)  
@@ -71,7 +69,7 @@ def on_finalized_block(network_id: NetworkIdentifier, bhash: str):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, ts_finalized: int):   
+def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, ts_finalized: float):   
     """Event: raised whenever a deploy is finalized.
     
     :param network_id: Identifier of network upon which a block has been finalized.
@@ -94,20 +92,18 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, t
         logger.log_warning(f"Could not find finalized run deploy information: {bhash} : {dhash}")
         return
 
+    # Update run deploy.
+    deploy.update_on_finalization(bhash, ts_finalized)
+    cache.set_run_deploy(deploy)
+
     # Increment run step deploy count.
     ctx = cache.get_run_context(deploy.network, deploy.run, deploy.run_type)
     cache.increment_step_deploy_count(ctx)
 
-    # Update run deploy.
-    deploy.block_hash = bhash
-    deploy.status = DeployStatus.FINALIZED
-    deploy.ts_finalized = ts_finalized
-    cache.set_run_deploy(deploy)
-
     # Update run transfer.
     transfer = cache.get_run_transfer(dhash)
     if transfer:
-        transfer.status = TransferStatus.COMPLETE
+        transfer.update_on_completion()
         cache.set_run_transfer(transfer)
     
     # Signal to workload generator correlator.

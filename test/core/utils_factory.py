@@ -41,6 +41,9 @@ def create_deploy() -> Deploy:
         run=1,
         run_type="WG-XXX",
         status=random.choice(list(DeployStatus)),
+        time_to_finalization=None,
+        time_to_finalization_is_acceptable=None,
+        time_to_finalization_tolerance=None,
         ts_dispatched=None,
         ts_finalized=None    ,
         typeof=DeployType.NULL
@@ -95,8 +98,8 @@ def create_run_step() -> RunStep:
         run_type="WG-XXX",
         status=RunStepStatus.IN_PROGRESS,
         step="dolly",
-        timestamp=dt.now().timestamp(),
-        timestamp_end=None
+        ts_start=dt.now().timestamp(),
+        ts_end=None
         )
 
 

@@ -58,3 +58,10 @@ class Transfer(Entity):
 
     # Universally unique identifier.
     _uid: str = get_uuid_field() 
+
+
+    def update_on_completion(self):
+        """Executed when transfer has been completed.
+        
+        """
+        self.status = TransferStatus.COMPLETE

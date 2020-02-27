@@ -56,3 +56,10 @@ class Block(Entity):
 
     # Universally unique identifier.
     _uid: str = get_uuid_field() 
+
+
+    def update_on_finalization(self):
+        """Executed when block has been finalized.
+        
+        """
+        self.status = BlockStatus.FINALIZED
