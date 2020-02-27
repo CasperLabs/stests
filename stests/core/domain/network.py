@@ -35,10 +35,10 @@ class Network(Entity):
     _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
-    _ts_created: datetime = get_isodatetime_field(True)
+    _ts_created: datetime = get_isodatetime_field()
 
     # Timestamp: update.
-    _ts_updated: datetime = get_isodatetime_field(True)
+    _ts_updated: typing.Optional[datetime] = None
 
     # Universally unique identifier.
-    _uid: str = get_uuid_field(True) 
+    _uid: str = get_uuid_field() 
