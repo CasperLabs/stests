@@ -26,7 +26,7 @@ def verify_fund_users(ctx: RunContext, dhash: str):
     if not _is_deploy_finalized(ctx, dhash) or not _is_transfer_complete(ctx, dhash):
         return False
     
-    return cache.get_run_step_deploy_count(ctx) == ctx.args.user_accounts
+    return cache.get_step_deploy_count(ctx) == ctx.args.user_accounts
 
 
 def _is_deploy_finalized(ctx, dhash):

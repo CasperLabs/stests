@@ -22,6 +22,7 @@ def flush_run(ctx: RunContext) -> typing.Generator:
         "run-event",
         "run-step",
         "run-step-deploy",
+        "run-step-deploy-count",
         "run-step-lock",
         "run-transfer",
     ]:
@@ -55,6 +56,7 @@ def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
         "run-event",
         "run-step",
         "run-step-deploy",
+        "run-step-deploy-count",
         "run-step-lock",
         "run-transfer",
     ]:

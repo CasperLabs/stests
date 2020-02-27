@@ -88,25 +88,27 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, t
     if not encached:
         return
 
-    # Update run deploy.
+    # Pull run deploy.
     deploy = cache.get_run_deploy(dhash)
     if not deploy:
         logger.log_warning(f"Could not find finalized run deploy information: {bhash} : {dhash}")
         return
+
+    # Increment run step deploy count.
+    ctx = cache.get_run_context(deploy.network, deploy.run, deploy.run_type)
+    cache.increment_step_deploy_count(ctx)
+
+    # Update run deploy.
     deploy.block_hash = bhash
     deploy.status = DeployStatus.FINALIZED
     deploy.ts_finalized = ts_finalized
     cache.set_run_deploy(deploy)
 
-    # Update run step deploy.
-    ctx = cache.get_run_context(deploy.network, deploy.run, deploy.run_type)
-    cache.set_run_step_deploy(ctx, deploy)
-
-    # Update transfer.
+    # Update run transfer.
     transfer = cache.get_run_transfer(dhash)
     if transfer:
         transfer.status = TransferStatus.COMPLETE
         cache.set_run_transfer(transfer)
     
-    # Signal downstream to workload generator.
+    # Signal to workload generator correlator.
     correlate_finalized_deploy.send(ctx, dhash)

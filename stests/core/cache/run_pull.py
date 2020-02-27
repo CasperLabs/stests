@@ -4,7 +4,6 @@ import typing
 from stests.core.cache.network_pull import get_network
 from stests.core.cache.network_pull import get_nodes
 from stests.core.cache.utils import decache
-from stests.core.cache.utils import decache_count
 from stests.core.domain import *
 from stests.core.utils import factory
 
@@ -139,25 +138,6 @@ def get_run_step(ctx: RunContext) -> RunStep:
     steps = sorted(steps, key=lambda i: i.ts_start)
 
     return steps[-1] if steps else None
-
-
-@decache_count
-def get_run_step_deploy_count(ctx: RunContext) -> int:
-    """Decaches count of domain object: Deploy.
-    
-    :param ctx: Generator run contextual information.
-
-    :returns: Count of run step deploys.
-
-    """
-    return [
-        "run-step-deploy",
-        ctx.network,
-        ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}",
-        ctx.run_step,
-        "*"
-    ]
 
 
 @decache

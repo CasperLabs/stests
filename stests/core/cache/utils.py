@@ -28,21 +28,22 @@ def decache(func: typing.Callable) -> typing.Callable:
     return wrapper
 
 
-def decache_count(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally pull domain objects from cache.
+def pull_count(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally pull a count from cache.
 
     :param func: Inner function being decorated.
 
     :returns: Wrapped function.
     
     """
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs) -> int:
         keypath = func(*args, **kwargs)
         key = ":".join([str(i) for i in keypath])
         with stores.get_store() as store:
-            return _get_count(store, key)
+            return int(store.get(key))
+
     return wrapper
-    
+
 
 def encache(func: typing.Callable) -> typing.Callable:
     """Decorator to orthoganally push domain objects to cache.
@@ -113,7 +114,24 @@ def flushcache(func: typing.Callable) -> typing.Callable:
                 _flush(store, key)
 
     return wrapper
+
+
+def do_incrby(func: typing.Callable) -> typing.Callable:
+    """Decorator to orthoganally push domain objects to cache.
     
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+
+    """
+    def wrapper(*args, **kwargs):
+        keypath = func(*args, **kwargs)
+        key = ":".join([str(i) for i in keypath])
+        with stores.get_store() as store:
+            store.incrby(key, 1)
+
+    return wrapper
+
 
 def _decode_item(as_json: str) -> typing.Any:
     """Returns a decoded encached domain object(s).

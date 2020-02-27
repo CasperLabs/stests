@@ -60,26 +60,6 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
 
 @encache
-def set_run_step_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
-    """Encaches domain object: Deploy.
-    
-    :param ctx: Generator run contextual information.
-    :param deploy: Deploy domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "run-step-deploy",
-        ctx.network,
-        ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}",
-        ctx.run_step,
-        f"{str(deploy.ts_dispatched.timestamp())}.{deploy.deploy_hash}"
-    ], deploy
-
-
-@encache
 def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
     """Encaches domain object: RunStep.
     
