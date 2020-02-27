@@ -20,9 +20,9 @@ NAME = "stests"
 
 # Library 3rd party python dependencies.
 REQUIRES = [
+    'apscheduler',
     'casperlabs_client',
     'cryptography',
-    'dataclasses-json',
     'redis',
     'fakeredis',
     'hiredis',

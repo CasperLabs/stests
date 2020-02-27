@@ -1,4 +1,5 @@
 import argparse
+import typing
 from dataclasses import dataclass
 
 from stests.core.utils import encoder
@@ -30,6 +31,9 @@ class Arguments:
 
     # Initial user account CLX balance.
     user_initial_clx_balance: int
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Union[None, str] = None
 
     @classmethod
     def create(cls, args: argparse.Namespace):

@@ -10,15 +10,13 @@ pylint = "*"
 redis = "*"
 dramatiq = {extras = ["rabbitmq", "watch"],version = "*"}
 cryptography = "*"
-pika = "*"
-dataclasses-json = "*"
 hiredis = "*"
 fakeredis = "*"
 pytest = "*"
 tox = "*"
 supervisor = "*"
 apscheduler = "*"
-grpclib = "*"
+casperlabs-client = "*"
 
 [requires]
 python_version = "3.7"

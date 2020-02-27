@@ -7,8 +7,6 @@ from dataclasses import dataclass
 from dataclasses import field
 from datetime import datetime
 
-from marshmallow import fields
-
 
 
 def get_enum_field(enumfield: enum.Enum) -> field:

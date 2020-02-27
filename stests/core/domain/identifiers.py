@@ -1,3 +1,4 @@
+import typing
 from dataclasses import dataclass
 
 from stests.core.domain.enums import NetworkType
@@ -11,6 +12,9 @@ class NetworkIdentifier:
     """ 
     # Internal name of network, e.g. LRT-01
     name: str   
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Union[None, str] = None
 
     @property
     def index(self) -> int:
@@ -36,6 +40,9 @@ class NodeIdentifier:
     # Node index.
     index: int
  
+     # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Union[None, str] = None
+
 
 @dataclass
 class RunIdentifier:
@@ -51,6 +58,9 @@ class RunIdentifier:
     # Type of generator, e.g. WG-100 ...etc.
     type: str
 
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Union[None, str] = None
+
 
 @dataclass
 class AccountIdentifier:
@@ -62,6 +72,9 @@ class AccountIdentifier:
 
     # Associated run identifier.
     run: RunIdentifier
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Union[None, str] = None
 
     @property
     def network_id(self) -> NetworkIdentifier:
