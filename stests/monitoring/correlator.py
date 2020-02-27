@@ -71,8 +71,14 @@ def _verify(ctx: RunContext, pipeline, actor: dramatiq.Actor, dhash: str) -> boo
     except KeyError:
         logger.log_warning(f"{ctx.run_type} has no verifier for step {ctx.run_step}")
         return True
-    else:
-        return verifier(ctx, dhash)
+    
+    try:
+        verifier(ctx, dhash)
+    except AssertionError:
+        logger.log_warning(f"{ctx.run_type} failed verification for step {ctx.run_step}")
+        return False
+
+    return True
 
 
 def _increment(ctx: RunContext, pipeline, actor: dramatiq.Actor):
