@@ -1,5 +1,6 @@
 import typing
 from dataclasses import dataclass
+from datetime import datetime
 
 from stests.core.domain.enums import RunStepStatus
 from stests.core.utils.domain import *
@@ -27,10 +28,10 @@ class RunStep(Entity):
     step: str
 
     # Moment in time when step occurred.
-    timestamp: int
+    ts_start: datetime
 
     # Moment in time when step completed.
-    timestamp_end: typing.Optional[int]
+    ts_end: typing.Optional[datetime]
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None

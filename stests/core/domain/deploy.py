@@ -1,5 +1,6 @@
 import typing
 from dataclasses import dataclass
+from datetime import datetime
 
 from stests.core.domain.enums import DeployStatus
 from stests.core.domain.enums import DeployType
@@ -34,10 +35,10 @@ class Deploy(Entity):
     status: DeployStatus
 
     # Moment in time when deploy dispatched to CLX network.
-    ts_dispatched: typing.Optional[int]
+    ts_dispatched: typing.Optional[datetime]
 
     # Moment in time when deploy was finalized by CLX network.
-    ts_finalized: typing.Optional[int]
+    ts_finalized: typing.Optional[datetime]
 
     # Deploy's processing status.
     typeof: DeployType

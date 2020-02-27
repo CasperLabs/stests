@@ -1,5 +1,6 @@
 import typing
 from dataclasses import dataclass
+from datetime import datetime
 
 from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType

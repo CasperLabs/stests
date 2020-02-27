@@ -136,7 +136,7 @@ def get_run_step(ctx: RunContext) -> RunStep:
 
     """
     steps = get_run_steps(ctx)
-    steps = sorted(steps, key=lambda i: i.timestamp)
+    steps = sorted(steps, key=lambda i: i.ts_start)
 
     return steps[-1] if steps else None
 

@@ -49,7 +49,6 @@ def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
         "network-block",
         "network-deploy",
         "network-node",
-
         "run-account",
         "run-context",
         "run-deploy",

@@ -1,5 +1,6 @@
 import typing
 from dataclasses import dataclass
+from datetime import datetime
 
 from stests.core.domain.enums import BlockStatus
 from stests.core.utils.domain import *
@@ -39,7 +40,7 @@ class Block(Entity):
     status: BlockStatus
 
     # Block processing timestamp.
-    timestamp: int
+    timestamp: datetime
 
     # Validator identifier that proposed block.
     validator_id: str

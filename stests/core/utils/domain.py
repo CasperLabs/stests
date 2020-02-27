@@ -12,7 +12,7 @@ def get_timestamp_field() -> dataclasses.field:
 
     """
     return dataclasses.field(
-        default_factory=lambda: datetime.now().timestamp(),
+        default_factory=lambda: datetime.now(),
     )
 
 

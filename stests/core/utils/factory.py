@@ -1,4 +1,4 @@
-from datetime import datetime as dt
+from datetime import datetime
 import typing
 
 from stests.core.domain import *
@@ -78,7 +78,7 @@ def create_block(
     j_rank: int,
     m_rank: int,
     size_bytes: int,
-    timestamp: int,
+    timestamp: datetime,
     validator_id: str
     ) -> Block:
     """Returns a domain object instance: Block.
@@ -116,8 +116,8 @@ def create_deploy(
         run=None,
         run_type=None,
         status=status,
-        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
-        ts_finalized=dt.now().timestamp() if status == DeployStatus.FINALIZED else None,
+        ts_dispatched=datetime.now() if status == DeployStatus.DISPATCHED else None,
+        ts_finalized=datetime.now() if status == DeployStatus.FINALIZED else None,
         typeof=DeployType.NULL,    
     )
 
@@ -139,7 +139,7 @@ def create_deploy_for_run(
         run=ctx.run,
         run_type=ctx.run_type,        
         status=status,
-        ts_dispatched=dt.now().timestamp() if status == DeployStatus.DISPATCHED else None,
+        ts_dispatched=datetime.now() if status == DeployStatus.DISPATCHED else None,
         ts_finalized=None,
         typeof=typeof
     )
@@ -242,7 +242,7 @@ def create_run_event(ctx: RunContext, event: str) -> RunEvent:
         network=ctx.network,
         run=ctx.run,
         run_type=ctx.run_type,
-        timestamp=dt.now().timestamp()
+        ts_start=datetime.now()
     )
 
 
@@ -256,8 +256,8 @@ def create_run_step(ctx: RunContext, name: str) -> RunStep:
         run_type=ctx.run_type,
         status=RunStepStatus.IN_PROGRESS,
         step=name,
-        timestamp=dt.now().timestamp(),
-        timestamp_end=None,
+        ts_start=datetime.now(),
+        ts_end=None,
     )
 
 

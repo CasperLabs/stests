@@ -55,7 +55,7 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
         deploy.network,
         deploy.run_type,
         f"R-{str(deploy.run).zfill(3)}",
-        f"{str(deploy.ts_dispatched)}.{deploy.deploy_hash}"
+        f"{str(deploy.ts_dispatched.timestamp())}.{deploy.deploy_hash}"
     ], deploy
 
 
@@ -75,7 +75,7 @@ def set_run_step_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.
         ctx.run_type,
         f"R-{str(ctx.run_index).zfill(3)}",
         ctx.run_step,
-        f"{str(deploy.ts_dispatched)}.{deploy.deploy_hash}"
+        f"{str(deploy.ts_dispatched.timestamp())}.{deploy.deploy_hash}"
     ], deploy
 
 
@@ -93,7 +93,7 @@ def set_run_event(evt: RunEvent) -> typing.Tuple[typing.List[str], RunEvent]:
         evt.network,
         evt.run_type,
         f"R-{str(evt.run).zfill(3)}",
-        f"{str(evt.timestamp)}.{evt.event}"
+        f"{str(evt.ts_start.timestamp())}.{evt.event}"
     ], evt
 
 

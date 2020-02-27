@@ -1,4 +1,5 @@
 import typing
+from datetime import datetime
 
 from stests.core.clx.utils import get_client
 from stests.core.domain import Account
@@ -54,7 +55,7 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
         j_rank=info.summary.header.j_rank,
         m_rank=info.summary.header.main_rank,
         size_bytes=info.status.stats.block_size_bytes,
-        timestamp=info.summary.header.timestamp,
+        timestamp=datetime.fromtimestamp(info.summary.header.timestamp / 1000.0),
         validator_id=info.summary.header.validator_public_key.hex()
         )
 

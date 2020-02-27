@@ -23,7 +23,7 @@ class RunEvent(Entity):
     run_type: str
 
     # Moment in time when event occurred.
-    timestamp: int
+    ts_start: int
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None

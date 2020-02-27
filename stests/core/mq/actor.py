@@ -117,5 +117,5 @@ def _complete_step(ctx):
     """
     step = cache.get_run_step(ctx)
     step.status = RunStepStatus.COMPLETE
-    step.timestamp_end = dt.now().timestamp()
+    step.ts_end = dt.now()
     cache.set_run_step(step)
