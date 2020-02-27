@@ -36,6 +36,9 @@ alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 # ALIASES: cache
 # ###############################################################
 
+alias stests-flush-network='_exec_cmd $STESTS_PATH_CLI/cache/flush_network.py'
+alias stests-flush-node='_exec_cmd $STESTS_PATH_CLI/cache/flush_node.py'
+
 alias stests-ls-networks='_exec_cmd $STESTS_PATH_CLI/cache/list_networks.py'
 alias stests-ls-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/list_network_faucet_key.py'
 alias stests-ls-nodes='_exec_cmd $STESTS_PATH_CLI/cache/list_network_nodeset.py'
@@ -43,8 +46,10 @@ alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/list_node_bon
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
+alias stests-set-network-status='_exec_cmd $STESTS_PATH_CLI/cache/set_network_status.py'
 alias stests-set-node='_exec_cmd $STESTS_PATH_CLI/cache/set_node.py'
 alias stests-set-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/set_node_bonding_key.py'
+alias stests-set-node-status='_exec_cmd $STESTS_PATH_CLI/cache/set_node_status.py'
 
 # ###############################################################
 # ALIASES: generators

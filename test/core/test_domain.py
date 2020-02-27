@@ -1,7 +1,12 @@
 from stests.core.domain import DCLASS_SET
 from stests.core.domain import ENUM_SET
 from stests.core.domain import TYPE_SET
+from stests.core.domain import Node
 from test.core import utils_factory as factory
+
+
+import dataclasses
+from stests.core.utils import encoder
 
 
 def test_01():
@@ -26,27 +31,29 @@ def test_03():
 def test_04():
     """Test codec: encode to dict."""
     for i in [factory.get_instance(i) for i in DCLASS_SET]:
-        assert isinstance(i.to_dict(), dict)
+        assert isinstance(encoder.as_dict(i), dict)
 
 
 def test_05():
     """Test codec: encode to json."""
     for i in [factory.get_instance(i) for i in DCLASS_SET]:
-        assert isinstance(i.to_json(), str)
+        assert isinstance(encoder.as_json(i), bytes)
 
 
 def test_06():
     """Test codec: decode from dict."""
     for dcls in DCLASS_SET:
-        j = factory.get_instance(dcls).to_dict()
-        k = dcls.from_dict(j)
+        i = factory.get_instance(dcls)
+        j = encoder.as_dict(i)
+        k = encoder.from_dict(j)
         assert isinstance(k, dcls)
 
 
 def test_07():
     """Test codec: decode from json."""
     for dcls in DCLASS_SET:
-        j = factory.get_instance(dcls).to_json()
-        k = dcls.from_json(j)
+        i = factory.get_instance(dcls)
+        j = encoder.as_json(i)
+        k = encoder.from_json(j)
         assert isinstance(k, dcls)
 

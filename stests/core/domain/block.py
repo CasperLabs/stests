@@ -23,17 +23,20 @@ class Block(Entity):
     # Average price of deploys.
     deploy_gas_price_avg: int
 
+    # J-rank.
+    j_rank: int
+
+    # Main rank.
+    m_rank: int
+
     # Associated network.
     network: str
-
-    # Rank, aka height.
-    rank: int
 
     # Size in bytes of block.
     size_bytes: int
 
     # Block consensus status, e.g. ADDED | FINALIZED ... etc.
-    status: BlockStatus = get_enum_field(BlockStatus)
+    status: BlockStatus
 
     # Block processing timestamp.
     timestamp: int

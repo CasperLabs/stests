@@ -5,6 +5,7 @@ from datetime import datetime as dt
 import dramatiq
 
 from stests.core import cache
+from stests.core.utils import encoder
 from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.core.domain import RunStepStatus
@@ -83,11 +84,12 @@ def _set_step(ctx, actor):
     """Returns step information for downstream correlation.
     
     """
-    step = _get_step(actor)
-    cache.set_run_step(
-        factory.create_run_step(ctx, step)
-    )
-    ctx.run_step = step
+    step_name = _get_step(actor)
+
+    step = factory.create_run_step(ctx, step_name)
+    cache.set_run_step(step)
+
+    ctx.run_step = step_name
     cache.set_run_context(ctx)
 
 

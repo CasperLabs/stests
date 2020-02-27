@@ -1,6 +1,11 @@
+import dataclasses
+import datetime
 import enum
 import inspect
+import json
 import typing
+
+from stests.core.utils import logger
 
 
 
@@ -15,6 +20,37 @@ DCLASS_MAP = dict()
 
 # Set: supported dataclass types.  
 DCLASS_SET = set()
+
+# Set: primitive data types.
+PRIMITIVES = (type(None), int, str, float, bool)
+
+
+def as_dict(data: typing.Any) -> typing.Any:
+    """Encodes input data in readiness for downstream processing.
+    
+    """
+    return encode(data)
+
+
+def as_json(data: typing.Any) -> str:
+    """Encodes input data as JSON.
+    
+    """
+    return json.dumps(encode(data), indent=4).encode("utf-8")
+
+
+def from_dict(obj: typing.Any) -> typing.Any:
+    """Encodes input data in readiness for downstream processing.
+    
+    """
+    return decode(obj)
+
+
+def from_json(as_json: str) -> typing.Any:
+    """Encodes input data as JSON.
+    
+    """
+    return decode(json.loads(as_json))
 
 
 def decode(obj: typing.Any) -> typing.Any:
@@ -43,21 +79,33 @@ def _decode_registered_dclass(obj):
     """Decodes a registered data class instance.
     
     """
-    dclass_type = DCLASS_MAP[obj['_type_key']]
-    data = dclass_type.from_dict(obj)
+    # Set data class type.
+    dcls = DCLASS_MAP[obj['_type_key']]
 
-    # Recursively ensure child domain model instances are also decoded.
-    for k, v in obj.items():
-        if isinstance(v, dict) and '_type_key' in v:            
-            setattr(data, k, _decode_registered_dclass(v))
+    # Convert fields:
+    for field in dataclasses.fields(dcls):
+        if field.name not in obj:
+            continue
+        elif field.type in ENUM_TYPE_SET:
+            obj[field.name] = field.type[obj[field.name]]
+        elif isinstance(obj[field.name], dict) and '_type_key' in obj[field.name]:            
+            obj[field.name] = _decode_registered_dclass(obj[field.name])
+        else:
+            obj[field.name] = decode(obj[field.name])
 
-    return data
+    return dcls(**obj)
 
 
 def encode(data: typing.Any) -> typing.Any:
     """Encodes input data in readiness for downstream processing.
     
     """
+    if isinstance(data, PRIMITIVES):
+        return data
+
+    if isinstance(data, datetime.datetime):
+        return data.timestamp()
+
     if isinstance(data, dict):
         return {k: encode(v) for k, v in data.items()}
 
@@ -68,13 +116,12 @@ def encode(data: typing.Any) -> typing.Any:
         return list(map(encode, data))
 
     if type(data) in DCLASS_SET:
-        return _encode_registered_dclass(data, data.to_dict())
+        return _encode_registered_dclass(data, dataclasses.asdict(data))
 
     if type(data) in ENUM_TYPE_SET:
-        return str(data)
+        return data.name
 
-    if str(data) in ENUM_VALUE_MAP:
-        return str(data)
+    logger.log_warning(f"Encoding an unrecognized data type: {data}")
 
     return data
 
@@ -91,7 +138,7 @@ def _encode_registered_dclass(data, obj):
                                       type(getattr(data, i)) in DCLASS_SET]:
         _encode_registered_dclass(getattr(data, i), obj[i])
 
-    return obj
+    return encode(obj)
 
 
 def register_type(cls):

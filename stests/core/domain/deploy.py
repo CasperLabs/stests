@@ -31,7 +31,7 @@ class Deploy(Entity):
     run_type: str    
 
     # Deploy's processing status.
-    status: DeployStatus = get_enum_field(DeployStatus)
+    status: DeployStatus
 
     # Moment in time when deploy dispatched to CLX network.
     ts_dispatched: typing.Union[None, int]
@@ -40,7 +40,7 @@ class Deploy(Entity):
     ts_finalized: typing.Union[None, int]
 
     # Deploy's processing status.
-    typeof: DeployType = get_enum_field(DeployType)
+    typeof: DeployType
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Union[None, str] = None

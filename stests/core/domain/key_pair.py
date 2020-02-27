@@ -1,12 +1,10 @@
 import tempfile
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
 from stests.core.utils import crypto
 
 
 
-@dataclass_json
 @dataclass
 class Key():
     """Represents a digital key pair used for identification, signature and verification purposes.
@@ -52,7 +50,6 @@ class PublicKey(Key):
         return crypto.get_pbk_pem_from_bytes(self.as_bytes)
 
 
-@dataclass_json
 @dataclass
 class KeyPair:
     """Represents a digital key pair used for identification, signature and verification purposes.

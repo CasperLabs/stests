@@ -1,5 +1,4 @@
 import inspect
-import json
 import typing
 
 from stests.core.utils import encoder as _encoder
@@ -17,7 +16,7 @@ def encode(data: MessageData) -> bytes:
     :returns: Bytestream for dispatch.
     
     """
-    return json.dumps(_encoder.encode(data), separators=(",", ":")).encode("utf-8")
+    return _encoder.as_json(data)
 
 
 def decode(data: bytes) -> MessageData:
@@ -27,4 +26,4 @@ def decode(data: bytes) -> MessageData:
     :returns: Message data for further processing.
 
     """
-    return _encoder.decode(json.loads(data.decode("utf-8")))
+    return _encoder.from_json(data.decode("utf-8"))

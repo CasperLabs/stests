@@ -17,6 +17,8 @@ fakeredis = "*"
 pytest = "*"
 tox = "*"
 supervisor = "*"
+apscheduler = "*"
+grpclib = "*"
 
 [requires]
 python_version = "3.7"

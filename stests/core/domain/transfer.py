@@ -45,7 +45,7 @@ class Transfer(Entity):
     run_type: str    
 
     # Status of transfer.
-    status: TransferStatus = get_enum_field(TransferStatus)
+    status: TransferStatus
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Union[None, str] = None

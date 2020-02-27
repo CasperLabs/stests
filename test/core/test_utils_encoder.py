@@ -82,7 +82,7 @@ def test_09():
     """Test enum members are converted to strings."""
     for i in domain.ENUM_SET:
         for j in i:
-            assert encoder.encode(j) == str(j)
+            assert encoder.encode(j) == j.name
 
 
 def test_10():

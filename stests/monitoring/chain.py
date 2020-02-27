@@ -1,4 +1,5 @@
 import dramatiq
+from dramatiq.middleware import TimeLimitExceeded
 
 from stests.core import cache
 from stests.core import clx
@@ -19,16 +20,32 @@ from stests.monitoring.correlator import correlate_finalized_deploy
 _QUEUE = "monitoring"
 
 
+
+@dramatiq.actor(queue_name=_QUEUE)
+def launch_stream_monitors():
+    """Launches network stream endpoint monitors.
+    
+    """
+    for network in cache.get_networks():
+        network_id = factory.create_network_id(network.name)
+        for idx, node in enumerate(cache.get_nodes(network)):
+            node_id = factory.create_node_id(network_id, node.index)
+            do_monitor_blocks.send_with_options(args=(node_id, ), delay=idx * 500)
+
+
 @dramatiq.actor(queue_name=_QUEUE)
 def do_monitor_blocks(node_id: NodeIdentifier):   
     """Wires upto chain event streaming.
     
     """
-    network_id = node_id.network
-    clx.stream_events(
-        node_id.network,
-        on_block_finalized=lambda bhash: on_finalized_block.send(network_id, bhash)
-        )
+    try:
+        network_id = node_id.network
+        clx.stream_events(
+            node_id.network,
+            on_block_finalized=lambda bhash: on_finalized_block.send(network_id, bhash)
+            )
+    except TimeLimitExceeded:
+        do_monitor_blocks.send(node_id)
 
 
 @dramatiq.actor(queue_name=_QUEUE)

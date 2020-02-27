@@ -26,10 +26,10 @@ class Network(Entity):
     name_raw: str
     
     # Current network status.
-    status: NetworkStatus = get_enum_field(NetworkStatus)
+    status: NetworkStatus
 
     # Type of network, e.g. local, lrt, proof-of-concept ...etc.
-    typeof: NetworkType = get_enum_field(NetworkType)
+    typeof: NetworkType
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Union[None, str] = None

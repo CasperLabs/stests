@@ -35,10 +35,10 @@ class Account(Entity):
     run_type: typing.Union[None, str]
 
     # Current account status.
-    status: AccountStatus = get_enum_field(AccountStatus)
+    status: AccountStatus
 
     # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
-    typeof: AccountType = get_enum_field(AccountType)
+    typeof: AccountType
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Union[None, str] = None
@@ -50,7 +50,7 @@ class Account(Entity):
     _ts_updated: datetime = get_isodatetime_field(True)
 
     # Universally unique identifier.
-    _uid: str = get_uuid_field(True) 
+    _uid: str = get_uuid_field(True)
 
     @property
     def private_key_as_pem_filepath(self):

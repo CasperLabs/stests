@@ -1,14 +1,9 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
-from stests.core.domain.enums import AccountType
 from stests.core.domain.enums import NetworkType
-from stests.core.utils.domain import get_enum_field
 
 
 
-
-@dataclass_json
 @dataclass
 class NetworkIdentifier:
     """Information required to disambiguate between networks.
@@ -30,7 +25,6 @@ class NetworkIdentifier:
         return f"global.network:{self.name}"
 
 
-@dataclass_json
 @dataclass
 class NodeIdentifier:
     """Information required to disambiguate between nodes.
@@ -43,7 +37,6 @@ class NodeIdentifier:
     index: int
  
 
-@dataclass_json
 @dataclass
 class RunIdentifier:
     """Information required to disambiguate between generator runs.
@@ -59,7 +52,6 @@ class RunIdentifier:
     type: str
 
 
-@dataclass_json
 @dataclass
 class AccountIdentifier:
     """Information required to disambiguate between accounts.

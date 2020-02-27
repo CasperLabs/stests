@@ -1,5 +1,6 @@
 import json
 import typing
+import dataclasses
 
 from stests.core.cache import stores
 from stests.core.utils import encoder
@@ -71,7 +72,7 @@ def encache_lock(func: typing.Callable) -> typing.Callable:
     """
     def wrapper(*args, **kwargs):
         keypath, data = func(*args, **kwargs)
-        data = data.to_dict()
+        data = dataclasses.asdict(data)
         key = ":".join([str(i) for i in keypath])
         with stores.get_store() as store:
             return key, _setnx(store, key, data)
@@ -136,6 +137,20 @@ def _delete(store: typing.Callable, key: str):
     store.delete(key)
 
 
+def _flush(store: typing.Callable, ns_keys: str):
+    """Flushes data from cache.
+
+    :param namespace: Namespace to be flushed.
+
+    """
+    CHUNK_SIZE = 1000
+    cursor = '0'
+    while cursor != 0:
+        cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
+        if keys:
+            store.delete(*keys)
+
+
 def _get(store: typing.Callable, key: str) -> typing.Any:
     """Wraps redis.get command.
     
@@ -196,6 +211,7 @@ def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
 
     """
     logger.log(f"CACHE :: set :: {key}")
+    
     store.set(key, json.dumps(encoder.encode(data), indent=4))
 
     return key
@@ -214,18 +230,3 @@ def _setnx(store: typing.Callable, key: str, data: typing.Any) -> typing.Tuple[s
     logger.log(f"CACHE :: setnx :: {key}")
 
     return bool(store.setnx(key, json.dumps(encoder.encode(data), indent=4)))
-
-
-def _flush(store: typing.Callable, namespace: str):
-    """Flushes data from cache.
-
-    :param namespace: Namespace to be flushed.
-
-    """
-    CHUNK_SIZE = 1000
-    cursor = '0'
-    ns_keys = namespace + ':*'
-    while cursor != 0:
-        cursor, keys = store.scan(cursor=cursor, match=ns_keys, count=CHUNK_SIZE)
-        if keys:
-            store.delete(*keys)

@@ -21,7 +21,7 @@ class RunStep(Entity):
     run_type: str
 
     # Current status.
-    status: RunStepStatus = get_enum_field(RunStepStatus)
+    status: RunStepStatus
 
     # Step name.
     step: str

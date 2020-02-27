@@ -14,7 +14,7 @@ class Node(Entity):
     
     """
     # Bonding account associated with node.
-    account: Account
+    account: typing.Union[None, Account]
 
     # Node's host address.
     host: str
@@ -29,10 +29,10 @@ class Node(Entity):
     port: int
 
     # Current node status.
-    status: NodeStatus = get_enum_field(NodeStatus)
+    status: NodeStatus
 
     # Type of node in terms of it's degree of consensus participation.
-    typeof: NodeType = get_enum_field(NodeType)
+    typeof: NodeType
     
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Union[None, str] = None

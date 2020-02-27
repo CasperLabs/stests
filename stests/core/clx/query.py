@@ -51,7 +51,8 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
         deploy_cost_total=info.status.stats.deploy_cost_total,
         deploy_count=info.summary.header.deploy_count, 
         deploy_gas_price_avg=info.status.stats.deploy_gas_price_avg,
-        rank=info.summary.header.rank,
+        j_rank=info.summary.header.j_rank,
+        m_rank=info.summary.header.main_rank,
         size_bytes=info.status.stats.block_size_bytes,
         timestamp=info.summary.header.timestamp,
         validator_id=info.summary.header.validator_public_key.hex()

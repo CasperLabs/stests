@@ -1,12 +1,10 @@
 import argparse
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
 from stests.core.utils import encoder
 
 
 
-@dataclass_json
 @dataclass
 class Arguments:
     """WG-100 generator execution arguments.

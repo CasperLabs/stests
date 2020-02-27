@@ -1,9 +1,7 @@
 from dataclasses import dataclass
-from dataclasses_json import dataclass_json
 
 
 
-@dataclass_json
 @dataclass
 class RunStepLock:
     """Lock information when executing a run step.

@@ -37,7 +37,7 @@ def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     return [
         "network-block",
         block.network,
-        f"{str(block.rank).zfill(7)}.{block.block_hash}"
+        f"{str(block.m_rank).zfill(7)}.{block.block_hash}"
     ], block
     
 

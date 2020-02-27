@@ -15,7 +15,7 @@ def lock_run_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLo
 
     """
     return [
-        "lock-run-step",
+        "run-step-lock",
         lock.network,
         lock.run_type,
         f"R-{str(lock.run_index).zfill(3)}",
