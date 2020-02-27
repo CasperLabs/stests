@@ -80,24 +80,6 @@ def set_run_step_deploy(ctx: RunContext, deploy: Deploy) -> typing.Tuple[typing.
 
 
 @encache
-def set_run_event(evt: RunEvent) -> typing.Tuple[typing.List[str], RunEvent]:
-    """Encaches domain object: RunEvent.
-    
-    :param evt: RunEvent domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "run-event",
-        evt.network,
-        evt.run_type,
-        f"R-{str(evt.run).zfill(3)}",
-        f"{str(evt.ts_start.timestamp())}.{evt.event}"
-    ], evt
-
-
-@encache
 def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
     """Encaches domain object: RunStep.
     

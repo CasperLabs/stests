@@ -6,7 +6,6 @@ from stests.core.domain.identifiers import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
 from stests.core.domain.run_context import *
-from stests.core.domain.run_event import *
 from stests.core.domain.run_step import *
 from stests.core.domain.transfer import *
 
@@ -21,7 +20,6 @@ DCLASS_SET = {
     Network,
     Node,
     RunContext,
-    RunEvent,
     RunStep,
     Transfer,
 }

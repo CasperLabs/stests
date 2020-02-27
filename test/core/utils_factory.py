@@ -88,15 +88,6 @@ def create_run_context() -> RunContext:
         )
 
 
-def create_run_event() -> RunEvent:
-    return RunEvent(
-        event="on_wg_event",
-        network="LOC-01",
-        run=1,
-        run_type="WG-XXX",
-        timestamp=dt.now().timestamp()
-        )
-
 def create_run_step() -> RunStep:
     return RunStep(
         network="LOC-01",
@@ -134,7 +125,6 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     Network: create_network,
     Node: create_node,
     RunContext: create_run_context,
-    RunEvent: create_run_event,
     RunStep: create_run_step,
     Transfer: create_transfer
 }

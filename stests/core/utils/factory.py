@@ -233,19 +233,6 @@ def create_run_context(
     )
 
 
-def create_run_event(ctx: RunContext, event: str) -> RunEvent:
-    """Returns a domain object instance: RunEvent.
-
-    """
-    return RunEvent(
-        event=event,
-        network=ctx.network,
-        run=ctx.run,
-        run_type=ctx.run_type,
-        ts_start=datetime.now()
-    )
-
-
 def create_run_step(ctx: RunContext, name: str) -> RunStep:
     """Returns a domain object instance: RunStep.
 
