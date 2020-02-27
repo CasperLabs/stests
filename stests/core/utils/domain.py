@@ -1,13 +1,12 @@
 import abc
-import datetime
 import uuid
 import dataclasses
 from datetime import datetime
 
 
 
-def get_isodatetime_field() -> dataclasses.field:
-    """Returns an ISO datetime field.
+def get_timestamp_field() -> dataclasses.field:
+    """Returns a timestamp field.
     
     :returns: Dataclass field.
 

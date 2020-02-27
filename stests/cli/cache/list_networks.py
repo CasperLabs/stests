@@ -17,6 +17,7 @@ def main(args):
 
     """
     for network in cache.get_networks():
+        print(network)
         logger.log(f"""NETWORK: {network.name} -> status={network.status.name}, type={network.typeof.name}, index={network.index}""")
 
 # Entry point.

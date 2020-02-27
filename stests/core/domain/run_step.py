@@ -36,7 +36,7 @@ class RunStep(Entity):
     _type_key: typing.Optional[str] = None
 
     # Timestamp: create.
-    _ts_created: datetime = get_isodatetime_field()
+    _ts_created: datetime = get_timestamp_field()
 
     # Timestamp: update.
     _ts_updated: typing.Optional[datetime] = None
