@@ -67,7 +67,7 @@ def do_fund_contract(ctx: RunContext):
 
 
 @actorify()
-def do_fund_users(ctx) -> typing.Callable:
+def do_fund_users(ctx: RunContext) -> typing.Callable:
     """Funds accounts to be used as users.
     
     :param ctx: Generator run contextual information.

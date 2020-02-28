@@ -2,7 +2,7 @@ import typing
 
 from stests.core.clx import defaults
 from stests.core.clx.utils import get_client
-from stests.core.clx.utils import get_client
+from stests.core.clx.query import get_balance
 from stests.core.domain import Account
 from stests.core.domain import Transfer
 from stests.core.domain import Deploy
@@ -14,12 +14,40 @@ from stests.core.utils import logger
 
 
 
+def do_refund(
+    ctx: RunContext,
+    cp1: Account,
+    cp2: Account,
+    amount: int = None
+    ) -> typing.Tuple[Deploy, Transfer]:
+    """Executes a refund between 2 counter-parties & returns resulting deploy hash.
+
+    :param ctx: Generator run contextual information.
+    :param cp1: Account information of counter party 1.
+    :param cp2: Account information of counter party 2.
+    :param amount: Amount in motes to be refunded.
+
+    :returns: Dispatched deploy.
+
+    """
+    assert cp1 is not None
+    assert cp2 is not None
+
+    amount = amount or (get_balance(ctx, cp1) - defaults.CLX_TX_FEE)
+    if amount <= 0:
+        logger.log_warning("Counter party 1 does not have enough CLX to pay refund transaction fee.")
+        return
+
+    return do_transfer(ctx, cp1, cp2, amount, False, DeployType.REFUND)
+
+
 def do_transfer(
     ctx: RunContext,
     cp1: Account,
     cp2: Account,
     amount: int,
-    is_refundable: bool = True
+    is_refundable: bool = True,
+    deploy_type: DeployType = DeployType.TRANSFER
     ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
@@ -29,7 +57,7 @@ def do_transfer(
     :param amount: Amount in motes to be transferred.
     :param is_refundable: Flag indicating whether a refund is required.
 
-    :returns: Dispatched deploy.
+    :returns: Dispatched deploy & transfer.
 
     """
     node, client  = get_client(ctx)
@@ -46,7 +74,7 @@ def do_transfer(
     logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {deploy_hash}")
 
     return (
-        factory.create_deploy_for_run(ctx, node, deploy_hash, DeployType.TRANSFER), 
+        factory.create_deploy_for_run(ctx, node, deploy_hash, deploy_type), 
         factory.create_transfer(ctx, amount, "CLX", cp1, cp2, deploy_hash, is_refundable)
         )
 

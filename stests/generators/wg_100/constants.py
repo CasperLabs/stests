@@ -13,7 +13,7 @@ TYPE = "WG-100"
 # --------------------------------------------------------------------
 
 # Default contract's initial CLX balance = 1m.
-CONTRACT_INITIAL_CLX_BALANCE = int(1e7)
+CONTRACT_INITIAL_CLX_BALANCE = int(1e8)
 
 # Default faucet's initial CLX balance = 10m.
 FAUCET_INITIAL_CLX_BALANCE = int(1e10)
@@ -31,7 +31,7 @@ USER_ACCOUNTS = 5
 USER_BIDS = 1
 
 # Default user's CLX balance = 1m.
-USER_INITIAL_CLX_BALANCE = int(1e7)
+USER_INITIAL_CLX_BALANCE = int(1e8)
 
 # Default name of the contract's wasm blob.
 WASM_CONTRACT_FILENAME = "erc20_smart_contract.wasm"

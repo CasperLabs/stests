@@ -48,6 +48,7 @@ class DeployType(enum.Flag):
     """
     NULL = enum.auto()
     TRANSFER = enum.auto()
+    REFUND = enum.auto()
 
 
 class NetworkStatus(enum.Flag):
