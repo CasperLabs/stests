@@ -61,7 +61,7 @@ def do_deploy_contract(ctx: RunContext, account: Account, wasm_filepath: str):
     :returns: Deploy hash (in hex format).
 
     """
-    pyclx = get_client(ctx)    
+    client = get_client(ctx)
 
     logger.log(f"TODO :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath}")
 

@@ -101,7 +101,7 @@ def get_run_network(ctx: RunContext) -> Network:
     return get_network(network_id)
 
 
-def get_run_node(ctx: RunContext) -> Node:
+def get_node_by_run_context(ctx: RunContext) -> Node:
     """Decaches domain object: Node.
     
     :param ctx: Generator run contextual information.

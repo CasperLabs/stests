@@ -36,26 +36,27 @@ def do_monitor_blocks(node_id: NodeIdentifier):
     """Wires upto chain event streaming.
     
     """
+    # Callback,
+    def _on_block_finalized(_, bhash):
+        on_finalized_block.send(node_id, bhash)
+    
+    # Stream events and re-queue when actor timeout occurs.
     try:
-        network_id = node_id.network
-        clx.stream_events(
-            node_id.network,
-            on_block_finalized=lambda bhash: on_finalized_block.send(network_id, bhash)
-            )
+        clx.stream_events(node_id, on_block_finalized=_on_block_finalized)
     except TimeLimitExceeded:
         do_monitor_blocks.send(node_id)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_finalized_block(network_id: NetworkIdentifier, bhash: str):   
+def on_finalized_block(node_id: NodeIdentifier, bhash: str):   
     """Event: raised whenever a block is finalized.
 
-    :param network_id: Identifier of network upon which a block has been finalized.
+    :param node_id: Identifier of node from which block was streamed.
     :param bhash: Hash of finalized block.
 
     """
     # Query block info & set block status accordingly.
-    block = clx.get_block(network_id, bhash)
+    block = clx.get_block(node_id.network, bhash)
     block.update_on_finalization()
 
     # Encache - skip duplicates.
@@ -64,8 +65,8 @@ def on_finalized_block(network_id: NetworkIdentifier, bhash: str):
         return
 
     # Enqueue finalized deploys.
-    for dhash in clx.get_block_deploys(network_id, bhash):  
-        on_finalized_deploy.send(network_id, bhash, dhash, block.timestamp)
+    for dhash in clx.get_block_deploys(node_id.network, bhash):  
+        on_finalized_deploy.send(node_id.network, bhash, dhash, block.timestamp)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
