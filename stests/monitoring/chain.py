@@ -26,7 +26,7 @@ def launch_stream_monitors():
     """
     for network in cache.get_networks():
         network_id = factory.create_network_id(network.name)
-        for idx, node in enumerate(cache.get_nodes(network)):
+        for idx, node in enumerate(cache.get_nodes_operational(network)):
             node_id = factory.create_node_id(network_id, node.index)
             do_monitor_blocks.send_with_options(args=(node_id, ), delay=idx * 500)
 
