@@ -1,7 +1,8 @@
 import typing
 
-from stests.core.clx.utils import get_client
 from stests.core.clx import defaults
+from stests.core.clx.utils import get_client
+from stests.core.clx.utils import get_client_and_node
 from stests.core.domain import Account
 from stests.core.domain import Transfer
 from stests.core.domain import Deploy
@@ -31,7 +32,8 @@ def do_transfer(
     :returns: Dispatched deploy.
 
     """
-    deploy_hash = get_client(ctx).transfer(
+    node, client  = get_client_and_node(ctx)
+    deploy_hash = client.transfer(
         amount=amount,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
@@ -44,7 +46,7 @@ def do_transfer(
     logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {deploy_hash}")
 
     return (
-        factory.create_deploy_for_run(ctx, deploy_hash, DeployType.TRANSFER), 
+        factory.create_deploy_for_run(ctx, node, deploy_hash, DeployType.TRANSFER), 
         factory.create_transfer(ctx, amount, "CLX", cp1, cp2, deploy_hash, is_refundable)
         )
 

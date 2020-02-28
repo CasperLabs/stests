@@ -18,6 +18,19 @@ def get_client(src: typing.Union[Node, RunContext, NetworkIdentifier]) -> pyclx.
     :returns: A configured clabs client ready for use.
     
     """
+    _, client = get_client_and_node(src)
+
+    return client
+
+
+def get_client_and_node(src: typing.Union[Node, RunContext, NetworkIdentifier]) -> pyclx.CasperLabsClient:
+    """Factory method to return a configured clabs client and the node with which it is associated.
+
+    :param src: The source form which a network node will be derived.
+
+    :returns: A configured clabs client ready for use.
+    
+    """
     # Pull node information from cache. 
     if isinstance(src, Node):
         node = src
@@ -32,7 +45,7 @@ def get_client(src: typing.Union[Node, RunContext, NetworkIdentifier]) -> pyclx.
     logger.log(f"PYCLX :: connecting to node :: {node.network}:N-{str(node.index).zfill(4)} :: {node.host}:{node.port}")
 
     # TODO: get node id / client ssl cert.
-    return pyclx.CasperLabsClient(
+    return node, pyclx.CasperLabsClient(
         host=node.host,
         port=node.port,
     )

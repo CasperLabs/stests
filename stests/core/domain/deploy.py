@@ -19,11 +19,26 @@ class Deploy(Entity):
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
 
+    # Node to which deploy was dispatched.
+    dispatch_node: int
+
+    # Moment in time when deploy dispatched to CLX network.
+    dispatch_ts: typing.Optional[datetime]
+
+    # Time between dispatch & deploy finality.
+    finalization_time: typing.Optional[float]
+
+    # Flag indicating whether time to finalization was acceptable.
+    finalization_time_is_acceptable: typing.Optional[bool]
+
+    # Tolerance of time between dispatch & deploy finality.
+    finalization_time_tolerance: typing.Optional[float]
+    
+    # Moment in time when deploy was finalized by CLX network.
+    finalization_ts: typing.Optional[datetime]
+
     # Associated network.
     network: str
-
-    # Associated node index.
-    node: int
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run: int
@@ -33,21 +48,6 @@ class Deploy(Entity):
 
     # Deploy's processing status.
     status: DeployStatus
-
-    # Time between dispatch & deploy finality.
-    time_to_finalization: typing.Optional[float]
-
-    # Flag indicating whether time to finalization was acceptable.
-    time_to_finalization_is_acceptable: typing.Optional[bool]
-
-    # Tolerance of time between dispatch & deploy finality.
-    time_to_finalization_tolerance: typing.Optional[float]
-
-    # Moment in time when deploy dispatched to CLX network.
-    ts_dispatched: typing.Optional[datetime]
-
-    # Moment in time when deploy was finalized by CLX network.
-    ts_finalized: typing.Optional[datetime]
 
     # Deploy's processing status.
     typeof: DeployType
@@ -65,11 +65,11 @@ class Deploy(Entity):
     _uid: str = get_uuid_field() 
 
 
-    def update_on_finalization(self, bhash: str, ts_finalized: float):
+    def update_on_finalization(self, bhash: str, finalization_ts: float):
         """Executed when deploy has been finalized.
         
         """
         self.block_hash = bhash
         self.status = DeployStatus.FINALIZED
-        self.ts_finalized = datetime.fromtimestamp(ts_finalized)
-        self.time_to_finalization = ts_finalized - self.ts_dispatched.timestamp()
+        self.finalization_ts = datetime.fromtimestamp(finalization_ts)
+        self.finalization_time = finalization_ts - self.dispatch_ts.timestamp()

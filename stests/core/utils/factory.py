@@ -111,22 +111,23 @@ def create_deploy(
     return Deploy(
         block_hash=block_hash,
         deploy_hash=deploy_hash,
+        dispatch_node=None,
+        dispatch_ts=datetime.now() if status == DeployStatus.DISPATCHED else None,
+        finalization_time=None,
+        finalization_time_is_acceptable=None,
+        finalization_time_tolerance=None,
+        finalization_ts=datetime.now() if status == DeployStatus.FINALIZED else None,
         network=network_id.name,
-        node=None,
         run=None,
         run_type=None,
         status=status,
-        time_to_finalization=None,
-        time_to_finalization_is_acceptable=None,
-        time_to_finalization_tolerance=None,
-        ts_dispatched=datetime.now() if status == DeployStatus.DISPATCHED else None,
-        ts_finalized=datetime.now() if status == DeployStatus.FINALIZED else None,
         typeof=DeployType.NULL,    
     )
 
 
 def create_deploy_for_run(
     ctx: RunContext,
+    node: Node,
     deploy_hash: str,
     typeof: DeployType
     ) -> Deploy:
@@ -136,16 +137,16 @@ def create_deploy_for_run(
     return Deploy(
         block_hash=None,
         deploy_hash=deploy_hash,
+        dispatch_node=node.index,
+        dispatch_ts=datetime.now(),
+        finalization_time=None,
+        finalization_time_is_acceptable=None,
+        finalization_time_tolerance=None,
+        finalization_ts=None,
         network=ctx.network,
-        node=ctx.node,
         run=ctx.run,
         run_type=ctx.run_type,        
         status=DeployStatus.DISPATCHED,
-        time_to_finalization=None,
-        time_to_finalization_is_acceptable=None,
-        time_to_finalization_tolerance=None,
-        ts_dispatched=datetime.now(),
-        ts_finalized=None,
         typeof=typeof
     )
 

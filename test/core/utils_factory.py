@@ -36,16 +36,16 @@ def create_deploy() -> Deploy:
     return Deploy(
         block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
         deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
+        dispatch_node=1,
+        dispatch_ts=None,
+        finalization_time=None,
+        finalization_time_is_acceptable=None,
+        finalization_time_tolerance=None,
+        finalization_ts=None    ,
         network="lrt1",
-        node=1,
         run=1,
         run_type="WG-XXX",
         status=random.choice(list(DeployStatus)),
-        time_to_finalization=None,
-        time_to_finalization_is_acceptable=None,
-        time_to_finalization_tolerance=None,
-        ts_dispatched=None,
-        ts_finalized=None    ,
         typeof=DeployType.NULL
     )
 

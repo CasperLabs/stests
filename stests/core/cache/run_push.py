@@ -55,7 +55,7 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
         deploy.network,
         deploy.run_type,
         f"R-{str(deploy.run).zfill(3)}",
-        f"{str(deploy.ts_dispatched.timestamp())}.{deploy.deploy_hash}"
+        f"{str(deploy.dispatch_ts.timestamp())}.{deploy.deploy_hash}"
     ], deploy
 
 

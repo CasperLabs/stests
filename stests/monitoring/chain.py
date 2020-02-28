@@ -69,17 +69,17 @@ def on_finalized_block(network_id: NetworkIdentifier, bhash: str):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, ts_finalized: float):   
+def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, finalization_ts: float):   
     """Event: raised whenever a deploy is finalized.
     
     :param network_id: Identifier of network upon which a block has been finalized.
     :param bhash: Hash of finalized block.
     :param dhash: Hash of finalized deploy.
-    :param ts_finalized: Moment in time when finalization occurred.
+    :param finalization_ts: Moment in time when finalization occurred.
 
     """
     # Set network deploy.
-    deploy = factory.create_deploy(network_id, bhash, dhash, DeployStatus.FINALIZED)    
+    deploy = factory.create_deploy(network_id, bhash, dhash, DeployStatus.FINALIZED)
 
     # Encache - skip duplicates.
     _, encached = cache.set_network_deploy(deploy)
@@ -93,7 +93,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, t
         return
 
     # Update run deploy.
-    deploy.update_on_finalization(bhash, ts_finalized)
+    deploy.update_on_finalization(bhash, finalization_ts)
     cache.set_run_deploy(deploy)
 
     # Increment run step deploy count.
