@@ -8,7 +8,7 @@ FIXTURES = {
     'do_transfer',
     'get_balance',
     'get_block',
-    'get_block_deploys',
+    'get_deploys',
     'stream_events',
 }
 

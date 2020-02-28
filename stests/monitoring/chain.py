@@ -66,7 +66,7 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
         return
 
     # Enqueue finalized deploys.
-    for dhash in clx.get_block_deploys(node_id.network, bhash):  
+    for dhash in clx.get_deploys(node_id.network, bhash):  
         on_finalized_deploy.send(node_id.network, bhash, dhash, block.timestamp)
 
 

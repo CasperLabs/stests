@@ -29,12 +29,12 @@ def main(args):
         logger.log_warning(f"Network {args.network} is unregistered.")
         return
 
-    nodes = cache.get_nodes(network_id)
-    if not nodes:
+    nodeset = cache.get_nodes(network_id)
+    if not nodeset:
         logger.log_warning(f"Network {args.network} has no nodes.")
         return
 
-    for node in sorted(cache.get_nodes(network_id), key=lambda i: i.index):
+    for node in sorted(nodeset, key=lambda i: i.index):
         logger.log(f"""NODE: {node.network}:N-{str(node.index).zfill(4)} -> {node.host}:{node.port} -> status={node.status.name}, type={node.typeof.name}""")
 
 

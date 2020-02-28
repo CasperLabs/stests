@@ -32,10 +32,17 @@ def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunCon
     if not node:
         raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")
 
-    logger.log(f"PYCLX :: connecting to node :: {node.network}:N-{str(node.index).zfill(4)} :: {node.host}:{node.port}")
+    log_info(f"connecting to node :: {node.network}:N-{str(node.index).zfill(4)} :: {node.host}:{node.port}")
 
     # TODO: get node id / client ssl cert.
     return node, pyclx.CasperLabsClient(
         host=node.host,
         port=node.port,
     )
+
+
+def log_info(msg):
+    """Helper logging function.
+    
+    """
+    logger.log(f"PYCLX :: {msg}")
