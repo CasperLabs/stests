@@ -11,20 +11,7 @@ from stests.core.utils import logger
 
 
 
-def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunContext]) -> pyclx.CasperLabsClient:
-    """Factory method to return configured clabs client.
-
-    :param src: The source from which a network node will be derived.
-
-    :returns: A configured clabs client ready for use.
-    
-    """
-    _, client = get_client_and_node(src)
-
-    return client
-
-
-def get_client_and_node(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunContext]) -> pyclx.CasperLabsClient:
+def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunContext]) -> typing.Tuple[Node, pyclx.CasperLabsClient]:
     """Factory method to return a configured clabs client and the node with which it is associated.
 
     :param src: The source from which a network node will be derived.

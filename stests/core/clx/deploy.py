@@ -2,7 +2,7 @@ import typing
 
 from stests.core.clx import defaults
 from stests.core.clx.utils import get_client
-from stests.core.clx.utils import get_client_and_node
+from stests.core.clx.utils import get_client
 from stests.core.domain import Account
 from stests.core.domain import Transfer
 from stests.core.domain import Deploy
@@ -32,7 +32,7 @@ def do_transfer(
     :returns: Dispatched deploy.
 
     """
-    node, client  = get_client_and_node(ctx)
+    node, client  = get_client(ctx)
     deploy_hash = client.transfer(
         amount=amount,
         from_addr=cp1.public_key,
@@ -61,7 +61,7 @@ def do_deploy_contract(ctx: RunContext, account: Account, wasm_filepath: str):
     :returns: Deploy hash (in hex format).
 
     """
-    client = get_client(ctx)
+    _, client = get_client(ctx)
 
     logger.log(f"TODO :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath}")
 

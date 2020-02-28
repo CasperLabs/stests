@@ -20,7 +20,7 @@ def get_balance(ctx: RunContext, account: Account) -> int:
     :returns: Account balance.
 
     """
-    client = get_client(ctx)
+    _, client = get_client(ctx)
     try:
         balance = client.balance(
             address=account.public_key,
@@ -43,7 +43,7 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
     :returns: Block information.
 
     """
-    client = get_client(network_id)
+    _, client = get_client(network_id)
     info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
     return factory.create_block(
@@ -69,7 +69,7 @@ def get_block_deploys(network_id: NetworkIdentifier, block_hash: str) -> typing.
     :returns: Block information.
 
     """
-    client = get_client(network_id)
+    _, client = get_client(network_id)
 
     return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=block_hash, full_view=False))
 

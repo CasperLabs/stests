@@ -47,5 +47,9 @@ class Node(Entity):
     _uid: str = get_uuid_field() 
 
     @property
+    def is_operational(self):
+        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
+
+    @property
     def label(self):
         return f"{self.network}:{self.index}"

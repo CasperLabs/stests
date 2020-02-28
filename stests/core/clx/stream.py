@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.clx.utils import get_client_and_node
+from stests.core.clx.utils import get_client
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
@@ -37,7 +37,7 @@ def _yield_events(src: typing.Union[NodeIdentifier, NetworkIdentifier], on_block
     """
     # TODO: handle client disconnects.
     logger.log(f"PYCLX :: stream_events :: connecting ...")
-    node, client = get_client_and_node(src)
+    node, client = get_client(src)
     for event in client.stream_events(
         block_added=on_block_added is not None,
         block_finalized=on_block_finalized is not None

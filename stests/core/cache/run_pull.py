@@ -101,31 +101,6 @@ def get_run_network(ctx: RunContext) -> Network:
     return get_network(network_id)
 
 
-def get_node_by_run_context(ctx: RunContext) -> Node:
-    """Decaches domain object: Node.
-    
-    :param ctx: Generator run contextual information.
-
-    :returns: A registered node.
-
-    """
-    # Pull healthy nodes.
-    network_id = factory.create_network_id(ctx.network)
-    nodes = [i for i in get_nodes(network_id) if i.status == NodeStatus.HEALTHY] 
-    if not nodes:
-        raise ValueError(f"Network {network_id.name} has no registered healthy nodes.")
-    
-    # Select random if node index unspecified.
-    if ctx.node <= 0 or ctx.node is None:
-        return random.choice(nodes)
-
-    # Select specific with fallback to random.
-    try:
-        return nodes[ctx.node - 1]
-    except IndexError:
-        return random.choice(nodes)
-
-
 def get_run_step(ctx: RunContext) -> RunStep:
     """Decaches domain object: RunStep.
     

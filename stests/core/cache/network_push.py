@@ -2,11 +2,7 @@ import typing
 
 from stests.core.cache.utils import encache
 from stests.core.cache.utils import encache_singleton
-from stests.core.domain import Block
-from stests.core.domain import Deploy
-from stests.core.domain import Network
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import Node
+from stests.core.domain import *
 
 
 
