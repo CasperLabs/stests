@@ -23,6 +23,12 @@ function _exec_cmd()
 alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 
 # ###############################################################
+# ALIASES: monitoring
+# ###############################################################
+
+alias stests-monitoring-start=$STESTS_PATH_SH/monitoring/start.sh
+
+# ###############################################################
 # ALIASES: workers
 # ###############################################################
 
