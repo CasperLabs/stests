@@ -17,6 +17,7 @@ export PYTHONPATH=$STESTS_HOME:$PYTHONPATH
 
 # Ensure shell scripts are executable.
 chmod a+x $STESTS_PATH_SH/*.sh
+chmod a+x $STESTS_PATH_SH/*/*.sh
 
 # Ensure ops directories exist
 mkdir -p $STESTS_PATH_OPS

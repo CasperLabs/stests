@@ -27,6 +27,7 @@ alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 # ###############################################################
 
 alias stests-workers-start=$STESTS_PATH_SH/workers/start.sh
+alias stests-workers-start-interactive=$STESTS_PATH_SH/workers/start_interactive.sh
 alias stests-workers-status=$STESTS_PATH_SH/workers/status.sh
 alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
