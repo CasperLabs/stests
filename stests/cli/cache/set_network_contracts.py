@@ -11,7 +11,7 @@ from stests.core.utils import logger
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser(f"Register a network's faucet key with stests.")
+ARGS = argparse.ArgumentParser(f"Register a network's system contracts with stests.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -32,23 +32,7 @@ def main(args):
     if network is None:
         raise ValueError("Unregistered network.")
 
-    # Set key pair.
-    pvk, pbk = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
-
-    # Set faucet.
-    network.faucet = factory.create_account(
-        index=0,
-        private_key=pvk,
-        public_key=pbk,
-        typeof=AccountType.FAUCET,
-        status=AccountStatus.ACTIVE
-    )
-
-    # Push.
-    cache.set_network(network)
-
-    # Inform.
-    logger.log(f"Network {args.network} faucet key was successfully registered")
+    print("TODO: register system contracts")
 
 
 # Entry point.

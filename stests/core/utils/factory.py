@@ -248,6 +248,7 @@ def create_run_step(ctx: RunContext, name: str) -> RunStep:
         run_type=ctx.run_type,
         status=RunStepStatus.IN_PROGRESS,
         step=name,
+        step_duration=None,
         ts_start=datetime.now(),
         ts_end=None,
     )

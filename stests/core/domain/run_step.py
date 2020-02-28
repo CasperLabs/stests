@@ -27,6 +27,9 @@ class RunStep(Entity):
     # Step name.
     step: str
 
+    # Elapsed execution time (in seconds).
+    step_duration: typing.Optional[float]
+
     # Moment in time when step occurred.
     ts_start: datetime
 
@@ -56,3 +59,12 @@ class RunStep(Entity):
     @property
     def action(self):
         return self.step.split(".")[-1]
+
+
+    def update_on_completion(self):
+        """Executed when transfer has been completed.
+        
+        """
+        self.status = RunStepStatus.COMPLETE
+        self.ts_end = datetime.now()
+        self.step_duration = self.ts_end.timestamp() - self.ts_start.timestamp()

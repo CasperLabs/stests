@@ -45,6 +45,7 @@ alias stests-ls-nodes='_exec_cmd $STESTS_PATH_CLI/cache/list_network_nodeset.py'
 alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/list_node_bonding_key.py'
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
+alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
 alias stests-set-network-status='_exec_cmd $STESTS_PATH_CLI/cache/set_network_status.py'
 alias stests-set-node='_exec_cmd $STESTS_PATH_CLI/cache/set_node.py'
