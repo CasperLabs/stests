@@ -29,6 +29,7 @@ def launch_stream_monitors():
         for idx, node in enumerate(cache.get_nodes_operational(network)):
             node_id = factory.create_node_id(network_id, node.index)
             do_monitor_blocks.send_with_options(args=(node_id, ), delay=idx * 500)
+            break
 
 
 @dramatiq.actor(queue_name=_QUEUE)
