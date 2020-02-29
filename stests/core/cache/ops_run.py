@@ -2,12 +2,11 @@ import random
 import typing
 
 from stests.core.cache.locks import RunStepLock
-from stests.core.cache.ops import StoreOperation
+from stests.core.cache.enums import StoreOperation
+from stests.core.cache.enums import StorePartition
 from stests.core.cache.ops_infra import get_network
 from stests.core.cache.ops_infra import get_nodes
-from stests.core.cache.partitions import StorePartition
 from stests.core.cache.utils import cache_op
-from stests.core.cache.utils import decache
 from stests.core.cache.utils import do_incrby
 from stests.core.cache.utils import encache
 from stests.core.cache.utils import encache_lock
@@ -50,7 +49,6 @@ def flush_run(ctx: RunContext) -> typing.Generator:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET)
-@decache
 def get_account(account_id: AccountIdentifier) -> Account:
     """Decaches domain object: Account.
 
@@ -88,7 +86,6 @@ def get_run_account(ctx: RunContext, index: int) -> Account:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET)
-@decache
 def get_run_context(network, run_index, run_type) -> RunContext:
     """Decaches domain object: RunContext.
     
@@ -119,7 +116,6 @@ def get_run_deploy(dhash: str) -> Deploy:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET)
-@decache
 def get_run_deploys(dhash: str) -> typing.List[Deploy]:
     """Decaches collection of domain objects: Deploy.
     
@@ -158,7 +154,7 @@ def get_run_step(ctx: RunContext) -> RunStep:
     return steps[-1] if steps else None
 
 
-@cache_op(StorePartition.RUN, StoreOperation.GET)
+@cache_op(StorePartition.RUN, StoreOperation.GET_COUNT)
 @pull_count
 def get_step_deploy_count(ctx: RunContext) -> int:
     """Reurns current count of run step deploys.
@@ -176,7 +172,6 @@ def get_step_deploy_count(ctx: RunContext) -> int:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET)
-@decache
 def get_run_steps(ctx: RunContext) -> typing.List[RunStep]:
     """Decaches collection of domain objects: RunStep.
 
@@ -208,7 +203,6 @@ def get_run_transfer(dhash: str) -> Transfer:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET)
-@decache
 def get_run_transfers(dhash: str) -> typing.List[Transfer]:
     """Decaches collection of domain objects: Transfer.
     

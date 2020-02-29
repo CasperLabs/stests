@@ -1,7 +1,7 @@
 import typing
 
-from stests.core.cache.ops import StoreOperation
-from stests.core.cache.partitions import StorePartition
+from stests.core.cache.enums import StoreOperation
+from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.cache.utils import encache
 from stests.core.cache.utils import encache_singleton

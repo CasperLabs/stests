@@ -3,8 +3,8 @@ import typing
 import dataclasses
 import functools
 
-from stests.core.cache.partitions import StorePartition
-from stests.core.cache.ops import StoreOperation
+from stests.core.cache.enums import StoreOperation
+from stests.core.cache.enums import StorePartition
 from stests.core.cache import stores
 from stests.core.utils import encoder
 from stests.core.utils import logger
@@ -24,32 +24,28 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-                        
-            return func(*args, **kwargs)
+
+            if operation == StoreOperation.GET:
+                
+                keypath = func(*args, **kwargs)
+                key = ":".join([str(i) for i in keypath])
+                with stores.get_store() as store:
+                    if key.find("*") >= 0:
+                        return _get_all(store, key)
+                    else:
+                        return _get(store, key)
+
+            else:
+
+                return func(*args, **kwargs)
 
         return wrapper
 
     return decorator
 
 
-def decache(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally pull domain objects from cache.
-
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-    
-    """
-    def wrapper(*args, **kwargs):
-        keypath = func(*args, **kwargs)
-        key = ":".join([str(i) for i in keypath])
-        with stores.get_store() as store:
-            if key.find("*") >= 0:
-                return _get_all(store, key)
-            else:
-                return _get(store, key)
-
-    return wrapper
+def _doo_get():
+    pass
 
 
 def pull_count(func: typing.Callable) -> typing.Callable:

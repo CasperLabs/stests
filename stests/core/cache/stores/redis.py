@@ -1,6 +1,6 @@
 import redis
 
-from stests.core.cache.partitions import StorePartition
+from stests.core.cache.enums import StorePartition
 from stests.core.utils import env
 
 

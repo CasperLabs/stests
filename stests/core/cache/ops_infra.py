@@ -1,10 +1,9 @@
 import random
 import typing
 
-from stests.core.cache.ops import StoreOperation
-from stests.core.cache.partitions import StorePartition
+from stests.core.cache.enums import StoreOperation
+from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
-from stests.core.cache.utils import decache
 from stests.core.cache.utils import encache
 from stests.core.cache.utils import encache_singleton
 from stests.core.cache.utils import flushcache
@@ -47,7 +46,6 @@ def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
-@decache
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.
 
@@ -74,7 +72,6 @@ def get_network_by_name(name: str) -> Network:
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
-@decache
 def get_networks() -> typing.List[Network]:
     """Decaches domain objects: Network.
 
@@ -85,7 +82,6 @@ def get_networks() -> typing.List[Network]:
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
-@decache
 def get_node(node_id: NodeIdentifier) -> Node:
     """Decaches domain object: Node.
     
@@ -144,7 +140,6 @@ def get_node_by_run_context(ctx: RunContext) -> Node:
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
-@decache
 def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.List[Node]:
     """Decaches domain objects: Node.
 
