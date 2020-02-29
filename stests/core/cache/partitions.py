@@ -7,5 +7,5 @@ class StorePartition(enum.Enum):
     
     """
     INFRA = enum.auto()
-    GENERATOR = enum.auto()
+    RUN = enum.auto()
     MONITORING = enum.auto()

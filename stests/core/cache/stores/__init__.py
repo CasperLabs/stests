@@ -1,6 +1,6 @@
+from stests.core.cache.partitions import StorePartition
 from stests.core.cache.stores import redis
 from stests.core.cache.stores import stub
-from stests.core.cache.stores.partitions import StorePartition
 from stests.core.utils import env
 from stests.core.utils.exceptions import InvalidEnvironmentVariable
 

@@ -1,11 +1,34 @@
 import json
 import typing
 import dataclasses
+import functools
 
+from stests.core.cache.partitions import StorePartition
 from stests.core.cache import stores
 from stests.core.utils import encoder
 from stests.core.utils import logger
 
+
+
+def cache_op(partition: StorePartition):
+    """Decorator to orthoganally process a cache operation.
+
+    :param on_success: Continuation function upon execution success.
+    :param is_substep: Flag indicating whether decorated function is a sub-step or not.
+
+    :returns: Decorated function.
+    
+    """
+    def decorator(func):
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+                        
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 def decache(func: typing.Callable) -> typing.Callable:

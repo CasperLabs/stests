@@ -1,6 +1,6 @@
 import fakeredis
 
-from stests.core.cache.stores.partitions import StorePartition
+from stests.core.cache.partitions import StorePartition
 
 
 # Factory simply instantiates an instance.

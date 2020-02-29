@@ -1,12 +1,50 @@
 import random
 import typing
 
+from stests.core.cache.partitions import StorePartition
+from stests.core.cache.utils import cache_op
 from stests.core.cache.utils import decache
+from stests.core.cache.utils import encache
+from stests.core.cache.utils import encache_singleton
+from stests.core.cache.utils import flushcache
 from stests.core.domain import *
 from stests.core.utils import factory
 
 
 
+@flushcache
+def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
+    """Flushes previous run information.
+
+    :param network_id: A network identifier.
+
+    :returns: A generator of keypaths to be flushed.
+    
+    """
+    yield ["network", network_id.name]
+
+    for collection in [
+        "network-block",
+        "network-deploy",
+        "network-node",
+        "run-account",
+        "run-context",
+        "run-deploy",
+        "run-event",
+        "run-step",
+        "run-step-deploy",
+        "run-step-deploy-count",
+        "run-step-lock",
+        "run-transfer",
+    ]:
+        yield [
+            collection,
+            network_id.name,
+            "*"
+        ]
+
+
+@cache_op(StorePartition.INFRA)
 @decache
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.
@@ -33,6 +71,7 @@ def get_network_by_name(name: str) -> Network:
     return get_network(factory.create_network_id(name))
 
 
+@cache_op(StorePartition.INFRA)
 @decache
 def get_networks() -> typing.List[Network]:
     """Decaches domain objects: Network.
@@ -43,6 +82,7 @@ def get_networks() -> typing.List[Network]:
     return ["network", "*"]
 
 
+@cache_op(StorePartition.INFRA)
 @decache
 def get_node(node_id: NodeIdentifier) -> Node:
     """Decaches domain object: Node.
@@ -101,6 +141,7 @@ def get_node_by_run_context(ctx: RunContext) -> Node:
         return random.choice(nodeset)
 
 
+@cache_op(StorePartition.INFRA)
 @decache
 def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.List[Node]:
     """Decaches domain objects: Node.
@@ -129,3 +170,36 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
     
     """
     return [i for i in get_nodes(network) if i.is_operational]
+
+
+@cache_op(StorePartition.INFRA)
+@encache
+def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
+    """Encaches domain object: Network.
+
+    :param network: Network domain object instance to be cached.
+    
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "network",
+        network.name,
+    ], network
+
+
+@cache_op(StorePartition.INFRA)
+@encache
+def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
+    """Encaches domain object: Node.
+    
+    :param node: Node domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "network-node",
+        node.network,
+        f"N-{str(node.index).zfill(4)}"
+    ], node
