@@ -7,18 +7,12 @@ from stests.core.cache.enums import StorePartition
 from stests.core.cache.ops_infra import get_network
 from stests.core.cache.ops_infra import get_nodes
 from stests.core.cache.utils import cache_op
-from stests.core.cache.utils import do_incrby
-from stests.core.cache.utils import encache
-from stests.core.cache.utils import encache_lock
-from stests.core.cache.utils import encache_singleton
-from stests.core.cache.utils import flushcache
 from stests.core.domain import *
 from stests.core.utils import factory
 
 
 
 @cache_op(StorePartition.RUN, StoreOperation.FLUSH)
-@flushcache
 def flush_run(ctx: RunContext) -> typing.Generator:
     """Flushes previous run information.
 
@@ -213,7 +207,6 @@ def get_run_transfers(dhash: str) -> typing.List[Transfer]:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.INCR)
-@do_incrby
 def increment_step_deploy_count(ctx: RunContext):
     """Increments (atomically) count of run step deploys.
 
@@ -230,7 +223,6 @@ def increment_step_deploy_count(ctx: RunContext):
 
 
 @cache_op(StorePartition.RUN, StoreOperation.LOCK)
-@encache_lock
 def lock_run_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLock]:
     """Encaches a lock: RunStepLock.
 
@@ -249,7 +241,6 @@ def lock_run_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLo
 
 
 @cache_op(StorePartition.RUN, StoreOperation.SET)
-@encache
 def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
     """Encaches domain object: Account.
     
@@ -268,7 +259,6 @@ def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]
 
 
 @cache_op(StorePartition.RUN, StoreOperation.SET)
-@encache
 def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContext]:
     """Encaches domain object: RunContext.
     
@@ -286,7 +276,6 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
 
 
 @cache_op(StorePartition.RUN, StoreOperation.SET)
-@encache
 def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
@@ -305,7 +294,6 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.SET)
-@encache
 def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
     """Encaches domain object: RunStep.
     
@@ -324,7 +312,6 @@ def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.SET)
-@encache
 def set_run_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
     """Encaches domain object: Transfer.
     

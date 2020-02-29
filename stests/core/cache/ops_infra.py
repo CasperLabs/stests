@@ -4,16 +4,12 @@ import typing
 from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
-from stests.core.cache.utils import encache
-from stests.core.cache.utils import encache_singleton
-from stests.core.cache.utils import flushcache
 from stests.core.domain import *
 from stests.core.utils import factory
 
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.FLUSH)
-@flushcache
 def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
     """Flushes previous run information.
 
@@ -170,7 +166,6 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
-@encache
 def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     """Encaches domain object: Network.
 
@@ -186,7 +181,6 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
-@encache
 def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     """Encaches domain object: Node.
     

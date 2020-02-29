@@ -25,147 +25,59 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            if operation == StoreOperation.GET:
-                keypath = func(*args, **kwargs)
-                key = ":".join([str(i) for i in keypath])
-                with stores.get_store() as store:
+            with stores.get_store() as store:
+
+                if operation == StoreOperation.FLUSH:
+                    for keypaths in func(*args, **kwargs):
+                        key = ":".join([str(i) for i in keypaths])
+                        _flush(store, key)
+
+                elif operation == StoreOperation.GET:
+                    keypath = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
                     if key.find("*") >= 0:
                         return _get_all(store, key)
                     else:
                         return _get(store, key)
 
-
-            elif operation == StoreOperation.GET_COUNT:
-                keypath = func(*args, **kwargs)
-                key = ":".join([str(i) for i in keypath])
-                with stores.get_store() as store:
+                elif operation == StoreOperation.GET_COUNT:
+                    keypath = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
                     return int(store.get(key))
 
+                elif operation == StoreOperation.INCR:
+                    keypath = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
+                    store.incrby(key, 1)
 
-            else:
+                elif operation == StoreOperation.LOCK:
+                    keypath, data = func(*args, **kwargs)
+                    data = dataclasses.asdict(data)
+                    key = ":".join([str(i) for i in keypath])
+                    return key, _setnx(store, key, data)
 
-                return func(*args, **kwargs)
+                elif operation == StoreOperation.SET:
+                    keypath, data = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
+                    _set(store, key, data)
+                    return key
+
+                elif operation == StoreOperation.SET_SINGLETON:
+                    keypath, data = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
+                    was_cached = _setnx(store, key, data)
+                    return key, was_cached
+
+                else:
+                    raise NotImplementedError("Cache operation is unsupported")
 
         return wrapper
 
     return decorator
 
 
-def _doo_get():
-    pass
-
-
-def pull_count(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally pull a count from cache.
-
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-    
-    """
-    def wrapper(*args, **kwargs) -> int:
-        keypath = func(*args, **kwargs)
-        key = ":".join([str(i) for i in keypath])
-        with stores.get_store() as store:
-            return int(store.get(key))
-
-    return wrapper
-
-
-def encache(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally push domain objects to cache.
-    
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-
-    """
-    def wrapper(*args, **kwargs):
-        keypath, data = func(*args, **kwargs)
-        key = ":".join([str(i) for i in keypath])
-        with stores.get_store() as store:
-            _set(store, key, data)
-        return key
-
-    return wrapper
-
-
-def encache_lock(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally push domain objects to cache (if they have not already been pushed).
-    
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-
-    """
-    def wrapper(*args, **kwargs):
-        keypath, data = func(*args, **kwargs)
-        data = dataclasses.asdict(data)
-        key = ":".join([str(i) for i in keypath])
-        with stores.get_store() as store:
-            return key, _setnx(store, key, data)
-
-    return wrapper
-
-
-def encache_singleton(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally push domain objects to cache (if they have not already been pushed).
-    
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-
-    """
-    def wrapper(*args, **kwargs):
-        keypath, data = func(*args, **kwargs)
-        key = ":".join([str(i) for i in keypath])
-        with stores.get_store() as store:
-            was_cached = _setnx(store, key, data)
-        return key, was_cached
-
-    return wrapper
-
-
-def flushcache(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally flush domain objects from cache.
-    
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-
-    """    
-    def wrapper(*args, **kwargs):
-        for keypaths in func(*args, **kwargs):
-            key = ":".join([str(i) for i in keypaths])
-            with stores.get_store() as store:
-                _flush(store, key)
-
-    return wrapper
-
-
-def do_incrby(func: typing.Callable) -> typing.Callable:
-    """Decorator to orthoganally push domain objects to cache.
-    
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-
-    """
-    def wrapper(*args, **kwargs):
-        keypath = func(*args, **kwargs)
-        key = ":".join([str(i) for i in keypath])
-        with stores.get_store() as store:
-            store.incrby(key, 1)
-
-    return wrapper
-
-
 def _decode_item(as_json: str) -> typing.Any:
     """Returns a decoded encached domain object(s).
-
-    :param as_json: JSON representation of cached domain object(s).
-
-    :returns: Domain object(s).
 
     """
     return encoder.decode(json.loads(as_json))
@@ -174,9 +86,6 @@ def _decode_item(as_json: str) -> typing.Any:
 def _delete(store: typing.Callable, key: str):
     """Wraps redis.delete command.
     
-    :param store: Cache store connection wrapper.
-    :param key: Key of item to be deleted.
-
     """
     logger.log(f"CACHE :: delete :: {key}")
     store.delete(key)
@@ -184,8 +93,6 @@ def _delete(store: typing.Callable, key: str):
 
 def _flush(store: typing.Callable, ns_keys: str):
     """Flushes data from cache.
-
-    :param namespace: Namespace to be flushed.
 
     """
     CHUNK_SIZE = 1000
@@ -199,11 +106,6 @@ def _flush(store: typing.Callable, ns_keys: str):
 def _get(store: typing.Callable, key: str) -> typing.Any:
     """Wraps redis.get command.
     
-    :param store: Cache store connection wrapper.
-    :param key: Key of item to be retrieved.
-
-    :returns: If a key match then decoded domain object(s), else None.
-
     """
     logger.log(f"CACHE :: get :: {key}")
     obj = store.get(key)
@@ -216,11 +118,6 @@ def _get(store: typing.Callable, key: str) -> typing.Any:
 def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]:
     """Wraps redis.mget command.
     
-    :param store: Cache store connection wrapper.
-    :param search_key: Key woth which to search cache.
-
-    :returns: If a key match then collection of decoded domain object(s), else None.
-
     """
     logger.log(f"CACHE :: get :: {search_key}")
     CHUNK_SIZE = 5000
@@ -232,11 +129,6 @@ def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]
 def _get_count(store: typing.Callable, search_key: str) -> int:
     """Wraps redis.mget command.
     
-    :param store: Cache store connection wrapper.
-    :param search_key: Key woth which to search cache.
-
-    :returns: If a key match then collection of decoded domain object(s), else None.
-
     """
     logger.log(f"CACHE :: get_count :: {search_key}")
     CHUNK_SIZE = 5000
@@ -248,12 +140,6 @@ def _get_count(store: typing.Callable, search_key: str) -> int:
 def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
     """Wraps redis.set command.
     
-    :param store: Cache store connection wrapper.
-    :param key: Key of item to be cached.
-    :param data: Data to be cached.
-
-    :returns: Cache key.
-
     """
     logger.log(f"CACHE :: set :: {key}")
     
@@ -265,12 +151,6 @@ def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
 def _setnx(store: typing.Callable, key: str, data: typing.Any) -> typing.Tuple[str, bool]:
     """Wraps redis.setnx command.
     
-    :param store: Cache store connection wrapper.
-    :param key: Key of item to be cached.
-    :param data: Data to be cached.
-
-    :returns: True if .
-
     """
     logger.log(f"CACHE :: setnx :: {key}")
 
