@@ -28,11 +28,12 @@ def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunCon
         node = cache.get_node_by_network_id(src)
     elif isinstance(src, RunContext):
         node = cache.get_node_by_run_context(src)
-
+    else:
+        raise ValueError("Cannot derive node from input source.")
     if not node:
         raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")
 
-    log_info(f"connecting to node :: {node.network}:N-{str(node.index).zfill(4)} :: {node.host}:{node.port}")
+    logger.log(f"PYCLX :: connecting to node :: {node.network}:N-{str(node.index).zfill(4)} :: {node.host}:{node.port}")
 
     # TODO: get node id / client ssl cert.
     return node, pyclx.CasperLabsClient(
@@ -41,8 +42,32 @@ def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunCon
     )
 
 
-def log_info(msg):
-    """Helper logging function.
+def clx_op(func: typing.Callable) -> typing.Callable:
+    """Decorator over deploy operations.
     
+    :param func: Inner function being decorated.
+
+    :returns: Wrapped function.
+
     """
-    logger.log(f"PYCLX :: {msg}")
+    def wrapper(*args, **kwargs):
+        # Pre log.
+        messages = {
+            "get_block": lambda args: f"bhash={args[-1]}",
+            "get_deploys": lambda args: f"bhash={args[-1]}",
+            "get_balance": lambda args: f"pbk={args[-1].public_key}",
+        }
+        try:
+            message = messages[func.__name__]
+        except KeyError:
+            logger.log(f"PYCLX :: {func.__name__} :: executing ...")
+        else:
+            logger.log(f"PYCLX :: {func.__name__} :: {message(args)}")
+
+        try:
+            return func(*args, **kwargs)
+        except Exception as err:
+            logger.log_error(f"PYCLX :: {err}")
+            raise err
+
+    return wrapper

@@ -33,11 +33,17 @@ alias stests-monitoring-start=$STESTS_PATH_SH/monitoring/start.sh
 # ###############################################################
 
 alias stests-workers-start=$STESTS_PATH_SH/workers/start.sh
-alias stests-workers-start-interactive=$STESTS_PATH_SH/workers/start_interactive.sh
+alias stests-workers-interactive=$STESTS_PATH_SH/workers/interactive.sh
 alias stests-workers-status=$STESTS_PATH_SH/workers/status.sh
 alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
 alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
+
+# ###############################################################
+# ALIASES: broker
+# ###############################################################
+
+alias stests-mq-redis-flush=$STESTS_PATH_SH/broker/redis_flush.sh
 
 # ###############################################################
 # ALIASES: cache

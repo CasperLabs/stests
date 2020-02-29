@@ -1,5 +1,6 @@
 import datetime as dt
 import os
+import sys
 import typing
 
 
@@ -23,8 +24,9 @@ def log(msg: str = None, level: str = LOG_LEVEL_INFO):
     :param str level: Message level (e.g. INFO).
 
     """
+    sys.stdout.write(_get_message(msg, level))
     # TODO use structlog/logstash.
-    print(_get_message(msg, level))
+    # print(_get_message(msg, level))
 
 
 def log_debug(msg: str):

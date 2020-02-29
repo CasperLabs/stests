@@ -7,7 +7,7 @@ source $STESTS_PATH_SH/utils.sh
 function main()
 {
     cd $STESTS_HOME
-    pipenv run dramatiq -p 1 -t 4 worker --path $STESTS_HOME $STESTS_PATH_SRC --watch $STESTS_PATH_SRC
+    pipenv run dramatiq worker --path $STESTS_HOME $STESTS_PATH_SRC --watch $STESTS_PATH_SRC
 }
 
 # Invoke entry point.

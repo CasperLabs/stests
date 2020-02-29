@@ -2,6 +2,7 @@ import typing
 
 from stests.core.clx import defaults
 from stests.core.clx.utils import get_client
+from stests.core.clx.utils import clx_op
 from stests.core.clx.query import get_balance
 from stests.core.domain import Account
 from stests.core.domain import Transfer
@@ -14,6 +15,7 @@ from stests.core.utils import logger
 
 
 
+@clx_op
 def do_refund(
     ctx: RunContext,
     cp1: Account,
@@ -41,6 +43,7 @@ def do_refund(
     return do_transfer(ctx, cp1, cp2, amount, False, DeployType.REFUND)
 
 
+@clx_op
 def do_transfer(
     ctx: RunContext,
     cp1: Account,
@@ -61,7 +64,7 @@ def do_transfer(
 
     """
     node, client  = get_client(ctx)
-    deploy_hash = client.transfer(
+    dhash = client.transfer(
         amount=amount,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
@@ -71,14 +74,15 @@ def do_transfer(
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
 
-    logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {deploy_hash}")
+    logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {dhash}")
 
     return (
-        factory.create_deploy_for_run(ctx, node, deploy_hash, deploy_type), 
-        factory.create_transfer(ctx, amount, "CLX", cp1, cp2, deploy_hash, is_refundable)
+        factory.create_deploy_for_run(ctx, node, dhash, deploy_type), 
+        factory.create_transfer(ctx, amount, "CLX", cp1, cp2, dhash, is_refundable)
         )
 
 
+@clx_op
 def do_deploy_contract(ctx: RunContext, account: Account, wasm_filepath: str):
     """Deploys a smart contract to chain.
 
@@ -91,6 +95,6 @@ def do_deploy_contract(ctx: RunContext, account: Account, wasm_filepath: str):
     """
     _, client = get_client(ctx)
 
-    logger.log(f"TODO :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath}")
+    logger.log(f"PYCLX :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath}")
 
     return "TODO: dispatch contract deploy"

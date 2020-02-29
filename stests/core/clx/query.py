@@ -2,17 +2,16 @@ import typing
 from datetime import datetime
 
 from stests.core.clx.utils import get_client
-from stests.core.clx.utils import log_info
+from stests.core.clx.utils import clx_op
 from stests.core.domain import Account
 from stests.core.domain import Block
 from stests.core.domain import BlockStatus
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import RunContext
 from stests.core.utils import factory
-from stests.core.utils import logger
 
 
-
+@clx_op
 def get_balance(ctx: RunContext, account: Account) -> int:
     """Returns a chain account balance.
 
@@ -22,13 +21,11 @@ def get_balance(ctx: RunContext, account: Account) -> int:
     :returns: Account balance.
 
     """
-    log_info(f"get_balance :: pbk={account.public_key}")
-
     _, client = get_client(ctx)
     try:
         balance = client.balance(
             address=account.public_key,
-            block_hash=_get_last_block_hash(client)
+            block_hash=get_last_block_hash(client)
             )
     except Exception as err:
         if "Failed to find base key at path" in err.details:
@@ -38,6 +35,7 @@ def get_balance(ctx: RunContext, account: Account) -> int:
         return balance
 
 
+@clx_op
 def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
     """Queries network for information pertaining to a specific block.
 
@@ -47,8 +45,6 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
     :returns: Block information.
 
     """
-    log_info(f"get_block :: {block_hash}")
-
     _, client = get_client(network_id)
     info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
@@ -66,6 +62,7 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
         )
 
 
+@clx_op
 def get_deploys(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str]:
     """Queries network for set of deploys associated with a specific block.
 
@@ -75,19 +72,16 @@ def get_deploys(network_id: NetworkIdentifier, block_hash: str) -> typing.List[s
     :returns: Block information.
 
     """
-    log_info(f"get_deploys :: {block_hash}")
-
     _, client = get_client(network_id)
 
     return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=block_hash, full_view=False))
 
 
-def _get_last_block_hash(client) -> str:
+@clx_op
+def get_last_block_hash(client) -> str:
     """Returns a chain's last block hash.
     
     """
-    log_info(f"_get_last_block_hash")
-
     last_block_info = next(client.showBlocks(1))
 
     return last_block_info.summary.block_hash.hex()
