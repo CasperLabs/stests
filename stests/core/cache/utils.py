@@ -25,7 +25,7 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
-            with stores.get_store() as store:
+            with stores.get_store(partition) as store:
 
                 if operation == StoreOperation.FLUSH:
                     for keypaths in func(*args, **kwargs):
