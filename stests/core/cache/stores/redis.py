@@ -1,5 +1,6 @@
 import redis
 
+from stests.core.cache.stores.partitions import StorePartition
 from stests.core.utils import env
 
 
@@ -16,7 +17,7 @@ class EnvVars:
     PORT = env.get_var('CACHE_REDIS_PORT', 6379, int)
 
 
-def get_store() -> redis.Redis:
+def get_store(partition_type: StorePartition) -> redis.Redis:
     """Returns instance of a redis cache store accessor.
 
     :returns: An instance of a redis cache store accessor.

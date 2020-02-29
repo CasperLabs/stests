@@ -1,5 +1,6 @@
 from stests.core.cache.stores import redis
 from stests.core.cache.stores import stub
+from stests.core.cache.stores.partitions import StorePartition
 from stests.core.utils import env
 from stests.core.utils.exceptions import InvalidEnvironmentVariable
 
@@ -18,10 +19,10 @@ FACTORIES = {
 }
 
 
-def get_store():
+def get_store(partition_type: StorePartition = StorePartition.INFRA):
     """Returns a cache store ready to be used as a state persistence & flow control mechanism.
 
-    :param store_type: Type of store to be instantiated.
+    :param partition_type: Type of partition to be instantiated.
     :returns: A cache store.
 
     """ 
@@ -30,4 +31,4 @@ def get_store():
     except KeyError:
         raise InvalidEnvironmentVariable("CACHE_TYPE", EnvVars.TYPE, FACTORIES)
 
-    return factory.get_store()
+    return factory.get_store(partition_type)
