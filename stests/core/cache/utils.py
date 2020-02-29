@@ -4,13 +4,14 @@ import dataclasses
 import functools
 
 from stests.core.cache.partitions import StorePartition
+from stests.core.cache.ops import StoreOperation
 from stests.core.cache import stores
 from stests.core.utils import encoder
 from stests.core.utils import logger
 
 
 
-def cache_op(partition: StorePartition):
+def cache_op(partition: StorePartition, operation: StoreOperation):
     """Decorator to orthoganally process a cache operation.
 
     :param on_success: Continuation function upon execution success.

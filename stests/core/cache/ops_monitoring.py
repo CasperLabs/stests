@@ -1,5 +1,6 @@
 import typing
 
+from stests.core.cache.ops import StoreOperation
 from stests.core.cache.partitions import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.cache.utils import encache
@@ -8,7 +9,7 @@ from stests.core.domain import *
 
 
 
-@cache_op(StorePartition.MONITORING)
+@cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
 @encache_singleton
 def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     """Encaches domain object: Block.
@@ -25,7 +26,7 @@ def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     ], block
 
 
-@cache_op(StorePartition.MONITORING)
+@cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
 @encache_singleton
 def set_network_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.

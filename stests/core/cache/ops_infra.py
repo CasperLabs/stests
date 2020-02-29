@@ -1,6 +1,7 @@
 import random
 import typing
 
+from stests.core.cache.ops import StoreOperation
 from stests.core.cache.partitions import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.cache.utils import decache
@@ -12,6 +13,7 @@ from stests.core.utils import factory
 
 
 
+@cache_op(StorePartition.INFRA, StoreOperation.FLUSH)
 @flushcache
 def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
     """Flushes previous run information.
@@ -44,7 +46,7 @@ def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
         ]
 
 
-@cache_op(StorePartition.INFRA)
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
 @decache
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.
@@ -71,7 +73,7 @@ def get_network_by_name(name: str) -> Network:
     return get_network(factory.create_network_id(name))
 
 
-@cache_op(StorePartition.INFRA)
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
 @decache
 def get_networks() -> typing.List[Network]:
     """Decaches domain objects: Network.
@@ -82,7 +84,7 @@ def get_networks() -> typing.List[Network]:
     return ["network", "*"]
 
 
-@cache_op(StorePartition.INFRA)
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
 @decache
 def get_node(node_id: NodeIdentifier) -> Node:
     """Decaches domain object: Node.
@@ -141,7 +143,7 @@ def get_node_by_run_context(ctx: RunContext) -> Node:
         return random.choice(nodeset)
 
 
-@cache_op(StorePartition.INFRA)
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
 @decache
 def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.List[Node]:
     """Decaches domain objects: Node.
@@ -172,7 +174,7 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
     return [i for i in get_nodes(network) if i.is_operational]
 
 
-@cache_op(StorePartition.INFRA)
+@cache_op(StorePartition.INFRA, StoreOperation.SET)
 @encache
 def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     """Encaches domain object: Network.
@@ -188,7 +190,7 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     ], network
 
 
-@cache_op(StorePartition.INFRA)
+@cache_op(StorePartition.INFRA, StoreOperation.SET)
 @encache
 def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     """Encaches domain object: Node.
