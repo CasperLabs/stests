@@ -26,7 +26,6 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
         def wrapper(*args, **kwargs):
 
             if operation == StoreOperation.GET:
-                
                 keypath = func(*args, **kwargs)
                 key = ":".join([str(i) for i in keypath])
                 with stores.get_store() as store:
@@ -34,6 +33,14 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
                         return _get_all(store, key)
                     else:
                         return _get(store, key)
+
+
+            elif operation == StoreOperation.GET_COUNT:
+                keypath = func(*args, **kwargs)
+                key = ":".join([str(i) for i in keypath])
+                with stores.get_store() as store:
+                    return int(store.get(key))
+
 
             else:
 

@@ -11,7 +11,6 @@ from stests.core.cache.utils import do_incrby
 from stests.core.cache.utils import encache
 from stests.core.cache.utils import encache_lock
 from stests.core.cache.utils import encache_singleton
-from stests.core.cache.utils import pull_count
 from stests.core.cache.utils import flushcache
 from stests.core.domain import *
 from stests.core.utils import factory
@@ -155,7 +154,6 @@ def get_run_step(ctx: RunContext) -> RunStep:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET_COUNT)
-@pull_count
 def get_step_deploy_count(ctx: RunContext) -> int:
     """Reurns current count of run step deploys.
 
