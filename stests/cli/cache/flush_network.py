@@ -30,7 +30,7 @@ def main(args):
         logger.log_warning(f"Network {args.network} is unregistered - flushing cache anyway.")
 
     # Flush cache.
-    cache.flush_network(network_id)
+    cache.flush_by_network(network_id)
 
     # Inform.
     logger.log(f"Network {args.network} cache data was successfully flushed")

@@ -13,7 +13,25 @@ from stests.core.utils import factory
 
 
 @cache_op(StorePartition.RUN, StoreOperation.FLUSH)
-def flush_run(ctx: RunContext) -> typing.Generator:
+def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
+    """Flushes network specific monitoring information.
+
+    :param network_id: A network identifier.
+
+    :returns: A generator of keypaths to be flushed.
+    
+    """
+    yield ["account", network_id.name, "*"]
+    yield ["context", network_id.name, "*"]
+    yield ["deploy", network_id.name, "*"]
+    yield ["step", network_id.name, "*"]
+    yield ["step-deploy-count", network_id.name, "*"]
+    yield ["step-lock", network_id.name, "*"]
+    yield ["transfer", network_id.name, "*"]
+        
+
+@cache_op(StorePartition.RUN, StoreOperation.FLUSH)
+def flush_by_run(ctx: RunContext) -> typing.Generator:
     """Flushes previous run information.
 
     :param ctx: Generator run contextual information.
@@ -22,15 +40,13 @@ def flush_run(ctx: RunContext) -> typing.Generator:
     
     """
     for collection in [
-        "run-account",
-        "run-context",
-        "run-deploy",
-        "run-event",
-        "run-step",
-        "run-step-deploy",
-        "run-step-deploy-count",
-        "run-step-lock",
-        "run-transfer",
+        "account",
+        "context",
+        "deploy",   
+        "step",
+        "step-deploy-count",
+        "step-lock",
+        "transfer",
     ]:
         yield [
             collection,
@@ -53,7 +69,7 @@ def get_account(account_id: AccountIdentifier) -> Account:
     run = account_id.run
 
     return [
-        "run-account",
+        "account",
         run.network.name,
         run.type,
         f"R-{str(run.index).zfill(3)}",
@@ -88,7 +104,7 @@ def get_run_context(network, run_index, run_type) -> RunContext:
 
     """
     return [
-        "run-context",
+        "context",
         network,
         run_type,
         f"R-{str(run_index).zfill(3)}"
@@ -117,7 +133,7 @@ def get_run_deploys(dhash: str) -> typing.List[Deploy]:
     :returns: List of matching deploys.
 
     """    
-    return [f"run-deploy*{dhash}*"]
+    return [f"deploy*{dhash}*"]
 
 
 def get_run_network(ctx: RunContext) -> Network:
@@ -155,7 +171,7 @@ def get_step_deploy_count(ctx: RunContext) -> int:
 
     """
     return [
-        "run-step-deploy-count",
+        "step-deploy-count",
         ctx.network,
         ctx.run_type,
         f"R-{str(ctx.run_index).zfill(3)}",
@@ -173,7 +189,7 @@ def get_run_steps(ctx: RunContext) -> typing.List[RunStep]:
     
     """
     return [
-        "run-step",
+        "step",
         ctx.network,
         ctx.run_type,
         f"R-{str(ctx.run_index).zfill(3)}",
@@ -203,7 +219,7 @@ def get_run_transfers(dhash: str) -> typing.List[Transfer]:
     :returns: Matched transfers.
 
     """    
-    return [f"run-transfer*{dhash}*"]
+    return [f"transfer*{dhash}*"]
 
 
 @cache_op(StorePartition.RUN, StoreOperation.INCR)
@@ -214,7 +230,7 @@ def increment_step_deploy_count(ctx: RunContext):
 
     """
     return [
-        "run-step-deploy-count",
+        "step-deploy-count",
         ctx.network,
         ctx.run_type,
         f"R-{str(ctx.run_index).zfill(3)}",
@@ -232,7 +248,7 @@ def lock_run_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLo
 
     """
     return [
-        "run-step-lock",
+        "step-lock",
         lock.network,
         lock.run_type,
         f"R-{str(lock.run_index).zfill(3)}",
@@ -250,7 +266,7 @@ def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]
 
     """
     return [
-        "run-account",
+        "account",
         account.network,
         account.run_type,
         f"R-{str(account.run).zfill(3)}",
@@ -268,7 +284,7 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
 
     """
     return [
-        "run-context",
+        "context",
         ctx.network,
         ctx.run_type,
         f"R-{str(ctx.run_index).zfill(3)}"
@@ -285,7 +301,7 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
     """
     return [
-        "run-deploy",
+        "deploy",
         deploy.network,
         deploy.run_type,
         f"R-{str(deploy.run).zfill(3)}",
@@ -303,7 +319,7 @@ def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
 
     """
     return [
-        "run-step",
+        "step",
         step.network,
         step.run_type,
         f"R-{str(step.run).zfill(3)}",
@@ -321,7 +337,7 @@ def set_run_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Trans
 
     """
     return [
-        "run-transfer",
+        "transfer",
         transfer.network,
         transfer.run_type,
         f"R-{str(transfer.run).zfill(3)}",

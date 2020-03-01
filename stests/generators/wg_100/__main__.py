@@ -120,7 +120,7 @@ def main(args: argparse.Namespace):
     )
 
     # Reset cache.
-    cache.flush_run(ctx)
+    cache.flush_by_run(ctx)
 
     # Initialise broker.
     mq.initialise()

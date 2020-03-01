@@ -10,7 +10,7 @@ from stests.core.utils import factory
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.FLUSH)
-def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
+def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
     """Flushes previous run information.
 
     :param network_id: A network identifier.
@@ -19,26 +19,7 @@ def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
     
     """
     yield ["network", network_id.name]
-
-    for collection in [
-        "network-block",
-        "network-deploy",
-        "network-node",
-        "run-account",
-        "run-context",
-        "run-deploy",
-        "run-event",
-        "run-step",
-        "run-step-deploy",
-        "run-step-deploy-count",
-        "run-step-lock",
-        "run-transfer",
-    ]:
-        yield [
-            collection,
-            network_id.name,
-            "*"
-        ]
+    yield ["node", network_id.name, "*"]
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
@@ -87,7 +68,7 @@ def get_node(node_id: NodeIdentifier) -> Node:
 
     """
     return [
-        "network-node",
+        "node",
         node_id.network.name,
         f"N-{str(node_id.index).zfill(4)}"
     ]
@@ -145,10 +126,10 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.
     
     """
     if network is None:
-        return ["network-node", "*"]
+        return ["node", "*"]
     else:
         return [
-            "network-node",
+            "node",
             network.name,
             "N-*"
         ]
@@ -190,7 +171,7 @@ def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
 
     """
     return [
-        "network-node",
+        "node",
         node.network,
         f"N-{str(node.index).zfill(4)}"
     ], node
