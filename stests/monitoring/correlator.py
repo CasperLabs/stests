@@ -68,7 +68,6 @@ def _verify(ctx: RunContext, pipeline, actor: dramatiq.Actor, dhash: str) -> boo
     try:
         verifier = pipeline.VERIFIERS[actor]
     except KeyError:
-        logger.log_warning(f"{ctx.run_type} has no verifier for step {ctx.run_step}")
         return True
     
     try:

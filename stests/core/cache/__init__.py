@@ -3,9 +3,9 @@ from stests.core.cache.ops_infra import *
 from stests.core.cache.ops_monitoring import *
 from stests.core.cache.ops_run import *
 
-from stests.core.cache.ops_infra import * as infra
-from stests.core.cache.ops_monitoring import * as monitoring
-from stests.core.cache.ops_run import * as run
+import stests.core.cache.ops_infra as infra
+import stests.core.cache.ops_monitoring as monitoring
+import stests.core.cache.ops_run as run
 
 
 
