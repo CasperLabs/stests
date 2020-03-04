@@ -43,7 +43,7 @@ alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 # ALIASES: broker
 # ###############################################################
 
-alias stests-broker-flush-=$STESTS_PATH_SH/broker/flush.sh
+alias stests-broker-flush=$STESTS_PATH_SH/broker/flush.sh
 
 # ###############################################################
 # ALIASES: cache
@@ -62,6 +62,8 @@ alias stests-ls-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/list_networ
 
 alias stests-ls-nodes='_exec_cmd $STESTS_PATH_CLI/cache/list_nodes.py'
 alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/list_node_bonding_key.py'
+
+alias stests-ls-run='_exec_cmd $STESTS_PATH_CLI/cache/list_run.py'
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
 alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'

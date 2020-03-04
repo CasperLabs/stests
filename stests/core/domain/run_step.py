@@ -60,6 +60,17 @@ class RunStep(Entity):
     def action(self):
         return self.step.split(".")[-1]
 
+    @property
+    def step_duration_label(self):
+        if self.step_duration is None:
+            return "N/A"
+
+        duration = str(self.step_duration)
+        minutes = duration.split(".")[0]
+        seconds = duration.split(".")[1][:6]
+        
+        return f"{minutes}.{seconds}"
+
 
     def update_on_completion(self):
         """Executed when transfer has been completed.

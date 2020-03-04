@@ -95,7 +95,7 @@ def get_run_account(ctx: RunContext, index: int) -> Account:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET)
-def get_run_context(network, run_index, run_type) -> RunContext:
+def get_run_context(network: str, run_index: int, run_type: str) -> RunContext:
     """Decaches domain object: RunContext.
     
     :param ctx: Generator run contextual information.

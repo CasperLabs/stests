@@ -28,6 +28,14 @@ def validate_run_index(value):
     return _validate_int(value, RUN_INDEX_MIN, RUN_INDEX_MAX, "Generator")
 
 
+def validate_run_type(value):
+    """Argument verifier: generator run type.
+    
+    """
+    # TODO
+    return str(value).upper()
+
+
 def validate_network_index(value):
     """Argument verifier: network index.
     
