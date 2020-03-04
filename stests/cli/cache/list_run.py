@@ -20,22 +20,18 @@ ARGS.add_argument(
     type=args_validator.validate_network
     )
 
-# CLI argument: scope -> run index.
+# CLI argument: generator.
 ARGS.add_argument(
-    "--run",
-    dest="run_index",
-    help="Generator run index - must be between 1 and 65536.",
-    type=args_validator.validate_run_index,
-    default=1
+    "run_type",
+    help="Generator type - e.g. wg-100.",
+    type=args_validator.validate_run_type
     )
 
-# CLI argument: scope -> run index.
+# CLI argument: run index.
 ARGS.add_argument(
-    "--run-type",
-    dest="run_type",
-    help="Generator run type - e.g. wg-100.",
-    type=args_validator.validate_run_type,
-    default="wg-100"
+    "run_index",
+    help="Generator run index - must be between 1 and 65536.",
+    type=args_validator.validate_run_index
     )
 
 

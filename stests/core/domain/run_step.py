@@ -62,6 +62,9 @@ class RunStep(Entity):
 
     @property
     def step_duration_label(self):
+        """Returns step duration formatted for display purposes.
+        
+        """
         if self.step_duration is None:
             return "N/A"
 
