@@ -93,18 +93,5 @@ function _exec_generator()
     log "... execution complete"
 }
 
-function _ls_generator_status()
-{
-    # Destructure generator type & args.
-    args=($@)
-    args_len=${#args[@]}
-    g_type=${args[0]}
-    g_args=${args[@]:1:$args_len}
-
-    # Execute generator.
-    echo $g_type
-}
-
 # WG-100: ERC-20 auction.
 alias stests-wg-100='_exec_generator 100'
-alias stests-wg-100-status='_ls_generator_status 100'
