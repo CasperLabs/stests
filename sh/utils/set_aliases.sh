@@ -64,6 +64,7 @@ alias stests-ls-nodes='_exec_cmd $STESTS_PATH_CLI/cache/list_nodes.py'
 alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/list_node_bonding_key.py'
 
 alias stests-ls-run='_exec_cmd $STESTS_PATH_CLI/cache/list_run.py'
+alias stests-ls-runs='_exec_cmd $STESTS_PATH_CLI/cache/list_runs.py'
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
 alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'

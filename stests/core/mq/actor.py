@@ -18,6 +18,7 @@ def actorify(on_success=None, is_substep=False):
 
     :param on_success: Continuation function upon execution success.
     :param is_substep: Flag indicating whether decorated function is a sub-step or not.
+    :param is_substep: Flag indicating whether decorated function is the final step in a workflow or not.
 
     :returns: Decorated function.
     
@@ -115,6 +116,6 @@ def _complete_step(ctx):
     """Returns step information for downstream correlation.
     
     """
-    step = cache.get_run_step(ctx)
+    step = cache.get_step(ctx)
     step.update_on_completion()
     cache.set_run_step(step)

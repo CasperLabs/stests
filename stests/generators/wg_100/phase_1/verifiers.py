@@ -75,6 +75,6 @@ def _verify_account_balance(ctx: RunContext, account_index: int, expected: int):
     """Verifies that an account balance is as per expectation.
     
     """
-    account = cache.get_run_account(ctx, account_index)
+    account = cache.get_account_by_run(ctx, account_index)
     assert account
     assert clx.get_balance(ctx, account) == expected

@@ -115,8 +115,8 @@ def do_fund_account(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int)
             raise ValueError("Network faucet account does not exist.")
         cp1 = network.faucet
     else:
-        cp1 = cache.get_run_account(ctx, cp1_index)
-    cp2 = cache.get_run_account(ctx, cp2_index)
+        cp1 = cache.get_account_by_run(ctx, cp1_index)
+    cp2 = cache.get_account_by_run(ctx, cp2_index)
 
     # Transfer CLX from cp1 -> cp2.
     (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)

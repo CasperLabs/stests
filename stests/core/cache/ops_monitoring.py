@@ -21,7 +21,7 @@ def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
-def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
+def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     """Encaches domain object: Block.
     
     :param block: Block domain object instance to be cached.
@@ -37,7 +37,7 @@ def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
-def set_network_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
+def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
     :param block: Deploy domain object instance to be cached.

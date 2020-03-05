@@ -51,11 +51,12 @@ def do_refund_step_2(ctx: RunContext):
 
 @actorify()
 def do_notify_completion(ctx: RunContext):
-    """Emits a run notification message.
+    """Emits a run completion notification message.
     
     :param ctx: Generator run contextual information.
 
     """        
+    # TODO: push notification.
     logger.log(f"ACTOR :: {ctx.run_type} :: R-{str(ctx.run_index).zfill(3)} has completed")
 
 
@@ -69,14 +70,14 @@ def do_refund(ctx: RunContext, cp1_index: int, cp2_index: int):
     
     """
     # Pull accounts.
-    cp1 = cache.get_run_account(ctx, cp1_index)
+    cp1 = cache.get_account_by_run(ctx, cp1_index)
     if cp2_index == ACC_NETWORK_FAUCET:
         network = cache.get_run_network(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp2 = network.faucet
     else:
-        cp2 = cache.get_run_account(ctx, cp2_index)
+        cp2 = cache.get_account_by_run(ctx, cp2_index)
 
     # Refund CLX from cp1 -> cp2.
     (deploy, refund) = clx.do_refund(ctx, cp1, cp2)

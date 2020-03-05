@@ -61,6 +61,12 @@ class RunStep(Entity):
         return self.step.split(".")[-1]
 
     @property
+    def ts_elapsed(self):
+        if self.status == RunStepStatus.COMPLETE:
+            return self.step_duration
+        return datetime.now().timestamp() - self.ts_start.timestamp()
+
+    @property
     def step_duration_label(self):
         """Returns step duration formatted for display purposes.
         
@@ -71,6 +77,17 @@ class RunStep(Entity):
         duration = str(self.step_duration)
         minutes = duration.split(".")[0]
         seconds = duration.split(".")[1][:6]
+        
+        return f"{minutes}.{seconds}"
+
+    @property
+    def step_elapsed_label(self):
+        """Returns step elapsed formatted for display purposes.
+        
+        """
+        elapsed = str(self.ts_elapsed)
+        minutes = elapsed.split(".")[0]
+        seconds = elapsed.split(".")[1][:6]
         
         return f"{minutes}.{seconds}"
 

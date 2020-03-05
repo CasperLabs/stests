@@ -61,7 +61,7 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
     block.update_on_finalization()
 
     # Encache - skip duplicates.
-    _, encached = cache.set_network_block(block)  
+    _, encached = cache.set_block(block)  
     if not encached:
         return
 
@@ -84,7 +84,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     deploy = factory.create_deploy(network_id, bhash, dhash, DeployStatus.FINALIZED)
 
     # Encache - skip duplicates.
-    _, encached = cache.set_network_deploy(deploy)
+    _, encached = cache.set_deploy(deploy)
     if not encached:
         return
 
@@ -99,7 +99,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     cache.set_run_deploy(deploy)
 
     # Increment run step deploy count.
-    ctx = cache.get_run_context(deploy.network, deploy.run, deploy.run_type)
+    ctx = cache.get_context(deploy.network, deploy.run, deploy.run_type)
     cache.increment_step_deploy_count(ctx)
 
     # Update run transfer.

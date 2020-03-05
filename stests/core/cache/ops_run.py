@@ -77,7 +77,7 @@ def get_account(account_id: AccountIdentifier) -> Account:
     ]
 
 
-def get_run_account(ctx: RunContext, index: int) -> Account:
+def get_account_by_run(ctx: RunContext, index: int) -> Account:
     """Decaches domain object: Account.
     
     :param ctx: Generator run contextual information.
@@ -95,10 +95,12 @@ def get_run_account(ctx: RunContext, index: int) -> Account:
 
 
 @cache_op(StorePartition.RUN, StoreOperation.GET)
-def get_run_context(network: str, run_index: int, run_type: str) -> RunContext:
+def get_context(network: str, run_index: int, run_type: str) -> RunContext:
     """Decaches domain object: RunContext.
     
-    :param ctx: Generator run contextual information.
+    :param network: Name of network being tested.
+    :param run_index: Generator run index.
+    :param run_type: Generator run type, e.g. wg-100.
 
     :returns: Cached run context information.
 
@@ -110,6 +112,22 @@ def get_run_context(network: str, run_index: int, run_type: str) -> RunContext:
         f"R-{str(run_index).zfill(3)}"
     ]
 
+
+@cache_op(StorePartition.RUN, StoreOperation.GET)
+def get_contexts(network: str, run_type: str) -> RunContext:
+    """Decaches domain object: RunContext.
+    
+    :param ctx: Generator run contextual information.
+
+    :returns: Cached run context information.
+
+    """
+    return [
+        "context",
+        network,
+        run_type,
+        "*"
+    ]
 
 def get_run_deploy(dhash: str) -> Deploy:
     """Decaches domain object: Deploy.
@@ -149,54 +167,6 @@ def get_run_network(ctx: RunContext) -> Network:
     return get_network(network_id)
 
 
-def get_run_step(ctx: RunContext) -> RunStep:
-    """Decaches domain object: RunStep.
-    
-    :param ctx: Generator run contextual information.
-
-    :returns: Cached run step information.
-
-    """
-    steps = get_run_steps(ctx)
-    steps = sorted(steps, key=lambda i: i.ts_start)
-
-    return steps[-1] if steps else None
-
-
-@cache_op(StorePartition.RUN, StoreOperation.GET_COUNT)
-def get_step_deploy_count(ctx: RunContext) -> int:
-    """Reurns current count of run step deploys.
-
-    :param ctx: Generator run contextual information.
-
-    """
-    return [
-        "step-deploy-count",
-        ctx.network,
-        ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}",
-        ctx.run_step,
-    ]
-
-
-@cache_op(StorePartition.RUN, StoreOperation.GET)
-def get_run_steps(ctx: RunContext) -> typing.List[RunStep]:
-    """Decaches collection of domain objects: RunStep.
-
-    :param ctx: Generator run contextual information.
-
-    :returns: List of run steps.
-    
-    """
-    return [
-        "step",
-        ctx.network,
-        ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}",
-        "*"
-        ]
-
-
 def get_run_transfer(dhash: str) -> Transfer:
     """Decaches domain object: Transfer.
     
@@ -220,6 +190,54 @@ def get_run_transfers(dhash: str) -> typing.List[Transfer]:
 
     """    
     return [f"transfer*{dhash}*"]
+
+
+def get_step(ctx: RunContext) -> RunStep:
+    """Decaches domain object: RunStep.
+    
+    :param ctx: Generator run contextual information.
+
+    :returns: Cached run step information.
+
+    """
+    steps = get_steps(ctx)
+    steps = sorted(steps, key=lambda i: i.ts_start)
+
+    return steps[-1] if steps else None
+
+
+@cache_op(StorePartition.RUN, StoreOperation.GET)
+def get_steps(ctx: RunContext) -> typing.List[RunStep]:
+    """Decaches collection of domain objects: RunStep.
+
+    :param ctx: Generator run contextual information.
+
+    :returns: List of run steps.
+    
+    """
+    return [
+        "step",
+        ctx.network,
+        ctx.run_type,
+        f"R-{str(ctx.run_index).zfill(3)}",
+        "*"
+        ]
+        
+
+@cache_op(StorePartition.RUN, StoreOperation.GET_COUNT)
+def get_step_deploy_count(ctx: RunContext) -> int:
+    """Reurns current count of run step deploys.
+
+    :param ctx: Generator run contextual information.
+
+    """
+    return [
+        "step-deploy-count",
+        ctx.network,
+        ctx.run_type,
+        f"R-{str(ctx.run_index).zfill(3)}",
+        ctx.run_step,
+    ]
 
 
 @cache_op(StorePartition.RUN, StoreOperation.INCR)

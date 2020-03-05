@@ -56,9 +56,16 @@ def _complete_step(ctx):
     """Returns step information for downstream correlation.
     
     """
-    step = cache.get_run_step(ctx)
+    step = cache.get_step(ctx)
     step.update_on_completion()
     cache.set_run_step(step)
+
+
+def _complete_run(ctx):
+    """Returns run information for downstream correlation.
+    
+    """
+    _complete_step(ctx)
 
 
 def _verify(ctx: RunContext, pipeline, actor: dramatiq.Actor, dhash: str) -> bool:
@@ -87,8 +94,7 @@ def _increment(ctx: RunContext, pipeline, actor: dramatiq.Actor):
     if next_actor:
         next_actor.send(ctx)
     else:
-        "TODO: mark end of workload generator"
-        pass
+        _complete_run(ctx)
 
 
 def _get_actor(ctx: RunContext, pipeline) -> dramatiq.Actor:

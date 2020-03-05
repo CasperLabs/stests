@@ -27,13 +27,6 @@ ARGS.add_argument(
     type=args_validator.validate_run_type
     )
 
-# CLI argument: run index.
-ARGS.add_argument(
-    "run_index",
-    help="Generator run index - must be between 1 and 65536.",
-    type=args_validator.validate_run_index
-    )
-
 
 def main(args):
     """Entry point.
@@ -44,29 +37,24 @@ def main(args):
     # Unpack.
     network_id = factory.create_network_id(args.network)
 
-    # Pull run context.
-    ctx = cache.get_context(
+    # Pull run contexts.
+    runs = cache.get_contexts(
         network_id.name, 
-        args.run_index,
         args.run_type
         )
-    if ctx is None:
-        logger.log_warning(f"Run {network_id.name} : {args.run_type} : {args.run_index} is not found.")
-        return
+    if not runs:
+        logger.log_warning(f"No runs found within cache for {network_id.name} : {args.run_type}.")
 
-    # Pull run steps.
-    steps = cache.get_steps(ctx)
-    if not steps:
-        logger.log_warning(f"Run {network_id.name} : {args.run_type} : {str(args.run_index).zfill(4)} is unexecuted.")
-        return
+    runs = list(map(lambda r: (r, cache.get_step(r)), runs))
 
     # Display.
     print("-----------------------------------------------------------------------------------------------")
-    print(f"Run {ctx.network} : {ctx.run_type} : R-{str(args.run_index).zfill(4)}")
+    print(f"{network_id.name} : {args.run_type}")
     print("-----------------------------------------------------------------------------------------------")
-    for idx, step in enumerate(sorted(steps, key=lambda s: s.ts_start)):
-        print(f"step {str(idx + 1).zfill(2)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.step_duration_label.rjust(11)}")
+    for run, step in runs:
+        print(f"R-{str(run.run_index).zfill(4)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.step_elapsed_label.rjust(11)} ")
     print("-----------------------------------------------------------------------------------------------")
+
 
 
 # Entry point.
