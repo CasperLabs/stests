@@ -33,3 +33,16 @@ def execute(ctx: RunContext) -> typing.Callable:
             )
 
     return get_messages
+
+
+
+def verify_deploy(ctx: RunContext, dhash: str):
+    """Step deploy verifier.
+    
+    :param ctx: Generator run contextual information.
+    :param dhash: A deploy hash.
+
+    """
+    utils.verify_deploy(ctx, dhash)
+    utils.verify_refund(ctx, dhash)
+    utils.verify_deploy_count(ctx, 1 + ctx.args.user_accounts) 

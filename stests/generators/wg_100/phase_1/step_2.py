@@ -26,3 +26,12 @@ def execute(ctx: RunContext) -> typing.Callable:
             yield utils.do_create_account.message(ctx, index, AccountType.USER)
 
     return get_messages
+
+
+def verify(ctx):
+    """Step execution verifier.
+    
+    :param ctx: Generator run contextual information.
+
+    """    
+    return True
