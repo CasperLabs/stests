@@ -31,17 +31,10 @@ def verify_fund_users(ctx: RunContext, dhash: str):
     """Verifies that user accounts are funded.
     
     """
-    _verify_fund_user(ctx, dhash)
-    _verify_deploy_count(ctx, ctx.args.user_accounts)    
-
-
-def _verify_fund_user(ctx: RunContext, dhash: str):
-    """Verifies that a user account was funded.
-    
-    """
     _verify_deploy(ctx, dhash)
     transfer = _verify_transfer(ctx, dhash)
     _verify_account_balance(ctx, transfer.cp2_index, ctx.args.user_initial_clx_balance)
+    _verify_deploy_count(ctx, ctx.args.user_accounts)    
 
 
 def _verify_deploy(ctx: RunContext, dhash: str):
