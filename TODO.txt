@@ -52,3 +52,10 @@
 
 14. verify network & node before runing generator
 
+
+
+I think that we should set the minimum acceptable round exponent to 12-14 (which means 4/8/16 seconds) and the maximum to something around few minutes (round exponent 18-20) and start testing from there.
+6:29
+We also pick the maximum block size (that has to be agreed upon by all validators in the Genesis config).
+6:30
+With that we can start tests with various loads, network conditions, deploy patterns etc. We should be able to extrapolate (with some degree of certainty) how will the disk requirements change when we scale to more validators (assuming they will work within accepted round exponent ranges and chosen block size limit).

@@ -183,3 +183,14 @@ def register_type(cls):
     else:
         DCLASS_MAP[f"{cls.__module__}.{cls.__name__}"] = cls
         DCLASS_SET = DCLASS_SET | { cls, }
+
+
+# Auto-register domain types.
+from stests.core import domain
+for i in domain.TYPE_SET:
+    register_type(i)
+
+# Auto-register generator types.
+from stests import generators
+for i in generators.TYPE_SET:
+    register_type(i)

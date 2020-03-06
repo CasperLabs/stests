@@ -66,6 +66,7 @@ def _complete_run(ctx):
     
     """
     _complete_step(ctx)
+    # TODO: update run context status
 
 
 def _verify(ctx: RunContext, pipeline, actor: dramatiq.Actor, dhash: str) -> bool:

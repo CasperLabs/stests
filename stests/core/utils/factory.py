@@ -239,12 +239,13 @@ def create_run_context(
     )
 
 
-def create_run_step(ctx: RunContext, name: str) -> RunStep:
+def create_step(ctx: RunContext, name: str) -> RunStep:
     """Returns a domain object instance: RunStep.
 
     """
     return RunStep(
         network=ctx.network,
+        pipeline_index=None,
         run=ctx.run,
         run_type=ctx.run_type,
         status=RunStepStatus.IN_PROGRESS,

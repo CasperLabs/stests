@@ -15,6 +15,9 @@ class RunStep(Entity):
     # Associated network.
     network: str
 
+    # Index within the context of a pipeline.
+    pipeline_index: str
+
     # Numerical index to distinguish between multiple runs of the same generator.
     run: int
 

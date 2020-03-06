@@ -34,8 +34,3 @@ IDENTIFIER_SET = {
 
 # Full domain type set.
 TYPE_SET = DCLASS_SET | IDENTIFIER_SET | ENUM_SET
-
-# Register domain types with encoder.
-from stests.core.utils import encoder
-for i in TYPE_SET:
-    encoder.register_type(i)

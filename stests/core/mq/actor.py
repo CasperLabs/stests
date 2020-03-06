@@ -87,7 +87,7 @@ def _set_step(ctx, actor):
     """
     step_name = _get_step(actor)
 
-    step = factory.create_run_step(ctx, step_name)
+    step = factory.create_step(ctx, step_name)
     cache.set_run_step(step)
 
     ctx.run_step = step_name
