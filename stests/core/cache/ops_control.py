@@ -1,7 +1,7 @@
 import random
 import typing
 
-from stests.core.cache.locks import RunStepLock
+from stests.core.cache.locks import *
 from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.ops_infra import get_network
@@ -12,7 +12,7 @@ from stests.core.utils import factory
 
 
 
-@cache_op(StorePartition.RUN, StoreOperation.FLUSH)
+@cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
 def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
     """Flushes network specific monitoring information.
 
@@ -21,16 +21,14 @@ def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
     :returns: A generator of keypaths to be flushed.
     
     """
-    yield ["account", network_id.name, "*"]
     yield ["context", network_id.name, "*"]
-    yield ["deploy", network_id.name, "*"]
+    yield ["lock", network_id.name, "*"]
+    yield ["phase", network_id.name, "*"]
     yield ["step", network_id.name, "*"]
     yield ["step-deploy-count", network_id.name, "*"]
-    yield ["step-lock", network_id.name, "*"]
-    yield ["transfer", network_id.name, "*"]
         
 
-@cache_op(StorePartition.RUN, StoreOperation.FLUSH)
+@cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
 def flush_by_run(ctx: RunContext) -> typing.Generator:
     """Flushes previous run information.
 
@@ -40,61 +38,38 @@ def flush_by_run(ctx: RunContext) -> typing.Generator:
     
     """
     for collection in [
-        "account",
         "context",
-        "deploy",   
+        "phase",
         "step",
         "step-deploy-count",
-        "step-lock",
-        "transfer",
     ]:
         yield [
             collection,
             ctx.network,
             ctx.run_type,
-            f"R-{str(ctx.run).zfill(3)}",
+            f"R-{str(ctx.run_index).zfill(3)}",
             "*"
         ]
 
 
-@cache_op(StorePartition.RUN, StoreOperation.GET)
-def get_account(account_id: AccountIdentifier) -> Account:
-    """Decaches domain object: Account.
+@cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
+def flush_locks(ctx: RunContext) -> typing.Generator:
+    """Flushes previous run locks.
 
-    :param account_id: An account identifier.
+    :param ctx: Generator run contextual information.
 
-    :returns: A cached account.
-
+    :returns: A generator of keypaths to be flushed.
+    
     """
-    run = account_id.run
-
-    return [
-        "account",
-        run.network.name,
-        run.type,
-        f"R-{str(run.index).zfill(3)}",
-        f"{str(account_id.index).zfill(6)}"
+    yield [
+        "lock",
+        ctx.network,
+        ctx.run_type,
+        f"R-{str(ctx.run_index).zfill(3)}*",
     ]
 
 
-def get_account_by_run(ctx: RunContext, index: int) -> Account:
-    """Decaches domain object: Account.
-    
-    :param ctx: Generator run contextual information.
-    :param index: Run specific account index. 
-
-    :returns: A cached account.
-
-    """
-    return get_account(factory.create_account_id(
-        index,
-        ctx.network,
-        ctx.run,
-        ctx.run_type
-        ))
-
-
-@cache_op(StorePartition.RUN, StoreOperation.GET)
+@cache_op(StorePartition.CONTROL, StoreOperation.GET)
 def get_context(network: str, run_index: int, run_type: str) -> RunContext:
     """Decaches domain object: RunContext.
     
@@ -113,7 +88,7 @@ def get_context(network: str, run_index: int, run_type: str) -> RunContext:
     ]
 
 
-@cache_op(StorePartition.RUN, StoreOperation.GET)
+@cache_op(StorePartition.CONTROL, StoreOperation.GET)
 def get_contexts(network: str, run_type: str) -> RunContext:
     """Decaches domain object: RunContext.
     
@@ -129,31 +104,6 @@ def get_contexts(network: str, run_type: str) -> RunContext:
         "*"
     ]
 
-def get_run_deploy(dhash: str) -> Deploy:
-    """Decaches domain object: Deploy.
-    
-    :param dhash: A deploy hash.
-
-    :returns: A run deploy.
-
-    """    
-    deploys = get_run_deploys(dhash)
-
-    return deploys[-1] if deploys else None
-
-
-@cache_op(StorePartition.RUN, StoreOperation.GET)
-def get_run_deploys(dhash: str) -> typing.List[Deploy]:
-    """Decaches collection of domain objects: Deploy.
-    
-    :param dhash: A deploy hash.
-
-    :returns: List of matching deploys.
-
-    """    
-    return [f"deploy*{dhash}*"]
-
-
 def get_run_network(ctx: RunContext) -> Network:
     """Decaches domain object: Network.
     
@@ -165,31 +115,6 @@ def get_run_network(ctx: RunContext) -> Network:
     network_id = factory.create_network_id(ctx.network)
 
     return get_network(network_id)
-
-
-def get_run_transfer(dhash: str) -> Transfer:
-    """Decaches domain object: Transfer.
-    
-    :param dhash: A deploy hash.
-
-    :returns: A run deploy.
-
-    """    
-    transfers = get_run_transfers(dhash)
-
-    return transfers[-1] if transfers else None
-
-
-@cache_op(StorePartition.RUN, StoreOperation.GET)
-def get_run_transfers(dhash: str) -> typing.List[Transfer]:
-    """Decaches collection of domain objects: Transfer.
-    
-    :param dhash: A deploy hash.
-
-    :returns: Matched transfers.
-
-    """    
-    return [f"transfer*{dhash}*"]
 
 
 def get_step(ctx: RunContext) -> RunStep:
@@ -206,7 +131,7 @@ def get_step(ctx: RunContext) -> RunStep:
     return steps[-1] if steps else None
 
 
-@cache_op(StorePartition.RUN, StoreOperation.GET)
+@cache_op(StorePartition.CONTROL, StoreOperation.GET)
 def get_steps(ctx: RunContext) -> typing.List[RunStep]:
     """Decaches collection of domain objects: RunStep.
 
@@ -224,7 +149,7 @@ def get_steps(ctx: RunContext) -> typing.List[RunStep]:
         ]
         
 
-@cache_op(StorePartition.RUN, StoreOperation.GET_COUNT)
+@cache_op(StorePartition.CONTROL, StoreOperation.GET_COUNT)
 def get_step_deploy_count(ctx: RunContext) -> int:
     """Reurns current count of run step deploys.
 
@@ -240,7 +165,7 @@ def get_step_deploy_count(ctx: RunContext) -> int:
     ]
 
 
-@cache_op(StorePartition.RUN, StoreOperation.INCR)
+@cache_op(StorePartition.CONTROL, StoreOperation.INCR)
 def increment_step_deploy_count(ctx: RunContext):
     """Increments (atomically) count of run step deploys.
 
@@ -256,43 +181,78 @@ def increment_step_deploy_count(ctx: RunContext):
     ]
 
 
-@cache_op(StorePartition.RUN, StoreOperation.LOCK)
-def lock_run_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLock]:
+@cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
+def lock_run(lock: RunLock) -> typing.Tuple[typing.List[str], RunLock]:
+    """Encaches a lock: RunLock.
+
+    :param lock: Information to be locked.
+
+    """
+    return [
+        "lock",
+        lock.network,
+        lock.run_type,
+        lock.run_index_label
+    ], lock
+
+
+@cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
+def lock_phase(lock: RunPhaseLock) -> typing.Tuple[typing.List[str], RunPhaseLock]:
+    """Encaches a lock: RunPhaseLock.
+
+    :param lock: Information to be locked.
+
+    """
+    return [
+        "lock",
+        lock.network,
+        lock.run_type,
+        f"{lock.run_index_label}.{lock.phase_index_label}",
+    ], lock
+
+
+@cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
+def lock_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLock]:
     """Encaches a lock: RunStepLock.
 
     :param lock: Information to be locked.
 
-    :returns: A cached account.
-
     """
     return [
-        "step-lock",
+        "lock",
         lock.network,
         lock.run_type,
-        f"R-{str(lock.run_index).zfill(3)}",
-        lock.step
+        f"{lock.run_index_label}.{lock.phase_index_label}.{lock.step_index_label}",
     ], lock
 
 
-@cache_op(StorePartition.RUN, StoreOperation.SET)
-def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
-    """Encaches domain object: Account.
+@cache_op(StorePartition.CONTROL, StoreOperation.SET)
+def set_state(state: typing.Union[RunContextState, RunPhaseState, RunStepState]) -> typing.Tuple[typing.List[str], typing.Union[RunContextState, RunPhaseState, RunStepState]]:
+    """Encaches domain object: RunContextState.
     
-    :param account: Account domain object instance to be cached.
+    :param ctx: Generator run contextual information.
 
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        "account",
-        account.network,
-        account.run_type,
-        f"R-{str(account.run).zfill(3)}",
-        str(account.index).zfill(6)
-    ], account    
+    keypath = [
+            "state",
+            state.network,
+            state.run_type
+        ]
+    if isinstance(state, RunContextState):
+        keypath.append(state.run_index_label)
+    elif isinstance(state, RunPhaseState):
+        keypath.append(f"{state.run_index_label}.{state.phase_index_label}")
+    elif isinstance(state, RunStepState):
+        keypath.append(f"{state.run_index_label}.{state.phase_index_label}.{state.step_index_label}")
+    else:
+        raise TypeError()
+
+    return keypath, state    
 
 
-@cache_op(StorePartition.RUN, StoreOperation.SET)
+@cache_op(StorePartition.CONTROL, StoreOperation.SET)
 def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContext]:
     """Encaches domain object: RunContext.
     
@@ -309,25 +269,7 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
     ], ctx
 
 
-@cache_op(StorePartition.RUN, StoreOperation.SET)
-def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
-    """Encaches domain object: Deploy.
-    
-    :param deploy: Deploy domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "deploy",
-        deploy.network,
-        deploy.run_type,
-        f"R-{str(deploy.run).zfill(3)}",
-        f"{str(deploy.dispatch_ts.timestamp())}.{deploy.deploy_hash}"
-    ], deploy
-
-
-@cache_op(StorePartition.RUN, StoreOperation.SET)
+@cache_op(StorePartition.CONTROL, StoreOperation.SET)
 def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
     """Encaches domain object: RunStep.
     
@@ -340,25 +282,7 @@ def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
         "step",
         step.network,
         step.run_type,
-        f"R-{str(step.run).zfill(3)}",
+        f"R-{str(step.run_index).zfill(3)}",
         step.step
     ], step
 
-
-@cache_op(StorePartition.RUN, StoreOperation.SET)
-def set_run_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
-    """Encaches domain object: Transfer.
-    
-    :param transfer: Transfer domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "transfer",
-        transfer.network,
-        transfer.run_type,
-        f"R-{str(transfer.run).zfill(3)}",
-        transfer.asset.lower(),
-        transfer.deploy_hash
-    ], transfer

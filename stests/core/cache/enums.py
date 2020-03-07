@@ -20,6 +20,7 @@ class StorePartition(enum.Enum):
     """Enumeration over set of types of store partition.
     
     """
+    CONTROL = enum.auto()
     INFRA = enum.auto()
-    RUN = enum.auto()
     MONITORING = enum.auto()
+    STATE = enum.auto()

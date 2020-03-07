@@ -149,7 +149,7 @@ def encode(data: typing.Any) -> typing.Any:
     if type(data) in ENUM_TYPE_SET:
         return data.name
 
-    logger.log_warning(f"Encoding an unrecognized data type: {data}")
+    logger.log_warning(f"CORE :: Encoding an unrecognized data type: {data}")
 
     return data
 
@@ -185,12 +185,26 @@ def register_type(cls):
         DCLASS_SET = DCLASS_SET | { cls, }
 
 
-# Auto-register domain types.
-from stests.core import domain
-for i in domain.TYPE_SET:
-    register_type(i)
+def _initialise():
+    """Register the set of types that require encoding/decoding.
+    
+    """
+    from stests.core import domain
+    for i in domain.TYPE_SET:
+        register_type(i)
 
-# Auto-register generator types.
-from stests import generators
-for i in generators.TYPE_SET:
-    register_type(i)
+
+def initialise():
+    """Register the set of types that require encoding/decoding.
+    
+    """
+    from stests.generators.meta import GENERATOR_SET
+    for generator in GENERATOR_SET:
+        for i in generator.TYPE_SET:
+            register_type(i)
+
+    logger.log("CORE :: encoder has been initialised")
+
+
+# Initialise core types.
+_initialise()

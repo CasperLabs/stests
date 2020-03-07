@@ -6,6 +6,7 @@ from stests.core.domain.identifiers import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
 from stests.core.domain.run_context import *
+from stests.core.domain.run_phase import *
 from stests.core.domain.run_step import *
 from stests.core.domain.transfer import *
 
@@ -13,15 +14,21 @@ from stests.core.domain.transfer import *
 
 # Set of supported classes.
 DCLASS_SET = {
-    Account,
-    Transfer,
-    Block,
-    Deploy,
+    # infra entities
     Network,
     Node,
-    RunContext,
-    RunStep,
+    # chain entities
+    Account,
+    Block,
+    Deploy,
     Transfer,
+    # control entities
+    RunContext,
+    RunContextState,
+    RunPhase,
+    RunPhaseState,
+    RunStep,
+    RunStepState,
 }
 
 # Set of supported identifiers.

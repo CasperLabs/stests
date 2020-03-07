@@ -1,7 +1,5 @@
 import argparse
 
-from stests.core import cache
-from stests.core import mq
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -10,12 +8,13 @@ from stests.generators.wg_100 import constants
 from stests.generators.wg_100.args import Arguments
 
 
+
 # Set command line arguments.
 ARGS = argparse.ArgumentParser(f"Executes {constants.DESCRIPTION} workflow.")
 
 # CLI argument: network name.
 ARGS.add_argument(
-    "network",
+    "network_name",
     help="Network name {type}{id}, e.g. lrt1.",
     type=args_validator.validate_network
     )
@@ -23,7 +22,7 @@ ARGS.add_argument(
 # CLI argument: scope -> node index.
 ARGS.add_argument(
     "--node",
-    dest="node",
+    dest="node_index",
     help="Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.",
     type=args_validator.validate_node_index,
     default=0,
@@ -33,7 +32,7 @@ ARGS.add_argument(
 # CLI argument: scope -> run index.
 ARGS.add_argument(
     "--run",
-    dest="run",
+    dest="run_index",
     help="Generator run index - must be between 1 and 65536.",
     type=args_validator.validate_run_index,
     default=1
@@ -108,33 +107,24 @@ def main(args: argparse.Namespace):
     """Entry point.
     
     """
+    # Import initialiser to setup upstream services / actors.
+    import stests.initialiser
+
     # Set run context.
-    network_id = factory.create_network_id(args.network)
-    node_id = factory.create_node_id(network_id, args.node)
+    network_id = factory.create_network_id(args.network_name)
+    node_id = factory.create_node_id(network_id, args.node_index)
     ctx = factory.create_run_context(
         args=Arguments.create(args),
         network_id=network_id,
         node_id=node_id,
-        run=args.run,
+        run_index=args.run_index,
         run_type=constants.TYPE
     )
 
-    # Reset cache.
-    cache.flush_by_run(ctx)
-
-    # Initialise broker.
-    mq.initialise()
-
-    # Import actors.
-    import stests.monitoring.chain    
-    import stests.monitoring.correlator    
-    import stests.generators.wg_100.phase_1
-    import stests.generators.wg_100.phase_2
-
     # Start workflow.
-    logger.log("... workload generator begins")
-    from stests.generators.wg_100.pipeline import PIPELINE
-    PIPELINE[0].send(ctx)
+    from stests.orchestration.actors import do_run
+    do_run.send(ctx)
+    logger.log("WG-100 :: generator executed")
 
 
 # Invoke entry point.

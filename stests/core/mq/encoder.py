@@ -27,3 +27,11 @@ def decode(data: bytes) -> MessageData:
 
     """
     return _encoder.from_json(data.decode("utf-8"))
+
+
+
+def initialise():
+    """Initialises encoder to ensure all types are regsitered.
+
+    """
+    _encoder.initialise()

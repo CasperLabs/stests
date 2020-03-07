@@ -4,10 +4,10 @@ from stests.generators.wg_100 import constants
 
 
 # Step description.
-DESCRIPTION = "Initialises cache"
+DESCRIPTION = "Deploys ERC-20 contract"
 
 # Step label.
-LABEL = "init-cache"
+LABEL = "deploy-contract"
 
 
 def execute(ctx: RunContext):

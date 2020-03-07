@@ -1,3 +1,5 @@
+import dramatiq
+
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
@@ -14,7 +16,11 @@ from stests.core.utils import factory
 ACC_NETWORK_FAUCET = 0
 
 
-@actorify(is_substep=True)
+# Queue to which messages will be dispatched.
+_QUEUE = "wg-100.utils"
+
+
+@dramatiq.actor(queue_name=_QUEUE)
 def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     """Creates an account for use during the course of a simulation.
 
@@ -27,7 +33,7 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
     cache.set_run_account(account)
 
 
-@actorify(is_substep=True)
+@dramatiq.actor(queue_name=_QUEUE)
 def do_fund_account(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 

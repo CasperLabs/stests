@@ -99,7 +99,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     cache.set_run_deploy(deploy)
 
     # Increment run step deploy count.
-    ctx = cache.get_context(deploy.network, deploy.run, deploy.run_type)
+    ctx = cache.get_context(deploy.network, deploy.run_index, deploy.run_type)
     cache.increment_step_deploy_count(ctx)
 
     # Update run transfer.

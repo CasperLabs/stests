@@ -89,9 +89,7 @@ function _exec_generator()
 
 
     # Execute generator.
-    log "workload generator WG-"$g_type
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
-    log "... execution complete"
 }
 
 # WG-100: ERC-20 auction.

@@ -7,7 +7,7 @@ import dramatiq
 from stests.core import cache
 from stests.core.utils import logger
 from stests.core.domain import RunContext
-from stests.core.domain import RunStepStatus
+from stests.core.domain import ExecutionStatus
 from stests.generators.wg_100 import pipeline as wg_100_pipeline
 
 

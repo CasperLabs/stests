@@ -25,7 +25,7 @@ def create_account(
         node=None,
         private_key=private_key,
         public_key=public_key,
-        run=None,
+        run_index=None,
         run_type=None,
         status=status or AccountStatus.NEW,
         typeof=typeof
@@ -45,8 +45,8 @@ def create_account_for_run(
     """
     account = create_account(typeof, index, private_key, public_key, status)
     account.network = ctx.network
-    account.node = ctx.node
-    account.run = ctx.run
+    account.node = ctx.node_index
+    account.run_index = ctx.run_index
     account.run_type = ctx.run_type
 
     return account
@@ -118,7 +118,7 @@ def create_deploy(
         finalization_time_tolerance=None,
         finalization_ts=datetime.now() if status == DeployStatus.FINALIZED else None,
         network=network_id.name,
-        run=None,
+        run_index=None,
         run_type=None,
         status=status,
         typeof=DeployType.NULL,    
@@ -144,7 +144,7 @@ def create_deploy_for_run(
         finalization_time_tolerance=None,
         finalization_ts=None,
         network=ctx.network,
-        run=ctx.run,
+        run_index=ctx.run_index,
         run_type=ctx.run_type,        
         status=DeployStatus.DISPATCHED,
         typeof=typeof
@@ -223,7 +223,7 @@ def create_run_context(
     args: typing.Any,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
-    run: int,
+    run_index: int,
     run_type: str
     ) -> RunContext:
     """Returns a domain object instance: RunContext.
@@ -232,10 +232,13 @@ def create_run_context(
     return RunContext(
         args=args,
         network=network_id.name,
-        node=node_id.index,
-        run=run,
-        run_step=None,
-        run_type=run_type
+        node_index=node_id.index,
+        run_index=run_index,
+        run_type=run_type,
+        phase_index=None,
+        step_index=None,
+        # TODO: remove
+        run_step=None
     )
 
 
@@ -246,13 +249,34 @@ def create_step(ctx: RunContext, name: str) -> RunStep:
     return RunStep(
         network=ctx.network,
         pipeline_index=None,
-        run=ctx.run,
+        run_index=ctx.run_index,
         run_type=ctx.run_type,
-        status=RunStepStatus.IN_PROGRESS,
+        status=ExecutionStatus.IN_PROGRESS,
         step=name,
         step_duration=None,
         ts_start=datetime.now(),
         ts_end=None,
+    )
+
+
+def create_run_phase(
+    network_id: NetworkIdentifier,
+    run_index: int,
+    run_type: str,
+    phase_index: int
+    ) -> RunPhase:
+    """Returns a domain object instance: RunPhase.
+    
+    """
+    return RunPhase(
+        network=network_id.name,
+        phase_index=phase_index,
+        run_index=run_index,
+        run_type=run_type,
+        status=ExecutionStatus.IN_PROGRESS,
+        ts_duration=None,
+        ts_start=datetime.now(),
+        ts_end=None
     )
 
 
@@ -289,8 +313,8 @@ def create_transfer(
         deploy_hash_refund=None,
         is_refundable=is_refundable,
         network=ctx.network,
-        node=ctx.node,
-        run=ctx.run,
+        node=ctx.node_index,
+        run_index=ctx.run_index,
         run_type=ctx.run_type,
         status=status
     )

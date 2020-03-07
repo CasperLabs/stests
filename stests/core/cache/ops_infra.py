@@ -106,12 +106,12 @@ def get_node_by_run_context(ctx: RunContext) -> Node:
         raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
     
     # Select random if node index unspecified.
-    if ctx.node <= 0 or ctx.node is None:
+    if ctx.node_index <= 0 or ctx.node_index is None:
         return random.choice(nodeset)
 
     # Select specific with fallback to random.
     try:
-        return nodeset[ctx.node - 1]
+        return nodeset[ctx.node_index - 1]
     except IndexError:
         return random.choice(nodeset)
 

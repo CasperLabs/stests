@@ -52,8 +52,8 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
 
                 elif operation == StoreOperation.LOCK:
                     keypath, data = func(*args, **kwargs)
-                    data = dataclasses.asdict(data)
                     key = ":".join([str(i) for i in keypath])
+                    data = dataclasses.asdict(data)
                     return key, _setnx(store, key, data)
 
                 elif operation == StoreOperation.SET:

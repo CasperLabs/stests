@@ -13,6 +13,7 @@ DESCRIPTION = "Creates run accounts"
 LABEL = "create-accounts"
 
 
+
 def execute(ctx: RunContext) -> typing.Callable:
     """Step entry point.
     
@@ -22,7 +23,7 @@ def execute(ctx: RunContext) -> typing.Callable:
     def get_messages():
         yield utils.do_create_account.message(ctx, constants.ACC_RUN_FAUCET, AccountType.FAUCET)
         yield utils.do_create_account.message(ctx, constants.ACC_RUN_CONTRACT, AccountType.CONTRACT)
-        for index in range(ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        for index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
             yield utils.do_create_account.message(ctx, index, AccountType.USER)
 
     return get_messages

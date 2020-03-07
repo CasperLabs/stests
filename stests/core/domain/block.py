@@ -51,12 +51,6 @@ class Block(Entity):
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
-    # Timestamp: update.
-    _ts_updated: typing.Optional[datetime] = None
-
-    # Universally unique identifier.
-    _uid: str = get_uuid_field() 
-
 
     def update_on_finalization(self):
         """Executed when block has been finalized.

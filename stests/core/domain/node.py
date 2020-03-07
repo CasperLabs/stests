@@ -40,12 +40,6 @@ class Node(Entity):
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
-    # Timestamp: update.
-    _ts_updated: typing.Optional[datetime] = None
-
-    # Universally unique identifier.
-    _uid: str = get_uuid_field() 
-
     @property
     def is_operational(self):
         return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)

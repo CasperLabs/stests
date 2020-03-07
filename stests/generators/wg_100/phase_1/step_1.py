@@ -12,10 +12,11 @@ DESCRIPTION = "Initialises cache"
 LABEL = "init-cache"
 
 
+
 def execute(ctx: RunContext):   
     """Step entry point.
     
     :param ctx: Generator run contextual information.
 
     """
-    cache.set_run_context(ctx)
+    pass

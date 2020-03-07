@@ -2,6 +2,7 @@ import typing
 from dataclasses import dataclass
 
 from stests.core.utils.domain import *
+from stests.core.domain.enums import ExecutionStatus
 
 
 
@@ -17,15 +18,22 @@ class RunContext(Entity):
     network: str
 
     # Associated node index.
-    node: int
+    node_index: int
 
-    # Numerical index to distinguish between multiple runs of the same generator.
-    run: int
+    # Numerical index to distinguish between multiple runs.
+    run_index: int
 
-    # Type of generator, e.g. WG-100 ...etc.
+    # Type of run, e.g. WG-100 ...etc.
     run_type: str
 
-    # Current run step.
+    # Index to disambiguate a phase within the context of a run.
+    phase_index: typing.Optional[int]
+
+    # Index to disambiguate a step within the context of a phase.
+    step_index: typing.Optional[int]
+
+    # Current step.
+    # TODO: remove
     run_step: typing.Optional[str]
 
     # Type key of associated object used in serialisation scenarios.
@@ -34,12 +42,43 @@ class RunContext(Entity):
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
-    # Timestamp: update.
-    _ts_updated: typing.Optional[datetime] = None
-
-    # Universally unique identifier.
-    _uid: str = get_uuid_field() 
+    @property
+    def run_index_label(self):
+        return f"R-{str(self.run_index).zfill(3)}"
 
     @property
-    def run_index(self):
-        return self.run
+    def phase_index_label(self):
+        return f"P-{str(self.phase_index).zfill(2)}"
+
+    @property
+    def step_index_label(self):
+        return f"S-{str(self.step_index).zfill(2)}"
+
+
+
+@dataclass
+class RunContextState(Entity):
+    """State information associated with a run.
+    
+    """
+    # Associated network.
+    network: str
+
+    # Numerical index to distinguish between multiple runs.
+    run_index: int
+
+    # Type of run, e.g. WG-100 ...etc.
+    run_type: str
+
+    # Execution status.
+    status: ExecutionStatus
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None
+
+    # Timestamp: create.
+    _ts_created: datetime = get_timestamp_field()
+
+    @property
+    def run_index_label(self):
+        return f"R-{str(self.run_index).zfill(3)}"

@@ -8,7 +8,7 @@ from stests.core import cache
 from stests.core.utils import encoder
 from stests.core.utils import factory
 from stests.core.utils import logger
-from stests.core.domain import RunStepStatus
+from stests.core.domain import ExecutionStatus
 from stests.core.cache import RunStepLock
 
 
@@ -74,7 +74,7 @@ def _can_step(ctx, actor):
         run_type=ctx.run_type,
         step=step
     )
-    _, acquired = cache.lock_run_step(lock)
+    _, acquired = cache.control.lock_step(lock)
     if not acquired:
         logger.log_warning(f"unacquired actor lock: {ctx.run_type} :: {step}")
 
