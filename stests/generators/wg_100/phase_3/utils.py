@@ -36,8 +36,8 @@ def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
     (deploy, refund) = clx.do_refund(ctx, cp1, cp2)
 
     # Update cache.
-    cache.set_run_deploy(deploy)
-    cache.set_run_transfer(refund)
+    cache.state.set_run_deploy(deploy)
+    cache.state.set_run_transfer(refund)
 
 
 def verify_deploy(ctx: ExecutionRunInfo, dhash: str):

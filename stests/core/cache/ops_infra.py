@@ -163,7 +163,7 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
-def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
+def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     """Encaches domain object: Node.
     
     :param node: Node domain object instance to be cached.

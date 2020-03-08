@@ -59,8 +59,8 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
     block = clx.get_block(node_id.network, bhash)
     block.update_on_finalization()
 
-    # Encache - skip duplicates.
-    _, encached = cache.set_block(block)  
+    # Encache - skip duplicates.    
+    _, encached = cache.monitoring.set_block(block)  
     if not encached:
         return
 
@@ -83,7 +83,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     deploy = factory.create_deploy(network_id, bhash, dhash, DeployStatus.FINALIZED)
 
     # Encache - skip duplicates.
-    _, encached = cache.set_deploy(deploy)
+    _, encached = cache.monitoring.set_deploy(deploy)
     if not encached:
         return
 
@@ -95,7 +95,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
 
     # Update deploy.
     deploy.update_on_finalization(bhash, finalization_ts)
-    cache.set_run_deploy(deploy)
+    cache.state.set_run_deploy(deploy)
 
     # Increment step deploy count.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
@@ -105,7 +105,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     transfer = cache.state.get_run_transfer(dhash)
     if transfer:
         transfer.update_on_completion()
-        cache.set_run_transfer(transfer)
+        cache.state.set_run_transfer(transfer)
     
     # Signal to orchestrator.
     on_step_deploy_finalized.send(ctx, dhash)

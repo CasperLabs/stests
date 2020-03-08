@@ -52,7 +52,7 @@ def main(args):
     )
 
     # Push.
-    cache.set_network(network)
+    cache.infra.set_network(network)
 
     # Inform.
     logger.log(f"Network {args.network} faucet key was successfully registered")

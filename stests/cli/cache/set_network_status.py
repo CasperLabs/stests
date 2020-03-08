@@ -42,7 +42,7 @@ def main(args):
     network.status = NetworkStatus[args.status.upper()]
 
     # Push.
-    cache.set_network(network)
+    cache.infra.set_network(network)
 
     # Notify.
     logger.log(f"Network {args.network} status was updated --> {network.status}")

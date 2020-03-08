@@ -56,7 +56,7 @@ def main(args):
     )
 
     # Push.
-    cache.set_network_node(node)
+    cache.infra.set_node(node)
 
     # Inform.
     logger.log(f"Node {args.node} bonding key was successfully registered")

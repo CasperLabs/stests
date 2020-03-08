@@ -46,7 +46,7 @@ def main(args):
     node.status = NodeStatus[args.status.upper()]
 
     # Push.
-    cache.set_network_node(node)
+    cache.infra.set_node(node)
 
     # Notify.
     logger.log(f"Node {args.node} status was updated --> {node.status}")

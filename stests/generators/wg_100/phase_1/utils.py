@@ -29,7 +29,7 @@ def do_create_account(ctx: ExecutionRunInfo, index: int, typeof: AccountType):
 
     """
     account = factory.create_account_for_run(ctx, index=index, typeof=typeof)
-    cache.set_run_account(account)
+    cache.state.set_run_account(account)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -56,8 +56,8 @@ def do_fund_account(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int, motes
     (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
 
     # Update cache.
-    cache.set_run_deploy(deploy)
-    cache.set_run_transfer(transfer)
+    cache.state.set_run_deploy(deploy)
+    cache.state.set_run_transfer(transfer)
 
 
 
