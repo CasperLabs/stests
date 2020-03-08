@@ -1,11 +1,4 @@
-from stests.core.domain import ExecutionRunInfo
-from stests.core.domain import ExecutionPhaseLock
-from stests.core.domain import ExecutionPhaseState
-from stests.core.domain import ExecutionRunLock
-from stests.core.domain import ExecutionRunState
-from stests.core.domain import ExecutionStatus
-from stests.core.domain import ExecutionStepLock
-from stests.core.domain import ExecutionStepState
+from stests.core.orchestration import *
 
 
 

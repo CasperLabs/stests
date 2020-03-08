@@ -5,33 +5,18 @@ from stests.core.domain.enums import *
 from stests.core.domain.identifiers import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
-from stests.core.domain.execution_phase import *
-from stests.core.domain.execution_run import *
-from stests.core.domain.execution_step import *
 from stests.core.domain.transfer import *
 
 
 
 # Set of supported classes.
 DCLASS_SET = {
-    # infra entities
-    Network,
-    Node,
-    # chain entities
     Account,
     Block,
     Deploy,
+    Network,
+    Node,
     Transfer,
-    # control entities
-    ExecutionPhaseInfo,
-    ExecutionPhaseLock,
-    ExecutionPhaseState,
-    ExecutionRunInfo,
-    ExecutionRunLock,
-    ExecutionRunState,
-    ExecutionStepInfo,
-    ExecutionStepLock,
-    ExecutionStepState,
 }
 
 # Set of supported identifiers.

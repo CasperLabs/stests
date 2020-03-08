@@ -1,5 +1,5 @@
 from stests.core.domain import NetworkIdentifier
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 
 from stests.core.cache.ops_control import *
 from stests.core.cache.ops_infra import *

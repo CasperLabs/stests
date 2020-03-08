@@ -1,7 +1,7 @@
 import typing
 
 from stests.core import cache
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.utils import logger
 from stests.orchestration import factory
 from stests.orchestration.model import Workflow

@@ -1,7 +1,7 @@
 import typing
 
 from stests.core import cache
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.generators.wg_100.constants import *
 
 

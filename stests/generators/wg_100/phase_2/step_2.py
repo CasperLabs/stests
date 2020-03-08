@@ -1,4 +1,4 @@
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.utils import resources
 from stests.generators.wg_100 import constants
 

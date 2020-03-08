@@ -2,7 +2,7 @@ import typing
 from dataclasses import dataclass
 from datetime import datetime
 
-from stests.core.domain.enums import ExecutionStatus
+from stests.core.orchestration.enums import ExecutionStatus
 from stests.core.utils.domain import *
 
 

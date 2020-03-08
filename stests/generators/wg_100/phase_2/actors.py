@@ -1,6 +1,6 @@
 from stests.core import cache
 from stests.core import clx
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.mq.actor import actorify
 from stests.core.utils import resources
 from stests.generators.wg_100 import constants

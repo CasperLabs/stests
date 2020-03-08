@@ -7,7 +7,7 @@ from stests.core.domain import Account
 from stests.core.domain import Block
 from stests.core.domain import BlockStatus
 from stests.core.domain import NetworkIdentifier
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.utils import factory
 
 

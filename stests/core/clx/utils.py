@@ -6,7 +6,7 @@ from stests.core import cache
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.utils import logger
 
 

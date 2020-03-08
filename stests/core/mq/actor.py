@@ -8,7 +8,7 @@ from stests.core import cache
 from stests.core.utils import encoder
 from stests.core.utils import factory
 from stests.core.utils import logger
-from stests.core.domain import ExecutionStatus
+from stests.core.orchestration import ExecutionStatus
 from stests.core.cache import ExecutionStepLock
 
 

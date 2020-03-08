@@ -4,7 +4,7 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.domain import Account
 from stests.core.domain import AccountType
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.mq.actor import actorify
 from stests.core.utils import factory
 from stests.core.utils import logger

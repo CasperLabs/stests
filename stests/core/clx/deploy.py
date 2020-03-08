@@ -9,7 +9,7 @@ from stests.core.domain import Transfer
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import DeployType
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.utils import factory
 from stests.core.utils import logger
 

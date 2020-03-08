@@ -49,16 +49,6 @@ class DeployType(enum.Flag):
     NULL = enum.auto()
     TRANSFER = enum.auto()
     REFUND = enum.auto()
-
-
-class ExecutionStatus(enum.Flag):
-    """Flag over set of execution states.
-    
-    """
-    NULL = enum.auto()
-    IN_PROGRESS = enum.auto()
-    COMPLETE = enum.auto()
-    ERROR = enum.auto()
     
 
 class NetworkStatus(enum.Flag):
@@ -130,6 +120,5 @@ ENUM_SET = {
     NetworkType,
     NodeStatus,
     NodeType,
-    ExecutionStatus,
     TransferStatus,
 }

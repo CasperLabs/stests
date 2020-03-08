@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionRunInfo
 from stests.generators.meta import GENERATOR_MAP as MODULES
 
 

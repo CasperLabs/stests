@@ -3,8 +3,8 @@ import inspect
 import dramatiq
 
 from stests.core import cache
-from stests.core.domain import ExecutionStatus
-from stests.core.domain import ExecutionRunInfo
+from stests.core.orchestration import ExecutionStatus
+from stests.core.orchestration import ExecutionRunInfo
 from stests.core.utils import logger
 
 from stests.orchestration.model import Workflow
