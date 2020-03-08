@@ -25,9 +25,9 @@ DCLASS_SET = {
     # control entities
     RunContext,
     ExecutionRunState,
-    RunPhase,
+    ExecutionPhaseInfo,
     ExecutionPhaseState,
-    RunStep,
+    ExecutionStepInfo,
     ExecutionStepState,
 }
 

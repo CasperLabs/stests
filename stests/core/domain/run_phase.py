@@ -8,7 +8,7 @@ from stests.core.utils.domain import *
 
 
 @dataclass
-class RunPhase(Entity):
+class ExecutionPhaseInfo(Entity):
     """Phase information associated with a workflow.
     
     """
@@ -88,7 +88,6 @@ class RunPhase(Entity):
         self.status = ExecutionStatus.COMPLETE
         self.ts_end = datetime.now()
         self.ts_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
-
 
 
 @dataclass

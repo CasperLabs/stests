@@ -117,8 +117,8 @@ def get_run_network(ctx: RunContext) -> Network:
     return get_network(network_id)
 
 
-def get_step(ctx: RunContext) -> RunStep:
-    """Decaches domain object: RunStep.
+def get_step(ctx: RunContext) -> ExecutionStepInfo:
+    """Decaches domain object: ExecutionStepInfo.
     
     :param ctx: Generator run contextual information.
 
@@ -132,8 +132,8 @@ def get_step(ctx: RunContext) -> RunStep:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.GET)
-def get_steps(ctx: RunContext) -> typing.List[RunStep]:
-    """Decaches collection of domain objects: RunStep.
+def get_steps(ctx: RunContext) -> typing.List[ExecutionStepInfo]:
+    """Decaches collection of domain objects: ExecutionStepInfo.
 
     :param ctx: Generator run contextual information.
 
@@ -272,10 +272,10 @@ def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContex
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.SET)
-def set_run_step(step: RunStep) -> typing.Tuple[typing.List[str], RunStep]:
-    """Encaches domain object: RunStep.
+def set_run_step(step: ExecutionStepInfo) -> typing.Tuple[typing.List[str], ExecutionStepInfo]:
+    """Encaches domain object: ExecutionStepInfo.
     
-    :param evt: RunStep domain object instance to be cached.
+    :param evt: ExecutionStepInfo domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 

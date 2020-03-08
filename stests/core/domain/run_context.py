@@ -64,7 +64,6 @@ class RunContext(Entity):
         return f"S-{str(self.step_index).zfill(2)}"
 
 
-
 @dataclass
 class ExecutionRunState(Entity):
     """Execution state information - run.

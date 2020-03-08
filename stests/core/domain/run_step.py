@@ -8,7 +8,7 @@ from stests.core.utils.domain import *
 
 
 @dataclass
-class RunStep(Entity):
+class ExecutionStepInfo(Entity):
     """Step information associated with a generator run.
     
     """

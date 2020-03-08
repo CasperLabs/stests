@@ -247,11 +247,11 @@ def create_run_context(
     )
 
 
-def create_step(ctx: RunContext, name: str) -> RunStep:
-    """Returns a domain object instance: RunStep.
+def create_step(ctx: RunContext, name: str) -> ExecutionStepInfo:
+    """Returns a domain object instance: ExecutionStepInfo.
 
     """
-    return RunStep(
+    return ExecutionStepInfo(
         network=ctx.network,
         pipeline_index=None,
         run_index=ctx.run_index,
@@ -269,11 +269,11 @@ def create_run_phase(
     run_index: int,
     run_type: str,
     phase_index: int
-    ) -> RunPhase:
-    """Returns a domain object instance: RunPhase.
+    ) -> ExecutionPhaseInfo:
+    """Returns a domain object instance: ExecutionPhaseInfo.
     
     """
-    return RunPhase(
+    return ExecutionPhaseInfo(
         network=network_id.name,
         phase_index=phase_index,
         run_index=run_index,
