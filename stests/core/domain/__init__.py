@@ -24,10 +24,13 @@ DCLASS_SET = {
     Transfer,
     # control entities
     ExecutionPhaseInfo,
+    ExecutionPhaseLock,
     ExecutionPhaseState,
     ExecutionRunInfo,
+    ExecutionRunLock,
     ExecutionRunState,
     ExecutionStepInfo,
+    ExecutionStepLock,
     ExecutionStepState,
 }
 
