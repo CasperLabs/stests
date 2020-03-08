@@ -1,7 +1,6 @@
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import RunContext
 
-from stests.core.cache.locks import *
 from stests.core.cache.ops_control import *
 from stests.core.cache.ops_infra import *
 from stests.core.cache.ops_monitoring import *

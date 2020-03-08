@@ -5,9 +5,9 @@ from stests.core.domain.enums import *
 from stests.core.domain.identifiers import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
-from stests.core.domain.run_context import *
-from stests.core.domain.run_phase import *
-from stests.core.domain.run_step import *
+from stests.core.domain.execution_phase import *
+from stests.core.domain.execution_run import *
+from stests.core.domain.execution_step import *
 from stests.core.domain.transfer import *
 
 
@@ -23,10 +23,10 @@ DCLASS_SET = {
     Deploy,
     Transfer,
     # control entities
-    RunContext,
-    ExecutionRunState,
     ExecutionPhaseInfo,
     ExecutionPhaseState,
+    RunContext,
+    ExecutionRunState,
     ExecutionStepInfo,
     ExecutionStepState,
 }

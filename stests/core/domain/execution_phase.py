@@ -91,6 +91,32 @@ class ExecutionPhaseInfo(Entity):
 
 
 @dataclass
+class ExecutionPhaseLock:
+    """Execution lock information - phase.
+    
+    """
+    # Associated network.
+    network: str
+
+    # Numerical index to distinguish between multiple runs of the same workflow.
+    run_index: int
+
+    # Type of workflow, e.g. WG-100 ...etc.
+    run_type: str
+
+    # Numerical index to distinguish between multiple phases within a run.
+    phase_index: int
+
+    @property
+    def run_index_label(self):
+        return f"R-{str(self.run_index).zfill(3)}"
+
+    @property
+    def phase_index_label(self):
+        return f"P-{str(self.phase_index).zfill(2)}"
+        
+
+@dataclass
 class ExecutionPhaseState(Entity):
     """Execution state information - phase.
     

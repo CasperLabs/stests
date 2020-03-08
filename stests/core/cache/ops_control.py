@@ -1,7 +1,6 @@
 import random
 import typing
 
-from stests.core.cache.locks import *
 from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.ops_infra import get_network

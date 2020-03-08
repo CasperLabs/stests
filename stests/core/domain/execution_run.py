@@ -65,6 +65,25 @@ class RunContext(Entity):
 
 
 @dataclass
+class ExecutionRunLock:
+    """Execution lock information - run.
+    
+    """
+    # Associated network.
+    network: str
+
+    # Numerical index to distinguish between multiple runs of the same workflow.
+    run_index: int
+
+    # Type of workflow, e.g. WG-100 ...etc.
+    run_type: str
+
+    @property
+    def run_index_label(self):
+        return f"R-{str(self.run_index).zfill(3)}"
+
+
+@dataclass
 class ExecutionRunState(Entity):
     """Execution state information - run.
     

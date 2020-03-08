@@ -1,9 +1,6 @@
 import typing
 
 from stests.core import cache
-from stests.core.cache.locks import ExecutionRunLock
-from stests.core.cache.locks import ExecutionPhaseLock
-from stests.core.cache.locks import ExecutionStepLock
 from stests.core.domain import RunContext
 from stests.core.utils import logger
 from stests.orchestration import factory
