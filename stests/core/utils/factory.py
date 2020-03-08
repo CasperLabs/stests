@@ -254,7 +254,6 @@ def create_step(ctx: ExecutionRunInfo, name: str) -> ExecutionStepInfo:
     """
     return ExecutionStepInfo(
         network=ctx.network,
-        pipeline_index=None,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         status=ExecutionStatus.IN_PROGRESS,

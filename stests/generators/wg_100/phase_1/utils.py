@@ -7,7 +7,6 @@ from stests.core.domain import DeployStatus
 from stests.core.orchestration import ExecutionRunInfo
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
-from stests.core.mq.actor import actorify
 from stests.core.utils import factory
 
 

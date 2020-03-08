@@ -274,5 +274,5 @@ def on_step_deploy_finalized(ctx: ExecutionRunInfo, dhash: str):
         print(err)
         return       
 
-    # Step verification succeeded therrefore signal step end.
+    # Step verification succeeded therefore signal step end.
     do_step_end.send(ctx)

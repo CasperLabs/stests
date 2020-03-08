@@ -1,15 +1,19 @@
+import dramatiq
+
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import DeployStatus
 from stests.core.orchestration import ExecutionRunInfo
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
-from stests.core.mq.actor import actorify
 from stests.generators.wg_100 import constants
 
 
+# Queue to which messages will be dispatched.
+_QUEUE = "wg-100.utils"
 
-@actorify(is_substep=True)
+
+@dramatiq.actor(queue_name=_QUEUE)
 def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
     """Performs a refund ot funds between 2 counterparties.
 
