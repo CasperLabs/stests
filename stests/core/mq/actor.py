@@ -74,7 +74,7 @@ def _can_step(ctx, actor):
         run_type=ctx.run_type,
         step=step
     )
-    _, acquired = cache.control.lock_step(lock)
+    _, acquired = cache.orchestration.lock_step(lock)
     if not acquired:
         logger.log_warning(f"unacquired actor lock: {ctx.run_type} :: {step}")
 

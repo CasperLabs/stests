@@ -28,7 +28,7 @@ def can_start_run(ctx: ExecutionRunInfo) -> bool:
 
     # False if locked.
     lock = factory.create_run_lock(ctx)
-    _, acquired = cache.control.lock_run(lock)
+    _, acquired = cache.orchestration.lock_run(lock)
     if not acquired:
         logger.log_warning(f"unacquired run lock: {ctx.run_type} :: run={ctx.run_index}")
         return False
@@ -60,7 +60,7 @@ def can_start_phase(ctx: ExecutionRunInfo) -> bool:
     
     # False if locked.
     lock = factory.create_phase_lock(ctx, phase_index)
-    _, acquired = cache.control.lock_phase(lock)
+    _, acquired = cache.orchestration.lock_phase(lock)
     if not acquired:
         logger.log_warning(f"unacquired phase lock: {ctx.run_type} :: run={ctx.run_index} :: phase={phase_index}")
         return False
@@ -99,7 +99,7 @@ def can_start_step(ctx: ExecutionRunInfo) -> bool:
 
     # False if locked.
     lock = factory.create_step_lock(ctx, step_index)
-    _, acquired = cache.control.lock_step(lock)
+    _, acquired = cache.orchestration.lock_step(lock)
     if not acquired:
         logger.log_warning(f"unacquired step lock: {ctx.run_type} :: run={ctx.run_index} :: phase={phase_index} :: step={step_index}")
         return False

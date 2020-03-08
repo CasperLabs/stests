@@ -1,14 +1,14 @@
 from stests.core.domain import NetworkIdentifier
 from stests.core.orchestration import ExecutionRunInfo
 
-from stests.core.cache.ops_control import *
 from stests.core.cache.ops_infra import *
 from stests.core.cache.ops_monitoring import *
+from stests.core.cache.ops_orchestration import *
 from stests.core.cache.ops_state import *
 
-import stests.core.cache.ops_control as control
 import stests.core.cache.ops_infra as infra
 import stests.core.cache.ops_monitoring as monitoring
+import stests.core.cache.ops_orchestration as orchestration
 import stests.core.cache.ops_state as state
 
 
@@ -19,7 +19,7 @@ def flush_by_network(network_id: NetworkIdentifier):
     :param network_id: A network identifier.
 
     """
-    for partition in (control, infra, monitoring, state):
+    for partition in (infra, monitoring, orchestration, state):
         partition.flush_by_network(network_id)
 
 
@@ -29,5 +29,5 @@ def flush_by_run(ctx: ExecutionRunInfo):
     :param ctx: Generator run contextual information.
 
     """
-    for partition in (control, state):
+    for partition in (orchestration, state):
         partition.flush_by_run(ctx)
