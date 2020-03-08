@@ -35,6 +35,7 @@ def can_start_run(ctx: RunContext) -> bool:
         ctx.run_type
     )
     _, acquired = cache.control.lock_run(lock)
+    print(f"666 : {acquired}")
     if not acquired:
         logger.log_warning(f"unacquired run lock: {ctx.run_type} :: run={ctx.run_index}")
         return False

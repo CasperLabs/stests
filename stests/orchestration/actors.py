@@ -25,7 +25,7 @@ def do_run(ctx: RunContext):
     :param ctx: Execution context information.
     
     """
-    # Temporary - will be done on run completion.
+    # TODO: TEMPORARY whilst testing.
     cache.flush_locks(ctx)    
 
     # Escape if unexecutable.
@@ -53,6 +53,9 @@ def on_run_end(ctx: RunContext):
     """
     # Update status.
     cache.control.set_state(factory.create_state(ctx, status=ExecutionStatus.COMPLETE))
+
+    # Locks can now be flushed.
+    cache.flush_locks(ctx)    
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
