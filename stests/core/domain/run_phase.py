@@ -92,8 +92,8 @@ class RunPhase(Entity):
 
 
 @dataclass
-class RunPhaseState(Entity):
-    """State information associated with an execution phase.
+class ExecutionPhaseState(Entity):
+    """Execution state information - phase.
     
     """
     # Associated network.

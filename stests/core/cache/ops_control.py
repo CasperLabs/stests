@@ -228,9 +228,9 @@ def lock_step(lock: ExecutionStepLock) -> typing.Tuple[typing.List[str], Executi
 
 @cache_op(StorePartition.CONTROL, StoreOperation.SET)
 def set_state(
-    state: typing.Union[RunContextState, RunPhaseState, RunStepState]
-    ) -> typing.Tuple[typing.List[str], typing.Union[RunContextState, RunPhaseState, RunStepState]]:
-    """Encaches domain object: RunContextState.
+    state: typing.Union[ExecutionRunState, ExecutionPhaseState, ExecutionStepState]
+    ) -> typing.Tuple[typing.List[str], typing.Union[ExecutionRunState, ExecutionPhaseState, ExecutionStepState]]:
+    """Encaches domain object: ExecutionRunState.
     
     :param ctx: Generator run contextual information.
 
@@ -242,11 +242,11 @@ def set_state(
             state.network,
             state.run_type
         ]
-    if isinstance(state, RunContextState):
+    if isinstance(state, ExecutionRunState):
         keypath.append(state.run_index_label)
-    elif isinstance(state, RunPhaseState):
+    elif isinstance(state, ExecutionPhaseState):
         keypath.append(f"{state.run_index_label}.{state.phase_index_label}")
-    elif isinstance(state, RunStepState):
+    elif isinstance(state, ExecutionStepState):
         keypath.append(f"{state.run_index_label}.{state.phase_index_label}.{state.step_index_label}")
     else:
         raise TypeError()

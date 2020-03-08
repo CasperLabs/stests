@@ -4,9 +4,9 @@ from stests.core.cache.locks import ExecutionStepLock
 
 from stests.core.domain import ExecutionStatus
 from stests.core.domain import RunContext
-from stests.core.domain import RunContextState
-from stests.core.domain import RunPhaseState
-from stests.core.domain import RunStepState
+from stests.core.domain import ExecutionRunState
+from stests.core.domain import ExecutionPhaseState
+from stests.core.domain import ExecutionStepState
 
 
 
@@ -26,7 +26,7 @@ def create_run_lock(ctx: RunContext) -> ExecutionRunLock:
     )
 
 
-def create_run_state(ctx: RunContext, status: ExecutionStatus) -> RunContextState:
+def create_run_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionRunState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -35,7 +35,7 @@ def create_run_state(ctx: RunContext, status: ExecutionStatus) -> RunContextStat
     :returns: Execution state information.
 
     """
-    return RunContextState(
+    return ExecutionRunState(
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
@@ -60,7 +60,7 @@ def create_phase_lock(ctx: RunContext, phase_index: int) -> ExecutionRunLock:
     )
 
 
-def create_phase_state(ctx: RunContext, status: ExecutionStatus) -> RunPhaseState:
+def create_phase_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionPhaseState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -69,7 +69,7 @@ def create_phase_state(ctx: RunContext, status: ExecutionStatus) -> RunPhaseStat
     :returns: Execution state information.
 
     """
-    return RunPhaseState(
+    return ExecutionPhaseState(
         network=ctx.network,
         phase_index=ctx.phase_index,
         run_index=ctx.run_index,
@@ -96,7 +96,7 @@ def create_step_lock(ctx: RunContext, step_index: int) -> ExecutionRunLock:
     )
     
 
-def create_step_state(ctx: RunContext, status: ExecutionStatus) -> RunStepState:
+def create_step_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionStepState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -105,7 +105,7 @@ def create_step_state(ctx: RunContext, status: ExecutionStatus) -> RunStepState:
     :returns: Execution state information.
 
     """
-    return RunStepState(
+    return ExecutionStepState(
         network=ctx.network,
         phase_index=ctx.phase_index,
         run_index=ctx.run_index,

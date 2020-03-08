@@ -24,11 +24,11 @@ DCLASS_SET = {
     Transfer,
     # control entities
     RunContext,
-    RunContextState,
+    ExecutionRunState,
     RunPhase,
-    RunPhaseState,
+    ExecutionPhaseState,
     RunStep,
-    RunStepState,
+    ExecutionStepState,
 }
 
 # Set of supported identifiers.

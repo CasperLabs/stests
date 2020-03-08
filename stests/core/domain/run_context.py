@@ -66,8 +66,8 @@ class RunContext(Entity):
 
 
 @dataclass
-class RunContextState(Entity):
-    """State information associated with a run.
+class ExecutionRunState(Entity):
+    """Execution state information - run.
     
     """
     # Associated network.

@@ -100,8 +100,8 @@ class RunStep(Entity):
 
 
 @dataclass
-class RunStepState(Entity):
-    """State information associated with an execution step.
+class ExecutionStepState(Entity):
+    """Execution state information - step.
     
     """
     # Associated network.
