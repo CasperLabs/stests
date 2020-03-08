@@ -10,8 +10,7 @@ from stests.core.domain import DeployStatus
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
-from stests.monitoring.correlator import correlate_finalized_deploy
-
+from stests.orchestration.actors import on_step_deploy_finalized
 
 
 # Queue to which messages will be dispatched.
@@ -88,25 +87,25 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     if not encached:
         return
 
-    # Pull run deploy.
+    # Pull deploy.
     deploy = cache.get_run_deploy(dhash)
     if not deploy:
         logger.log_warning(f"Could not find finalized run deploy information: {bhash} : {dhash}")
         return
 
-    # Update run deploy.
+    # Update deploy.
     deploy.update_on_finalization(bhash, finalization_ts)
     cache.set_run_deploy(deploy)
 
-    # Increment run step deploy count.
+    # Increment step deploy count.
     ctx = cache.get_context(deploy.network, deploy.run_index, deploy.run_type)
     cache.increment_step_deploy_count(ctx)
 
-    # Update run transfer.
+    # Update transfers.
     transfer = cache.get_run_transfer(dhash)
     if transfer:
         transfer.update_on_completion()
         cache.set_run_transfer(transfer)
     
-    # Signal to workload generator correlator.
-    correlate_finalized_deploy.send(ctx, dhash)
+    # Signal to orchestrator.
+    on_step_deploy_finalized.send(ctx, dhash)

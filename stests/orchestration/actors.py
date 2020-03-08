@@ -245,3 +245,34 @@ def do_step_error(ctx: ExecutionRunInfo, err: str):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> unhandled error")
     logger.log_error(err)
+
+
+@dramatiq.actor(queue_name=_QUEUE)
+def on_step_deploy_finalized(ctx: ExecutionRunInfo, dhash: str):   
+    """Processes a finalized deploy within the context of a step.
+    
+    :param ctx: Execution context information.
+    :param dhash: Hash of a finalized deploy.
+
+    """
+    # Set step.
+    step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
+    if step is None:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> invalid step")
+
+    # Verify step deploy:
+    try:
+        step.verify_deploy(dhash)
+    # ... no verifier defined.
+    except AttributeError:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verifier undefined")
+        return       
+
+    # ... verification failed.
+    except AssertionError as err:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed")
+        print(err)
+        return       
+
+    # Step verification succeeded therrefore signal step end.
+    do_step_end.send(ctx)

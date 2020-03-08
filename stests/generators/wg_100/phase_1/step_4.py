@@ -31,7 +31,12 @@ def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     :param dhash: A deploy hash.
 
     """
+    print(111)
     utils.verify_deploy(ctx, dhash)
+    print(222)
     transfer = utils.verify_transfer(ctx, dhash)
+    print(333)
     utils.verify_account_balance(ctx, transfer.cp2_index, ctx.args.contract_initial_clx_balance)
+    print(444)
     utils.verify_deploy_count(ctx, 1)    
+    print(555)

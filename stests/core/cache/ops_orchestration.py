@@ -144,7 +144,7 @@ def get_steps(ctx: ExecutionRunInfo) -> typing.List[ExecutionStepInfo]:
         "step",
         ctx.network,
         ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}",
+        ctx.run_index_label,
         "*"
         ]
         
@@ -156,13 +156,19 @@ def get_step_deploy_count(ctx: ExecutionRunInfo) -> int:
     :param ctx: Generator run contextual information.
 
     """
-    return [
+    keypath = [
         "step-deploy-count",
         ctx.network,
         ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}",
-        ctx.run_step,
     ]
+    if ctx.phase_index and ctx.step_index:
+        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}.{ctx.step_index_label}")
+    elif ctx.phase_index:
+        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}")
+    else:
+        keypath.append(ctx.run_index_label)
+
+    return keypath
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
@@ -172,13 +178,19 @@ def increment_step_deploy_count(ctx: ExecutionRunInfo):
     :param ctx: Generator run contextual information.
 
     """
-    return [
+    keypath = [
         "step-deploy-count",
         ctx.network,
         ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}",
-        ctx.run_step,
     ]
+    if ctx.phase_index and ctx.step_index:
+        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}.{ctx.step_index_label}")
+    elif ctx.phase_index:
+        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}")
+    else:
+        keypath.append(ctx.run_index_label)
+
+    return keypath
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)

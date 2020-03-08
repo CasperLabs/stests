@@ -36,4 +36,4 @@ def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     utils.verify_deploy(ctx, dhash)
     transfer = utils.verify_transfer(ctx, dhash)
     utils.verify_account_balance(ctx, transfer.cp2_index, ctx.args.faucet_initial_clx_balance)
-    utils.verify_deploy_count(ctx, 1)
+    utils.verify_deploy_count(ctx, 1)    

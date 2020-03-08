@@ -1,6 +1,7 @@
 import typing
 
 from stests.core.orchestration import ExecutionRunInfo
+from stests.core.utils import logger
 from stests.generators.meta import GENERATOR_MAP as MODULES
 
 
@@ -53,6 +54,13 @@ class WorkflowStep():
             self.result = self.module.execute(self.ctx)
         except Exception as err:
             self.error = err
+
+
+    def verify_deploy(self, dhash):
+        """Performs step deploy verification.
+        
+        """
+        self.module.verify_deploy(self.ctx, dhash)
 
 
 class WorkflowPhase():
@@ -159,9 +167,12 @@ class Workflow():
         :returns: Workflow wrapper instance.
 
         """
-        wflow = Workflow.create(ctx)
-
-        return wflow.get_phase(phase_index)
+        try:
+            wflow = Workflow.create(ctx)
+        except:
+            return None
+        else:
+            return wflow.get_phase(phase_index)
 
 
     @staticmethod
@@ -173,6 +184,9 @@ class Workflow():
         :returns: Workflow wrapper instance.
 
         """
-        wflow = Workflow.create(ctx)
-
-        return wflow.get_step(phase_index, step_index)
+        try:
+            wflow = Workflow.create(ctx)
+        except:
+            return None
+        else:
+            return wflow.get_step(phase_index, step_index)
