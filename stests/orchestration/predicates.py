@@ -23,14 +23,14 @@ def can_start_run(ctx: ExecutionRunInfo) -> bool:
 
     # False if phase/step are not initialised.
     if ctx.phase_index != 0 or ctx.step_index != 0:
-        logger.log_warning(f"invalid context - phase & step must be set to zero: {ctx.run_type} :: run={ctx.run_index}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> invalid context (phase & step must be set to zero)")
         return False
 
     # False if locked.
     lock = factory.create_run_lock(ctx)
     _, acquired = cache.orchestration.lock_run(lock)
     if not acquired:
-        logger.log_warning(f"unacquired run lock: {ctx.run_type} :: run={ctx.run_index}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unacquired lock")
         return False
 
     # All tests passed, therefore return true.    
@@ -53,14 +53,14 @@ def can_start_phase(ctx: ExecutionRunInfo) -> bool:
     # False if next phase not found.
     phase = wflow.get_phase(ctx.next_phase_index)
     if phase is None:
-        logger.log_warning(f"invalid phase index: {ctx.run_type} :: run={ctx.run_index} :: phase={ctx.next_phase_index}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> invalid phase index")
         return False
     
     # False if next phase locked.
     lock = factory.create_phase_lock(ctx, ctx.next_phase_index)
     _, acquired = cache.orchestration.lock_phase(lock)
     if not acquired:
-        logger.log_warning(f"unacquired phase lock: {ctx.run_type} :: run={ctx.run_index} :: phase={ctx.next_phase_index}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> unacquired phase lock")
         return False
     
     # All tests passed, therefore return true.    
@@ -83,20 +83,20 @@ def can_start_step(ctx: ExecutionRunInfo) -> bool:
     # False if current phase not found.
     phase = wflow.get_phase(ctx.phase_index)
     if phase is None:
-        logger.log_warning(f"invalid phase index: {ctx.run_type} :: {ctx.run_index_label} :: phase={ctx.phase_index}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> invalid phase index")
         return False
     
     # False if next step not found.
     step = phase.get_step(ctx.next_step_index)
     if step is None:
-        logger.log_warning(f"invalid step index: {ctx.run_type} :: {ctx.run_index_label} :: phase={ctx.phase_index} :: step={ctx.next_step_index}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.next_step_index_label} -> invalid step index")
         return False
 
     # False if next step locked.
     lock = factory.create_step_lock(ctx, ctx.next_step_index, step.label)
     _, acquired = cache.orchestration.lock_step(lock)
     if not acquired:
-        logger.log_warning(f"unacquired step lock: {ctx.run_type} :: run={ctx.run_index} :: phase={ctx.phase_index} :: step={ctx.next_step_index}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.next_step_index_label} -> unacquired step lock")
         return False
     
     # All tests passed, therefore return true.    
@@ -111,18 +111,18 @@ def _validate_wflow(ctx: ExecutionRunInfo) -> typing.Tuple[typing.Optional[Workf
     try:
         wflow = Workflow.create(ctx)
     except ValueError:
-        logger.log_warning(f"unregistered workflow: {ctx.run_type}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} -> unregistered workflow")
         return None, False
 
     # False if workflow has no phases.
     if not wflow.phases:
-        logger.log_warning(f"invalid workflow - has no associated phases: {ctx.run_type}")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} -> invalid workflow - has no associated phases")
         return None, False
 
     # False if a phase has no steps.
     for phase in wflow.phases:
         if not phase.steps:
-            logger.log_warning(f"invalid workflow - a phase has no associated steps: {ctx.run_type}")
+            logger.log_warning(f"WFLOW :: {ctx.run_type} -> invalid workflow - a phase has no associated steps")
             return None, False
 
     # All tests passed, therefore return true.   

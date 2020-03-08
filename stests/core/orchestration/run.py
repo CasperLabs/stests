@@ -77,7 +77,7 @@ class ExecutionRunInfo:
 
     @property
     def phase_index_label(self):
-        return f"P-{str(self.phase_index).zfill(2)}"
+        return f"P-{str(self.phase_index).zfill(2)}"        
 
     @property
     def step_index_label(self):
@@ -88,8 +88,16 @@ class ExecutionRunInfo:
         return self.phase_index + 1
 
     @property
+    def next_phase_index_label(self):
+        return f"P-{str(self.next_phase_index).zfill(2)}"        
+
+    @property
     def next_step_index(self):
         return self.step_index + 1
+
+    @property
+    def next_step_index_label(self):
+        return f"S-{str(self.next_step_index).zfill(2)}"
 
 
 @dataclasses.dataclass

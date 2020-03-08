@@ -161,7 +161,6 @@ def do_step(ctx: ExecutionRunInfo):
     cache.orchestration.set_run_context(ctx)
     cache.orchestration.set_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
 
-
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
 
