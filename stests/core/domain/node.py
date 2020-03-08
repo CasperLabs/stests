@@ -5,6 +5,7 @@ from datetime import datetime
 from stests.core.domain.account import Account
 from stests.core.domain.enums import NodeStatus
 from stests.core.domain.enums import NodeType
+from stests.core.domain.network import NetworkIdentifier
 from stests.core.utils.dataclasses import get_timestamp_field
 
 
@@ -48,3 +49,18 @@ class Node:
     @property
     def label(self):
         return f"{self.network}:{self.index}"
+
+
+@dataclasses.dataclass
+class NodeIdentifier:
+    """Information required to disambiguate between nodes.
+    
+    """ 
+    # Associated network identifer.
+    network: NetworkIdentifier
+
+    # Node index.
+    index: int
+ 
+     # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None

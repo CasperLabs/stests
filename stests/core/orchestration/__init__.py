@@ -10,6 +10,7 @@ DCLASS_SET = {
     ExecutionPhaseInfo,
     ExecutionPhaseLock,
     ExecutionPhaseState,
+    ExecutionRunIdentifier,
     ExecutionRunInfo,
     ExecutionRunLock,
     ExecutionRunState,

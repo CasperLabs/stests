@@ -56,7 +56,7 @@ def create_account_for_run(
 def create_account_id(
     index: int,
     network: str,
-    run: int,
+    run_index: int,
     run_type: int,
     ) -> Account:
     """Returns a cache identifier: Account.
@@ -66,7 +66,7 @@ def create_account_id(
 
     return AccountIdentifier(
         index=index,
-        run=create_run_id(network_id, run, run_type)
+        run=create_run_id(network_id, run_index, run_type)
     )
 
 
@@ -288,13 +288,13 @@ def create_run_phase(
 
 def create_run_id(
     network_id: NetworkIdentifier,
-    run: int,
+    run_index: int,
     run_type: str
-    ) -> RunIdentifier:
-    """Returns a cache identifier: NodeIdentifier.
+    ) -> ExecutionRunIdentifier:
+    """Returns a cache identifier: ExecutionRunIdentifier.
     
     """
-    return RunIdentifier(network_id, run, run_type)
+    return ExecutionRunIdentifier(network_id, run_index, run_type)
 
 
 def create_transfer(

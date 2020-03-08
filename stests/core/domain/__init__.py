@@ -2,7 +2,6 @@ from stests.core.domain.account import *
 from stests.core.domain.block import *
 from stests.core.domain.deploy import *
 from stests.core.domain.enums import *
-from stests.core.domain.identifiers import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
 from stests.core.domain.transfer import *
@@ -24,7 +23,6 @@ IDENTIFIER_SET = {
     AccountIdentifier,
     NetworkIdentifier,
     NodeIdentifier,
-    RunIdentifier
 }
 
 # Full domain type set.

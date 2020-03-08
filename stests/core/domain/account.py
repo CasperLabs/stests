@@ -5,6 +5,8 @@ from datetime import datetime
 from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
 from stests.core.domain.key_pair import PrivateKey
+from stests.core.domain.network import NetworkIdentifier
+from stests.core.orchestration.run import ExecutionRunIdentifier
 from stests.core.utils.dataclasses import get_timestamp_field
 
 
@@ -50,3 +52,22 @@ class Account:
     @property
     def private_key_as_pem_filepath(self):
         return PrivateKey(self.private_key).as_pem_filepath
+
+
+@dataclasses.dataclass
+class AccountIdentifier:
+    """Information required to disambiguate between accounts.
+    
+    """ 
+    # Numerical index to distinguish between accounts within same context.
+    index: int
+
+    # Associated run identifier.
+    run: ExecutionRunIdentifier
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None
+
+    @property
+    def network_id(self) -> NetworkIdentifier:
+        return this.run.network
