@@ -50,19 +50,17 @@ def can_start_phase(ctx: ExecutionRunInfo) -> bool:
     if not wflow_is_valid:
         return False
 
-    # Set indexes.
-    phase_index = ctx.phase_index + 1
-
-    # False if phase index is invalid.
-    if phase_index > len(wflow.phases):
-        logger.log_warning(f"invalid phase index: {ctx.run_type} :: run={ctx.run_index} :: phase={phase_index}")
+    # False if next phase not found.
+    phase = wflow.get_phase(ctx.next_phase_index)
+    if phase is None:
+        logger.log_warning(f"invalid phase index: {ctx.run_type} :: run={ctx.run_index} :: phase={ctx.next_phase_index}")
         return False
     
-    # False if locked.
-    lock = factory.create_phase_lock(ctx, phase_index)
+    # False if next phase locked.
+    lock = factory.create_phase_lock(ctx, ctx.next_phase_index)
     _, acquired = cache.orchestration.lock_phase(lock)
     if not acquired:
-        logger.log_warning(f"unacquired phase lock: {ctx.run_type} :: run={ctx.run_index} :: phase={phase_index}")
+        logger.log_warning(f"unacquired phase lock: {ctx.run_type} :: run={ctx.run_index} :: phase={ctx.next_phase_index}")
         return False
     
     # All tests passed, therefore return true.    
@@ -82,26 +80,23 @@ def can_start_step(ctx: ExecutionRunInfo) -> bool:
     if not wflow_is_valid:
         return False
 
-    # Set indexes.
-    phase_index = ctx.phase_index
-    step_index = ctx.step_index + 1
-
-    # False if phase index is invalid.
-    if phase_index > len(wflow.phases):
-        logger.log_warning(f"invalid phase index: {ctx.run_type} :: {ctx.run_index_label} :: phase={phase_index}")
+    # False if current phase not found.
+    phase = wflow.get_phase(ctx.phase_index)
+    if phase is None:
+        logger.log_warning(f"invalid phase index: {ctx.run_type} :: {ctx.run_index_label} :: phase={ctx.phase_index}")
         return False
     
-    # False if step index is invalid.
-    phase = wflow.phases[phase_index - 1]
-    if step_index > len(phase.steps):
-        logger.log_warning(f"invalid step index: {ctx.run_type} :: {ctx.run_index_label} :: phase={phase_index} :: step={step_index}")
+    # False if next step not found.
+    step = phase.get_step(ctx.next_step_index)
+    if step is None:
+        logger.log_warning(f"invalid step index: {ctx.run_type} :: {ctx.run_index_label} :: phase={ctx.phase_index} :: step={ctx.next_step_index}")
         return False
 
-    # False if locked.
-    lock = factory.create_step_lock(ctx, step_index)
+    # False if next step locked.
+    lock = factory.create_step_lock(ctx, ctx.next_step_index, step.label)
     _, acquired = cache.orchestration.lock_step(lock)
     if not acquired:
-        logger.log_warning(f"unacquired step lock: {ctx.run_type} :: run={ctx.run_index} :: phase={phase_index} :: step={step_index}")
+        logger.log_warning(f"unacquired step lock: {ctx.run_type} :: run={ctx.run_index} :: phase={ctx.phase_index} :: step={ctx.next_step_index}")
         return False
     
     # All tests passed, therefore return true.    

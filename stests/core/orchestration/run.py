@@ -83,6 +83,14 @@ class ExecutionRunInfo:
     def step_index_label(self):
         return f"S-{str(self.step_index).zfill(2)}"
 
+    @property
+    def next_phase_index(self):
+        return self.phase_index + 1
+
+    @property
+    def next_step_index(self):
+        return self.step_index + 1
+
 
 @dataclasses.dataclass
 class ExecutionRunLock:

@@ -118,6 +118,9 @@ class ExecutionStepLock:
     # Numerical index to distinguish between multiple steps within a phase.
     step_index: int
 
+    # Label to disambiguate a step within the context of a phase.
+    step_label: str
+
     @property
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"

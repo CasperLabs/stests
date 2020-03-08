@@ -13,7 +13,7 @@ def create_run_lock(ctx: ExecutionRunInfo) -> ExecutionRunLock:
     return ExecutionRunLock(
         network=ctx.network,
         run_index=ctx.run_index,
-        run_type=ctx.run_type
+        run_type=ctx.run_type,
     )
 
 
@@ -30,7 +30,7 @@ def create_run_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Executio
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
-        status=status
+        status=status,
     )
 
 
@@ -47,7 +47,7 @@ def create_phase_lock(ctx: ExecutionRunInfo, phase_index: int) -> ExecutionRunLo
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
-        phase_index=phase_index
+        phase_index=phase_index,
     )
 
 
@@ -65,11 +65,11 @@ def create_phase_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Execut
         phase_index=ctx.phase_index,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
-        status=status
+        status=status,
     )
 
 
-def create_step_lock(ctx: ExecutionRunInfo, step_index: int) -> ExecutionRunLock:
+def create_step_lock(ctx: ExecutionRunInfo, step_index: int, step_label: str) -> ExecutionRunLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -83,7 +83,8 @@ def create_step_lock(ctx: ExecutionRunInfo, step_index: int) -> ExecutionRunLock
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         phase_index=ctx.phase_index,
-        step_index=step_index
+        step_index=step_index,
+        step_label=step_label,
     )
     
 
@@ -103,5 +104,5 @@ def create_step_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Executi
         run_type=ctx.run_type,
         status=status,
         step_index=ctx.step_index,
-        step_label=ctx.step_label
+        step_label=ctx.step_label,
     )
