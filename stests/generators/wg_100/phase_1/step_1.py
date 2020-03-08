@@ -12,7 +12,6 @@ DESCRIPTION = "Initialises cache"
 LABEL = "init-cache"
 
 
-
 def execute(ctx: ExecutionRunInfo):   
     """Step entry point.
     

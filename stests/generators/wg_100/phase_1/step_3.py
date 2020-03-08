@@ -11,7 +11,6 @@ DESCRIPTION = "Fund's a run faucet account."
 LABEL = "fund-faucet"
 
 
-
 def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     

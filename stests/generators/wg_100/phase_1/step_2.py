@@ -13,7 +13,6 @@ DESCRIPTION = "Creates run accounts"
 LABEL = "create-accounts"
 
 
-
 def execute(ctx: ExecutionRunInfo) -> typing.Callable:
     """Step entry point.
     
