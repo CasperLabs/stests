@@ -34,6 +34,22 @@ def create_run_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Executio
     )
 
 
+def create_phase_info(ctx: ExecutionRunInfo) -> ExecutionPhaseInfo:
+    """Returns a domain object instance: ExecutionPhaseInfo.
+
+    """
+    return ExecutionPhaseInfo(
+        network=ctx.network,
+        phase_index=ctx.phase_index,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        status=ExecutionStatus.IN_PROGRESS,
+        tp_duration=None,
+        ts_start=datetime.now(),
+        ts_end=None,
+    )
+
+
 def create_phase_lock(ctx: ExecutionRunInfo, phase_index: int) -> ExecutionPhaseLock:
     """Factory: Returns an execution lock.
     

@@ -92,6 +92,7 @@ def do_phase(ctx: ExecutionRunInfo):
     # Update cache.
     cache.orchestration.set_run_context(ctx)
     cache.orchestration.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
+    cache.orchestration.set_phase_info(factory.create_phase_info(ctx))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
@@ -110,8 +111,9 @@ def on_phase_end(ctx: ExecutionRunInfo):
     # Set phase.
     phase = Workflow.get_phase_(ctx, ctx.phase_index)
 
-    # Update status.
+    # Update cache.
     cache.orchestration.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.COMPLETE))
+    cache.orchestration.update_phase_info(ctx, ExecutionStatus.COMPLETE)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> ends")
@@ -131,8 +133,9 @@ def on_phase_error(ctx: ExecutionRunInfo, err: str):
     :param err: Execution error information.
     
     """
-    # Update status.
+    # Update cache.
     cache.orchestration.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.ERROR))
+    cache.orchestration.update_phase_info(ctx, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> unhandled error")

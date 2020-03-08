@@ -263,7 +263,7 @@ def create_run_phase(
         run_index=run_index,
         run_type=run_type,
         status=ExecutionStatus.IN_PROGRESS,
-        ts_duration=None,
+        tp_duration=None,
         ts_start=datetime.now(),
         ts_end=None
     )

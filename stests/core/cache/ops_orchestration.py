@@ -283,6 +283,61 @@ def set_run_context(ctx: ExecutionRunInfo) -> typing.Tuple[typing.List[str], Exe
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_phase_info(phase: ExecutionPhaseInfo) -> typing.Tuple[typing.List[str], ExecutionPhaseInfo]:
+    """Encaches domain object: ExecutionPhaseInfo.
+    
+    :param evt: ExecutionPhaseInfo domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "info",
+        phase.network,
+        phase.run_type,
+        phase.run_index_label,
+        phase.phase_index_label,
+    ], phase
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+def get_phase_info(ctx: ExecutionRunInfo) -> ExecutionPhaseInfo:
+    """Decaches domain object: ExecutionPhaseInfo.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath to domain object instance.
+
+    """
+    return [
+        "info",
+        ctx.network,
+        ctx.run_type,
+        ctx.run_index_label,
+        ctx.phase_index_label,
+    ]
+
+
+def update_phase_info(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionPhaseInfo:
+    """Updates domain object: ExecutionPhaseInfo.
+    
+    :param ctx: Execution context information.
+    :param status: New execution state.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    # Pull & update.
+    info = get_phase_info(ctx)
+    info.finalise(status, None)
+
+    # Recache.
+    set_phase_info(info)
+
+    return info
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
 def set_step_info(step: ExecutionStepInfo) -> typing.Tuple[typing.List[str], ExecutionStepInfo]:
     """Encaches domain object: ExecutionStepInfo.
     
@@ -292,7 +347,7 @@ def set_step_info(step: ExecutionStepInfo) -> typing.Tuple[typing.List[str], Exe
 
     """
     return [
-        "step-info",
+        "info",
         step.network,
         step.run_type,
         step.run_index_label,
@@ -310,7 +365,7 @@ def get_step_info(ctx: ExecutionRunInfo) -> ExecutionStepInfo:
 
     """
     return [
-        "step-info",
+        "info",
         ctx.network,
         ctx.run_type,
         ctx.run_index_label,

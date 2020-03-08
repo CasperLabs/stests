@@ -28,7 +28,7 @@ class ExecutionPhaseInfo:
     status: ExecutionStatus
 
     # Elapsed execution time (in seconds).
-    ts_duration: typing.Optional[float]
+    tp_duration: typing.Optional[float]
 
     # Moment in time when step occurred.
     ts_start: datetime
@@ -43,31 +43,31 @@ class ExecutionPhaseInfo:
     _ts_created: datetime = get_timestamp_field()
 
     @property
-    def ts_elapsed(self):
+    def tp_elapsed(self):
         if self.status == ExecutionStatus.COMPLETE:
-            return self.ts_duration
+            return self.tp_duration
         return datetime.now().timestamp() - self.ts_start.timestamp()
 
     @property
-    def duration_label(self):
-        """Returns duration formatted for display purposes.
+    def tp_duration_label(self):
+        """Returns step duration formatted for display purposes.
         
         """
-        if self.ts_duration is None:
+        if self.tp_duration is None:
             return "N/A"
 
-        duration = str(self.ts_duration)
+        duration = str(self.tp_duration)
         minutes = duration.split(".")[0]
         seconds = duration.split(".")[1][:6]
         
         return f"{minutes}.{seconds}"
 
     @property
-    def elapsed_label(self):
-        """Returns elapsed time formatted for display purposes.
+    def tp_elapsed_label(self):
+        """Returns step elapsed formatted for display purposes.
         
         """
-        elapsed = str(self.ts_elapsed)
+        elapsed = str(self.tp_elapsed)
         minutes = elapsed.split(".")[0]
         seconds = elapsed.split(".")[1][:6]
         
@@ -81,13 +81,15 @@ class ExecutionPhaseInfo:
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
-    def update_on_completion(self):
+
+    def finalise(self, status, error=None):
         """Executed when phase is complete.
         
         """
-        self.status = ExecutionStatus.COMPLETE
+        self.error = error
+        self.status = status
         self.ts_end = datetime.now()
-        self.ts_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
+        self.tp_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 
 
 @dataclasses.dataclass
