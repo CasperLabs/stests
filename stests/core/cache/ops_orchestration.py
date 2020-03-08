@@ -12,7 +12,7 @@ from stests.core.utils import factory
 
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
 def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
     """Flushes network specific monitoring information.
 
@@ -28,7 +28,7 @@ def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
     yield ["step-deploy-count", network_id.name, "*"]
         
 
-@cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
 def flush_by_run(ctx: ExecutionRunInfo) -> typing.Generator:
     """Flushes previous run information.
 
@@ -52,7 +52,7 @@ def flush_by_run(ctx: ExecutionRunInfo) -> typing.Generator:
         ]
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
 def flush_locks(ctx: ExecutionRunInfo) -> typing.Generator:
     """Flushes previous run locks.
 
@@ -69,7 +69,7 @@ def flush_locks(ctx: ExecutionRunInfo) -> typing.Generator:
     ]
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.GET)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_context(network: str, run_index: int, run_type: str) -> ExecutionRunInfo:
     """Decaches domain object: ExecutionRunInfo.
     
@@ -88,7 +88,7 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionRunInfo
     ]
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.GET)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_contexts(network: str, run_type: str) -> ExecutionRunInfo:
     """Decaches domain object: ExecutionRunInfo.
     
@@ -131,7 +131,7 @@ def get_step(ctx: ExecutionRunInfo) -> ExecutionStepInfo:
     return steps[-1] if steps else None
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.GET)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_steps(ctx: ExecutionRunInfo) -> typing.List[ExecutionStepInfo]:
     """Decaches collection of domain objects: ExecutionStepInfo.
 
@@ -149,7 +149,7 @@ def get_steps(ctx: ExecutionRunInfo) -> typing.List[ExecutionStepInfo]:
         ]
         
 
-@cache_op(StorePartition.CONTROL, StoreOperation.GET_COUNT)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNT)
 def get_step_deploy_count(ctx: ExecutionRunInfo) -> int:
     """Reurns current count of run step deploys.
 
@@ -165,7 +165,7 @@ def get_step_deploy_count(ctx: ExecutionRunInfo) -> int:
     ]
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.INCR)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
 def increment_step_deploy_count(ctx: ExecutionRunInfo):
     """Increments (atomically) count of run step deploys.
 
@@ -181,7 +181,7 @@ def increment_step_deploy_count(ctx: ExecutionRunInfo):
     ]
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
 def lock_run(lock: ExecutionRunLock) -> typing.Tuple[typing.List[str], ExecutionRunLock]:
     """Encaches a lock: ExecutionRunLock.
 
@@ -196,7 +196,7 @@ def lock_run(lock: ExecutionRunLock) -> typing.Tuple[typing.List[str], Execution
     ], lock
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
 def lock_phase(lock: ExecutionPhaseLock) -> typing.Tuple[typing.List[str], ExecutionPhaseLock]:
     """Encaches a lock: ExecutionPhaseLock.
 
@@ -211,7 +211,7 @@ def lock_phase(lock: ExecutionPhaseLock) -> typing.Tuple[typing.List[str], Execu
     ], lock
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
 def lock_step(lock: ExecutionStepLock) -> typing.Tuple[typing.List[str], ExecutionStepLock]:
     """Encaches a lock: ExecutionStepLock.
 
@@ -226,7 +226,7 @@ def lock_step(lock: ExecutionStepLock) -> typing.Tuple[typing.List[str], Executi
     ], lock
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.SET)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
 def set_state(
     state: typing.Union[ExecutionRunState, ExecutionPhaseState, ExecutionStepState]
     ) -> typing.Tuple[typing.List[str], typing.Union[ExecutionRunState, ExecutionPhaseState, ExecutionStepState]]:
@@ -254,7 +254,7 @@ def set_state(
     return keypath, state    
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.SET)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
 def set_run_context(ctx: ExecutionRunInfo) -> typing.Tuple[typing.List[str], ExecutionRunInfo]:
     """Encaches domain object: ExecutionRunInfo.
     
@@ -271,7 +271,7 @@ def set_run_context(ctx: ExecutionRunInfo) -> typing.Tuple[typing.List[str], Exe
     ], ctx
 
 
-@cache_op(StorePartition.CONTROL, StoreOperation.SET)
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
 def set_run_step(step: ExecutionStepInfo) -> typing.Tuple[typing.List[str], ExecutionStepInfo]:
     """Encaches domain object: ExecutionStepInfo.
     

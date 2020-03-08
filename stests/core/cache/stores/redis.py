@@ -21,7 +21,7 @@ class EnvVars:
 PARTITION_OFFSETS = {
     StorePartition.INFRA: 0,
     StorePartition.MONITORING: 1,
-    StorePartition.CONTROL: 2,
+    StorePartition.ORCHESTRATION: 2,
     StorePartition.STATE: 3,
 }
 
