@@ -4,7 +4,7 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.domain import Account
 from stests.core.domain import AccountType
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.mq.actor import actorify
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -13,7 +13,7 @@ from stests.generators.wg_100.constants import *
 
 
 @actorify()
-def do_refund_step_1(ctx: RunContext) -> typing.Callable:
+def do_refund_step_1(ctx: ExecutionRunInfo) -> typing.Callable:
     """Refunds from user to run facuet.
     
     :param ctx: Generator run contextual information.
@@ -36,7 +36,7 @@ def do_refund_step_1(ctx: RunContext) -> typing.Callable:
 
 
 @actorify()
-def do_refund_step_2(ctx: RunContext):
+def do_refund_step_2(ctx: ExecutionRunInfo):
     """Refunds from user to run facuet.
     
     :param ctx: Generator run contextual information.
@@ -50,7 +50,7 @@ def do_refund_step_2(ctx: RunContext):
 
 
 @actorify()
-def do_notify_completion(ctx: RunContext):
+def do_notify_completion(ctx: ExecutionRunInfo):
     """Emits a run completion notification message.
     
     :param ctx: Generator run contextual information.
@@ -61,7 +61,7 @@ def do_notify_completion(ctx: RunContext):
 
 
 @actorify(is_substep=True)
-def do_refund(ctx: RunContext, cp1_index: int, cp2_index: int):
+def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
     """Performs a refund ot funds between 2 counterparties.
 
     :param ctx: Generator run contextual information.

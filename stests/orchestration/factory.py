@@ -1,4 +1,4 @@
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.domain import ExecutionPhaseLock
 from stests.core.domain import ExecutionPhaseState
 from stests.core.domain import ExecutionRunLock
@@ -9,7 +9,7 @@ from stests.core.domain import ExecutionStepState
 
 
 
-def create_run_lock(ctx: RunContext) -> ExecutionRunLock:
+def create_run_lock(ctx: ExecutionRunInfo) -> ExecutionRunLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -24,7 +24,7 @@ def create_run_lock(ctx: RunContext) -> ExecutionRunLock:
     )
 
 
-def create_run_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionRunState:
+def create_run_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionRunState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -41,7 +41,7 @@ def create_run_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionRunSt
     )
 
 
-def create_phase_lock(ctx: RunContext, phase_index: int) -> ExecutionRunLock:
+def create_phase_lock(ctx: ExecutionRunInfo, phase_index: int) -> ExecutionRunLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -58,7 +58,7 @@ def create_phase_lock(ctx: RunContext, phase_index: int) -> ExecutionRunLock:
     )
 
 
-def create_phase_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionPhaseState:
+def create_phase_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionPhaseState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -76,7 +76,7 @@ def create_phase_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionPha
     )
 
 
-def create_step_lock(ctx: RunContext, step_index: int) -> ExecutionRunLock:
+def create_step_lock(ctx: ExecutionRunInfo, step_index: int) -> ExecutionRunLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -94,7 +94,7 @@ def create_step_lock(ctx: RunContext, step_index: int) -> ExecutionRunLock:
     )
     
 
-def create_step_state(ctx: RunContext, status: ExecutionStatus) -> ExecutionStepState:
+def create_step_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionStepState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.

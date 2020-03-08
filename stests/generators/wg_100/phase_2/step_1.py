@@ -1,4 +1,4 @@
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.utils import resources
 from stests.generators.wg_100 import constants
 
@@ -10,7 +10,7 @@ DESCRIPTION = "Deploys ERC-20 contract"
 LABEL = "deploy-contract"
 
 
-def execute(ctx: RunContext):
+def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     
     :param ctx: Generator run contextual information.

@@ -4,7 +4,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core.domain import ExecutionStatus
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.utils import logger
 
 from stests.orchestration.model import Workflow
@@ -19,7 +19,7 @@ _QUEUE = "orchestration"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_run(ctx: RunContext):
+def do_run(ctx: ExecutionRunInfo):
     """Runs a workflow.
     
     :param ctx: Execution context information.
@@ -42,7 +42,7 @@ def do_run(ctx: RunContext):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_run_end(ctx: RunContext):
+def on_run_end(ctx: ExecutionRunInfo):
     """Ends a workflow.
     
     :param ctx: Execution context information.
@@ -59,7 +59,7 @@ def on_run_end(ctx: RunContext):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_run_error(ctx: RunContext, err: str):
+def on_run_error(ctx: ExecutionRunInfo, err: str):
     """Ends a workflow phase in error.
     
     :param ctx: Execution context information.
@@ -75,7 +75,7 @@ def on_run_error(ctx: RunContext, err: str):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_phase(ctx: RunContext):
+def do_phase(ctx: ExecutionRunInfo):
     """Runs a workflow phase.
     
     :param ctx: Execution context information.
@@ -101,7 +101,7 @@ def do_phase(ctx: RunContext):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_phase_end(ctx: RunContext):
+def on_phase_end(ctx: ExecutionRunInfo):
     """Ends a workflow phase.
     
     :param ctx: Execution context information.
@@ -124,7 +124,7 @@ def on_phase_end(ctx: RunContext):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_phase_error(ctx: RunContext, err: str):
+def on_phase_error(ctx: ExecutionRunInfo, err: str):
     """Ends a workflow phase in error.
     
     :param ctx: Execution context information.
@@ -140,7 +140,7 @@ def on_phase_error(ctx: RunContext, err: str):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_step(ctx: RunContext):
+def do_step(ctx: ExecutionRunInfo):
     """Runs a workflow step.
     
     :param ctx: Execution context information.
@@ -169,7 +169,7 @@ def do_step(ctx: RunContext):
     do_step_execute(ctx, step)
 
 
-def do_step_execute(ctx: RunContext, step: WorkflowStep):
+def do_step_execute(ctx: ExecutionRunInfo, step: WorkflowStep):
     """Performs step execution.
     
     :param ctx: Execution context information.
@@ -210,7 +210,7 @@ def do_step_execute(ctx: RunContext, step: WorkflowStep):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_step_end(ctx: RunContext):
+def do_step_end(ctx: ExecutionRunInfo):
     """Ends a workflow step.
     
     :param ctx: Execution context information.
@@ -233,7 +233,7 @@ def do_step_end(ctx: RunContext):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_step_error(ctx: RunContext, err: str):
+def do_step_error(ctx: ExecutionRunInfo, err: str):
     """Ends a workflow step in error.
     
     :param ctx: Execution context information.

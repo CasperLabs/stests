@@ -1,7 +1,7 @@
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import DeployStatus
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.core.mq.actor import actorify
@@ -10,7 +10,7 @@ from stests.generators.wg_100 import constants
 
 
 @actorify(is_substep=True)
-def do_refund(ctx: RunContext, cp1_index: int, cp2_index: int):
+def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
     """Performs a refund ot funds between 2 counterparties.
 
     :param ctx: Generator run contextual information.
@@ -36,7 +36,7 @@ def do_refund(ctx: RunContext, cp1_index: int, cp2_index: int):
     cache.set_run_transfer(refund)
 
 
-def verify_deploy(ctx: RunContext, dhash: str):
+def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Verifies that a deploy is in a finalized state.
     
     """
@@ -45,14 +45,14 @@ def verify_deploy(ctx: RunContext, dhash: str):
     assert deploy.status == DeployStatus.FINALIZED
 
 
-def verify_deploy_count(ctx: RunContext, expected: int):
+def verify_deploy_count(ctx: ExecutionRunInfo, expected: int):
     """Verifies that a step's count of finalized deploys tallies.
     
     """
     assert cache.get_step_deploy_count(ctx) == expected
 
 
-def verify_refund(ctx: RunContext, dhash: str) -> Transfer:
+def verify_refund(ctx: ExecutionRunInfo, dhash: str) -> Transfer:
     """Verifies that a refund between counter-parties completed.
     
     """

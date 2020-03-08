@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.generators.meta import GENERATOR_MAP as MODULES
 
 
@@ -9,7 +9,7 @@ class WorkflowStep():
     """A step with a phase of a broader workflow.
     
     """
-    def __init__(self, ctx: RunContext, index: int, module):
+    def __init__(self, ctx: ExecutionRunInfo, index: int, module):
         """Constructor.
         
         """
@@ -59,7 +59,7 @@ class WorkflowPhase():
     """A phase within a broader workflow.
     
     """
-    def __init__(self, ctx: RunContext, index: int, module):
+    def __init__(self, ctx: ExecutionRunInfo, index: int, module):
         """Constructor.
         
         """
@@ -92,7 +92,7 @@ class Workflow():
     """A workflow executed in order to test a scenario.
     
     """
-    def __init__(self, ctx: RunContext, module):
+    def __init__(self, ctx: ExecutionRunInfo, module):
         """Constructor.
         
         """
@@ -134,7 +134,7 @@ class Workflow():
 
 
     @staticmethod
-    def create(ctx: RunContext):
+    def create(ctx: ExecutionRunInfo):
         """Simple factory method.
         
         :param ctx: Workflow execution context information.
@@ -151,7 +151,7 @@ class Workflow():
 
 
     @staticmethod
-    def get_phase_(ctx: RunContext, phase_index: int) -> WorkflowPhase:
+    def get_phase_(ctx: ExecutionRunInfo, phase_index: int) -> WorkflowPhase:
         """Simple factory method.
         
         :param ctx: Workflow execution context information.
@@ -165,7 +165,7 @@ class Workflow():
 
 
     @staticmethod
-    def get_phase_step(ctx: RunContext, phase_index: int, step_index: int) -> WorkflowStep:
+    def get_phase_step(ctx: ExecutionRunInfo, phase_index: int, step_index: int) -> WorkflowStep:
         """Simple factory method.
         
         :param ctx: Workflow execution context information.

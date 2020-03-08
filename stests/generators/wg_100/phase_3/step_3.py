@@ -1,4 +1,4 @@
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.utils import logger
 
 
@@ -10,7 +10,7 @@ DESCRIPTION = "Dispatches a notification to signal that generator has completed.
 LABEL = "notify-competion"
 
 
-def execute(ctx: RunContext):
+def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     
     :param ctx: Generator run contextual information.

@@ -1,7 +1,7 @@
 import typing
 
 from stests.core import cache
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.generators.wg_100.constants import *
 
 
@@ -13,7 +13,7 @@ LABEL = "init-cache"
 
 
 
-def execute(ctx: RunContext):   
+def execute(ctx: ExecutionRunInfo):   
     """Step entry point.
     
     :param ctx: Generator run contextual information.

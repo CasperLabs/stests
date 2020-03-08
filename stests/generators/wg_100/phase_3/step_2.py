@@ -1,4 +1,4 @@
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_3 import utils
 
@@ -11,7 +11,7 @@ DESCRIPTION = "Refunds funds previously transferred from network faucet."
 LABEL = "refund-network-faucet"
 
 
-def execute(ctx: RunContext):
+def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     
     :param ctx: Generator run contextual information.
@@ -24,7 +24,7 @@ def execute(ctx: RunContext):
     )
 
 
-def verify_deploy(ctx: RunContext, dhash: str):
+def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Generator run contextual information.

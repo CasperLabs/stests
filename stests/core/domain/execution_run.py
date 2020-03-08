@@ -7,7 +7,7 @@ from stests.core.domain.enums import ExecutionStatus
 
 
 @dataclass
-class RunContext(Entity):
+class ExecutionRunInfo(Entity):
     """Contextual information associated with each generator run.
     
     """

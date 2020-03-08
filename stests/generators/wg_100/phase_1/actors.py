@@ -3,7 +3,7 @@ import typing
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.mq.actor import actorify
 from stests.core.utils import factory
 from stests.generators.wg_100.constants import *
@@ -11,7 +11,7 @@ from stests.generators.wg_100.constants import *
 
 
 @actorify(on_success=lambda: do_create_accounts)
-def do_init_cache(ctx: RunContext):   
+def do_init_cache(ctx: ExecutionRunInfo):   
     """Initiliases cache in preparation for a new run.
     
     :param ctx: Generator run contextual information.
@@ -21,7 +21,7 @@ def do_init_cache(ctx: RunContext):
 
 
 @actorify(on_success=lambda: do_fund_faucet)
-def do_create_accounts(ctx: RunContext) -> typing.Callable:
+def do_create_accounts(ctx: ExecutionRunInfo) -> typing.Callable:
     """Creates run specific accounts.
     
     :param ctx: Generator run contextual information.
@@ -37,7 +37,7 @@ def do_create_accounts(ctx: RunContext) -> typing.Callable:
 
 
 @actorify()
-def do_fund_faucet(ctx: RunContext):
+def do_fund_faucet(ctx: ExecutionRunInfo):
     """Funds account to be used as a faucet.
     
     :param ctx: Generator run contextual information.
@@ -52,7 +52,7 @@ def do_fund_faucet(ctx: RunContext):
 
 
 @actorify()
-def do_fund_contract(ctx: RunContext):
+def do_fund_contract(ctx: ExecutionRunInfo):
     """Funds account to be used as a contract.
     
     :param ctx: Generator run contextual information.
@@ -67,7 +67,7 @@ def do_fund_contract(ctx: RunContext):
 
 
 @actorify()
-def do_fund_users(ctx: RunContext) -> typing.Callable:
+def do_fund_users(ctx: ExecutionRunInfo) -> typing.Callable:
     """Funds accounts to be used as users.
     
     :param ctx: Generator run contextual information.
@@ -86,7 +86,7 @@ def do_fund_users(ctx: RunContext) -> typing.Callable:
 
 
 @actorify(is_substep=True)
-def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
+def do_create_account(ctx: ExecutionRunInfo, index: int, typeof: AccountType):
     """Creates an account for use during the course of a simulation.
 
     :param ctx: Generator run contextual information.
@@ -99,7 +99,7 @@ def do_create_account(ctx: RunContext, index: int, typeof: AccountType):
 
 
 @actorify(is_substep=True)
-def do_fund_account(ctx: RunContext, cp1_index: int, cp2_index: int, motes: int):
+def do_fund_account(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int, motes: int):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 
     :param ctx: Generator run contextual information.

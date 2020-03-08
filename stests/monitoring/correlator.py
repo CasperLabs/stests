@@ -6,7 +6,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core.utils import logger
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.domain import ExecutionStatus
 from stests.generators.wg_100 import pipeline as wg_100_pipeline
 
@@ -21,7 +21,7 @@ PIPELINES = {
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def correlate_finalized_deploy(ctx: RunContext, dhash: str):   
+def correlate_finalized_deploy(ctx: ExecutionRunInfo, dhash: str):   
     """Correlates a finalzied deploy with a workload generator correlation handler.
     
     :param ctx: Generator run contextual information.
@@ -69,7 +69,7 @@ def _complete_run(ctx):
     # TODO: update run context status
 
 
-def _verify(ctx: RunContext, pipeline, actor: dramatiq.Actor, dhash: str) -> bool:
+def _verify(ctx: ExecutionRunInfo, pipeline, actor: dramatiq.Actor, dhash: str) -> bool:
     """Verifies that a step has completed prior to incrementation.
     
     """
@@ -87,7 +87,7 @@ def _verify(ctx: RunContext, pipeline, actor: dramatiq.Actor, dhash: str) -> boo
     return True
 
 
-def _increment(ctx: RunContext, pipeline, actor: dramatiq.Actor):
+def _increment(ctx: ExecutionRunInfo, pipeline, actor: dramatiq.Actor):
     """Increments a run step.
     
     """
@@ -98,7 +98,7 @@ def _increment(ctx: RunContext, pipeline, actor: dramatiq.Actor):
         _complete_run(ctx)
 
 
-def _get_actor(ctx: RunContext, pipeline) -> dramatiq.Actor:
+def _get_actor(ctx: ExecutionRunInfo, pipeline) -> dramatiq.Actor:
     """Returns an actor from a pipeline bymatching it's name against a run step.
     
     """
@@ -107,7 +107,7 @@ def _get_actor(ctx: RunContext, pipeline) -> dramatiq.Actor:
             return actor
 
 
-def _get_next_actor(ctx: RunContext, pipeline, actor: dramatiq.Actor) -> dramatiq.Actor:
+def _get_next_actor(ctx: ExecutionRunInfo, pipeline, actor: dramatiq.Actor) -> dramatiq.Actor:
     """Derives next actor in pipeline.
     
     """

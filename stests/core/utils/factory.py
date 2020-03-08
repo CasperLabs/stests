@@ -33,7 +33,7 @@ def create_account(
 
 
 def create_account_for_run(
-    ctx:RunContext,
+    ctx:ExecutionRunInfo,
     typeof: AccountType,
     index: int = 1,
     private_key: str = None, 
@@ -126,7 +126,7 @@ def create_deploy(
 
 
 def create_deploy_for_run(
-    ctx: RunContext,
+    ctx: ExecutionRunInfo,
     node: Node,
     deploy_hash: str,
     typeof: DeployType
@@ -227,11 +227,11 @@ def create_run_context(
     node_id: NodeIdentifier,
     run_index: int,
     run_type: str
-    ) -> RunContext:
-    """Returns a domain object instance: RunContext.
+    ) -> ExecutionRunInfo:
+    """Returns a domain object instance: ExecutionRunInfo.
     
     """
-    return RunContext(
+    return ExecutionRunInfo(
         args=args,
         loop_count=loop_count,
         loop_interval=loop_interval,
@@ -247,7 +247,7 @@ def create_run_context(
     )
 
 
-def create_step(ctx: RunContext, name: str) -> ExecutionStepInfo:
+def create_step(ctx: ExecutionRunInfo, name: str) -> ExecutionStepInfo:
     """Returns a domain object instance: ExecutionStepInfo.
 
     """
@@ -297,7 +297,7 @@ def create_run_id(
 
 
 def create_transfer(
-    ctx: RunContext,
+    ctx: ExecutionRunInfo,
     amount: int,
     asset: str,
     cp1: Account,

@@ -9,7 +9,7 @@ from stests.core.domain import Transfer
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import DeployType
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.utils import factory
 from stests.core.utils import logger
 
@@ -17,7 +17,7 @@ from stests.core.utils import logger
 
 @clx_op
 def do_refund(
-    ctx: RunContext,
+    ctx: ExecutionRunInfo,
     cp1: Account,
     cp2: Account,
     amount: int = None
@@ -45,7 +45,7 @@ def do_refund(
 
 @clx_op
 def do_transfer(
-    ctx: RunContext,
+    ctx: ExecutionRunInfo,
     cp1: Account,
     cp2: Account,
     amount: int,
@@ -83,7 +83,7 @@ def do_transfer(
 
 
 @clx_op
-def do_deploy_contract(ctx: RunContext, account: Account, wasm_filepath: str):
+def do_deploy_contract(ctx: ExecutionRunInfo, account: Account, wasm_filepath: str):
     """Deploys a smart contract to chain.
 
     :param ctx: Generator run contextual information.

@@ -1,6 +1,6 @@
 from stests.core import cache
 from stests.core import clx
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.mq.actor import actorify
 from stests.core.utils import resources
 from stests.generators.wg_100 import constants
@@ -9,7 +9,7 @@ from stests.generators.wg_100.phase_3 import do_refund_step_1
 
 
 @actorify(on_success=lambda: do_start_auction)
-def do_deploy_contract(ctx: RunContext):
+def do_deploy_contract(ctx: ExecutionRunInfo):
     """Deploys smart contract to target network.
     
     :param ctx: Generator run contextual information.

@@ -1,13 +1,13 @@
 from stests.core import cache
 from stests.core import clx
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.domain import DeployStatus
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 
 
 
-def verify_fund_contract(ctx: RunContext, dhash: str):
+def verify_fund_contract(ctx: ExecutionRunInfo, dhash: str):
     """Verifies that a contract account was funded.
     
     """
@@ -17,7 +17,7 @@ def verify_fund_contract(ctx: RunContext, dhash: str):
     _verify_deploy_count(ctx, 1)    
 
 
-def verify_fund_faucet(ctx: RunContext, dhash: str):
+def verify_fund_faucet(ctx: ExecutionRunInfo, dhash: str):
     """Verifies that a faucet account was funded.
     
     """
@@ -27,7 +27,7 @@ def verify_fund_faucet(ctx: RunContext, dhash: str):
     _verify_deploy_count(ctx, 1)
 
 
-def verify_fund_users(ctx: RunContext, dhash: str):
+def verify_fund_users(ctx: ExecutionRunInfo, dhash: str):
     """Verifies that user accounts are funded.
     
     """
@@ -37,7 +37,7 @@ def verify_fund_users(ctx: RunContext, dhash: str):
     _verify_deploy_count(ctx, ctx.args.user_accounts)    
 
 
-def _verify_deploy(ctx: RunContext, dhash: str):
+def _verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Verifies that a deploy is in a finalized state.
     
     """
@@ -46,14 +46,14 @@ def _verify_deploy(ctx: RunContext, dhash: str):
     assert deploy.status == DeployStatus.FINALIZED
 
 
-def _verify_deploy_count(ctx: RunContext, expected: int):
+def _verify_deploy_count(ctx: ExecutionRunInfo, expected: int):
     """Verifies that a step's count of finalized deploys tallies.
     
     """
     assert cache.get_step_deploy_count(ctx) == expected
 
 
-def _verify_transfer(ctx: RunContext, dhash: str) -> Transfer:
+def _verify_transfer(ctx: ExecutionRunInfo, dhash: str) -> Transfer:
     """Verifies that a transfer between counter-parties completed.
     
     """
@@ -64,7 +64,7 @@ def _verify_transfer(ctx: RunContext, dhash: str) -> Transfer:
     return transfer
 
 
-def _verify_account_balance(ctx: RunContext, account_index: int, expected: int):
+def _verify_account_balance(ctx: ExecutionRunInfo, account_index: int, expected: int):
     """Verifies that an account balance is as per expectation.
     
     """

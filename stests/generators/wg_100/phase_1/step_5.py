@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_1 import utils
 
@@ -13,7 +13,7 @@ DESCRIPTION = "Fund's a set of run user accounts."
 LABEL = "fund-users"
 
 
-def execute(ctx: RunContext) -> typing.Callable:
+def execute(ctx: ExecutionRunInfo) -> typing.Callable:
     """Step entry point.
     
     :param ctx: Generator run contextual information.
@@ -31,7 +31,7 @@ def execute(ctx: RunContext) -> typing.Callable:
     return get_messages
 
 
-def verify_deploy(ctx: RunContext, dhash: str):
+def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Generator run contextual information.

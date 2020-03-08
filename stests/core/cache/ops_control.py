@@ -28,7 +28,7 @@ def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
         
 
 @cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
-def flush_by_run(ctx: RunContext) -> typing.Generator:
+def flush_by_run(ctx: ExecutionRunInfo) -> typing.Generator:
     """Flushes previous run information.
 
     :param ctx: Generator run contextual information.
@@ -52,7 +52,7 @@ def flush_by_run(ctx: RunContext) -> typing.Generator:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.FLUSH)
-def flush_locks(ctx: RunContext) -> typing.Generator:
+def flush_locks(ctx: ExecutionRunInfo) -> typing.Generator:
     """Flushes previous run locks.
 
     :param ctx: Generator run contextual information.
@@ -69,8 +69,8 @@ def flush_locks(ctx: RunContext) -> typing.Generator:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.GET)
-def get_context(network: str, run_index: int, run_type: str) -> RunContext:
-    """Decaches domain object: RunContext.
+def get_context(network: str, run_index: int, run_type: str) -> ExecutionRunInfo:
+    """Decaches domain object: ExecutionRunInfo.
     
     :param network: Name of network being tested.
     :param run_index: Generator run index.
@@ -88,8 +88,8 @@ def get_context(network: str, run_index: int, run_type: str) -> RunContext:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.GET)
-def get_contexts(network: str, run_type: str) -> RunContext:
-    """Decaches domain object: RunContext.
+def get_contexts(network: str, run_type: str) -> ExecutionRunInfo:
+    """Decaches domain object: ExecutionRunInfo.
     
     :param ctx: Generator run contextual information.
 
@@ -103,7 +103,7 @@ def get_contexts(network: str, run_type: str) -> RunContext:
         "*"
     ]
 
-def get_run_network(ctx: RunContext) -> Network:
+def get_run_network(ctx: ExecutionRunInfo) -> Network:
     """Decaches domain object: Network.
     
     :param ctx: Generator run contextual information.
@@ -116,7 +116,7 @@ def get_run_network(ctx: RunContext) -> Network:
     return get_network(network_id)
 
 
-def get_step(ctx: RunContext) -> ExecutionStepInfo:
+def get_step(ctx: ExecutionRunInfo) -> ExecutionStepInfo:
     """Decaches domain object: ExecutionStepInfo.
     
     :param ctx: Generator run contextual information.
@@ -131,7 +131,7 @@ def get_step(ctx: RunContext) -> ExecutionStepInfo:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.GET)
-def get_steps(ctx: RunContext) -> typing.List[ExecutionStepInfo]:
+def get_steps(ctx: ExecutionRunInfo) -> typing.List[ExecutionStepInfo]:
     """Decaches collection of domain objects: ExecutionStepInfo.
 
     :param ctx: Generator run contextual information.
@@ -149,7 +149,7 @@ def get_steps(ctx: RunContext) -> typing.List[ExecutionStepInfo]:
         
 
 @cache_op(StorePartition.CONTROL, StoreOperation.GET_COUNT)
-def get_step_deploy_count(ctx: RunContext) -> int:
+def get_step_deploy_count(ctx: ExecutionRunInfo) -> int:
     """Reurns current count of run step deploys.
 
     :param ctx: Generator run contextual information.
@@ -165,7 +165,7 @@ def get_step_deploy_count(ctx: RunContext) -> int:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.INCR)
-def increment_step_deploy_count(ctx: RunContext):
+def increment_step_deploy_count(ctx: ExecutionRunInfo):
     """Increments (atomically) count of run step deploys.
 
     :param ctx: Generator run contextual information.
@@ -254,8 +254,8 @@ def set_state(
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.SET)
-def set_run_context(ctx: RunContext) -> typing.Tuple[typing.List[str], RunContext]:
-    """Encaches domain object: RunContext.
+def set_run_context(ctx: ExecutionRunInfo) -> typing.Tuple[typing.List[str], ExecutionRunInfo]:
+    """Encaches domain object: ExecutionRunInfo.
     
     :param ctx: Generator run contextual information.
 

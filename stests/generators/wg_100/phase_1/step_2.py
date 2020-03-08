@@ -1,7 +1,7 @@
 import typing
 
 from stests.core.domain import AccountType
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_1 import utils
 
@@ -14,7 +14,7 @@ LABEL = "create-accounts"
 
 
 
-def execute(ctx: RunContext) -> typing.Callable:
+def execute(ctx: ExecutionRunInfo) -> typing.Callable:
     """Step entry point.
     
     :param ctx: Generator run contextual information.

@@ -6,12 +6,12 @@ from stests.core import cache
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
-from stests.core.domain import RunContext
+from stests.core.domain import ExecutionRunInfo
 from stests.core.utils import logger
 
 
 
-def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunContext]) -> typing.Tuple[Node, pyclx.CasperLabsClient]:
+def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, ExecutionRunInfo]) -> typing.Tuple[Node, pyclx.CasperLabsClient]:
     """Factory method to return a configured clabs client and the node with which it is associated.
 
     :param src: The source from which a network node will be derived.
@@ -26,7 +26,7 @@ def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, RunCon
         node = cache.get_node(src)
     elif isinstance(src, NetworkIdentifier):
         node = cache.get_node_by_network_id(src)
-    elif isinstance(src, RunContext):
+    elif isinstance(src, ExecutionRunInfo):
         node = cache.get_node_by_run_context(src)
     else:
         raise ValueError("Cannot derive node from input source.")
