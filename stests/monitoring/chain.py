@@ -99,7 +99,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
 
     # Increment step deploy count.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
-    cache.increment_step_deploy_count(ctx)
+    cache.orchestration.increment_step_deploy_count(ctx)
 
     # Update transfers.
     transfer = cache.state.get_run_transfer(dhash)

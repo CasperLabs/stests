@@ -1,11 +1,6 @@
 from stests.core.domain import NetworkIdentifier
 from stests.core.orchestration import ExecutionRunInfo
 
-from stests.core.cache.ops_infra import *
-from stests.core.cache.ops_monitoring import *
-from stests.core.cache.ops_orchestration import *
-from stests.core.cache.ops_state import *
-
 import stests.core.cache.ops_infra as infra
 import stests.core.cache.ops_monitoring as monitoring
 import stests.core.cache.ops_orchestration as orchestration
