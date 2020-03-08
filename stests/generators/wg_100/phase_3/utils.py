@@ -23,14 +23,14 @@ def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
     
     """
     # Pull accounts.
-    cp1 = cache.get_account_by_run(ctx, cp1_index)
+    cp1 = cache.state.get_account_by_run(ctx, cp1_index)
     if cp2_index == constants.ACC_NETWORK_FAUCET:
-        network = cache.get_run_network(ctx)
+        network = cache.orchestration.get_run_network(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp2 = network.faucet
     else:
-        cp2 = cache.get_account_by_run(ctx, cp2_index)
+        cp2 = cache.state.get_account_by_run(ctx, cp2_index)
 
     # Refund CLX from cp1 -> cp2.
     (deploy, refund) = clx.do_refund(ctx, cp1, cp2)
@@ -44,7 +44,7 @@ def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Verifies that a deploy is in a finalized state.
     
     """
-    deploy = cache.get_run_deploy(dhash)
+    deploy = cache.state.get_run_deploy(dhash)
     assert deploy
     assert deploy.status == DeployStatus.FINALIZED
 
@@ -53,13 +53,13 @@ def verify_deploy_count(ctx: ExecutionRunInfo, expected: int):
     """Verifies that a step's count of finalized deploys tallies.
     
     """
-    assert cache.get_step_deploy_count(ctx) == expected
+    assert cache.orchestration.get_step_deploy_count(ctx) == expected
 
 
 def verify_refund(ctx: ExecutionRunInfo, dhash: str) -> Transfer:
     """Verifies that a refund between counter-parties completed.
     
     """
-    refund = cache.get_run_transfer(dhash)
+    refund = cache.state.get_run_transfer(dhash)
     assert refund
     assert refund.status == TransferStatus.COMPLETE

@@ -25,6 +25,9 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
+            # JIT iniitalise encoder to ensure all types are registered.
+            encoder.initialise()
+
             with stores.get_store(partition) as store:
 
                 if operation == StoreOperation.FLUSH:

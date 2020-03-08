@@ -1,10 +1,9 @@
 import random
 import typing
 
+import stests.core.cache.ops_infra as infra
 from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
-from stests.core.cache.ops_infra import get_network
-from stests.core.cache.ops_infra import get_nodes
 from stests.core.cache.utils import cache_op
 from stests.core.domain import *
 from stests.core.orchestration import *
@@ -114,7 +113,7 @@ def get_run_network(ctx: ExecutionRunInfo) -> Network:
     """
     network_id = factory.create_network_id(ctx.network)
 
-    return get_network(network_id)
+    return infra.get_network(network_id)
 
 
 def get_step(ctx: ExecutionRunInfo) -> ExecutionStepInfo:

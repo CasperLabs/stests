@@ -24,12 +24,12 @@ def main(args):
 
     """
     network_id=factory.create_network_id(args.network)
-    network = cache.get_network(network_id)
+    network = cache.infra.get_network(network_id)
     if network is None:
         logger.log_warning(f"Network {args.network} is unregistered.")
         return
 
-    nodeset = cache.get_nodes(network_id)
+    nodeset = cache.infra.get_nodes(network_id)
     if not nodeset:
         logger.log_warning(f"Network {args.network} has no nodes.")
         return

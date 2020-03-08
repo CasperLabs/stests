@@ -4,6 +4,7 @@ from stests.core import cache
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
+from stests.core.utils import encoder
 
 
 from stests.generators.wg_100 import args
@@ -41,11 +42,9 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Unpack.
-    network_id = factory.create_network_id(args.network)
-
     # Pull run context.
-    ctx = cache.get_context(
+    network_id = factory.create_network_id(args.network)
+    ctx = cache.orchestration.get_context(
         network_id.name, 
         args.run_index,
         args.run_type
@@ -55,7 +54,7 @@ def main(args):
         return
 
     # Pull run steps.
-    steps = cache.get_steps(ctx)
+    steps = cache.orchestration.get_steps(ctx)
     if not steps:
         logger.log_warning(f"Run {network_id.name} : {args.run_type} : {str(args.run_index).zfill(4)} is unexecuted.")
         return

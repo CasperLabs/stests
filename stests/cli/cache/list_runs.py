@@ -38,14 +38,14 @@ def main(args):
     network_id = factory.create_network_id(args.network)
 
     # Pull run contexts.
-    runs = cache.get_contexts(
+    runs = cache.orchestration.get_contexts(
         network_id.name, 
         args.run_type
         )
     if not runs:
         logger.log_warning(f"No runs found within cache for {network_id.name} : {args.run_type}.")
 
-    runs = list(map(lambda r: (r, cache.get_step(r)), runs))
+    runs = list(map(lambda r: (r, cache.orchestration.get_step(r)), runs))
 
     # Display.
     print("-----------------------------------------------------------------------------------------------")

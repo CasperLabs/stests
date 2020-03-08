@@ -10,6 +10,9 @@ from stests.core.utils import logger
 
 
 
+# Initialisation flag.
+IS_INITIALISED = False
+
 # Set: supported enum values.  
 ENUM_TYPE_SET = set()
 
@@ -202,10 +205,17 @@ def initialise():
     """Register set of non-core types that require encoding/decoding.
     
     """
+    global IS_INITIALISED
+
+    if IS_INITIALISED:
+        return
+
     from stests.generators.meta import GENERATOR_SET
     for generator in GENERATOR_SET:
         for i in generator.TYPE_SET:
             register_type(i)
+
+    IS_INITIALISED = True
 
     logger.log("CORE :: encoder has been initialised")
 

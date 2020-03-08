@@ -16,7 +16,7 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    for network in cache.get_networks():
+    for network in cache.infra.get_networks():
         logger.log(f"""NETWORK: {network.name} -> status={network.status.name}, type={network.typeof.name}, index={network.index}""")
 
 

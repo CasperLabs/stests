@@ -23,11 +23,11 @@ def get_client(src: typing.Union[Node, NodeIdentifier, NetworkIdentifier, Execut
     if isinstance(src, Node):
         node = src
     elif isinstance(src, NodeIdentifier):
-        node = cache.get_node(src)
+        node = cache.infra.get_node(src)
     elif isinstance(src, NetworkIdentifier):
-        node = cache.get_node_by_network_id(src)
+        node = cache.infra.get_node_by_network_id(src)
     elif isinstance(src, ExecutionRunInfo):
-        node = cache.get_node_by_run_context(src)
+        node = cache.infra.get_node_by_run_context(src)
     else:
         raise ValueError("Cannot derive node from input source.")
     if not node:

@@ -25,7 +25,7 @@ def main(args):
     """
     # Set network.
     network_id=factory.create_network_id(args.network)
-    network = cache.get_network(network_id)
+    network = cache.infra.get_network(network_id)
     if network is None:
         logger.log_warning(f"Network {args.network} is unregistered - flushing cache anyway.")
 

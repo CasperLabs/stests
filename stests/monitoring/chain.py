@@ -23,9 +23,9 @@ def launch_stream_monitors():
     """Launches network stream endpoint monitors.
     
     """
-    for network in cache.get_networks():
+    for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
-        for idx, node in enumerate(cache.get_nodes_operational(network)):
+        for idx, node in enumerate(cache.infra.get_nodes_operational(network)):
             node_id = factory.create_node_id(network_id, node.index)
             do_monitor_blocks.send_with_options(args=(node_id, ), delay=idx * 500)
             break
@@ -88,7 +88,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
         return
 
     # Pull deploy.
-    deploy = cache.get_run_deploy(dhash)
+    deploy = cache.state.get_run_deploy(dhash)
     if not deploy:
         logger.log_warning(f"Could not find finalized run deploy information: {bhash} : {dhash}")
         return
@@ -98,11 +98,11 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     cache.set_run_deploy(deploy)
 
     # Increment step deploy count.
-    ctx = cache.get_context(deploy.network, deploy.run_index, deploy.run_type)
+    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
     cache.increment_step_deploy_count(ctx)
 
     # Update transfers.
-    transfer = cache.get_run_transfer(dhash)
+    transfer = cache.state.get_run_transfer(dhash)
     if transfer:
         transfer.update_on_completion()
         cache.set_run_transfer(transfer)

@@ -44,13 +44,13 @@ def do_fund_account(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int, motes
     """
     # Set counterparties.
     if cp1_index == ACC_NETWORK_FAUCET:
-        network = cache.get_run_network(ctx)
+        network = cache.orchestration.get_run_network(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp1 = network.faucet
     else:
-        cp1 = cache.get_account_by_run(ctx, cp1_index)
-    cp2 = cache.get_account_by_run(ctx, cp2_index)
+        cp1 = cache.state.get_account_by_run(ctx, cp1_index)
+    cp2 = cache.state.get_account_by_run(ctx, cp2_index)
 
     # Transfer CLX from cp1 -> cp2.
     (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
@@ -65,7 +65,7 @@ def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Verifies that a deploy is in a finalized state.
     
     """
-    deploy = cache.get_run_deploy(dhash)
+    deploy = cache.state.get_run_deploy(dhash)
     assert deploy
     assert deploy.status == DeployStatus.FINALIZED
 
@@ -74,14 +74,14 @@ def verify_deploy_count(ctx: ExecutionRunInfo, expected: int):
     """Verifies that a step's count of finalized deploys tallies.
     
     """
-    assert cache.get_step_deploy_count(ctx) == expected
+    assert cache.orchestration.get_step_deploy_count(ctx) == expected
 
 
 def verify_transfer(ctx: ExecutionRunInfo, dhash: str) -> Transfer:
     """Verifies that a transfer between counter-parties completed.
     
     """
-    transfer = cache.get_run_transfer(dhash)
+    transfer = cache.state.get_run_transfer(dhash)
     assert transfer
     assert transfer.status == TransferStatus.COMPLETE
 
@@ -92,6 +92,6 @@ def verify_account_balance(ctx: ExecutionRunInfo, account_index: int, expected: 
     """Verifies that an account balance is as per expectation.
     
     """
-    account = cache.get_account_by_run(ctx, account_index)
+    account = cache.state.get_account_by_run(ctx, account_index)
     assert account
     assert clx.get_balance(ctx, account) == expected
