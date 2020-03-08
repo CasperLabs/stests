@@ -30,7 +30,7 @@ def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
 def flush_by_run(ctx: ExecutionRunInfo) -> typing.Generator:
     """Flushes previous run information.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     :returns: A generator of keypaths to be flushed.
     
@@ -70,7 +70,7 @@ def get_account(account_id: AccountIdentifier) -> Account:
 def get_account_by_run(ctx: ExecutionRunInfo, index: int) -> Account:
     """Decaches domain object: Account.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param index: Run specific account index. 
 
     :returns: A cached account.

@@ -248,22 +248,6 @@ def create_run_context(
     )
 
 
-def create_step(ctx: ExecutionRunInfo, name: str) -> ExecutionStepInfo:
-    """Returns a domain object instance: ExecutionStepInfo.
-
-    """
-    return ExecutionStepInfo(
-        network=ctx.network,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        status=ExecutionStatus.IN_PROGRESS,
-        step=name,
-        step_duration=None,
-        ts_start=datetime.now(),
-        ts_end=None,
-    )
-
-
 def create_run_phase(
     network_id: NetworkIdentifier,
     run_index: int,

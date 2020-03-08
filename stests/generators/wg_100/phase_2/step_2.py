@@ -13,7 +13,7 @@ LABEL = "start-auction"
 def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     """
     print("TODO: start-auction")

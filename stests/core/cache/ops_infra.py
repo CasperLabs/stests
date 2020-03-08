@@ -95,7 +95,7 @@ def get_node_by_network_id(network_id: NetworkIdentifier) -> Node:
 def get_node_by_run_context(ctx: ExecutionRunInfo) -> Node:
     """Decaches domain object: Node.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     :returns: A registered node.
 

@@ -34,7 +34,7 @@ def create_run_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Executio
     )
 
 
-def create_phase_lock(ctx: ExecutionRunInfo, phase_index: int) -> ExecutionRunLock:
+def create_phase_lock(ctx: ExecutionRunInfo, phase_index: int) -> ExecutionPhaseLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -68,8 +68,25 @@ def create_phase_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Execut
         status=status,
     )
 
+def create_step_info(ctx: ExecutionRunInfo) -> ExecutionStepInfo:
+    """Returns a domain object instance: ExecutionStepInfo.
 
-def create_step_lock(ctx: ExecutionRunInfo, step_index: int, step_label: str) -> ExecutionRunLock:
+    """
+    return ExecutionStepInfo(
+        network=ctx.network,
+        phase_index=ctx.phase_index,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=ctx.step_index,
+        step_label=ctx.step_label,
+        tp_duration=None,
+        ts_start=datetime.now(),
+        ts_end=None,
+    )
+
+
+def create_step_lock(ctx: ExecutionRunInfo, step_index: int, step_label: str) -> ExecutionStepLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.

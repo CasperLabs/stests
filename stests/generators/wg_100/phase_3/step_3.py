@@ -13,7 +13,7 @@ LABEL = "notify-competion"
 def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     """      
     # TODO: push notification.

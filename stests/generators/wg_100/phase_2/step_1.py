@@ -13,7 +13,7 @@ LABEL = "deploy-contract"
 def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     """
     binary_fpath = resources.get_wasm_path(constants.WASM_CONTRACT_FILENAME)

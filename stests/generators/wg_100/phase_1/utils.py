@@ -23,7 +23,7 @@ _QUEUE = "wg-100.utils"
 def do_create_account(ctx: ExecutionRunInfo, index: int, typeof: AccountType):
     """Creates an account for use during the course of a simulation.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param index: Run specific account index.
     :param typeof: Account type.
 
@@ -36,7 +36,7 @@ def do_create_account(ctx: ExecutionRunInfo, index: int, typeof: AccountType):
 def do_fund_account(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int, motes: int):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param cp1_index: Run specific account index of counter-party one.
     :param cp2_index: Run specific account index of counter-party two.
     :param motes: Amount to be transferred.

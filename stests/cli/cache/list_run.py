@@ -64,7 +64,7 @@ def main(args):
     print(f"Run {ctx.network} : {ctx.run_type} : R-{str(args.run_index).zfill(4)}")
     print("-----------------------------------------------------------------------------------------------")
     for idx, step in enumerate(sorted(steps, key=lambda s: s.ts_start)):
-        print(f"step {str(idx + 1).zfill(2)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.step_duration_label.rjust(11)}")
+        print(f"step {str(idx + 1).zfill(2)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.tp_duration_label.rjust(11)}")
     print("-----------------------------------------------------------------------------------------------")
 
 

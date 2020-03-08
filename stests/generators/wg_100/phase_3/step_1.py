@@ -16,7 +16,7 @@ LABEL = "refund-run-faucet"
 def execute(ctx: ExecutionRunInfo) -> typing.Callable:
     """Step entry point.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     """  
     def get_messages():
@@ -39,7 +39,7 @@ def execute(ctx: ExecutionRunInfo) -> typing.Callable:
 def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Step deploy verifier.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param dhash: A deploy hash.
 
     """

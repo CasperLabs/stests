@@ -21,7 +21,7 @@ def flush_by_network(network_id: NetworkIdentifier):
 def flush_by_run(ctx: ExecutionRunInfo):
     """Flushes all information pertaining to a run.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     """
     for partition in (orchestration, state):

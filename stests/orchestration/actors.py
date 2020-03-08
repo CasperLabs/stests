@@ -160,6 +160,7 @@ def do_step(ctx: ExecutionRunInfo):
     # Update cache.
     cache.orchestration.set_run_context(ctx)
     cache.orchestration.set_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
+    cache.orchestration.set_step_info(factory.create_step_info(ctx))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
@@ -218,8 +219,9 @@ def do_step_end(ctx: ExecutionRunInfo):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
 
-    # Update status.
+    # Update cache.
     cache.orchestration.set_state(factory.create_step_state(ctx, ExecutionStatus.COMPLETE))
+    cache.orchestration.update_step_info(ctx, ExecutionStatus.COMPLETE)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> end")
@@ -239,8 +241,9 @@ def do_step_error(ctx: ExecutionRunInfo, err: str):
     :param err: Execution error information.
     
     """
-    # Update status.
+    # Update cache.
     cache.orchestration.set_state(factory.create_step_state(ctx, ExecutionStatus.ERROR))
+    cache.orchestration.update_step_info(ctx, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> unhandled error")

@@ -17,7 +17,7 @@ _QUEUE = "wg-100.utils"
 def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
     """Performs a refund ot funds between 2 counterparties.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param cp1_index: Run specific account index of counter-party one.
     :param cp2_index: Run specific account index of counter-party two.
     

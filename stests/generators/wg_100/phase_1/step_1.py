@@ -15,7 +15,7 @@ LABEL = "init-cache"
 def execute(ctx: ExecutionRunInfo):   
     """Step entry point.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     """
     pass

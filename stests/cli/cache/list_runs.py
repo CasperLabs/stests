@@ -52,7 +52,7 @@ def main(args):
     print(f"{network_id.name} : {args.run_type}")
     print("-----------------------------------------------------------------------------------------------")
     for run, step in runs:
-        print(f"R-{str(run.run_index).zfill(4)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.step_elapsed_label.rjust(11)} ")
+        print(f"R-{str(run.run_index).zfill(4)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.tp_elapsed_label.rjust(11)} ")
     print("-----------------------------------------------------------------------------------------------")
 
 

@@ -24,7 +24,7 @@ def do_refund(
     ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a refund between 2 counter-parties & returns resulting deploy hash.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param cp1: Account information of counter party 1.
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be refunded.
@@ -54,7 +54,7 @@ def do_transfer(
     ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param cp1: Account information of counter party 1.
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
@@ -86,7 +86,7 @@ def do_transfer(
 def do_deploy_contract(ctx: ExecutionRunInfo, account: Account, wasm_filepath: str):
     """Deploys a smart contract to chain.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param account: Account to be associated with contract.
     :param wasm_filepath: Path to smart contract's wasm file.
 

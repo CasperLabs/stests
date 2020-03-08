@@ -15,25 +15,31 @@ class ExecutionStepInfo:
     # Associated network.
     network: str
 
-    # Numerical index to distinguish between multiple runs of the same generator.
+    # Index to disambiguate a phase within the context of a run.
+    phase_index: int
+
+    # Index to distinguish between multiple runs.
     run_index: int
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str
 
-    # Current status.
-    status: ExecutionStatus
-
     # Index to disambiguate a step within the context of a phase.
     step_index: int
 
-    # Elapsed execution time (in seconds).
-    step_duration: typing.Optional[float]
+    # Label to disambiguate a step within the context of a phase.
+    step_label: str
 
-    # Moment in time when step occurred.
+    # Current status.
+    status: ExecutionStatus
+
+    # Timeperiod: step duration (in seconds).
+    tp_duration: typing.Optional[float]
+
+    # Timestamp: step start.
     ts_start: datetime
 
-    # Moment in time when step completed.
+    # Timestamp: step end.
     ts_end: typing.Optional[datetime]
 
     # Type key of associated object used in serialisation scenarios.
@@ -43,31 +49,31 @@ class ExecutionStepInfo:
     _ts_created: datetime = get_timestamp_field()
 
     @property
-    def ts_elapsed(self):
+    def tp_elapsed(self):
         if self.status == ExecutionStatus.COMPLETE:
-            return self.step_duration
+            return self.tp_duration
         return datetime.now().timestamp() - self.ts_start.timestamp()
 
     @property
-    def step_duration_label(self):
+    def tp_duration_label(self):
         """Returns step duration formatted for display purposes.
         
         """
-        if self.step_duration is None:
+        if self.tp_duration is None:
             return "N/A"
 
-        duration = str(self.step_duration)
+        duration = str(self.tp_duration)
         minutes = duration.split(".")[0]
         seconds = duration.split(".")[1][:6]
         
         return f"{minutes}.{seconds}"
 
     @property
-    def step_elapsed_label(self):
+    def tp_elapsed_label(self):
         """Returns step elapsed formatted for display purposes.
         
         """
-        elapsed = str(self.ts_elapsed)
+        elapsed = str(self.tp_elapsed)
         minutes = elapsed.split(".")[0]
         seconds = elapsed.split(".")[1][:6]
         
@@ -86,13 +92,14 @@ class ExecutionStepInfo:
         return f"S-{str(self.step_index).zfill(2)}"
 
 
-    def update_on_completion(self):
-        """Executed when transfer has been completed.
+    def finalise(self, status, error=None):
+        """Executed when step is complete.
         
         """
-        self.status = ExecutionStatus.COMPLETE
+        self.error = error
+        self.status = status
         self.ts_end = datetime.now()
-        self.step_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
+        self.tp_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 
 
 @dataclasses.dataclass

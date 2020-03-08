@@ -13,7 +13,7 @@ LABEL = "fund-contract"
 def execute(ctx: ExecutionRunInfo):
     """Step entry point.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     """
     utils.do_fund_account.send(
@@ -27,7 +27,7 @@ def execute(ctx: ExecutionRunInfo):
 def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     """Step deploy verifier.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param dhash: A deploy hash.
 
     """
