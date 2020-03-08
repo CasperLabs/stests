@@ -186,16 +186,20 @@ def register_type(cls):
 
 
 def _initialise():
-    """Register the set of types that require encoding/decoding.
+    """Register set of core types that require encoding/decoding.
     
     """
     from stests.core import domain
     for i in domain.TYPE_SET:
         register_type(i)
 
+    from stests.core import orchestration
+    for i in orchestration.TYPE_SET:
+        register_type(i)
+
 
 def initialise():
-    """Register the set of types that require encoding/decoding.
+    """Register set of non-core types that require encoding/decoding.
     
     """
     from stests.generators.meta import GENERATOR_SET
