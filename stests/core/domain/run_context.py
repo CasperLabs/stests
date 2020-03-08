@@ -14,6 +14,12 @@ class RunContext(Entity):
     # Associated run arguments.
     args: typing.Optional[typing.Any]
 
+    # Number of times to loop.
+    loop_count: int
+
+    # Upon successful completion of a run, the number of seconds after which a new run will be started.
+    loop_interval: int
+
     # Associated network.
     network: str
 
@@ -27,10 +33,10 @@ class RunContext(Entity):
     run_type: str
 
     # Index to disambiguate a phase within the context of a run.
-    phase_index: typing.Optional[int]
+    phase_index: int
 
     # Index to disambiguate a step within the context of a phase.
-    step_index: typing.Optional[int]
+    step_index: int
 
     # Current step.
     # TODO: remove

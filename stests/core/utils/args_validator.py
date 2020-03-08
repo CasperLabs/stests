@@ -16,9 +16,17 @@ NODE_INDEX_MAX = 999
 PORT_MIN = 1
 PORT_MAX = 65536
 
-# Generarator run index min/max.
+# Run index min/max.
 RUN_INDEX_MIN = 1
 RUN_INDEX_MAX = 65536
+
+# Loop interval (in seconds) min/max
+LOOP_INTERVAL_MIN = 0
+LOOP_INTERVAL_MAX = 1209600  # 2 weeks
+
+# Loop count min/max
+LOOP_COUNT_MIN = 0
+LOOP_COUNT_MAX = 65536
 
 
 def validate_run_index(value):
@@ -34,6 +42,20 @@ def validate_run_type(value):
     """
     # TODO
     return str(value).upper()
+
+
+def validate_loop_interval(value):
+    """Argument verifier: loop interval.
+    
+    """
+    return _validate_int(value, LOOP_INTERVAL_MIN, LOOP_INTERVAL_MAX, "Loop interval")
+
+
+def validate_loop_count(value):
+    """Argument verifier: loop count.
+    
+    """
+    return _validate_int(value, LOOP_COUNT_MIN, LOOP_COUNT_MAX, "Loop count")
 
 
 def validate_network_index(value):

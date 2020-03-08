@@ -14,6 +14,16 @@ def create_state(
     step_index: int = None,
     status=ExecutionStatus.IN_PROGRESS
     ) -> typing.Union[RunContextState, RunPhaseState, RunStepState]:
+    """Factory: returns a workflow state instance.
+    
+    :param ctx: Execution context information.
+    :param phase_index: Index of current execution phase.
+    :param step_index: Index of current execution step.
+    :param status: Execution status.
+
+    :returns: Workflow state information.
+
+    """
     if ctx and phase_index and step_index:
         return RunStepState(
             network=ctx.network,

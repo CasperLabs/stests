@@ -38,6 +38,24 @@ ARGS.add_argument(
     default=1
     )
 
+# CLI argument: scope -> run index.
+ARGS.add_argument(
+    "--loop-interval",
+    dest="loop_interval",
+    help="Interval in seconds between loops.",
+    type=args_validator.validate_loop_interval,
+    default=0
+    )
+
+# CLI argument: scope -> run index.
+ARGS.add_argument(
+    "--loop-count",
+    dest="loop_count",
+    help="Number of times to loop.",
+    type=args_validator.validate_loop_count,
+    default=0
+    )
+
 # CLI argument: initial CLX balance.
 ARGS.add_argument(
     "--faucet-initial-clx-balance",
@@ -115,6 +133,8 @@ def main(args: argparse.Namespace):
     node_id = factory.create_node_id(network_id, args.node_index)
     ctx = factory.create_run_context(
         args=Arguments.create(args),
+        loop_count=args.loop_count,
+        loop_interval=args.loop_interval,
         network_id=network_id,
         node_id=node_id,
         run_index=args.run_index,

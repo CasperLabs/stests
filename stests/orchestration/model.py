@@ -1,3 +1,5 @@
+import typing
+
 from stests.core.domain import RunContext
 from stests.generators.meta import GENERATOR_MAP as MODULES
 
@@ -7,7 +9,10 @@ class WorkflowStep():
     """A step with a phase of a broader workflow.
     
     """
-    def __init__(self, ctx, index, module):
+    def __init__(self, ctx: RunContext, index: int, module):
+        """Constructor.
+        
+        """
         # Workflow execution context information.
         self.ctx = ctx
 
@@ -54,7 +59,10 @@ class WorkflowPhase():
     """A phase within a broader workflow.
     
     """
-    def __init__(self, ctx, index, module):
+    def __init__(self, ctx: RunContext, index: int, module):
+        """Constructor.
+        
+        """
         # Workflow execution context information.
         self.ctx = ctx
 
@@ -84,7 +92,10 @@ class Workflow():
     """A workflow executed in order to test a scenario.
     
     """
-    def __init__(self, ctx, module):
+    def __init__(self, ctx: RunContext, module):
+        """Constructor.
+        
+        """
         # Workflow execution context information.
         self.ctx = ctx
 

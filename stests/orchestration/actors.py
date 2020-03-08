@@ -3,9 +3,6 @@ import inspect
 import dramatiq
 
 from stests.core import cache
-from stests.core.cache.locks import RunLock
-from stests.core.cache.locks import RunPhaseLock
-from stests.core.cache.locks import RunStepLock
 from stests.core.domain import ExecutionStatus
 from stests.core.domain import RunContext
 from stests.core.utils import logger
@@ -29,13 +26,9 @@ def do_run(ctx: RunContext):
     
     """
     # Temporary - will be done on run completion.
-    cache.flush_locks(ctx)
+    cache.flush_locks(ctx)    
 
-    # Update ctx.
-    ctx.phase_index = 0
-    ctx.step_index = 0
-
-    # Escape if unexecutable - acquires a lock otherwise.
+    # Escape if unexecutable.
     if not predicates.can_start_run(ctx):
         return
 
@@ -47,7 +40,7 @@ def do_run(ctx: RunContext):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> starts")
 
-    # Start phase 1.
+    # Run phase.
     do_phase.send(ctx)
 
 
@@ -84,13 +77,13 @@ def do_phase(ctx: RunContext):
     :param ctx: Execution context information.
     
     """
+    # Escape if unexecutable.
+    if not predicates.can_start_phase(ctx):
+        return
+
     # Update ctx.
     ctx.phase_index += 1
     ctx.step_index = 0
-
-    # Escape if unexecutable - acquires a lock otherwise.
-    if not predicates.can_start_phase(ctx, ctx.phase_index):
-        return
 
     # Update cache.
     cache.control.set_run_context(ctx)
@@ -99,7 +92,7 @@ def do_phase(ctx: RunContext):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
 
-    # Start step 1.
+    # Run step.
     do_step.send(ctx)
 
 
@@ -145,12 +138,12 @@ def do_step(ctx: RunContext):
     :param ctx: Execution context information.
     
     """
+    # Escape if unexecutable.
+    if not predicates.can_start_step(ctx):
+        return
+
     # Update ctx.
     ctx.step_index += 1
-
-    # Escape if unexecutable - acquires a lock otherwise.
-    if not predicates.can_start_step(ctx, ctx.phase_index, ctx.step_index):
-        return
 
     # Update cache.
     cache.control.set_run_context(ctx)

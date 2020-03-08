@@ -221,6 +221,8 @@ def create_node_id(
 
 def create_run_context(
     args: typing.Any,
+    loop_count: int,
+    loop_interval: int,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
     run_index: int,
@@ -231,12 +233,14 @@ def create_run_context(
     """
     return RunContext(
         args=args,
+        loop_count=loop_count,
+        loop_interval=loop_interval,
         network=network_id.name,
         node_index=node_id.index,
         run_index=run_index,
         run_type=run_type,
-        phase_index=None,
-        step_index=None,
+        phase_index=0,
+        step_index=0,
         # TODO: remove
         run_step=None
     )
