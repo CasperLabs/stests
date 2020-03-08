@@ -227,7 +227,9 @@ def lock_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLock]:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.SET)
-def set_state(state: typing.Union[RunContextState, RunPhaseState, RunStepState]) -> typing.Tuple[typing.List[str], typing.Union[RunContextState, RunPhaseState, RunStepState]]:
+def set_state(
+    state: typing.Union[RunContextState, RunPhaseState, RunStepState]
+    ) -> typing.Tuple[typing.List[str], typing.Union[RunContextState, RunPhaseState, RunStepState]]:
     """Encaches domain object: RunContextState.
     
     :param ctx: Generator run contextual information.
