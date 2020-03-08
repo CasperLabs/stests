@@ -1,14 +1,14 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 from datetime import datetime
 
 from stests.core.orchestration.enums import ExecutionStatus
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class ExecutionStepInfo(Entity):
+@dataclasses.dataclass
+class ExecutionStepInfo:
     """Execution context information - step.
     
     """
@@ -98,7 +98,7 @@ class ExecutionStepInfo(Entity):
         self.step_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 
 
-@dataclass
+@dataclasses.dataclass
 class ExecutionStepLock:
     """Execution lock information - step.
     
@@ -131,8 +131,8 @@ class ExecutionStepLock:
         return f"S-{str(self.step_index).zfill(2)}"
 
 
-@dataclass
-class ExecutionStepState(Entity):
+@dataclasses.dataclass
+class ExecutionStepState:
     """Execution state information - step.
     
     """

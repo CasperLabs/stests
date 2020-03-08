@@ -1,11 +1,11 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 
 from stests.core.domain.enums import NetworkType
 
 
 
-@dataclass
+@dataclasses.dataclass
 class NetworkIdentifier:
     """Information required to disambiguate between networks.
     
@@ -29,7 +29,7 @@ class NetworkIdentifier:
         return f"global.network:{self.name}"
 
 
-@dataclass
+@dataclasses.dataclass
 class NodeIdentifier:
     """Information required to disambiguate between nodes.
     
@@ -44,7 +44,7 @@ class NodeIdentifier:
     _type_key: typing.Optional[str] = None
 
 
-@dataclass
+@dataclasses.dataclass
 class RunIdentifier:
     """Information required to disambiguate between generator runs.
     
@@ -62,7 +62,7 @@ class RunIdentifier:
     _type_key: typing.Optional[str] = None
 
 
-@dataclass
+@dataclasses.dataclass
 class AccountIdentifier:
     """Information required to disambiguate between accounts.
     

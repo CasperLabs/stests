@@ -1,15 +1,15 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 from datetime import datetime
 
 from stests.core.domain.enums import DeployStatus
 from stests.core.domain.enums import DeployType
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class Deploy(Entity):
+@dataclasses.dataclass
+class Deploy:
     """Encapsulates information pertaining to a deploy dispatched to a test network.
     
     """

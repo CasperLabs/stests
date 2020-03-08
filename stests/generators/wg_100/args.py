@@ -1,10 +1,10 @@
 import argparse
+import dataclasses
 import typing
-from dataclasses import dataclass
 
 
 
-@dataclass
+@dataclasses.dataclass
 class Arguments:
     """WG-100 generator execution arguments.
     

@@ -1,11 +1,11 @@
+import dataclasses
 import tempfile
-from dataclasses import dataclass
 
 from stests.core.utils import crypto
 
 
 
-@dataclass
+@dataclasses.dataclass
 class Key():
     """Represents a digital key pair used for identification, signature and verification purposes.
     
@@ -28,7 +28,7 @@ class Key():
             return temp_file.name
 
 
-@dataclass
+@dataclasses.dataclass
 class PrivateKey(Key):
     """A private key used to sign/verify/identify.
     
@@ -39,7 +39,7 @@ class PrivateKey(Key):
         return crypto.get_pvk_pem_from_bytes(self.as_bytes)
 
 
-@dataclass
+@dataclasses.dataclass
 class PublicKey(Key):
     """A public key used to verify/identify.
     
@@ -50,7 +50,7 @@ class PublicKey(Key):
         return crypto.get_pbk_pem_from_bytes(self.as_bytes)
 
 
-@dataclass
+@dataclasses.dataclass
 class KeyPair:
     """Represents a digital key pair used for identification, signature and verification purposes.
     

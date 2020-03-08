@@ -1,16 +1,16 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 from datetime import datetime
 
 from stests.core.domain.account import Account
 from stests.core.domain.enums import NetworkStatus
 from stests.core.domain.enums import NetworkType
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class Network(Entity):
+@dataclasses.dataclass
+class Network:
     """A test network.
     
     """

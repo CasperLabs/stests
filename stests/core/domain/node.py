@@ -1,15 +1,16 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
+from datetime import datetime
 
 from stests.core.domain.account import Account
 from stests.core.domain.enums import NodeStatus
 from stests.core.domain.enums import NodeType
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class Node(Entity):
+@dataclasses.dataclass
+class Node:
     """Represents a node within a target network.
     
     """

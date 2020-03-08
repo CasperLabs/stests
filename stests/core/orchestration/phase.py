@@ -1,14 +1,14 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 from datetime import datetime
 
 from stests.core.orchestration.enums import ExecutionStatus
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class ExecutionPhaseInfo(Entity):
+@dataclasses.dataclass
+class ExecutionPhaseInfo:
     """Execution context information - phase.
     
     """
@@ -90,7 +90,7 @@ class ExecutionPhaseInfo(Entity):
         self.ts_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 
 
-@dataclass
+@dataclasses.dataclass
 class ExecutionPhaseLock:
     """Execution lock information - phase.
     
@@ -116,8 +116,8 @@ class ExecutionPhaseLock:
         return f"P-{str(self.phase_index).zfill(2)}"
         
 
-@dataclass
-class ExecutionPhaseState(Entity):
+@dataclasses.dataclass
+class ExecutionPhaseState:
     """Execution state information - phase.
     
     """

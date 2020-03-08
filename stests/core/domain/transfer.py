@@ -1,13 +1,14 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
+from datetime import datetime
 
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 from stests.core.domain.enums import TransferStatus
 
     
 
-@dataclass
-class Transfer(Entity):
+@dataclasses.dataclass
+class Transfer:
     """Encapsulates information pertaining to a CLX transfer between counterparties.
     
     """

@@ -1,13 +1,14 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
+from datetime import datetime
 
 from stests.core.orchestration.enums import ExecutionStatus
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class ExecutionRunInfo(Entity):
+@dataclasses.dataclass
+class ExecutionRunInfo:
     """Execution context information - run.
     
     """
@@ -64,7 +65,7 @@ class ExecutionRunInfo(Entity):
         return f"S-{str(self.step_index).zfill(2)}"
 
 
-@dataclass
+@dataclasses.dataclass
 class ExecutionRunLock:
     """Execution lock information - run.
     
@@ -83,8 +84,8 @@ class ExecutionRunLock:
         return f"R-{str(self.run_index).zfill(3)}"
 
 
-@dataclass
-class ExecutionRunState(Entity):
+@dataclasses.dataclass
+class ExecutionRunState:
     """Execution state information - run.
     
     """

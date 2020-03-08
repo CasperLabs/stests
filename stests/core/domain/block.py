@@ -1,14 +1,14 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 from datetime import datetime
 
 from stests.core.domain.enums import BlockStatus
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
     
 
-@dataclass
-class Block(Entity):
+@dataclasses.dataclass
+class Block:
     """A block proposed/finialized within the lifetime of a chain.
     
     """
