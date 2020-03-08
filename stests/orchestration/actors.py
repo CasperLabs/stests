@@ -30,7 +30,7 @@ def do_run(ctx: ExecutionRunInfo):
         return
 
     # Update cache.
-    cache.flush_by_run(ctx)
+    cache.orchestration.flush_by_run(ctx)
     cache.orchestration.set_run_context(ctx)
     cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.IN_PROGRESS))
 
@@ -52,7 +52,7 @@ def on_run_end(ctx: ExecutionRunInfo):
     cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.COMPLETE))
 
     # Locks can now be flushed.
-    cache.flush_locks(ctx)    
+    cache.orchestration.flush_locks(ctx)    
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
