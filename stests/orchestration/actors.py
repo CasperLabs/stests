@@ -32,7 +32,7 @@ def do_run(ctx: RunContext):
     # Update cache.
     cache.flush_by_run(ctx)
     cache.control.set_run_context(ctx)
-    cache.control.set_state(factory.create_state_run(ctx, status=ExecutionStatus.IN_PROGRESS))
+    cache.control.set_state(factory.create_run_state(ctx, status=ExecutionStatus.IN_PROGRESS))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> starts")
@@ -49,7 +49,7 @@ def on_run_end(ctx: RunContext):
     
     """
     # Update status.
-    cache.control.set_state(factory.create_state_run(ctx, status=ExecutionStatus.COMPLETE))
+    cache.control.set_state(factory.create_run_state(ctx, status=ExecutionStatus.COMPLETE))
 
     # Locks can now be flushed.
     cache.flush_locks(ctx)    
@@ -67,7 +67,7 @@ def on_run_error(ctx: RunContext, err: str):
     
     """
     # Update status.
-    cache.control.set_state(factory.create_state_run(ctx, status=ExecutionStatus.ERROR))
+    cache.control.set_state(factory.create_run_state(ctx, status=ExecutionStatus.ERROR))
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")
@@ -91,7 +91,7 @@ def do_phase(ctx: RunContext):
 
     # Update cache.
     cache.control.set_run_context(ctx)
-    cache.control.set_state(factory.create_state_phase(ctx, status=ExecutionStatus.IN_PROGRESS))
+    cache.control.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
@@ -111,7 +111,7 @@ def on_phase_end(ctx: RunContext):
     phase = Workflow.get_phase_(ctx, ctx.phase_index)
 
     # Update status.
-    cache.control.set_state(factory.create_state_phase(ctx, status=ExecutionStatus.COMPLETE))
+    cache.control.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.COMPLETE))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> ends")
@@ -132,7 +132,7 @@ def on_phase_error(ctx: RunContext, err: str):
     
     """
     # Update status.
-    cache.control.set_state(factory.create_state_phase(ctx, status=ExecutionStatus.ERROR))
+    cache.control.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.ERROR))
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> unhandled error")
@@ -150,15 +150,17 @@ def do_step(ctx: RunContext):
     if not predicates.can_start_step(ctx):
         return
 
+    # Set step.
+    step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index + 1)    
+
     # Update ctx.
     ctx.step_index += 1
+    ctx.step_label = step.label
 
     # Update cache.
     cache.control.set_run_context(ctx)
-    cache.control.set_state(factory.create_state_step(ctx, ExecutionStatus.IN_PROGRESS))
+    cache.control.set_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
 
-    # Set step.
-    step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)    
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
@@ -218,7 +220,7 @@ def do_step_end(ctx: RunContext):
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
 
     # Update status.
-    cache.control.set_state(factory.create_state_step(ctx, ExecutionStatus.COMPLETE))
+    cache.control.set_state(factory.create_step_state(ctx, ExecutionStatus.COMPLETE))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> end")
@@ -239,7 +241,7 @@ def do_step_error(ctx: RunContext, err: str):
     
     """
     # Update status.
-    cache.control.set_state(factory.create_state_step(ctx, ExecutionStatus.ERROR))
+    cache.control.set_state(factory.create_step_state(ctx, ExecutionStatus.ERROR))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> unhandled error")

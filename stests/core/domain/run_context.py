@@ -38,6 +38,9 @@ class RunContext(Entity):
     # Index to disambiguate a step within the context of a phase.
     step_index: int
 
+    # Label to disambiguate a step within the context of a phase.
+    step_label: typing.Optional[str]
+
     # Current step.
     # TODO: remove
     run_step: typing.Optional[str]

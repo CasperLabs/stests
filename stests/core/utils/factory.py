@@ -241,6 +241,7 @@ def create_run_context(
         run_type=run_type,
         phase_index=0,
         step_index=0,
+        step_label=None,
         # TODO: remove
         run_step=None
     )

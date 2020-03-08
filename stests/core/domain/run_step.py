@@ -119,6 +119,9 @@ class RunStepState(Entity):
     # Index to disambiguate a step within the context of a phase.
     step_index: int
 
+    # Label to disambiguate a step within the context of a phase.
+    step_label: str
+
     # Current status.
     status: ExecutionStatus
 

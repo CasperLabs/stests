@@ -9,7 +9,7 @@ from stests.core.utils import encoder
 from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.core.domain import ExecutionStatus
-from stests.core.cache import RunStepLock
+from stests.core.cache import ExecutionStepLock
 
 
 
@@ -68,7 +68,7 @@ def _can_step(ctx, actor):
     
     """
     step = _get_step(actor)
-    lock = RunStepLock(
+    lock = ExecutionStepLock(
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,

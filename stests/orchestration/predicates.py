@@ -1,11 +1,12 @@
 import typing
 
 from stests.core import cache
-from stests.core.cache.locks import RunLock
-from stests.core.cache.locks import RunPhaseLock
-from stests.core.cache.locks import RunStepLock
+from stests.core.cache.locks import ExecutionRunLock
+from stests.core.cache.locks import ExecutionPhaseLock
+from stests.core.cache.locks import ExecutionStepLock
 from stests.core.domain import RunContext
 from stests.core.utils import logger
+from stests.orchestration import factory
 from stests.orchestration.model import Workflow
 
 
@@ -29,11 +30,7 @@ def can_start_run(ctx: RunContext) -> bool:
         return False
 
     # False if locked.
-    lock = RunLock(
-        ctx.network,
-        ctx.run_index,
-        ctx.run_type
-    )
+    lock = factory.create_run_lock(ctx)
     _, acquired = cache.control.lock_run(lock)
     if not acquired:
         logger.log_warning(f"unacquired run lock: {ctx.run_type} :: run={ctx.run_index}")
@@ -65,12 +62,7 @@ def can_start_phase(ctx: RunContext) -> bool:
         return False
     
     # False if locked.
-    lock = RunPhaseLock(
-        ctx.network,
-        ctx.run_index,
-        ctx.run_type,
-        phase_index
-    )
+    lock = factory.create_phase_lock(ctx, phase_index)
     _, acquired = cache.control.lock_phase(lock)
     if not acquired:
         logger.log_warning(f"unacquired phase lock: {ctx.run_type} :: run={ctx.run_index} :: phase={phase_index}")
@@ -109,13 +101,7 @@ def can_start_step(ctx: RunContext) -> bool:
         return False
 
     # False if locked.
-    lock = RunStepLock(
-        ctx.network,
-        ctx.run_index,
-        ctx.run_type,
-        phase_index,
-        step_index
-    )
+    lock = factory.create_step_lock(ctx, step_index)
     _, acquired = cache.control.lock_step(lock)
     if not acquired:
         logger.log_warning(f"unacquired step lock: {ctx.run_type} :: run={ctx.run_index} :: phase={phase_index} :: step={step_index}")

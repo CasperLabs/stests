@@ -3,8 +3,8 @@ from dataclasses import dataclass
 
 
 @dataclass
-class RunLock:
-    """Lock information when executing a workflow run.
+class ExecutionRunLock:
+    """Execution lock information - run.
     
     """
     # Associated network.
@@ -22,8 +22,8 @@ class RunLock:
 
 
 @dataclass
-class RunPhaseLock:
-    """Lock information when executing a run phase.
+class ExecutionPhaseLock:
+    """Execution lock information - phase.
     
     """
     # Associated network.
@@ -47,10 +47,9 @@ class RunPhaseLock:
         return f"P-{str(self.phase_index).zfill(2)}"
 
 
-
 @dataclass
-class RunStepLock:
-    """Lock information when executing a run step.
+class ExecutionStepLock:
+    """Execution lock information - step.
     
     """
     # Associated network.

@@ -182,8 +182,8 @@ def increment_step_deploy_count(ctx: RunContext):
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
-def lock_run(lock: RunLock) -> typing.Tuple[typing.List[str], RunLock]:
-    """Encaches a lock: RunLock.
+def lock_run(lock: ExecutionRunLock) -> typing.Tuple[typing.List[str], ExecutionRunLock]:
+    """Encaches a lock: ExecutionRunLock.
 
     :param lock: Information to be locked.
 
@@ -197,8 +197,8 @@ def lock_run(lock: RunLock) -> typing.Tuple[typing.List[str], RunLock]:
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
-def lock_phase(lock: RunPhaseLock) -> typing.Tuple[typing.List[str], RunPhaseLock]:
-    """Encaches a lock: RunPhaseLock.
+def lock_phase(lock: ExecutionPhaseLock) -> typing.Tuple[typing.List[str], ExecutionPhaseLock]:
+    """Encaches a lock: ExecutionPhaseLock.
 
     :param lock: Information to be locked.
 
@@ -212,8 +212,8 @@ def lock_phase(lock: RunPhaseLock) -> typing.Tuple[typing.List[str], RunPhaseLoc
 
 
 @cache_op(StorePartition.CONTROL, StoreOperation.LOCK)
-def lock_step(lock: RunStepLock) -> typing.Tuple[typing.List[str], RunStepLock]:
-    """Encaches a lock: RunStepLock.
+def lock_step(lock: ExecutionStepLock) -> typing.Tuple[typing.List[str], ExecutionStepLock]:
+    """Encaches a lock: ExecutionStepLock.
 
     :param lock: Information to be locked.
 
