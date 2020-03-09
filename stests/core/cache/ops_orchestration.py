@@ -258,8 +258,8 @@ def set_run_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], Exe
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_run_state(state: RunState) -> typing.Tuple[typing.List[str], RunState]:
-    """Encaches domain object: RunState.
+def set_run_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
+    """Encaches domain object: ExecutionState.
     
     :param ctx: Execution context information.
 
@@ -350,8 +350,8 @@ def get_phase_info(ctx: ExecutionContext) -> ExecutionInfo:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_phase_state(state: PhaseState) -> typing.Tuple[typing.List[str], PhaseState]:
-    """Encaches domain object: PhaseState.
+def set_phase_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
+    """Encaches domain object: ExecutionState.
     
     :param ctx: Execution context information.
 
@@ -405,8 +405,8 @@ def set_step_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], Executi
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_step_state(state: StepState) -> typing.Tuple[typing.List[str], StepState]:
-    """Encaches domain object: RunState.
+def set_step_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
+    """Encaches domain object: ExecutionState.
     
     :param ctx: Execution context information.
 

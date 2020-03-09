@@ -52,31 +52,36 @@ def create_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo
         )
 
 
-def create_state(ctx: ExecutionContext, aspect: ExecutionAspect, status: ExecutionStatus = None) -> ExecutionInfo:
+def create_state(ctx: ExecutionContext, aspect: ExecutionAspect, status: ExecutionStatus = None) -> ExecutionState:
     """Returns a domain object instance: ExecutionInfo.
 
     """
     if aspect == ExecutionAspect.RUN:
-        return RunState(
+        return ExecutionState(
             network=ctx.network,
+            phase_index=None,
             run_index=ctx.run_index,
             run_type=ctx.run_type,
             status=ctx.status,
+            step_index=None,
+            step_label=None,
             _type_key=None
         )
 
     elif aspect == ExecutionAspect.PHASE:
-        return PhaseState(
+        return ExecutionState(
             network=ctx.network,
             phase_index=ctx.phase_index,
             run_index=ctx.run_index,
             run_type=ctx.run_type,
             status=status,
+            step_index=None,
+            step_label=None,
             _type_key=None
         )
 
     elif aspect == ExecutionAspect.STEP:
-        return StepState(
+        return ExecutionState(
             network=ctx.network,
             phase_index=ctx.phase_index,
             run_index=ctx.run_index,
@@ -86,6 +91,7 @@ def create_state(ctx: ExecutionContext, aspect: ExecutionAspect, status: Executi
             step_label=ctx.step_label,
             _type_key=None
         )
+
 
 def create_run_lock(ctx: ExecutionContext) -> RunLock:
     """Factory: Returns an execution lock.

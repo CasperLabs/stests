@@ -9,15 +9,14 @@ from stests.core.orchestration.state_history import *
 
 # Set of supported classes.
 DCLASS_SET = {
-    PhaseLock,
-    PhaseState,
     ExecutionContext,
-    RunIdentifier,
     ExecutionInfo,
+    ExecutionState,
+    RunIdentifier,
+
+    PhaseLock,
     RunLock,
-    RunState,
     StepLock,
-    StepState,
 }
 
 # Full domain type set.

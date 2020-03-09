@@ -5,12 +5,15 @@ from stests.core.orchestration.enums import ExecutionStatus
 
 
 @dataclasses.dataclass
-class RunState:
-    """Run execution state information.
+class ExecutionState:
+    """Execution state information.
     
     """
     # Associated network.
     network: str
+
+    # Index within the context of a pipeline.
+    phase_index: int
 
     # Numerical index to distinguish between multiple runs.
     run_index: int
@@ -21,38 +24,25 @@ class RunState:
     # Execution status.
     status: ExecutionStatus
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: str
-
-    @property
-    def run_index_label(self):
-        return f"R-{str(self.run_index).zfill(3)}"
-        
-
-@dataclasses.dataclass
-class PhaseState(RunState):
-    """Phase execution state information.
-    
-    """
-    # Index within the context of a pipeline.
-    phase_index: int
-
-    @property
-    def phase_index_label(self):
-        return f"P-{str(self.phase_index).zfill(2)}"
-
-
-@dataclasses.dataclass
-class StepState(PhaseState):
-    """Step execution state information.
-    
-    """
     # Index to disambiguate a step within the context of a phase.
     step_index: int
 
     # Label to disambiguate a step within the context of a phase.
     step_label: str
 
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: str
+
+    @property
+    def phase_index_label(self):
+        return f"P-{str(self.phase_index).zfill(2)}"    
+
+    @property
+    def run_index_label(self):
+        return f"R-{str(self.run_index).zfill(3)}"
+
     @property
     def step_index_label(self):
         return f"S-{str(self.step_index).zfill(2)}"
+
+
