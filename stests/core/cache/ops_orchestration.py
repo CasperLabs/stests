@@ -118,8 +118,8 @@ def get_run_network(ctx: ExecutionContext) -> Network:
     return infra.get_network(network_id)
 
 
-def get_step(ctx: ExecutionContext) -> RunInfo:
-    """Decaches domain object: RunInfo.
+def get_step(ctx: ExecutionContext) -> ExecutionInfo:
+    """Decaches domain object: ExecutionInfo.
     
     :param ctx: Execution context information.
 
@@ -133,8 +133,8 @@ def get_step(ctx: ExecutionContext) -> RunInfo:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_steps(ctx: ExecutionContext) -> typing.List[RunInfo]:
-    """Decaches collection of domain objects: RunInfo.
+def get_steps(ctx: ExecutionContext) -> typing.List[ExecutionInfo]:
+    """Decaches collection of domain objects: ExecutionInfo.
 
     :param ctx: Execution context information.
 
@@ -294,7 +294,7 @@ def get_run_info(ctx: ExecutionContext) -> ExecutionContext:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.List[RunInfo]:
+def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionInfo]:
     """Decaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
@@ -310,7 +310,7 @@ def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.Li
     ]
 
 
-def update_run_info(ctx: ExecutionContext) -> RunInfo:
+def update_run_info(ctx: ExecutionContext) -> ExecutionInfo:
     """Updates domain object: ExecutionContext.
     
     :param ctx: Execution context information.
@@ -332,8 +332,8 @@ def update_run_info(ctx: ExecutionContext) -> RunInfo:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_phase_info(ctx: ExecutionContext) -> RunInfo:
-    """Decaches domain object: RunInfo.
+def get_phase_info(ctx: ExecutionContext) -> ExecutionInfo:
+    """Decaches domain object: ExecutionInfo.
     
     :param ctx: Execution context information.
 
@@ -367,8 +367,8 @@ def set_phase_state(state: PhaseState) -> typing.Tuple[typing.List[str], PhaseSt
     ], state 
 
 
-def update_phase_info(ctx: ExecutionContext, status: ExecutionStatus) -> RunInfo:
-    """Updates domain object: RunInfo.
+def update_phase_info(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionInfo:
+    """Updates domain object: ExecutionInfo.
     
     :param ctx: Execution context information.
     :param status: New execution state.
@@ -387,10 +387,10 @@ def update_phase_info(ctx: ExecutionContext, status: ExecutionStatus) -> RunInfo
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_step_info(info: RunInfo) -> typing.Tuple[typing.List[str], RunInfo]:
-    """Encaches domain object: RunInfo.
+def set_step_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInfo]:
+    """Encaches domain object: ExecutionInfo.
     
-    :param evt: RunInfo domain object instance to be cached.
+    :param evt: ExecutionInfo domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
@@ -423,8 +423,8 @@ def set_step_state(state: StepState) -> typing.Tuple[typing.List[str], StepState
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_step_info(ctx: ExecutionContext) -> RunInfo:
-    """Decaches domain object: RunInfo.
+def get_step_info(ctx: ExecutionContext) -> ExecutionInfo:
+    """Decaches domain object: ExecutionInfo.
     
     :param ctx: Execution context information.
 
@@ -440,8 +440,8 @@ def get_step_info(ctx: ExecutionContext) -> RunInfo:
     ]
 
 
-def update_step_info(ctx: ExecutionContext, status: ExecutionStatus) -> RunInfo:
-    """Updates domain object: RunInfo.
+def update_step_info(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionInfo:
+    """Updates domain object: ExecutionInfo.
     
     :param ctx: Execution context information.
     :param status: New execution state.
@@ -460,10 +460,10 @@ def update_step_info(ctx: ExecutionContext, status: ExecutionStatus) -> RunInfo:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_info(info: RunInfo) -> typing.Tuple[typing.List[str], RunInfo]:
-    """Encaches domain object: RunInfo.
+def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInfo]:
+    """Encaches domain object: ExecutionInfo.
     
-    :param evt: RunInfo domain object instance to be cached.
+    :param evt: ExecutionInfo domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 

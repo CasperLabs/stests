@@ -3,6 +3,7 @@ import inspect
 import dramatiq
 
 from stests.core import cache
+from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionStatus
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
@@ -32,11 +33,15 @@ def do_run(ctx: ExecutionContext):
     # Update ctx.
     ctx.status = ExecutionStatus.IN_PROGRESS
 
+    # Set info/state.
+    run_info = factory.create_info(ctx, ExecutionAspect.RUN)
+    run_state = factory.create_state(ctx, ExecutionAspect.RUN)
+
     # Update cache.
     cache.orchestration.flush_by_run(ctx)
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_info(factory.create_run_info(ctx))
-    cache.orchestration.set_run_state(factory.create_run_state(ctx))
+    cache.orchestration.set_info(run_info)
+    cache.orchestration.set_run_state(run_state)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> starts")
@@ -55,9 +60,12 @@ def on_run_end(ctx: ExecutionContext):
     # Update ctx.
     ctx.status = ExecutionStatus.COMPLETE
 
+    # Set info/state.
+    run_state = factory.create_state(ctx, ExecutionAspect.RUN)
+
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_run_state(factory.create_run_state(ctx))
+    cache.orchestration.set_run_state(run_state)
     cache.orchestration.update_run_info(ctx)
 
     # Locks can now be flushed.
@@ -78,9 +86,12 @@ def on_run_error(ctx: ExecutionContext, err: str):
     # Update ctx.
     ctx.status = ExecutionStatus.ERROR
 
+    # Set info/state.
+    run_state = factory.create_state(ctx, ExecutionAspect.RUN)
+
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_run_state(factory.create_run_state(ctx))
+    cache.orchestration.set_run_state(run_state)
     cache.orchestration.update_run_info(ctx)
 
     # Inform.
@@ -103,10 +114,14 @@ def do_phase(ctx: ExecutionContext):
     ctx.phase_index += 1
     ctx.step_index = 0
 
+    # Set info/state.
+    phase_info = factory.create_info(ctx, ExecutionAspect.PHASE)
+    phase_state = factory.create_state(ctx, ExecutionAspect.PHASE, ExecutionStatus.IN_PROGRESS)
+
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_info(factory.create_phase_info(ctx))
-    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
+    cache.orchestration.set_info(phase_info)
+    cache.orchestration.set_phase_state(phase_state)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
@@ -125,8 +140,11 @@ def on_phase_end(ctx: ExecutionContext):
     # Set phase.
     phase = Workflow.get_phase_(ctx, ctx.phase_index)
 
+    # Set info/state.
+    phase_state = factory.create_state(ctx, ExecutionAspect.PHASE, status=ExecutionStatus.COMPLETE)
+
     # Update cache.
-    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.COMPLETE))
+    cache.orchestration.set_phase_state(phase_state)
     cache.orchestration.update_phase_info(ctx, ExecutionStatus.COMPLETE)
 
     # Inform.
@@ -147,8 +165,11 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     :param err: Execution error information.
     
     """
+    # Set info/state.
+    phase_state = factory.create_state(ctx, ExecutionAspect.PHASE, status=ExecutionStatus.ERROR)
+
     # Update cache.
-    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.ERROR))
+    cache.orchestration.set_phase_state(phase_state)
     cache.orchestration.update_phase_info(ctx, ExecutionStatus.ERROR)
 
     # Inform.
@@ -174,10 +195,14 @@ def do_step(ctx: ExecutionContext):
     ctx.step_index += 1
     ctx.step_label = step.label
 
+    # Set info/state.
+    step_info = factory.create_info(ctx, ExecutionAspect.STEP)
+    step_state = factory.create_state(ctx, ExecutionAspect.STEP, ExecutionStatus.IN_PROGRESS)
+
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_info(factory.create_step_info(ctx))
-    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
+    cache.orchestration.set_info(step_info)
+    cache.orchestration.set_step_state(step_state)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
@@ -236,8 +261,11 @@ def do_step_end(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
 
+    # Set info/state.
+    step_state = factory.create_state(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
+
     # Update cache.
-    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.COMPLETE))
+    cache.orchestration.set_step_state(step_state)
     cache.orchestration.update_step_info(ctx, ExecutionStatus.COMPLETE)
 
     # Inform.
@@ -258,8 +286,11 @@ def do_step_error(ctx: ExecutionContext, err: str):
     :param err: Execution error information.
     
     """
+    # Set info/state.
+    step_state = factory.create_state(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
+
     # Update cache.
-    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.ERROR))
+    cache.orchestration.set_step_state(step_state)
     cache.orchestration.update_step_info(ctx, ExecutionStatus.ERROR)
 
     # Inform.

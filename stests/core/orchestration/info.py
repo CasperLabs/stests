@@ -3,13 +3,12 @@ import typing
 from datetime import datetime
 
 from stests.core.orchestration.enums import ExecutionStatus
-from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
 @dataclasses.dataclass
-class RunInfo:
-    """Execution information - run.
+class ExecutionInfo:
+    """Execution information.
     
     """
     # Associated network.

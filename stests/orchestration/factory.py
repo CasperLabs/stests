@@ -2,62 +2,90 @@ from stests.core.orchestration import *
 
 
 
-def create_run_info(ctx: ExecutionContext) -> RunInfo:
-    """Returns a domain object instance: RunInfo.
+def create_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
+    """Returns a domain object instance: ExecutionInfo.
 
     """
-    return RunInfo(
-        network=ctx.network,
-        phase_index=None,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        status=ExecutionStatus.IN_PROGRESS,
-        step_index=None,
-        step_label=None,
-        tp_duration=None,
-        ts_start=datetime.now(),
-        ts_end=None,
-        _type_key=None
-    )
+    if aspect == ExecutionAspect.RUN:
+        return ExecutionInfo(
+            network=ctx.network,
+            phase_index=None,
+            run_index=ctx.run_index,
+            run_type=ctx.run_type,
+            status=ExecutionStatus.IN_PROGRESS,
+            step_index=None,
+            step_label=None,
+            tp_duration=None,
+            ts_start=datetime.now(),
+            ts_end=None,
+            _type_key=None
+        )
+
+    elif aspect == ExecutionAspect.PHASE:
+        return ExecutionInfo(
+            network=ctx.network,
+            phase_index=ctx.phase_index,
+            run_index=ctx.run_index,
+            run_type=ctx.run_type,
+            status=ExecutionStatus.IN_PROGRESS,
+            step_index=None,
+            step_label=None,
+            tp_duration=None,
+            ts_start=datetime.now(),
+            ts_end=None,
+            _type_key=None
+        )
+
+    elif aspect == ExecutionAspect.STEP:
+        return ExecutionInfo(
+            network=ctx.network,
+            phase_index=ctx.phase_index,
+            run_index=ctx.run_index,
+            run_type=ctx.run_type,
+            status=ExecutionStatus.IN_PROGRESS,
+            step_index=ctx.step_index,
+            step_label=ctx.step_label,
+            tp_duration=None,
+            ts_start=datetime.now(),
+            ts_end=None,
+            _type_key=None
+        )
 
 
-def create_phase_info(ctx: ExecutionContext) -> RunInfo:
-    """Returns a domain object instance: RunInfo.
+def create_state(ctx: ExecutionContext, aspect: ExecutionAspect, status: ExecutionStatus = None) -> ExecutionInfo:
+    """Returns a domain object instance: ExecutionInfo.
 
     """
-    return RunInfo(
-        network=ctx.network,
-        phase_index=ctx.phase_index,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        status=ExecutionStatus.IN_PROGRESS,
-        step_index=None,
-        step_label=None,
-        tp_duration=None,
-        ts_start=datetime.now(),
-        ts_end=None,
-        _type_key=None
-    )
+    if aspect == ExecutionAspect.RUN:
+        return RunState(
+            network=ctx.network,
+            run_index=ctx.run_index,
+            run_type=ctx.run_type,
+            status=ctx.status,
+            _type_key=None
+        )
 
+    elif aspect == ExecutionAspect.PHASE:
+        return PhaseState(
+            network=ctx.network,
+            phase_index=ctx.phase_index,
+            run_index=ctx.run_index,
+            run_type=ctx.run_type,
+            status=status,
+            _type_key=None
+        )
 
-def create_step_info(ctx: ExecutionContext) -> RunInfo:
-    """Returns a domain object instance: RunInfo.
-
-    """
-    return RunInfo(
-        network=ctx.network,
-        phase_index=ctx.phase_index,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        status=ExecutionStatus.IN_PROGRESS,
-        step_index=ctx.step_index,
-        step_label=ctx.step_label,
-        tp_duration=None,
-        ts_start=datetime.now(),
-        ts_end=None,
-        _type_key=None
-    )
-
+    elif aspect == ExecutionAspect.STEP:
+        return StepState(
+            network=ctx.network,
+            phase_index=ctx.phase_index,
+            run_index=ctx.run_index,
+            run_type=ctx.run_type,
+            status=status,
+            step_index=ctx.step_index,
+            step_label=ctx.step_label,
+            _type_key=None
+        )
 
 def create_run_lock(ctx: ExecutionContext) -> RunLock:
     """Factory: Returns an execution lock.
@@ -71,23 +99,6 @@ def create_run_lock(ctx: ExecutionContext) -> RunLock:
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
-    )
-
-
-def create_run_state(ctx: ExecutionContext) -> RunState:
-    """Factory: Returns execution state information.
-    
-    :param ctx: Execution context information.
-
-    :returns: Execution state information.
-
-    """
-    return RunState(
-        network=ctx.network,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        status=ctx.status,
-        _type_key=None
     )
 
 
@@ -108,25 +119,6 @@ def create_phase_lock(ctx: ExecutionContext, phase_index: int) -> PhaseLock:
     )
 
 
-def create_phase_state(ctx: ExecutionContext, status: ExecutionStatus) -> PhaseState:
-    """Factory: Returns execution state information.
-    
-    :param ctx: Execution context information.
-    :param status: Execution status.
-
-    :returns: Execution state information.
-
-    """
-    return PhaseState(
-        network=ctx.network,
-        phase_index=ctx.phase_index,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        status=status,
-        _type_key=None
-    )
-
-
 def create_step_lock(ctx: ExecutionContext, step_index: int, step_label: str) -> StepLock:
     """Factory: Returns an execution lock.
     
@@ -143,25 +135,4 @@ def create_step_lock(ctx: ExecutionContext, step_index: int, step_label: str) ->
         phase_index=ctx.phase_index,
         step_index=step_index,
         step_label=step_label,
-    )
-    
-
-def create_step_state(ctx: ExecutionContext, status: ExecutionStatus) -> StepState:
-    """Factory: Returns execution state information.
-    
-    :param ctx: Execution context information.
-    :param status: Execution status.
-
-    :returns: Execution state information.
-
-    """
-    return StepState(
-        network=ctx.network,
-        phase_index=ctx.phase_index,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        status=status,
-        step_index=ctx.step_index,
-        step_label=ctx.step_label,
-        _type_key=None
     )

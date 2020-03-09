@@ -1,8 +1,8 @@
 import enum
 
 
-class WorkflowDimension(enum.Flag):
-    """Flag over set of workflow dimension.
+class ExecutionAspect(enum.Flag):
+    """Flag over set of aspects of execution.
     
     """
     RUN = enum.auto()
@@ -22,5 +22,6 @@ class ExecutionStatus(enum.Flag):
 
 # Full set of enums.
 ENUM_SET = {
+    ExecutionAspect,
     ExecutionStatus,
 }
