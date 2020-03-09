@@ -38,9 +38,10 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """
     for collection in [
         "context",
-        "phase",
-        "step",
-        "step-deploy-count",
+        "deploy-count",
+        "info",
+        "lock",
+        "state",
     ]:
         yield [
             collection,

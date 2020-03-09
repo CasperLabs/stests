@@ -112,9 +112,7 @@ def _get(store: typing.Callable, key: str) -> typing.Any:
     """
     # logger.log(f"CACHE :: get :: {key}")
     obj = store.get(key)
-    if obj is None:
-        logger.log_warning(f"CACHE :: get :: {key} :: not found")
-    else:
+    if obj is not None:
         return _decode_item(obj)
 
 

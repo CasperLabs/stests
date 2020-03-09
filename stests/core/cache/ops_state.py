@@ -44,7 +44,7 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
             collection,
             ctx.network,
             ctx.run_type,
-            f"R-{str(ctx.run_index).zfill(3)}",
+            ctx.run_index_label,
             "*"
         ]
 

@@ -38,7 +38,7 @@ def do_run(ctx: ExecutionContext):
     run_state = factory.create_state(ExecutionAspect.RUN, ctx)
 
     # Update cache.
-    cache.orchestration.flush_by_run(ctx)
+    cache.flush_by_run(ctx)
     cache.orchestration.set_context(ctx)
     cache.orchestration.set_info(run_info)
     cache.orchestration.set_state(run_state)
