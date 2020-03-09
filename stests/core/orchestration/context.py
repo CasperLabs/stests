@@ -8,7 +8,7 @@ from stests.core.utils.dataclasses import get_timestamp_field
 
 
 @dataclasses.dataclass
-class ExecutionContextInfo:
+class ExecutionContext:
     """Execution context information - run.
     
     """

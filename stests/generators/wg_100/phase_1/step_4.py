@@ -1,4 +1,4 @@
-from stests.core.orchestration import ExecutionContextInfo
+from stests.core.orchestration import ExecutionContext
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_1 import utils
 
@@ -10,7 +10,7 @@ DESCRIPTION = "Fund's a run contract account."
 LABEL = "fund-contract"
 
 
-def execute(ctx: ExecutionContextInfo):
+def execute(ctx: ExecutionContext):
     """Step entry point.
     
     :param ctx: Execution context information.
@@ -24,7 +24,7 @@ def execute(ctx: ExecutionContextInfo):
         )
 
 
-def verify_deploy(ctx: ExecutionContextInfo, dhash: str):
+def verify_deploy(ctx: ExecutionContext, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.

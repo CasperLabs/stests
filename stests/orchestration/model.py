@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.orchestration import ExecutionContextInfo
+from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.generators.meta import GENERATOR_MAP as MODULES
 
@@ -10,7 +10,7 @@ class WorkflowStep():
     """A step with a phase of a broader workflow.
     
     """
-    def __init__(self, ctx: ExecutionContextInfo, index: int, module):
+    def __init__(self, ctx: ExecutionContext, index: int, module):
         """Constructor.
         
         """
@@ -67,7 +67,7 @@ class WorkflowPhase():
     """A phase within a broader workflow.
     
     """
-    def __init__(self, ctx: ExecutionContextInfo, index: int, module):
+    def __init__(self, ctx: ExecutionContext, index: int, module):
         """Constructor.
         
         """
@@ -100,7 +100,7 @@ class Workflow():
     """A workflow executed in order to test a scenario.
     
     """
-    def __init__(self, ctx: ExecutionContextInfo, module):
+    def __init__(self, ctx: ExecutionContext, module):
         """Constructor.
         
         """
@@ -142,7 +142,7 @@ class Workflow():
 
 
     @staticmethod
-    def create(ctx: ExecutionContextInfo):
+    def create(ctx: ExecutionContext):
         """Simple factory method.
         
         :param ctx: Workflow execution context information.
@@ -159,7 +159,7 @@ class Workflow():
 
 
     @staticmethod
-    def get_phase_(ctx: ExecutionContextInfo, phase_index: int) -> WorkflowPhase:
+    def get_phase_(ctx: ExecutionContext, phase_index: int) -> WorkflowPhase:
         """Simple factory method.
         
         :param ctx: Workflow execution context information.
@@ -176,7 +176,7 @@ class Workflow():
 
 
     @staticmethod
-    def get_phase_step(ctx: ExecutionContextInfo, phase_index: int, step_index: int) -> WorkflowStep:
+    def get_phase_step(ctx: ExecutionContext, phase_index: int, step_index: int) -> WorkflowStep:
         """Simple factory method.
         
         :param ctx: Workflow execution context information.

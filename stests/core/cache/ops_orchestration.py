@@ -28,7 +28,7 @@ def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
         
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
-def flush_by_run(ctx: ExecutionContextInfo) -> typing.Generator:
+def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run information.
 
     :param ctx: Execution context information.
@@ -52,7 +52,7 @@ def flush_by_run(ctx: ExecutionContextInfo) -> typing.Generator:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
-def flush_locks(ctx: ExecutionContextInfo) -> typing.Generator:
+def flush_locks(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run locks.
 
     :param ctx: Execution context information.
@@ -69,8 +69,8 @@ def flush_locks(ctx: ExecutionContextInfo) -> typing.Generator:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_context(network: str, run_index: int, run_type: str) -> ExecutionContextInfo:
-    """Decaches domain object: ExecutionContextInfo.
+def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext:
+    """Decaches domain object: ExecutionContext.
     
     :param network: Name of network being tested.
     :param run_index: Generator run index.
@@ -90,8 +90,8 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_contexts(network: str, run_type: str) -> ExecutionContextInfo:
-    """Decaches domain object: ExecutionContextInfo.
+def get_contexts(network: str, run_type: str) -> ExecutionContext:
+    """Decaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
 
@@ -105,7 +105,7 @@ def get_contexts(network: str, run_type: str) -> ExecutionContextInfo:
         "*"
     ]
 
-def get_run_network(ctx: ExecutionContextInfo) -> Network:
+def get_run_network(ctx: ExecutionContext) -> Network:
     """Decaches domain object: Network.
     
     :param ctx: Execution context information.
@@ -118,7 +118,7 @@ def get_run_network(ctx: ExecutionContextInfo) -> Network:
     return infra.get_network(network_id)
 
 
-def get_step(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+def get_step(ctx: ExecutionContext) -> ExecutionRunInfo:
     """Decaches domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
@@ -133,7 +133,7 @@ def get_step(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_steps(ctx: ExecutionContextInfo) -> typing.List[ExecutionRunInfo]:
+def get_steps(ctx: ExecutionContext) -> typing.List[ExecutionRunInfo]:
     """Decaches collection of domain objects: ExecutionRunInfo.
 
     :param ctx: Execution context information.
@@ -151,7 +151,7 @@ def get_steps(ctx: ExecutionContextInfo) -> typing.List[ExecutionRunInfo]:
         
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNT)
-def get_step_deploy_count(ctx: ExecutionContextInfo) -> int:
+def get_step_deploy_count(ctx: ExecutionContext) -> int:
     """Reurns current count of run step deploys.
 
     :param ctx: Execution context information.
@@ -173,7 +173,7 @@ def get_step_deploy_count(ctx: ExecutionContextInfo) -> int:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
-def increment_step_deploy_count(ctx: ExecutionContextInfo):
+def increment_step_deploy_count(ctx: ExecutionContext):
     """Increments (atomically) count of run step deploys.
 
     :param ctx: Execution context information.
@@ -240,8 +240,8 @@ def lock_step(lock: ExecutionStepLock) -> typing.Tuple[typing.List[str], Executi
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_run_context(ctx: ExecutionContextInfo) -> typing.Tuple[typing.List[str], ExecutionContextInfo]:
-    """Encaches domain object: ExecutionContextInfo.
+def set_run_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], ExecutionContext]:
+    """Encaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
 
@@ -276,8 +276,8 @@ def set_run_state(state: ExecutionRunState) -> typing.Tuple[typing.List[str], Ex
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_run_info(ctx: ExecutionContextInfo) -> ExecutionContextInfo:
-    """Decaches domain object: ExecutionContextInfo.
+def get_run_info(ctx: ExecutionContext) -> ExecutionContext:
+    """Decaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
 
@@ -295,7 +295,7 @@ def get_run_info(ctx: ExecutionContextInfo) -> ExecutionContextInfo:
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionRunInfo]:
-    """Decaches domain object: ExecutionContextInfo.
+    """Decaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
 
@@ -310,8 +310,8 @@ def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.Li
     ]
 
 
-def update_run_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
-    """Updates domain object: ExecutionContextInfo.
+def update_run_info(ctx: ExecutionContext) -> ExecutionRunInfo:
+    """Updates domain object: ExecutionContext.
     
     :param ctx: Execution context information.
 
@@ -332,7 +332,7 @@ def update_run_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_phase_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+def get_phase_info(ctx: ExecutionContext) -> ExecutionRunInfo:
     """Decaches domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
@@ -367,7 +367,7 @@ def set_phase_state(state: ExecutionPhaseState) -> typing.Tuple[typing.List[str]
     ], state 
 
 
-def update_phase_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionRunInfo:
+def update_phase_info(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionRunInfo:
     """Updates domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
@@ -423,7 +423,7 @@ def set_step_state(state: ExecutionStepState) -> typing.Tuple[typing.List[str], 
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_step_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+def get_step_info(ctx: ExecutionContext) -> ExecutionRunInfo:
     """Decaches domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
@@ -440,7 +440,7 @@ def get_step_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
     ]
 
 
-def update_step_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionRunInfo:
+def update_step_info(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionRunInfo:
     """Updates domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.

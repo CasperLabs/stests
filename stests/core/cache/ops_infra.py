@@ -92,7 +92,7 @@ def get_node_by_network_id(network_id: NetworkIdentifier) -> Node:
     return random.choice(nodeset)
     
 
-def get_node_by_run_context(ctx: ExecutionContextInfo) -> Node:
+def get_node_by_run_context(ctx: ExecutionContext) -> Node:
     """Decaches domain object: Node.
     
     :param ctx: Execution context information.

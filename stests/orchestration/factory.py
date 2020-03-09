@@ -2,7 +2,7 @@ from stests.core.orchestration import *
 
 
 
-def create_run_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+def create_run_info(ctx: ExecutionContext) -> ExecutionRunInfo:
     """Returns a domain object instance: ExecutionRunInfo.
 
     """
@@ -21,7 +21,7 @@ def create_run_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
     )
 
 
-def create_phase_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+def create_phase_info(ctx: ExecutionContext) -> ExecutionRunInfo:
     """Returns a domain object instance: ExecutionRunInfo.
 
     """
@@ -40,7 +40,7 @@ def create_phase_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
     )
 
 
-def create_step_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+def create_step_info(ctx: ExecutionContext) -> ExecutionRunInfo:
     """Returns a domain object instance: ExecutionRunInfo.
 
     """
@@ -59,7 +59,7 @@ def create_step_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
     )
 
 
-def create_run_lock(ctx: ExecutionContextInfo) -> ExecutionRunLock:
+def create_run_lock(ctx: ExecutionContext) -> ExecutionRunLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -74,7 +74,7 @@ def create_run_lock(ctx: ExecutionContextInfo) -> ExecutionRunLock:
     )
 
 
-def create_run_state(ctx: ExecutionContextInfo) -> ExecutionRunState:
+def create_run_state(ctx: ExecutionContext) -> ExecutionRunState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -91,7 +91,7 @@ def create_run_state(ctx: ExecutionContextInfo) -> ExecutionRunState:
     )
 
 
-def create_phase_lock(ctx: ExecutionContextInfo, phase_index: int) -> ExecutionPhaseLock:
+def create_phase_lock(ctx: ExecutionContext, phase_index: int) -> ExecutionPhaseLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -108,7 +108,7 @@ def create_phase_lock(ctx: ExecutionContextInfo, phase_index: int) -> ExecutionP
     )
 
 
-def create_phase_state(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionPhaseState:
+def create_phase_state(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionPhaseState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -127,7 +127,7 @@ def create_phase_state(ctx: ExecutionContextInfo, status: ExecutionStatus) -> Ex
     )
 
 
-def create_step_lock(ctx: ExecutionContextInfo, step_index: int, step_label: str) -> ExecutionStepLock:
+def create_step_lock(ctx: ExecutionContext, step_index: int, step_label: str) -> ExecutionStepLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -146,7 +146,7 @@ def create_step_lock(ctx: ExecutionContextInfo, step_index: int, step_label: str
     )
     
 
-def create_step_state(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionStepState:
+def create_step_state(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionStepState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.

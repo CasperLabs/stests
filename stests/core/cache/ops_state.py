@@ -27,7 +27,7 @@ def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
         
 
 @cache_op(StorePartition.STATE, StoreOperation.FLUSH)
-def flush_by_run(ctx: ExecutionContextInfo) -> typing.Generator:
+def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run information.
 
     :param ctx: Execution context information.
@@ -67,7 +67,7 @@ def get_account(account_id: AccountIdentifier) -> Account:
     ]
 
 
-def get_account_by_run(ctx: ExecutionContextInfo, index: int) -> Account:
+def get_account_by_run(ctx: ExecutionContext, index: int) -> Account:
     """Decaches domain object: Account.
     
     :param ctx: Execution context information.

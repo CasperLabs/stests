@@ -1,4 +1,4 @@
-from stests.core.orchestration import ExecutionContextInfo
+from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 
 
@@ -10,7 +10,7 @@ DESCRIPTION = "Dispatches a notification to signal that generator has completed.
 LABEL = "notify-competion"
 
 
-def execute(ctx: ExecutionContextInfo):
+def execute(ctx: ExecutionContext):
     """Step entry point.
     
     :param ctx: Execution context information.

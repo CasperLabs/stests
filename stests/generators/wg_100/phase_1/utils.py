@@ -4,7 +4,7 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
 from stests.core.domain import DeployStatus
-from stests.core.orchestration import ExecutionContextInfo
+from stests.core.orchestration import ExecutionContext
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.core.utils import factory
@@ -20,7 +20,7 @@ _QUEUE = "wg-100.utils"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_create_account(ctx: ExecutionContextInfo, index: int, typeof: AccountType):
+def do_create_account(ctx: ExecutionContext, index: int, typeof: AccountType):
     """Creates an account for use during the course of a simulation.
 
     :param ctx: Execution context information.
@@ -33,7 +33,7 @@ def do_create_account(ctx: ExecutionContextInfo, index: int, typeof: AccountType
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_account(ctx: ExecutionContextInfo, cp1_index: int, cp2_index: int, motes: int):
+def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, motes: int):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 
     :param ctx: Execution context information.
@@ -61,7 +61,7 @@ def do_fund_account(ctx: ExecutionContextInfo, cp1_index: int, cp2_index: int, m
 
 
 
-def verify_deploy(ctx: ExecutionContextInfo, dhash: str):
+def verify_deploy(ctx: ExecutionContext, dhash: str):
     """Verifies that a deploy is in a finalized state.
     
     """
@@ -70,14 +70,14 @@ def verify_deploy(ctx: ExecutionContextInfo, dhash: str):
     assert deploy.status == DeployStatus.FINALIZED
 
 
-def verify_deploy_count(ctx: ExecutionContextInfo, expected: int):
+def verify_deploy_count(ctx: ExecutionContext, expected: int):
     """Verifies that a step's count of finalized deploys tallies.
     
     """
     assert cache.orchestration.get_step_deploy_count(ctx) == expected
 
 
-def verify_transfer(ctx: ExecutionContextInfo, dhash: str) -> Transfer:
+def verify_transfer(ctx: ExecutionContext, dhash: str) -> Transfer:
     """Verifies that a transfer between counter-parties completed.
     
     """
@@ -88,7 +88,7 @@ def verify_transfer(ctx: ExecutionContextInfo, dhash: str) -> Transfer:
     return transfer
 
 
-def verify_account_balance(ctx: ExecutionContextInfo, account_index: int, expected: int):
+def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: int):
     """Verifies that an account balance is as per expectation.
     
     """
