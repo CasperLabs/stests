@@ -118,8 +118,8 @@ def get_run_network(ctx: ExecutionContextInfo) -> Network:
     return infra.get_network(network_id)
 
 
-def get_step(ctx: ExecutionContextInfo) -> ExecutionStepInfo:
-    """Decaches domain object: ExecutionStepInfo.
+def get_step(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+    """Decaches domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
 
@@ -133,8 +133,8 @@ def get_step(ctx: ExecutionContextInfo) -> ExecutionStepInfo:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_steps(ctx: ExecutionContextInfo) -> typing.List[ExecutionStepInfo]:
-    """Decaches collection of domain objects: ExecutionStepInfo.
+def get_steps(ctx: ExecutionContextInfo) -> typing.List[ExecutionRunInfo]:
+    """Decaches collection of domain objects: ExecutionRunInfo.
 
     :param ctx: Execution context information.
 
@@ -256,23 +256,6 @@ def set_run_context(ctx: ExecutionContextInfo) -> typing.Tuple[typing.List[str],
     ], ctx
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_run_info(info: ExecutionRunInfo) -> typing.Tuple[typing.List[str], ExecutionRunInfo]:
-    """Encaches domain object: ExecutionRunInfo.
-    
-    :param info: ExecutionRunInfo domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "info",
-        info.network,
-        info.run_type,
-        info.run_index_label,
-        "-"
-    ], info
-
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
 def set_run_state(state: ExecutionRunState) -> typing.Tuple[typing.List[str], ExecutionRunState]:
@@ -343,32 +326,14 @@ def update_run_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
     info.end(ctx.status, None)
 
     # Recache.
-    set_run_info(info)
+    set_info(info)
 
     return info
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_phase_info(info: ExecutionPhaseInfo) -> typing.Tuple[typing.List[str], ExecutionPhaseInfo]:
-    """Encaches domain object: ExecutionPhaseInfo.
-    
-    :param info: ExecutionPhaseInfo domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "info",
-        info.network,
-        info.run_type,
-        info.run_index_label,
-        info.phase_index_label,
-    ], info
-
-
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_phase_info(ctx: ExecutionContextInfo) -> ExecutionPhaseInfo:
-    """Decaches domain object: ExecutionPhaseInfo.
+def get_phase_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+    """Decaches domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
 
@@ -402,8 +367,8 @@ def set_phase_state(state: ExecutionPhaseState) -> typing.Tuple[typing.List[str]
     ], state 
 
 
-def update_phase_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionPhaseInfo:
-    """Updates domain object: ExecutionPhaseInfo.
+def update_phase_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionRunInfo:
+    """Updates domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
     :param status: New execution state.
@@ -416,16 +381,16 @@ def update_phase_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> Exe
     info.end(status, None)
 
     # Recache.
-    set_phase_info(info)
+    set_info(info)
 
     return info
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_step_info(info: ExecutionStepInfo) -> typing.Tuple[typing.List[str], ExecutionStepInfo]:
-    """Encaches domain object: ExecutionStepInfo.
+def set_step_info(info: ExecutionRunInfo) -> typing.Tuple[typing.List[str], ExecutionRunInfo]:
+    """Encaches domain object: ExecutionRunInfo.
     
-    :param evt: ExecutionStepInfo domain object instance to be cached.
+    :param evt: ExecutionRunInfo domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
@@ -458,8 +423,8 @@ def set_step_state(state: ExecutionStepState) -> typing.Tuple[typing.List[str], 
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_step_info(ctx: ExecutionContextInfo) -> ExecutionStepInfo:
-    """Decaches domain object: ExecutionStepInfo.
+def get_step_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+    """Decaches domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
 
@@ -475,8 +440,8 @@ def get_step_info(ctx: ExecutionContextInfo) -> ExecutionStepInfo:
     ]
 
 
-def update_step_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionStepInfo:
-    """Updates domain object: ExecutionStepInfo.
+def update_step_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionRunInfo:
+    """Updates domain object: ExecutionRunInfo.
     
     :param ctx: Execution context information.
     :param status: New execution state.
@@ -489,6 +454,41 @@ def update_step_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> Exec
     info.end(status, None)
 
     # Recache.
-    set_step_info(info)
+    set_info(info)
 
     return info
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_info(info: ExecutionRunInfo) -> typing.Tuple[typing.List[str], ExecutionRunInfo]:
+    """Encaches domain object: ExecutionRunInfo.
+    
+    :param evt: ExecutionRunInfo domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    if info.phase_index and info.step_index:
+        return [
+            "info",
+            info.network,
+            info.run_type,
+            info.run_index_label,
+            f"{info.phase_index_label}.{info.step_index_label}"
+        ], info
+    elif info.phase_index:
+        return [
+            "info",
+            info.network,
+            info.run_type,
+            info.run_index_label,
+            info.phase_index_label,
+            ], info
+    else:
+        return [
+            "info",
+            info.network,
+            info.run_type,
+            info.run_index_label,
+            "-",
+        ], info

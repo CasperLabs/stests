@@ -35,7 +35,7 @@ def do_run(ctx: ExecutionContextInfo):
     # Update cache.
     cache.orchestration.flush_by_run(ctx)
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_run_info(factory.create_run_info(ctx))
+    cache.orchestration.set_info(factory.create_run_info(ctx))
     cache.orchestration.set_run_state(factory.create_run_state(ctx))
 
     # Inform.
@@ -105,7 +105,7 @@ def do_phase(ctx: ExecutionContextInfo):
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_phase_info(factory.create_phase_info(ctx))
+    cache.orchestration.set_info(factory.create_phase_info(ctx))
     cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
 
     # Inform.
@@ -176,7 +176,7 @@ def do_step(ctx: ExecutionContextInfo):
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_step_info(factory.create_step_info(ctx))
+    cache.orchestration.set_info(factory.create_step_info(ctx))
     cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
 
     # Inform.

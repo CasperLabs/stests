@@ -14,7 +14,6 @@ from stests.core.orchestration.state_history import *
 
 # Set of supported classes.
 DCLASS_SET = {
-    ExecutionPhaseInfo,
     ExecutionPhaseLock,
     ExecutionPhaseState,
     ExecutionRunIdentifier,
@@ -22,7 +21,6 @@ DCLASS_SET = {
     ExecutionRunInfo,
     ExecutionRunLock,
     ExecutionRunState,
-    ExecutionStepInfo,
     ExecutionStepLock,
     ExecutionStepState,
 }

@@ -15,6 +15,9 @@ class ExecutionRunInfo:
     # Associated network.
     network: str
 
+    # Index to disambiguate a phase within the context of a run.
+    phase_index: int
+
     # Numerical index to distinguish between multiple runs.
     run_index: int
 
@@ -23,6 +26,12 @@ class ExecutionRunInfo:
 
     # Current status.
     status: ExecutionStatus
+
+    # Index to disambiguate a step within the context of a phase.
+    step_index: int
+
+    # Label to disambiguate a step within the context of a phase.
+    step_label: str
 
     # Timeperiod: run duration (in seconds).
     tp_duration: typing.Optional[float]
@@ -35,6 +44,10 @@ class ExecutionRunInfo:
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str]
+
+    @property
+    def step_index_label(self):
+        return f"S-{str(self.step_index).zfill(2)}"
 
     @property
     def tp_elapsed(self):
@@ -68,18 +81,14 @@ class ExecutionRunInfo:
         return f"{minutes}.{seconds}"
 
     @property
+    def phase_index_label(self):
+        return f"P-{str(self.phase_index).zfill(2)}"
+
+    @property
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
 
-    def start(self):
-        """Invoked when execution is complete.
-        
-        """
-        self.status = ExecutionStatus.IN_PROGRESS
-        self.ts_start = datetime.now()
-
-    
     def end(self, status, error=None):
         """Invoked when execution is complete.
         
@@ -89,31 +98,3 @@ class ExecutionRunInfo:
         self.ts_end = datetime.now()
         self.tp_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 
-
-@dataclasses.dataclass
-class ExecutionPhaseInfo(ExecutionRunInfo):
-    """Execution information - phase.
-    
-    """
-    # Index to disambiguate a phase within the context of a run.
-    phase_index: int
-
-    @property
-    def phase_index_label(self):
-        return f"P-{str(self.phase_index).zfill(2)}"
-
-
-@dataclasses.dataclass
-class ExecutionStepInfo(ExecutionPhaseInfo):
-    """Execution information - step.
-    
-    """
-    # Index to disambiguate a step within the context of a phase.
-    step_index: int
-
-    # Label to disambiguate a step within the context of a phase.
-    step_label: str
-
-    @property
-    def step_index_label(self):
-        return f"S-{str(self.step_index).zfill(2)}"
