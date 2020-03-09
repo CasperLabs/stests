@@ -5,7 +5,7 @@ from stests.core.orchestration.enums import ExecutionStatus
 
 
 @dataclasses.dataclass
-class ExecutionRunState:
+class RunState:
     """Run execution state information.
     
     """
@@ -30,7 +30,7 @@ class ExecutionRunState:
         
 
 @dataclasses.dataclass
-class ExecutionPhaseState(ExecutionRunState):
+class PhaseState(RunState):
     """Phase execution state information.
     
     """
@@ -43,7 +43,7 @@ class ExecutionPhaseState(ExecutionRunState):
 
 
 @dataclasses.dataclass
-class ExecutionStepState(ExecutionPhaseState):
+class StepState(PhaseState):
     """Step execution state information.
     
     """

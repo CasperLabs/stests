@@ -251,11 +251,11 @@ def create_run_id(
     network_id: NetworkIdentifier,
     run_index: int,
     run_type: str
-    ) -> ExecutionRunIdentifier:
-    """Returns a cache identifier: ExecutionRunIdentifier.
+    ) -> RunIdentifier:
+    """Returns a cache identifier: RunIdentifier.
     
     """
-    return ExecutionRunIdentifier(network_id, run_index, run_type)
+    return RunIdentifier(network_id, run_index, run_type)
 
 
 def create_transfer(

@@ -3,7 +3,7 @@ import dataclasses
 
 
 @dataclasses.dataclass
-class ExecutionRunLock:
+class RunLock:
     """Execution lock information - run.
     
     """
@@ -22,7 +22,7 @@ class ExecutionRunLock:
 
 
 @dataclasses.dataclass
-class ExecutionPhaseLock(ExecutionRunLock):
+class PhaseLock(RunLock):
     """Execution lock information - phase.
     
     """
@@ -35,7 +35,7 @@ class ExecutionPhaseLock(ExecutionRunLock):
 
 
 @dataclasses.dataclass
-class ExecutionStepLock(ExecutionPhaseLock):
+class StepLock(PhaseLock):
     """Execution lock information - step.
     
     """

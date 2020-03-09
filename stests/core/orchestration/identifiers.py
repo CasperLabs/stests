@@ -6,7 +6,7 @@ from stests.core.domain.network import NetworkIdentifier
 
 
 @dataclasses.dataclass
-class ExecutionRunIdentifier:
+class RunIdentifier:
     """Information required to disambiguate between generator runs.
     
     """

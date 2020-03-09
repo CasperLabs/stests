@@ -5,7 +5,7 @@ from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
 
-from stests.core.orchestration import ExecutionRunInfo
+from stests.core.orchestration import RunInfo
 
 from stests.generators.wg_100 import args
 
@@ -43,13 +43,13 @@ def main(args):
         network_id, 
         args.run_type
         )
-    runs = sorted([i for i in runs if isinstance(i, ExecutionRunInfo)], key=lambda i: i.ts_start)
+    runs = sorted([i for i in runs if isinstance(i, RunInfo)], key=lambda i: i.ts_start)
     if not runs:
         logger.log_warning(f"No runs found within cache for {network_id.name} : {args.run_type}.")
 
 
     for run in runs:
-        print(isinstance(run, ExecutionRunInfo))
+        print(isinstance(run, RunInfo))
 
 
 

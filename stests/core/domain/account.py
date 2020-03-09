@@ -6,7 +6,7 @@ from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
 from stests.core.domain.key_pair import PrivateKey
 from stests.core.domain.network import NetworkIdentifier
-from stests.core.orchestration.identifiers import ExecutionRunIdentifier
+from stests.core.orchestration.identifiers import RunIdentifier
 from stests.core.utils.dataclasses import get_timestamp_field
 
 
@@ -63,7 +63,7 @@ class AccountIdentifier:
     index: int
 
     # Associated run identifier.
-    run: ExecutionRunIdentifier
+    run: RunIdentifier
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
