@@ -30,12 +30,12 @@ def do_run(ctx: ExecutionContextInfo):
         return
 
     # Update ctx.
-    ctx.start()
+    ctx.status = ExecutionStatus.IN_PROGRESS
 
     # Update cache.
     cache.orchestration.flush_by_run(ctx)
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_run_info(ctx)
+    cache.orchestration.set_run_info(factory.create_run_info(ctx))
     cache.orchestration.set_run_state(factory.create_run_state(ctx))
 
     # Inform.
@@ -53,12 +53,12 @@ def on_run_end(ctx: ExecutionContextInfo):
     
     """
     # Update ctx.
-    ctx.end(ExecutionStatus.COMPLETE)
+    ctx.status = ExecutionStatus.COMPLETE
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.update_run_info(ctx)
     cache.orchestration.set_run_state(factory.create_run_state(ctx))
+    cache.orchestration.update_run_info(ctx)
 
     # Locks can now be flushed.
     cache.orchestration.flush_locks(ctx)    
@@ -76,12 +76,12 @@ def on_run_error(ctx: ExecutionContextInfo, err: str):
     
     """
     # Update ctx.
-    ctx.end(ExecutionStatus.ERROR, err)
+    ctx.status = ExecutionStatus.ERROR
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.update_run_info(ctx)
     cache.orchestration.set_run_state(factory.create_run_state(ctx))
+    cache.orchestration.update_run_info(ctx)
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")
@@ -105,8 +105,8 @@ def do_phase(ctx: ExecutionContextInfo):
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
     cache.orchestration.set_phase_info(factory.create_phase_info(ctx))
+    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
@@ -176,8 +176,8 @@ def do_step(ctx: ExecutionContextInfo):
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
     cache.orchestration.set_step_info(factory.create_step_info(ctx))
+    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")

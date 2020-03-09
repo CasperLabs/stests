@@ -2,6 +2,22 @@ from stests.core.orchestration import *
 
 
 
+def create_run_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
+    """Returns a domain object instance: ExecutionRunInfo.
+
+    """
+    return ExecutionRunInfo(
+        network=ctx.network,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        status=ExecutionStatus.IN_PROGRESS,
+        tp_duration=None,
+        ts_start=datetime.now(),
+        ts_end=None,
+        _type_key=None
+    )
+
+
 def create_run_lock(ctx: ExecutionContextInfo) -> ExecutionRunLock:
     """Factory: Returns an execution lock.
     

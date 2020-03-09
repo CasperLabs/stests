@@ -73,7 +73,7 @@ class ExecutionRunInfo:
 
 
     def start(self):
-        """Executed when about to start.
+        """Invoked when execution is complete.
         
         """
         self.status = ExecutionStatus.IN_PROGRESS
@@ -81,7 +81,7 @@ class ExecutionRunInfo:
 
     
     def end(self, status, error=None):
-        """Executed when about to start.
+        """Invoked when execution is complete.
         
         """
         self.error = error

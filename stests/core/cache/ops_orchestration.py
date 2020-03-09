@@ -46,7 +46,7 @@ def flush_by_run(ctx: ExecutionContextInfo) -> typing.Generator:
             collection,
             ctx.network,
             ctx.run_type,
-            f"R-{str(ctx.run_index).zfill(3)}",
+            ctx.run_index_label,
             "*"
         ]
 
@@ -64,7 +64,7 @@ def flush_locks(ctx: ExecutionContextInfo) -> typing.Generator:
         "lock",
         ctx.network,
         ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}*",
+        ctx.run_index_label,
     ]
 
 
@@ -79,11 +79,13 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
     :returns: Cached run context information.
 
     """
+    run_index_label = f"R-{str(run_index).zfill(3)}"
+
     return [
         "context",
         network,
         run_type,
-        f"R-{str(run_index).zfill(3)}"
+        run_index_label
     ]
 
 
@@ -250,15 +252,15 @@ def set_run_context(ctx: ExecutionContextInfo) -> typing.Tuple[typing.List[str],
         "context",
         ctx.network,
         ctx.run_type,
-        f"R-{str(ctx.run_index).zfill(3)}"
+        ctx.run_index_label
     ], ctx
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_run_info(info: ExecutionContextInfo) -> typing.Tuple[typing.List[str], ExecutionContextInfo]:
-    """Encaches domain object: ExecutionContextInfo.
+def set_run_info(info: ExecutionRunInfo) -> typing.Tuple[typing.List[str], ExecutionRunInfo]:
+    """Encaches domain object: ExecutionRunInfo.
     
-    :param info: ExecutionContextInfo domain object instance to be cached.
+    :param info: ExecutionRunInfo domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
@@ -268,6 +270,7 @@ def set_run_info(info: ExecutionContextInfo) -> typing.Tuple[typing.List[str], E
         info.network,
         info.run_type,
         info.run_index_label,
+        "-"
     ], info
 
 
@@ -284,7 +287,8 @@ def set_run_state(state: ExecutionRunState) -> typing.Tuple[typing.List[str], Ex
         "state",
         state.network,
         state.run_type,
-        state.run_index_label
+        state.run_index_label,
+        "-"
     ], state 
 
 
@@ -302,11 +306,12 @@ def get_run_info(ctx: ExecutionContextInfo) -> ExecutionContextInfo:
         ctx.network,
         ctx.run_type,
         ctx.run_index_label,
+        "-"
     ]
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> ExecutionContextInfo:
+def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionRunInfo]:
     """Decaches domain object: ExecutionContextInfo.
     
     :param ctx: Execution context information.
@@ -322,7 +327,7 @@ def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> Execution
     ]
 
 
-def update_run_info(ctx: ExecutionContextInfo) -> ExecutionContextInfo:
+def update_run_info(ctx: ExecutionContextInfo) -> ExecutionRunInfo:
     """Updates domain object: ExecutionContextInfo.
     
     :param ctx: Execution context information.
@@ -331,15 +336,16 @@ def update_run_info(ctx: ExecutionContextInfo) -> ExecutionContextInfo:
 
     """
     # Pull.
-    # info = get_run_info(ctx)
+    info = get_run_info(ctx)
 
     # Update.
-    # info.end(ctx.status, None)
+    # TODO: set error from context.
+    info.end(ctx.status, None)
 
     # Recache.
-    set_run_info(ctx)
+    set_run_info(info)
 
-    return ctx
+    return info
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
@@ -391,8 +397,9 @@ def set_phase_state(state: ExecutionPhaseState) -> typing.Tuple[typing.List[str]
         "state",
         state.network,
         state.run_type,
-        f"{state.run_index_label}.{state.phase_index_label}"
-    ], state   
+        state.run_index_label,
+        state.phase_index_label,
+    ], state 
 
 
 def update_phase_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionPhaseInfo:
@@ -445,7 +452,8 @@ def set_step_state(state: ExecutionStepState) -> typing.Tuple[typing.List[str], 
         "state",
         state.network,
         state.run_type,
-        f"{state.run_index_label}.{state.phase_index_label}.{state.step_index_label}"
+        state.run_index_label,
+        f"{state.phase_index_label}.{state.step_index_label}"
     ], state
 
 

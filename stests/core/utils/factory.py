@@ -244,9 +244,6 @@ def create_run_info(
         status=ExecutionStatus.IN_PROGRESS,
         step_index=0,
         step_label=None,
-        tp_duration=None,
-        ts_start=datetime.now(),
-        ts_end=None,
     )
 
 
