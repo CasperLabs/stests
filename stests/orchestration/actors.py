@@ -34,7 +34,7 @@ def do_run(ctx: ExecutionContext):
     ctx.status = ExecutionStatus.IN_PROGRESS
 
     # Set info/state.
-    run_info = factory.create_info(ctx, ExecutionAspect.RUN)
+    run_info = factory.create_info(ExecutionAspect.RUN, ctx)
     run_state = factory.create_state(ExecutionAspect.RUN, ctx)
 
     # Update cache.
@@ -115,7 +115,7 @@ def do_phase(ctx: ExecutionContext):
     ctx.step_index = 0
 
     # Set info/state.
-    phase_info = factory.create_info(ctx, ExecutionAspect.PHASE)
+    phase_info = factory.create_info(ExecutionAspect.PHASE, ctx)
     phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, ExecutionStatus.IN_PROGRESS)
 
     # Update cache.
@@ -196,7 +196,7 @@ def do_step(ctx: ExecutionContext):
     ctx.step_label = step.label
 
     # Set info/state.
-    step_info = factory.create_info(ctx, ExecutionAspect.STEP)
+    step_info = factory.create_info(ExecutionAspect.STEP, ctx)
     step_state = factory.create_state(ExecutionAspect.STEP, ctx, ExecutionStatus.IN_PROGRESS)
 
     # Update cache.

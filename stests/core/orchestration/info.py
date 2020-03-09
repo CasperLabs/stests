@@ -2,6 +2,7 @@ import dataclasses
 import typing
 from datetime import datetime
 
+from stests.core.orchestration.enums import ExecutionAspect
 from stests.core.orchestration.enums import ExecutionStatus
 
 
@@ -11,6 +12,9 @@ class ExecutionInfo:
     """Execution information.
     
     """
+    # Aspect of execution to which this information pertains.
+    aspect: ExecutionAspect
+
     # Associated network.
     network: str
 

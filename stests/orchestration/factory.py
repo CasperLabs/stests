@@ -2,12 +2,13 @@ from stests.core.orchestration import *
 
 
 
-def create_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
+def create_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> ExecutionInfo:
     """Returns a domain object instance: ExecutionInfo.
 
     """
     if aspect == ExecutionAspect.RUN:
         return ExecutionInfo(
+            aspect=aspect,
             network=ctx.network,
             phase_index=None,
             run_index=ctx.run_index,
@@ -23,6 +24,7 @@ def create_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo
 
     elif aspect == ExecutionAspect.PHASE:
         return ExecutionInfo(
+            aspect=aspect,
             network=ctx.network,
             phase_index=ctx.phase_index,
             run_index=ctx.run_index,
@@ -38,6 +40,7 @@ def create_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo
 
     elif aspect == ExecutionAspect.STEP:
         return ExecutionInfo(
+            aspect=aspect,
             network=ctx.network,
             phase_index=ctx.phase_index,
             run_index=ctx.run_index,

@@ -10,7 +10,7 @@ class ExecutionState:
     """Execution state information.
     
     """
-    # Aspect of execution to which this state information pertains.
+    # Aspect of execution to which this information pertains.
     aspect: ExecutionAspect
 
     # Associated network.
