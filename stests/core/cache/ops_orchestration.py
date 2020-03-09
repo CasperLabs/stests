@@ -283,21 +283,74 @@ def set_run_context(ctx: ExecutionRunInfo) -> typing.Tuple[typing.List[str], Exe
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_phase_info(phase: ExecutionPhaseInfo) -> typing.Tuple[typing.List[str], ExecutionPhaseInfo]:
-    """Encaches domain object: ExecutionPhaseInfo.
+def set_run_info(info: ExecutionRunInfo) -> typing.Tuple[typing.List[str], ExecutionRunInfo]:
+    """Encaches domain object: ExecutionRunInfo.
     
-    :param evt: ExecutionPhaseInfo domain object instance to be cached.
+    :param info: ExecutionRunInfo domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
     """
     return [
         "info",
-        phase.network,
-        phase.run_type,
-        phase.run_index_label,
-        phase.phase_index_label,
-    ], phase
+        info.network,
+        info.run_type,
+        info.run_index_label,
+    ], info
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+def get_run_info(ctx: ExecutionRunInfo) -> ExecutionRunInfo:
+    """Decaches domain object: ExecutionRunInfo.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath to domain object instance.
+
+    """
+    return [
+        "info",
+        ctx.network,
+        ctx.run_type,
+        ctx.run_index_label,
+    ]
+
+
+def update_run_info(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionRunInfo:
+    """Updates domain object: ExecutionRunInfo.
+    
+    :param ctx: Execution context information.
+    :param status: New execution state.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    # Pull & update.
+    info = get_run_info(ctx)
+    info.finalise(status, None)
+
+    # Recache.
+    set_run_info(info)
+
+    return info
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_phase_info(info: ExecutionPhaseInfo) -> typing.Tuple[typing.List[str], ExecutionPhaseInfo]:
+    """Encaches domain object: ExecutionPhaseInfo.
+    
+    :param info: ExecutionPhaseInfo domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "info",
+        info.network,
+        info.run_type,
+        info.run_index_label,
+        info.phase_index_label,
+    ], info
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
@@ -338,7 +391,7 @@ def update_phase_info(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Executi
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_step_info(step: ExecutionStepInfo) -> typing.Tuple[typing.List[str], ExecutionStepInfo]:
+def set_step_info(info: ExecutionStepInfo) -> typing.Tuple[typing.List[str], ExecutionStepInfo]:
     """Encaches domain object: ExecutionStepInfo.
     
     :param evt: ExecutionStepInfo domain object instance to be cached.
@@ -348,11 +401,11 @@ def set_step_info(step: ExecutionStepInfo) -> typing.Tuple[typing.List[str], Exe
     """
     return [
         "info",
-        step.network,
-        step.run_type,
-        step.run_index_label,
-        f"{step.phase_index_label}.{step.step_index_label}"
-    ], step
+        info.network,
+        info.run_type,
+        info.run_index_label,
+        f"{info.phase_index_label}.{info.step_index_label}"
+    ], info
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)

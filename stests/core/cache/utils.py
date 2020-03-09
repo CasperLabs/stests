@@ -90,7 +90,7 @@ def _delete(store: typing.Callable, key: str):
     """Wraps redis.delete command.
     
     """
-    logger.log(f"CACHE :: delete :: {key}")
+    # logger.log(f"CACHE :: delete :: {key}")
     store.delete(key)
 
 
@@ -110,7 +110,7 @@ def _get(store: typing.Callable, key: str) -> typing.Any:
     """Wraps redis.get command.
     
     """
-    logger.log(f"CACHE :: get :: {key}")
+    # logger.log(f"CACHE :: get :: {key}")
     obj = store.get(key)
     if obj is None:
         logger.log_warning(f"CACHE :: get :: {key} :: not found")
@@ -122,7 +122,7 @@ def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]
     """Wraps redis.mget command.
     
     """
-    logger.log(f"CACHE :: get :: {search_key}")
+    # logger.log(f"CACHE :: get :: {search_key}")
     CHUNK_SIZE = 5000
     _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
 
@@ -133,7 +133,7 @@ def _get_count(store: typing.Callable, search_key: str) -> int:
     """Wraps redis.mget command.
     
     """
-    logger.log(f"CACHE :: get_count :: {search_key}")
+    # logger.log(f"CACHE :: get_count :: {search_key}")
     CHUNK_SIZE = 5000
     _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
 
@@ -144,7 +144,7 @@ def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
     """Wraps redis.set command.
     
     """
-    logger.log(f"CACHE :: set :: {key}")
+    # logger.log(f"CACHE :: set :: {key}")
     
     store.set(key, json.dumps(encoder.encode(data), indent=4))
 
@@ -155,6 +155,6 @@ def _setnx(store: typing.Callable, key: str, data: typing.Any) -> typing.Tuple[s
     """Wraps redis.setnx command.
     
     """
-    logger.log(f"CACHE :: setnx :: {key}")
+    # logger.log(f"CACHE :: setnx :: {key}")
 
     return bool(store.setnx(key, json.dumps(encoder.encode(data), indent=4)))

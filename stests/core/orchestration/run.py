@@ -55,15 +55,23 @@ class ExecutionRunInfo:
     # Index to disambiguate a phase within the context of a run.
     phase_index: int
 
+    # Current status.
+    status: ExecutionStatus
+
     # Index to disambiguate a step within the context of a phase.
     step_index: int
 
     # Label to disambiguate a step within the context of a phase.
     step_label: typing.Optional[str]
 
-    # Current step.
-    # TODO: remove
-    run_step: typing.Optional[str]
+    # Timeperiod: run duration (in seconds).
+    tp_duration: typing.Optional[float]
+
+    # Timestamp: run start.
+    ts_start: datetime
+
+    # Timestamp: run end.
+    ts_end: typing.Optional[datetime]
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
@@ -98,6 +106,16 @@ class ExecutionRunInfo:
     @property
     def next_step_index_label(self):
         return f"S-{str(self.next_step_index).zfill(2)}"
+
+
+    def finalise(self, status, error=None):
+        """Executed when phase is complete.
+        
+        """
+        self.error = error
+        self.status = status
+        self.ts_end = datetime.now()
+        self.tp_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 
 
 @dataclasses.dataclass

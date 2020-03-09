@@ -32,6 +32,7 @@ def do_run(ctx: ExecutionRunInfo):
     # Update cache.
     cache.orchestration.flush_by_run(ctx)
     cache.orchestration.set_run_context(ctx)
+    cache.orchestration.set_run_info(ctx)
     cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.IN_PROGRESS))
 
     # Inform.
@@ -48,8 +49,9 @@ def on_run_end(ctx: ExecutionRunInfo):
     :param ctx: Execution context information.
     
     """
-    # Update status.
+    # Update cache.
     cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.COMPLETE))
+    cache.orchestration.update_run_info(ctx, ExecutionStatus.COMPLETE)
 
     # Locks can now be flushed.
     cache.orchestration.flush_locks(ctx)    
@@ -66,8 +68,9 @@ def on_run_error(ctx: ExecutionRunInfo, err: str):
     :param err: Execution error information.
     
     """
-    # Update status.
+    # Update cache.
     cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.ERROR))
+    cache.orchestration.update_run_info(ctx, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")

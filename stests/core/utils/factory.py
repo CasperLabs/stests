@@ -1,5 +1,5 @@
-from datetime import datetime
 import typing
+from datetime import datetime
 
 from stests.core.domain import *
 from stests.core.orchestration import *
@@ -220,7 +220,7 @@ def create_node_id(
     return NodeIdentifier(network_id, index)
 
 
-def create_run_context(
+def create_run_info(
     args: typing.Any,
     loop_count: int,
     loop_interval: int,
@@ -241,31 +241,12 @@ def create_run_context(
         run_index=run_index,
         run_type=run_type,
         phase_index=0,
+        status=ExecutionStatus.IN_PROGRESS,
         step_index=0,
         step_label=None,
-        # TODO: remove
-        run_step=None
-    )
-
-
-def create_run_phase(
-    network_id: NetworkIdentifier,
-    run_index: int,
-    run_type: str,
-    phase_index: int
-    ) -> ExecutionPhaseInfo:
-    """Returns a domain object instance: ExecutionPhaseInfo.
-    
-    """
-    return ExecutionPhaseInfo(
-        network=network_id.name,
-        phase_index=phase_index,
-        run_index=run_index,
-        run_type=run_type,
-        status=ExecutionStatus.IN_PROGRESS,
         tp_duration=None,
         ts_start=datetime.now(),
-        ts_end=None
+        ts_end=None,
     )
 
 

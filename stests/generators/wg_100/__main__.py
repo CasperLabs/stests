@@ -128,10 +128,12 @@ def main(args: argparse.Namespace):
     # Import initialiser to setup upstream services / actors.
     import stests.initialiser
 
-    # Set run context.
+    # Unpack args.
     network_id = factory.create_network_id(args.network_name)
     node_id = factory.create_node_id(network_id, args.node_index)
-    ctx = factory.create_run_context(
+
+    # Set run info.
+    run_info = factory.create_run_info(
         args=Arguments.create(args),
         loop_count=args.loop_count,
         loop_interval=args.loop_interval,
@@ -141,10 +143,12 @@ def main(args: argparse.Namespace):
         run_type=constants.TYPE
     )
 
-    # Start workflow.
+    # Start run.
     from stests.orchestration.actors import do_run
-    do_run.send(ctx)
-    logger.log("WG-100 :: generator executed")
+    do_run.send(run_info)
+
+    # Inform.
+    logger.log(f"WG-100 :: run {args.run_index} started")
 
 
 # Invoke entry point.

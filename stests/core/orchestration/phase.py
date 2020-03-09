@@ -27,13 +27,13 @@ class ExecutionPhaseInfo:
     # Current status.
     status: ExecutionStatus
 
-    # Elapsed execution time (in seconds).
+    # Timeperiod: phase duration (in seconds).
     tp_duration: typing.Optional[float]
 
-    # Moment in time when step occurred.
+    # Timestamp: phase start.
     ts_start: datetime
 
-    # Moment in time when step completed.
+    # Timestamp: phase end.
     ts_end: typing.Optional[datetime]
 
     # Type key of associated object used in serialisation scenarios.

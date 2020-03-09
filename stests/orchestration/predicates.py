@@ -92,11 +92,10 @@ def can_start_step(ctx: ExecutionRunInfo) -> bool:
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.next_step_index_label} -> invalid step index")
         return False
 
-    # False if next step locked.
+    # False if next step locked - can happen when processing groups of messages.
     lock = factory.create_step_lock(ctx, ctx.next_step_index, step.label)
     _, acquired = cache.orchestration.lock_step(lock)
     if not acquired:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.next_step_index_label} -> unacquired step lock")
         return False
     
     # All tests passed, therefore return true.    
