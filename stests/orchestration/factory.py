@@ -5,6 +5,11 @@ from stests.core.orchestration import *
 def create_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> ExecutionInfo:
     """Returns a domain object instance: ExecutionInfo.
 
+    :param aspect: Aspect of execution in scope.
+    :param ctx: Execution context information.
+
+    :returns: ExecutionInfo instance configured as per aspect.
+
     """
     if aspect == ExecutionAspect.RUN:
         return ExecutionInfo(
@@ -56,7 +61,13 @@ def create_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> ExecutionInfo
 
 
 def create_state(aspect: ExecutionAspect, ctx: ExecutionContext, status: ExecutionStatus = None) -> ExecutionState:
-    """Returns a domain object instance: ExecutionInfo.
+    """Returns a domain object instance: ExecutionState.
+
+    :param aspect: Aspect of execution in scope.
+    :param ctx: Execution context information.
+    :param status: Execution status.
+
+    :returns: ExecutionState instance configured as per aspect.
 
     """
     if aspect == ExecutionAspect.RUN:
@@ -131,7 +142,7 @@ def create_phase_lock(ctx: ExecutionContext, phase_index: int) -> PhaseLock:
     )
 
 
-def create_step_lock(ctx: ExecutionContext, step_index: int, step_label: str) -> StepLock:
+def create_step_lock(ctx: ExecutionContext, step_index: int) -> StepLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -146,5 +157,4 @@ def create_step_lock(ctx: ExecutionContext, step_index: int, step_label: str) ->
         run_type=ctx.run_type,
         phase_index=ctx.phase_index,
         step_index=step_index,
-        step_label=step_label,
     )

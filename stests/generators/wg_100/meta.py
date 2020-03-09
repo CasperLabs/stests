@@ -3,7 +3,6 @@ from stests.generators.wg_100.constants import DESCRIPTION
 from stests.generators.wg_100.constants import TYPE
 from stests.generators.wg_100 import phase_1
 from stests.generators.wg_100 import phase_2
-from stests.generators.wg_100 import phase_3
 
 
 
@@ -16,5 +15,4 @@ TYPE_SET = {
 PHASES = (
     phase_1,
     phase_2,
-    phase_3,
 )

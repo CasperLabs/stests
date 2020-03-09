@@ -9,7 +9,7 @@ from stests.core.orchestration import ExecutionAspect
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.core.utils import factory
-
+from stests.generators.wg_100 import constants
 
 
 # Account index: network faucet.
@@ -44,7 +44,7 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, motes
     
     """
     # Set counterparties.
-    if cp1_index == ACC_NETWORK_FAUCET:
+    if cp1_index == constants.ACC_NETWORK_FAUCET:
         network = cache.orchestration.get_run_network(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")

@@ -64,7 +64,7 @@ def flush_locks(ctx: ExecutionContext) -> typing.Generator:
         "lock",
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        f"{ctx.run_index_label}*",
     ]
 
 
@@ -183,6 +183,23 @@ def increment_deploy_counts(ctx: ExecutionContext):
     increment_deploy_count(ctx, ExecutionAspect.RUN)
     increment_deploy_count(ctx, ExecutionAspect.PHASE)
     increment_deploy_count(ctx, ExecutionAspect.STEP)
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], RunLock]:
+    """Decaches domain object: RunLock.
+    
+    :param ctx: Execution context information.
+
+    :returns: Cached run step information.
+
+    """
+    return [
+        "lock",
+        ctx.network,
+        ctx.run_type,
+        ctx.run_index_label
+    ]
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)

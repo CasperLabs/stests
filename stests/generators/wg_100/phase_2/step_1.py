@@ -1,22 +1,48 @@
+import typing
+
 from stests.core.orchestration import ExecutionContext
-from stests.core.utils import resources
 from stests.generators.wg_100 import constants
+from stests.generators.wg_100.phase_2 import utils
+
 
 
 # Step description.
-DESCRIPTION = "Deploys ERC-20 contract"
+DESCRIPTION = "Refunds funds previously transferred from run faucet."
 
 # Step label.
-LABEL = "deploy-contract"
+LABEL = "refund-run-faucet"
 
 
-def execute(ctx: ExecutionContext):
+def execute(ctx: ExecutionContext) -> typing.Callable:
     """Step entry point.
     
     :param ctx: Execution context information.
 
+    """  
+    def get_messages():
+        yield utils.do_refund.message(
+            ctx,
+            constants.ACC_RUN_CONTRACT,
+            constants.ACC_RUN_FAUCET
+        )
+        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+            yield utils.do_refund.message(
+                ctx,
+                acc_index,
+                constants.ACC_RUN_FAUCET
+            )
+
+    return get_messages
+
+
+
+def verify_deploy(ctx: ExecutionContext, dhash: str):
+    """Step deploy verifier.
+    
+    :param ctx: Execution context information.
+    :param dhash: A deploy hash.
+
     """
-    binary_fpath = resources.get_wasm_path(constants.WASM_CONTRACT_FILENAME)
-    print("TODO: deploy erc-20 contract")
-
-
+    utils.verify_deploy(ctx, dhash)
+    utils.verify_refund(ctx, dhash)
+    utils.verify_deploy_count(ctx, 1 + ctx.args.user_accounts) 

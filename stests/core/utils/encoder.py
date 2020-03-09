@@ -217,7 +217,7 @@ def initialise():
 
     IS_INITIALISED = True
 
-    logger.log("CORE :: encoder has been initialised")
+    # logger.log("CORE :: encoder has been initialised")
 
 
 # Initialise core types.

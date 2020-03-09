@@ -3,9 +3,9 @@ import argparse
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
-
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.args import Arguments
+from stests.orchestration.predicates import is_run_locked
 
 
 
@@ -75,24 +75,6 @@ ARGS.add_argument(
     default=constants.CONTRACT_INITIAL_CLX_BALANCE
     )
 
-# CLI argument: token name.
-ARGS.add_argument(
-    "--token-name",
-    help=f"Name of ERC-20 token.  Default={constants.TOKEN_NAME}",
-    dest="token_name",
-    type=str,
-    default=constants.TOKEN_NAME
-    )
-
-# CLI argument: token supply.
-ARGS.add_argument(
-    "--token-supply",
-    help=f"Amount of ERC-20 token to be issued. Default={constants.TOKEN_SUPPLY}",
-    dest="token_supply",
-    type=int,
-    default=constants.TOKEN_SUPPLY
-    )
-
 # CLI argument: user accounts.
 ARGS.add_argument(
     "--user-accounts",
@@ -100,15 +82,6 @@ ARGS.add_argument(
     dest="user_accounts",
     type=int,
     default=constants.USER_ACCOUNTS
-    )
-
-# CLI argument: bids / user.
-ARGS.add_argument(
-    "--user-bids",
-    help=f"Number of bids per user to submit. Default={constants.USER_BIDS}",
-    dest="user_bids",
-    type=int,
-    default=constants.USER_BIDS
     )
 
 # CLI argument: initial CLX balance.
@@ -132,8 +105,8 @@ def main(args: argparse.Namespace):
     network_id = factory.create_network_id(args.network_name)
     node_id = factory.create_node_id(network_id, args.node_index)
 
-    # Set run info.
-    run_info = factory.create_run_info(
+    # Set execution context.
+    ctx = factory.create_run_info(
         args=Arguments.create(args),
         loop_count=args.loop_count,
         loop_interval=args.loop_interval,
@@ -143,12 +116,15 @@ def main(args: argparse.Namespace):
         run_type=constants.TYPE
     )
 
+    # Abort if a run lock cannot be acquired.
+    if is_run_locked(ctx):
+        logger.log_warning(f"WG-100 :: run {args.run_index} aborted as it is currently executing.")
+        
     # Start run.
-    from stests.orchestration.actors import do_run
-    do_run.send(run_info)
-
-    # Inform.
-    logger.log(f"WG-100 :: run {args.run_index} started")
+    else:
+        from stests.orchestration.actors import do_run
+        do_run.send(ctx)
+        logger.log(f"WG-100 :: run {args.run_index} started")
 
 
 # Invoke entry point.

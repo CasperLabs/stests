@@ -42,9 +42,6 @@ class StepLock(PhaseLock):
     # Numerical index to distinguish between multiple steps within a phase.
     step_index: int
 
-    # Label to disambiguate a step within the context of a phase.
-    step_label: str
-
     @property
     def step_index_label(self):
         return f"S-{str(self.step_index).zfill(2)}"

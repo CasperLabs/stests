@@ -25,4 +25,4 @@ def execute():
     encoder.initialise()
     dramatiq.set_encoder(encoder)
 
-    logger.log("CORE :: broker has been initialised")
+    # logger.log("CORE :: broker has been initialised")
