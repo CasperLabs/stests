@@ -1,5 +1,6 @@
 import dataclasses
 
+from stests.core.orchestration.enums import ExecutionAspect
 from stests.core.orchestration.enums import ExecutionStatus
 
 
@@ -9,6 +10,9 @@ class ExecutionState:
     """Execution state information.
     
     """
+    # Aspect of execution to which this state information pertains.
+    aspect: ExecutionAspect
+
     # Associated network.
     network: str
 

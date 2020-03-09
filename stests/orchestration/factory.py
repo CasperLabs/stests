@@ -52,12 +52,13 @@ def create_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo
         )
 
 
-def create_state(ctx: ExecutionContext, aspect: ExecutionAspect, status: ExecutionStatus = None) -> ExecutionState:
+def create_state(aspect: ExecutionAspect, ctx: ExecutionContext, status: ExecutionStatus = None) -> ExecutionState:
     """Returns a domain object instance: ExecutionInfo.
 
     """
     if aspect == ExecutionAspect.RUN:
         return ExecutionState(
+            aspect=aspect,
             network=ctx.network,
             phase_index=None,
             run_index=ctx.run_index,
@@ -70,6 +71,7 @@ def create_state(ctx: ExecutionContext, aspect: ExecutionAspect, status: Executi
 
     elif aspect == ExecutionAspect.PHASE:
         return ExecutionState(
+            aspect=aspect,
             network=ctx.network,
             phase_index=ctx.phase_index,
             run_index=ctx.run_index,
@@ -82,6 +84,7 @@ def create_state(ctx: ExecutionContext, aspect: ExecutionAspect, status: Executi
 
     elif aspect == ExecutionAspect.STEP:
         return ExecutionState(
+            aspect=aspect,
             network=ctx.network,
             phase_index=ctx.phase_index,
             run_index=ctx.run_index,

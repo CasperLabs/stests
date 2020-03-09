@@ -257,24 +257,6 @@ def set_run_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], Exe
 
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_run_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
-    """Encaches domain object: ExecutionState.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "state",
-        state.network,
-        state.run_type,
-        state.run_index_label,
-        "-"
-    ], state 
-
-
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_run_info(ctx: ExecutionContext) -> ExecutionContext:
     """Decaches domain object: ExecutionContext.
@@ -349,24 +331,6 @@ def get_phase_info(ctx: ExecutionContext) -> ExecutionInfo:
     ]
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_phase_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
-    """Encaches domain object: ExecutionState.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "state",
-        state.network,
-        state.run_type,
-        state.run_index_label,
-        state.phase_index_label,
-    ], state 
-
-
 def update_phase_info(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionInfo:
     """Updates domain object: ExecutionInfo.
     
@@ -402,24 +366,6 @@ def set_step_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], Executi
         info.run_index_label,
         f"{info.phase_index_label}.{info.step_index_label}"
     ], info
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_step_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
-    """Encaches domain object: ExecutionState.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "state",
-        state.network,
-        state.run_type,
-        state.run_index_label,
-        f"{state.phase_index_label}.{state.step_index_label}"
-    ], state
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
@@ -492,3 +438,94 @@ def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInf
             info.run_index_label,
             "-",
         ], info
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
+    """Encaches domain object: ExecutionState.
+    
+    :param state: Execution state information.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    if state.aspect == ExecutionAspect.RUN:
+        return [
+            "state",
+            state.network,
+            state.run_type,
+            state.run_index_label,
+            "-"
+        ], state 
+
+    elif state.aspect == ExecutionAspect.PHASE:
+        return [
+            "state",
+            state.network,
+            state.run_type,
+            state.run_index_label,
+            state.phase_index_label,
+        ], state 
+
+    elif state.aspect == ExecutionAspect.STEP:
+        return [
+            "state",
+            state.network,
+            state.run_type,
+            state.run_index_label,
+            f"{state.phase_index_label}.{state.step_index_label}"
+        ], state
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_run_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
+    """Encaches domain object: ExecutionState.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "state",
+        state.network,
+        state.run_type,
+        state.run_index_label,
+        "-"
+    ], state 
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_step_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
+    """Encaches domain object: ExecutionState.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "state",
+        state.network,
+        state.run_type,
+        state.run_index_label,
+        f"{state.phase_index_label}.{state.step_index_label}"
+    ], state
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_phase_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
+    """Encaches domain object: ExecutionState.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "state",
+        state.network,
+        state.run_type,
+        state.run_index_label,
+        state.phase_index_label,
+    ], state 
