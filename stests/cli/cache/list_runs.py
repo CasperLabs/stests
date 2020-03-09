@@ -5,6 +5,7 @@ from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
 
+from stests.core.orchestration import ExecutionRunInfo
 
 from stests.generators.wg_100 import args
 
@@ -38,21 +39,27 @@ def main(args):
     network_id = factory.create_network_id(args.network)
 
     # Pull run contexts.
-    runs = cache.orchestration.get_contexts(
-        network_id.name, 
+    runs = cache.orchestration.get_list_run_info(
+        network_id, 
         args.run_type
         )
+    runs = sorted([i for i in runs if isinstance(i, ExecutionRunInfo)], key=lambda i: i.ts_start)
     if not runs:
         logger.log_warning(f"No runs found within cache for {network_id.name} : {args.run_type}.")
 
-    runs = list(map(lambda r: (r, cache.orchestration.get_step(r)), runs))
+
+    for run in runs:
+        print(run)
+
+
+
 
     # Display.
     print("-----------------------------------------------------------------------------------------------")
     print(f"{network_id.name} : {args.run_type}")
     print("-----------------------------------------------------------------------------------------------")
-    for run, step in runs:
-        print(f"R-{str(run.run_index).zfill(4)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.tp_elapsed_label.rjust(11)} ")
+    for run in runs:
+        print(f"{run.run_index_label} :: {run.phase_index_label} :: {run.step_index_label} :: {run.ts_start} :: {run.tp_elapsed_label.rjust(11)} ")
     print("-----------------------------------------------------------------------------------------------")
 
 

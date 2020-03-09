@@ -29,11 +29,14 @@ def do_run(ctx: ExecutionRunInfo):
     if not predicates.can_start_run(ctx):
         return
 
+    # Update ctx.
+    ctx.start()
+
     # Update cache.
     cache.orchestration.flush_by_run(ctx)
     cache.orchestration.set_run_context(ctx)
     cache.orchestration.set_run_info(ctx)
-    cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.IN_PROGRESS))
+    cache.orchestration.set_run_state(factory.create_run_state(ctx))
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> starts")
@@ -49,9 +52,13 @@ def on_run_end(ctx: ExecutionRunInfo):
     :param ctx: Execution context information.
     
     """
+    # Update ctx.
+    ctx.end(ExecutionStatus.COMPLETE)
+
     # Update cache.
-    cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.COMPLETE))
-    cache.orchestration.update_run_info(ctx, ExecutionStatus.COMPLETE)
+    cache.orchestration.set_run_context(ctx)
+    cache.orchestration.update_run_info(ctx)
+    cache.orchestration.set_run_state(factory.create_run_state(ctx))
 
     # Locks can now be flushed.
     cache.orchestration.flush_locks(ctx)    
@@ -68,9 +75,13 @@ def on_run_error(ctx: ExecutionRunInfo, err: str):
     :param err: Execution error information.
     
     """
+    # Update ctx.
+    ctx.end(ExecutionStatus.ERROR, err)
+
     # Update cache.
-    cache.orchestration.set_state(factory.create_run_state(ctx, status=ExecutionStatus.ERROR))
-    cache.orchestration.update_run_info(ctx, ExecutionStatus.ERROR)
+    cache.orchestration.set_run_context(ctx)
+    cache.orchestration.update_run_info(ctx)
+    cache.orchestration.set_run_state(factory.create_run_state(ctx))
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")
@@ -94,7 +105,7 @@ def do_phase(ctx: ExecutionRunInfo):
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
+    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.IN_PROGRESS))
     cache.orchestration.set_phase_info(factory.create_phase_info(ctx))
 
     # Inform.
@@ -115,7 +126,7 @@ def on_phase_end(ctx: ExecutionRunInfo):
     phase = Workflow.get_phase_(ctx, ctx.phase_index)
 
     # Update cache.
-    cache.orchestration.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.COMPLETE))
+    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.COMPLETE))
     cache.orchestration.update_phase_info(ctx, ExecutionStatus.COMPLETE)
 
     # Inform.
@@ -137,7 +148,7 @@ def on_phase_error(ctx: ExecutionRunInfo, err: str):
     
     """
     # Update cache.
-    cache.orchestration.set_state(factory.create_phase_state(ctx, status=ExecutionStatus.ERROR))
+    cache.orchestration.set_phase_state(factory.create_phase_state(ctx, status=ExecutionStatus.ERROR))
     cache.orchestration.update_phase_info(ctx, ExecutionStatus.ERROR)
 
     # Inform.
@@ -165,7 +176,7 @@ def do_step(ctx: ExecutionRunInfo):
 
     # Update cache.
     cache.orchestration.set_run_context(ctx)
-    cache.orchestration.set_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
+    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.IN_PROGRESS))
     cache.orchestration.set_step_info(factory.create_step_info(ctx))
 
     # Inform.
@@ -226,7 +237,7 @@ def do_step_end(ctx: ExecutionRunInfo):
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
 
     # Update cache.
-    cache.orchestration.set_state(factory.create_step_state(ctx, ExecutionStatus.COMPLETE))
+    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.COMPLETE))
     cache.orchestration.update_step_info(ctx, ExecutionStatus.COMPLETE)
 
     # Inform.
@@ -248,7 +259,7 @@ def do_step_error(ctx: ExecutionRunInfo, err: str):
     
     """
     # Update cache.
-    cache.orchestration.set_state(factory.create_step_state(ctx, ExecutionStatus.ERROR))
+    cache.orchestration.set_step_state(factory.create_step_state(ctx, ExecutionStatus.ERROR))
     cache.orchestration.update_step_info(ctx, ExecutionStatus.ERROR)
 
     # Inform.

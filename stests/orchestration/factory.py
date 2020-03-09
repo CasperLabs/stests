@@ -17,11 +17,10 @@ def create_run_lock(ctx: ExecutionRunInfo) -> ExecutionRunLock:
     )
 
 
-def create_run_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionRunState:
+def create_run_state(ctx: ExecutionRunInfo) -> ExecutionRunState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
-    :param status: Execution status.
 
     :returns: Execution state information.
 
@@ -30,7 +29,7 @@ def create_run_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Executio
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
-        status=status,
+        status=ctx.status,
     )
 
 

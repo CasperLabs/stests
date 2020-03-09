@@ -80,6 +80,37 @@ class ExecutionRunInfo:
     _ts_created: datetime = get_timestamp_field()
 
     @property
+    def tp_elapsed(self):
+        if self.status == ExecutionStatus.COMPLETE:
+            return self.tp_duration
+        return datetime.now().timestamp() - self.ts_start.timestamp()
+
+    @property
+    def tp_duration_label(self):
+        """Returns step duration formatted for display purposes.
+        
+        """
+        if self.tp_duration is None:
+            return "N/A"
+
+        duration = str(self.tp_duration)
+        minutes = duration.split(".")[0]
+        seconds = duration.split(".")[1][:6]
+        
+        return f"{minutes}.{seconds}"
+
+    @property
+    def tp_elapsed_label(self):
+        """Returns step elapsed formatted for display purposes.
+        
+        """
+        elapsed = str(self.tp_elapsed)
+        minutes = elapsed.split(".")[0]
+        seconds = elapsed.split(".")[1][:6]
+        
+        return f"{minutes}.{seconds}"
+
+    @property
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
@@ -108,8 +139,16 @@ class ExecutionRunInfo:
         return f"S-{str(self.next_step_index).zfill(2)}"
 
 
-    def finalise(self, status, error=None):
-        """Executed when phase is complete.
+    def start(self):
+        """Executed when run is about to start.
+        
+        """
+        self.status = ExecutionStatus.IN_PROGRESS
+        self.ts_start = datetime.now()
+
+    
+    def end(self, status, error=None):
+        """Executed when run is complete.
         
         """
         self.error = error
