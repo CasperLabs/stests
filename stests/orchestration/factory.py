@@ -47,6 +47,7 @@ def create_phase_info(ctx: ExecutionContextInfo) -> ExecutionPhaseInfo:
         tp_duration=None,
         ts_start=datetime.now(),
         ts_end=None,
+        _type_key=None
     )
 
 
@@ -100,6 +101,7 @@ def create_step_info(ctx: ExecutionContextInfo) -> ExecutionStepInfo:
         tp_duration=None,
         ts_start=datetime.now(),
         ts_end=None,
+        _type_key=None
     )
 
 

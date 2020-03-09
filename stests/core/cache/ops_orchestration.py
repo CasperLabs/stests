@@ -406,7 +406,7 @@ def update_phase_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> Exe
     """
     # Pull & update.
     info = get_phase_info(ctx)
-    info.finalise(status, None)
+    info.end(status, None)
 
     # Recache.
     set_phase_info(info)
@@ -478,7 +478,7 @@ def update_step_info(ctx: ExecutionContextInfo, status: ExecutionStatus) -> Exec
     """
     # Pull & update.
     info = get_step_info(ctx)
-    info.finalise(status, None)
+    info.end(status, None)
 
     # Recache.
     set_step_info(info)

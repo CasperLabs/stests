@@ -6,7 +6,7 @@ from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
 from stests.core.domain.key_pair import PrivateKey
 from stests.core.domain.network import NetworkIdentifier
-from stests.core.orchestration.run import ExecutionRunIdentifier
+from stests.core.orchestration.identifiers import ExecutionRunIdentifier
 from stests.core.utils.dataclasses import get_timestamp_field
 
 
