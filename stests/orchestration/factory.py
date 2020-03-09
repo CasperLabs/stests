@@ -2,7 +2,7 @@ from stests.core.orchestration import *
 
 
 
-def create_run_lock(ctx: ExecutionRunInfo) -> ExecutionRunLock:
+def create_run_lock(ctx: ExecutionContextInfo) -> ExecutionRunLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -17,7 +17,7 @@ def create_run_lock(ctx: ExecutionRunInfo) -> ExecutionRunLock:
     )
 
 
-def create_run_state(ctx: ExecutionRunInfo) -> ExecutionRunState:
+def create_run_state(ctx: ExecutionContextInfo) -> ExecutionRunState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -30,10 +30,11 @@ def create_run_state(ctx: ExecutionRunInfo) -> ExecutionRunState:
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         status=ctx.status,
+        _type_key=None
     )
 
 
-def create_phase_info(ctx: ExecutionRunInfo) -> ExecutionPhaseInfo:
+def create_phase_info(ctx: ExecutionContextInfo) -> ExecutionPhaseInfo:
     """Returns a domain object instance: ExecutionPhaseInfo.
 
     """
@@ -49,7 +50,7 @@ def create_phase_info(ctx: ExecutionRunInfo) -> ExecutionPhaseInfo:
     )
 
 
-def create_phase_lock(ctx: ExecutionRunInfo, phase_index: int) -> ExecutionPhaseLock:
+def create_phase_lock(ctx: ExecutionContextInfo, phase_index: int) -> ExecutionPhaseLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -66,7 +67,7 @@ def create_phase_lock(ctx: ExecutionRunInfo, phase_index: int) -> ExecutionPhase
     )
 
 
-def create_phase_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionPhaseState:
+def create_phase_state(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionPhaseState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -81,9 +82,10 @@ def create_phase_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Execut
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         status=status,
+        _type_key=None
     )
 
-def create_step_info(ctx: ExecutionRunInfo) -> ExecutionStepInfo:
+def create_step_info(ctx: ExecutionContextInfo) -> ExecutionStepInfo:
     """Returns a domain object instance: ExecutionStepInfo.
 
     """
@@ -101,7 +103,7 @@ def create_step_info(ctx: ExecutionRunInfo) -> ExecutionStepInfo:
     )
 
 
-def create_step_lock(ctx: ExecutionRunInfo, step_index: int, step_label: str) -> ExecutionStepLock:
+def create_step_lock(ctx: ExecutionContextInfo, step_index: int, step_label: str) -> ExecutionStepLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -120,7 +122,7 @@ def create_step_lock(ctx: ExecutionRunInfo, step_index: int, step_label: str) ->
     )
     
 
-def create_step_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> ExecutionStepState:
+def create_step_state(ctx: ExecutionContextInfo, status: ExecutionStatus) -> ExecutionStepState:
     """Factory: Returns execution state information.
     
     :param ctx: Execution context information.
@@ -137,4 +139,5 @@ def create_step_state(ctx: ExecutionRunInfo, status: ExecutionStatus) -> Executi
         status=status,
         step_index=ctx.step_index,
         step_label=ctx.step_label,
+        _type_key=None
     )

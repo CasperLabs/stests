@@ -1,14 +1,14 @@
 import typing
 
 from stests.core import cache
-from stests.core.orchestration import ExecutionRunInfo
+from stests.core.orchestration import ExecutionContextInfo
 from stests.core.utils import logger
 from stests.orchestration import factory
 from stests.orchestration.model import Workflow
 
 
 
-def can_start_run(ctx: ExecutionRunInfo) -> bool:
+def can_start_run(ctx: ExecutionContextInfo) -> bool:
     """Returns flag indicating whether a run increment is valid.
     
     :param ctx: Execution context information.
@@ -37,7 +37,7 @@ def can_start_run(ctx: ExecutionRunInfo) -> bool:
     return True
 
 
-def can_start_phase(ctx: ExecutionRunInfo) -> bool:
+def can_start_phase(ctx: ExecutionContextInfo) -> bool:
     """Returns flag indicating whether a phase increment is valid.
     
     :param ctx: Execution context information.
@@ -67,7 +67,7 @@ def can_start_phase(ctx: ExecutionRunInfo) -> bool:
     return True
 
 
-def can_start_step(ctx: ExecutionRunInfo) -> bool:
+def can_start_step(ctx: ExecutionContextInfo) -> bool:
     """Returns flag indicating whether a step increment is valid.
     
     :param ctx: Execution context information.
@@ -102,7 +102,7 @@ def can_start_step(ctx: ExecutionRunInfo) -> bool:
     return True
 
 
-def _validate_wflow(ctx: ExecutionRunInfo) -> typing.Tuple[typing.Optional[Workflow], bool]:
+def _validate_wflow(ctx: ExecutionContextInfo) -> typing.Tuple[typing.Optional[Workflow], bool]:
     """Predicate determining whether the workflow to be executed is valid or not.
     
     """

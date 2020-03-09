@@ -1,5 +1,5 @@
 from stests.core.domain import NetworkIdentifier
-from stests.core.orchestration import ExecutionRunInfo
+from stests.core.orchestration import ExecutionContextInfo
 
 import stests.core.cache.ops_infra as infra
 import stests.core.cache.ops_monitoring as monitoring
@@ -18,7 +18,7 @@ def flush_by_network(network_id: NetworkIdentifier):
         partition.flush_by_network(network_id)
 
 
-def flush_by_run(ctx: ExecutionRunInfo):
+def flush_by_run(ctx: ExecutionContextInfo):
     """Flushes all information pertaining to a run.
 
     :param ctx: Execution context information.

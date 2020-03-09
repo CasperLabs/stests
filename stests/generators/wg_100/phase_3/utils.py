@@ -3,7 +3,7 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import DeployStatus
-from stests.core.orchestration import ExecutionRunInfo
+from stests.core.orchestration import ExecutionContextInfo
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.generators.wg_100 import constants
@@ -14,7 +14,7 @@ _QUEUE = "wg-100.utils"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
+def do_refund(ctx: ExecutionContextInfo, cp1_index: int, cp2_index: int):
     """Performs a refund ot funds between 2 counterparties.
 
     :param ctx: Execution context information.
@@ -40,7 +40,7 @@ def do_refund(ctx: ExecutionRunInfo, cp1_index: int, cp2_index: int):
     cache.state.set_run_transfer(refund)
 
 
-def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
+def verify_deploy(ctx: ExecutionContextInfo, dhash: str):
     """Verifies that a deploy is in a finalized state.
     
     """
@@ -49,14 +49,14 @@ def verify_deploy(ctx: ExecutionRunInfo, dhash: str):
     assert deploy.status == DeployStatus.FINALIZED
 
 
-def verify_deploy_count(ctx: ExecutionRunInfo, expected: int):
+def verify_deploy_count(ctx: ExecutionContextInfo, expected: int):
     """Verifies that a step's count of finalized deploys tallies.
     
     """
     assert cache.orchestration.get_step_deploy_count(ctx) == expected
 
 
-def verify_refund(ctx: ExecutionRunInfo, dhash: str) -> Transfer:
+def verify_refund(ctx: ExecutionContextInfo, dhash: str) -> Transfer:
     """Verifies that a refund between counter-parties completed.
     
     """

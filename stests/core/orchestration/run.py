@@ -27,7 +27,7 @@ class ExecutionRunIdentifier:
     
 
 @dataclasses.dataclass
-class ExecutionRunInfo:
+class ExecutionContextInfo:
     """Execution context information - run.
     
     """
@@ -156,49 +156,3 @@ class ExecutionRunInfo:
         self.ts_end = datetime.now()
         self.tp_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 
-
-@dataclasses.dataclass
-class ExecutionRunLock:
-    """Execution lock information - run.
-    
-    """
-    # Associated network.
-    network: str
-
-    # Numerical index to distinguish between multiple runs of the same workflow.
-    run_index: int
-
-    # Type of workflow, e.g. WG-100 ...etc.
-    run_type: str
-
-    @property
-    def run_index_label(self):
-        return f"R-{str(self.run_index).zfill(3)}"
-
-
-@dataclasses.dataclass
-class ExecutionRunState:
-    """Execution state information - run.
-    
-    """
-    # Associated network.
-    network: str
-
-    # Numerical index to distinguish between multiple runs.
-    run_index: int
-
-    # Type of run, e.g. WG-100 ...etc.
-    run_type: str
-
-    # Execution status.
-    status: ExecutionStatus
-
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
-
-    @property
-    def run_index_label(self):
-        return f"R-{str(self.run_index).zfill(3)}"

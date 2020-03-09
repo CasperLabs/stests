@@ -1,4 +1,7 @@
 from stests.core.orchestration.enums import *
+from stests.core.orchestration.locks import *
+from stests.core.orchestration.state_history import *
+
 from stests.core.orchestration.phase import *
 from stests.core.orchestration.run import *
 from stests.core.orchestration.step import *
@@ -11,7 +14,7 @@ DCLASS_SET = {
     ExecutionPhaseLock,
     ExecutionPhaseState,
     ExecutionRunIdentifier,
-    ExecutionRunInfo,
+    ExecutionContextInfo,
     ExecutionRunLock,
     ExecutionRunState,
     ExecutionStepInfo,
