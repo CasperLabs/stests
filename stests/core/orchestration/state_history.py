@@ -49,4 +49,3 @@ class ExecutionState:
     def step_index_label(self):
         return f"S-{str(self.step_index).zfill(2)}"
 
-

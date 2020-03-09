@@ -4,6 +4,7 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.domain import DeployStatus
 from stests.core.orchestration import ExecutionContext
+from stests.core.orchestration import ExecutionAspect
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.generators.wg_100 import constants
@@ -53,7 +54,7 @@ def verify_deploy_count(ctx: ExecutionContext, expected: int):
     """Verifies that a step's count of finalized deploys tallies.
     
     """
-    assert cache.orchestration.get_step_deploy_count(ctx) == expected
+    assert cache.orchestration.get_deploy_count(ctx, ExecutionAspect.STEP) == expected
 
 
 def verify_refund(ctx: ExecutionContext, dhash: str) -> Transfer:

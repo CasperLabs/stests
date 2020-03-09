@@ -17,7 +17,6 @@ from stests.orchestration.actors import on_step_deploy_finalized
 _QUEUE = "monitoring"
 
 
-
 @dramatiq.actor(queue_name=_QUEUE)
 def launch_stream_monitors():
     """Launches network stream endpoint monitors.
@@ -97,9 +96,9 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     deploy.update_on_finalization(bhash, finalization_ts)
     cache.state.set_run_deploy(deploy)
 
-    # Increment step deploy count.
+    # Increment deploy counts.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
-    cache.orchestration.increment_step_deploy_count(ctx)
+    cache.orchestration.increment_deploy_counts(ctx)
 
     # Update transfers.
     transfer = cache.state.get_run_transfer(dhash)

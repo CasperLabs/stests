@@ -39,7 +39,7 @@ def do_run(ctx: ExecutionContext):
 
     # Update cache.
     cache.orchestration.flush_by_run(ctx)
-    cache.orchestration.set_run_context(ctx)
+    cache.orchestration.set_context(ctx)
     cache.orchestration.set_info(run_info)
     cache.orchestration.set_state(run_state)
 
@@ -64,7 +64,7 @@ def on_run_end(ctx: ExecutionContext):
     run_state = factory.create_state(ExecutionAspect.RUN, ctx)
 
     # Update cache.
-    cache.orchestration.set_run_context(ctx)
+    cache.orchestration.set_context(ctx)
     cache.orchestration.set_state(run_state)
     cache.orchestration.update_run_info(ctx)
 
@@ -90,7 +90,7 @@ def on_run_error(ctx: ExecutionContext, err: str):
     run_state = factory.create_state(ExecutionAspect.RUN, ctx)
 
     # Update cache.
-    cache.orchestration.set_run_context(ctx)
+    cache.orchestration.set_context(ctx)
     cache.orchestration.set_state(run_state)
     cache.orchestration.update_run_info(ctx)
 
@@ -119,7 +119,7 @@ def do_phase(ctx: ExecutionContext):
     phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, ExecutionStatus.IN_PROGRESS)
 
     # Update cache.
-    cache.orchestration.set_run_context(ctx)
+    cache.orchestration.set_context(ctx)
     cache.orchestration.set_info(phase_info)
     cache.orchestration.set_state(phase_state)
 
@@ -200,7 +200,7 @@ def do_step(ctx: ExecutionContext):
     step_state = factory.create_state(ExecutionAspect.STEP, ctx, ExecutionStatus.IN_PROGRESS)
 
     # Update cache.
-    cache.orchestration.set_run_context(ctx)
+    cache.orchestration.set_context(ctx)
     cache.orchestration.set_info(step_info)
     cache.orchestration.set_state(step_state)
 

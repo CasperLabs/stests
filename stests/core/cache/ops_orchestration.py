@@ -151,47 +151,38 @@ def get_steps(ctx: ExecutionContext) -> typing.List[ExecutionInfo]:
         
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNT)
-def get_step_deploy_count(ctx: ExecutionContext) -> int:
-    """Reurns current count of run step deploys.
+def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
+    """Returns count of deploys within the scope of an execution aspect.
 
     :param ctx: Execution context information.
+    :param aspect: Aspect of execution in scope.
+
+    :returns: Count of deploys.
 
     """
-    keypath = [
-        "step-deploy-count",
-        ctx.network,
-        ctx.run_type,
-    ]
-    if ctx.phase_index and ctx.step_index:
-        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}.{ctx.step_index_label}")
-    elif ctx.phase_index:
-        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}")
-    else:
-        keypath.append(ctx.run_index_label)
-
-    return keypath
+    return _get_keypath_deploy_count(ctx, aspect)
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
-def increment_step_deploy_count(ctx: ExecutionContext):
+def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP):
     """Increments (atomically) count of run step deploys.
+
+    :param ctx: Execution context information.
+    :param aspect: Aspect of execution in scope.
+
+    """
+    return _get_keypath_deploy_count(ctx, aspect)
+
+
+def increment_deploy_counts(ctx: ExecutionContext):
+    """Increments (atomically) count of deploys.
 
     :param ctx: Execution context information.
 
     """
-    keypath = [
-        "step-deploy-count",
-        ctx.network,
-        ctx.run_type,
-    ]
-    if ctx.phase_index and ctx.step_index:
-        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}.{ctx.step_index_label}")
-    elif ctx.phase_index:
-        keypath.append(f"{ctx.run_index_label}.{ctx.phase_index_label}")
-    else:
-        keypath.append(ctx.run_index_label)
-
-    return keypath
+    increment_deploy_count(ctx, ExecutionAspect.RUN)
+    increment_deploy_count(ctx, ExecutionAspect.PHASE)
+    increment_deploy_count(ctx, ExecutionAspect.STEP)
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
@@ -237,24 +228,6 @@ def lock_step(lock: StepLock) -> typing.Tuple[typing.List[str], StepLock]:
         lock.run_type,
         f"{lock.run_index_label}.{lock.phase_index_label}.{lock.step_index_label}",
     ], lock
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_run_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], ExecutionContext]:
-    """Encaches domain object: ExecutionContext.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "context",
-        ctx.network,
-        ctx.run_type,
-        ctx.run_index_label
-    ], ctx
-
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
@@ -350,24 +323,6 @@ def update_phase_info(ctx: ExecutionContext, status: ExecutionStatus) -> Executi
     return info
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_step_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInfo]:
-    """Encaches domain object: ExecutionInfo.
-    
-    :param evt: ExecutionInfo domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "info",
-        info.network,
-        info.run_type,
-        info.run_index_label,
-        f"{info.phase_index_label}.{info.step_index_label}"
-    ], info
-
-
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_step_info(ctx: ExecutionContext) -> ExecutionInfo:
     """Decaches domain object: ExecutionInfo.
@@ -406,10 +361,27 @@ def update_step_info(ctx: ExecutionContext, status: ExecutionStatus) -> Executio
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+def set_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], ExecutionContext]:
+    """Encaches domain object: ExecutionContext.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "context",
+        ctx.network,
+        ctx.run_type,
+        ctx.run_index_label
+    ], ctx
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
 def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInfo]:
     """Encaches domain object: ExecutionInfo.
     
-    :param evt: ExecutionInfo domain object instance to be cached.
+    :param info: ExecutionInfo domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
@@ -477,55 +449,34 @@ def set_state(state: ExecutionState) -> typing.Tuple[typing.List[str], Execution
         ], state
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_run_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
-    """Encaches domain object: ExecutionState.
+def _get_keypath_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> typing.List[str]:
+    """Returns keypath used when working with a deploy count.
     
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
     """
-    return [
-        "state",
-        state.network,
-        state.run_type,
-        state.run_index_label,
-        "-"
-    ], state 
+    if aspect == ExecutionAspect.RUN:
+        return [
+            "deploy-count",
+            ctx.network,
+            ctx.run_type,
+            ctx.run_index_label,
+            "-",
+        ]
 
+    elif aspect == ExecutionAspect.PHASE:
+        return [
+            "deploy-count",
+            ctx.network,
+            ctx.run_type,
+            ctx.run_index_label,
+            ctx.phase_index_label,
+        ]
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_step_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
-    """Encaches domain object: ExecutionState.
-    
-    :param ctx: Execution context information.
+    elif aspect == ExecutionAspect.STEP:
+        return [
+            "deploy-count",
+            ctx.network,
+            ctx.run_type,
+            ctx.run_index_label,
+            f"{ctx.phase_index_label}.{ctx.step_index_label}",            
+        ]
 
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "state",
-        state.network,
-        state.run_type,
-        state.run_index_label,
-        f"{state.phase_index_label}.{state.step_index_label}"
-    ], state
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
-def set_phase_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
-    """Encaches domain object: ExecutionState.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        "state",
-        state.network,
-        state.run_type,
-        state.run_index_label,
-        state.phase_index_label,
-    ], state 
