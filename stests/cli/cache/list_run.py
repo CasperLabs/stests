@@ -58,11 +58,11 @@ def main(args):
     print(f"{network_id.name} - {args.run_type}")
     print("-----------------------------------------------------------------------------------------------")
 
-    print(f"Step            :: {'Started'.ljust(26)} :: {'Time (secs)'.rjust(11)} :: Status     :: Step Name")
+    print(f"Phase / Step       {'Started'.ljust(26)}    {'Time (secs)'.rjust(11)}  Status       Action")
     for info in sorted(info_list, key=lambda i: i.index_label):
-        if info.aspect == ExecutionAspect.PHASE:
+        if info.aspect in (ExecutionAspect.RUN, ExecutionAspect.PHASE):
             print("")
-        print(f"{info.index_label} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} :: {info.status_label} {f':: {info.step_label}' if info.step_label else ''}")
+        print(f"{info.index_label}    {info.ts_start}    {info.tp_elapsed_label.rjust(11)}  {info.status_label}   {info.step_label if info.step_label else ''}")
 
         # elif info.aspect == ExecutionAspect.PHASE:
         #     print(f"{info.index_label} :: {info.status_label} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} ")
