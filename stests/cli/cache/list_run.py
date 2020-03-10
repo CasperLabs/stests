@@ -4,8 +4,9 @@ from stests.core import cache
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
-from stests.core.utils import encoder
 
+from stests.core.orchestration import ExecutionAspect
+from stests.core.orchestration import ExecutionInfo
 
 from stests.generators.wg_100 import args
 
@@ -21,18 +22,12 @@ ARGS.add_argument(
     type=args_validator.validate_network
     )
 
-# CLI argument: generator.
+# CLI argument: run type.
 ARGS.add_argument(
-    "run_type",
-    help="Generator type - e.g. wg-100.",
-    type=args_validator.validate_run_type
-    )
-
-# CLI argument: run index.
-ARGS.add_argument(
-    "run_index",
-    help="Generator run index - must be between 1 and 65536.",
-    type=args_validator.validate_run_index
+    "--run-type",
+    help=f"Generator type - e.g. wg-100.",
+    dest="run_type",
+    type=args_validator.validate_run_type,
     )
 
 
@@ -42,30 +37,32 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Pull run context.
+    # Unpack.
     network_id = factory.create_network_id(args.network)
-    ctx = cache.orchestration.get_context(
-        network_id.name, 
-        args.run_index,
-        args.run_type
-        )
-    if ctx is None:
-        logger.log_warning(f"Run {network_id.name} : {args.run_type} : {args.run_index} is not found.")
-        return
 
-    # Pull run steps.
-    steps = cache.orchestration.get_steps(ctx)
-    if not steps:
-        logger.log_warning(f"Run {network_id.name} : {args.run_type} : {str(args.run_index).zfill(4)} is unexecuted.")
+    # Pull execution information.
+    info_list = cache.orchestration.get_info_list(network_id, args.run_type)
+    if not info_list:
+        logger.log("No run information found.")
         return
 
     # Display.
     print("-----------------------------------------------------------------------------------------------")
-    print(f"Run {ctx.network} : {ctx.run_type} : R-{str(args.run_index).zfill(4)}")
+    print(f"{network_id.name} - {args.run_type}")
     print("-----------------------------------------------------------------------------------------------")
-    for idx, step in enumerate(sorted(steps, key=lambda s: s.ts_start)):
-        print(f"step {str(idx + 1).zfill(2)} :: {step.action.ljust(22)} :: {step.status.name.ljust(11)} :: {step.ts_start} :: {step.tp_duration_label.rjust(11)}")
+
+    print(f"Network    :: Type   :: ID    :: {'Started'.ljust(26)} :: {'Time (secs)'.rjust(11)} :: Status")
+    for info in sorted(info_list, key=lambda i: i.run_index):
+        if info.aspect == ExecutionAspect.RUN:
+            print(f"{network_id.name.ljust(10)} :: {info.run_type} :: {info.index_label.strip()} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} :: {info.status_label}")
+
+        # elif info.aspect == ExecutionAspect.PHASE:
+        #     print(f"{info.index_label} :: {info.status_label} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} ")
+
+        # elif info.aspect == ExecutionAspect.STEP:
+        #     print(f"{info.index_label} :: {info.status_label} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} :: [{info.step_label}]")
     print("-----------------------------------------------------------------------------------------------")
+
 
 
 # Entry point.

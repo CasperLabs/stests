@@ -50,11 +50,13 @@ class ExecutionInfo:
 
     @property
     def step_index_label(self):
-        return f"S-{str(self.step_index).zfill(2)}"
+        if self.step_index:
+            return f"S-{str(self.step_index).zfill(2)}"
+        return "    "
 
     @property
     def tp_elapsed(self):
-        if self.status == ExecutionStatus.COMPLETE:
+        if self.status in (ExecutionStatus.COMPLETE, ExecutionStatus.ERROR):
             return self.tp_duration
         return datetime.now().timestamp() - self.ts_start.timestamp()
 
@@ -85,11 +87,28 @@ class ExecutionInfo:
 
     @property
     def phase_index_label(self):
-        return f"P-{str(self.phase_index).zfill(2)}"
+        if self.phase_index:
+            return f"P-{str(self.phase_index).zfill(2)}"
+        return "    "
 
     @property
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
+
+
+    @property
+    def status_label(self):
+        return self.status.name.ljust(10)
+
+    @property
+    def index_label(self):
+        if self.aspect == ExecutionAspect.RUN:
+            return self.run_index_label.ljust(15)
+        elif self.aspect == ExecutionAspect.PHASE:
+            return f"{self.run_index_label}.{self.phase_index_label.ljust(9)}"
+        elif self.aspect == ExecutionAspect.STEP:
+            return f"{self.run_index_label}.{self.phase_index_label}.{self.step_index_label}"
+
 
 
     def end(self, status, error=None):

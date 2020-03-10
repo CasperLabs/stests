@@ -267,7 +267,7 @@ def get_run_info(ctx: ExecutionContext) -> ExecutionContext:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionInfo]:
+def get_info_list(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionInfo]:
     """Decaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
@@ -275,12 +275,19 @@ def get_list_run_info(network_id: NetworkIdentifier, run_type: str) -> typing.Li
     :returns: Keypath to domain object instance.
 
     """
-    return [
-        "info",
-        network_id.name,
-        run_type,
-        "*"
-    ]
+    if not run_type:
+        return [
+            "info",
+            network_id.name,
+            "*"
+        ]
+    else:
+        return [
+            "info",
+            network_id.name,
+            run_type,
+            "*"
+        ]
 
 
 def update_run_info(ctx: ExecutionContext) -> ExecutionInfo:
