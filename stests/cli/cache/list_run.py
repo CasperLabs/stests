@@ -51,7 +51,7 @@ def main(args):
         logger.log("No run information found.")
         return
 
-    # Set table.
+    # Set cols/rows.
     cols = ["Phase / Step", "Start Time", "Duration (s)", "Action", "Status"]
     rows = map(lambda i: [
         i.index_label,
@@ -60,6 +60,8 @@ def main(args):
         i.step_label if i.step_label else '--'  ,      
         i.status.name,
     ], sorted(data, key=lambda i: i.index_label))
+
+    # Set table.
     t = get_table(cols, rows)
     t.column_alignments['Phase / Step'] = BeautifulTable.ALIGN_LEFT
     t.column_alignments['Start Time'] = BeautifulTable.ALIGN_LEFT
