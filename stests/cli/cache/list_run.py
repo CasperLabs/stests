@@ -53,22 +53,19 @@ def main(args):
         logger.log("No run information found.")
         return
 
-    # Display.
+    # Header.
     print("-----------------------------------------------------------------------------------------------")
     print(f"{network_id.name} - {args.run_type}")
     print("-----------------------------------------------------------------------------------------------")
 
+    # Details.
     print(f"Phase / Step       {'Started'.ljust(26)}    {'Time (secs)'.rjust(11)}  Status       Action")
     for info in sorted(info_list, key=lambda i: i.index_label):
         if info.aspect in (ExecutionAspect.RUN, ExecutionAspect.PHASE):
             print("")
         print(f"{info.index_label}    {info.ts_start}    {info.tp_elapsed_label.rjust(11)}  {info.status_label}   {info.step_label if info.step_label else ''}")
 
-        # elif info.aspect == ExecutionAspect.PHASE:
-        #     print(f"{info.index_label} :: {info.status_label} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} ")
-
-        # elif info.aspect == ExecutionAspect.STEP:
-        #     print(f"{info.index_label} :: {info.status_label} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} :: [{info.step_label}]")
+    # Footer.
     print("-----------------------------------------------------------------------------------------------")
 
 
