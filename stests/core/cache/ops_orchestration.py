@@ -267,10 +267,12 @@ def get_run_info(ctx: ExecutionContext) -> ExecutionContext:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_info_list(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionInfo]:
+def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> typing.List[ExecutionInfo]:
     """Decaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
+    :param run_type: Type of run that was executed.
+    :param run_index: Index of a run.
 
     :returns: Keypath to domain object instance.
 
@@ -279,6 +281,15 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str) -> typing.List[E
         return [
             "info",
             network_id.name,
+            "*"
+        ]
+    elif run_index:
+        run_index_label = f"R-{str(run_index).zfill(3)}"
+        return [
+            "info",
+            network_id.name,
+            run_type,
+            run_index_label,
             "*"
         ]
     else:

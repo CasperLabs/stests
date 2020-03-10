@@ -13,7 +13,7 @@ from stests.generators.wg_100 import args
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays informations regarding a generators run.")
+ARGS = argparse.ArgumentParser("Displays summary information for all runs.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -25,7 +25,7 @@ ARGS.add_argument(
 # CLI argument: run type.
 ARGS.add_argument(
     "--run-type",
-    help=f"Generator type - e.g. wg-100.",
+    help=f"Run type - e.g. wg-100.",
     dest="run_type",
     type=args_validator.validate_run_type,
     )
@@ -47,18 +47,17 @@ def main(args):
         logger.log("No run information found.")
         return    
 
-    # Display header.
+    # Header.
     print("-----------------------------------------------------------------------------------------------")
     print(f"Network    :: Type   :: ID    :: {'Started'.ljust(26)} :: {'Time (secs)'.rjust(11)} :: Status")
     print("-----------------------------------------------------------------------------------------------")
 
-    # Display details.
+    # Details.
     for info in sorted(info_list, key=lambda i: i.run_index):
         if info.aspect == ExecutionAspect.RUN:
             print(f"{network_id.name.ljust(10)} :: {info.run_type} :: {info.index_label.strip()} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} :: {info.status_label}")
 
-
-    # Display footer.
+    # Footer.
     print("-----------------------------------------------------------------------------------------------")
     print(f"total runs = {len(info_list)}")
     print("-----------------------------------------------------------------------------------------------")

@@ -7,7 +7,7 @@ from stests.core.utils import logger
 DESCRIPTION = "Dispatches a notification to signal that generator has completed."
 
 # Step label.
-LABEL = "notify-competion"
+LABEL = "notify-completion"
 
 
 def execute(ctx: ExecutionContext):
