@@ -13,20 +13,6 @@ from stests.core.utils import factory
 
 
 @cache_op(StorePartition.STATE, StoreOperation.FLUSH)
-def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
-    """Flushes network specific monitoring information.
-
-    :param network_id: A network identifier.
-
-    :returns: A generator of keypaths to be flushed.
-    
-    """
-    yield ["account", network_id.name, "*"]
-    yield ["deploy", network_id.name, "*"]
-    yield ["transfer", network_id.name, "*"]
-        
-
-@cache_op(StorePartition.STATE, StoreOperation.FLUSH)
 def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run information.
 

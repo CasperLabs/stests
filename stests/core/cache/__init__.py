@@ -8,16 +8,6 @@ import stests.core.cache.ops_state as state
 
 
 
-def flush_by_network(network_id: NetworkIdentifier):
-    """Flushes all information pertaining to a network.
-
-    :param network_id: A network identifier.
-
-    """
-    for partition in (infra, monitoring, orchestration, state):
-        partition.flush_by_network(network_id)
-
-
 def flush_by_run(ctx: ExecutionContext):
     """Flushes all information pertaining to a run.
 

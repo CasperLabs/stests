@@ -10,19 +10,6 @@ from stests.core.utils import factory
 
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.FLUSH)
-def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
-    """Flushes previous run information.
-
-    :param network_id: A network identifier.
-
-    :returns: A generator of keypaths to be flushed.
-    
-    """
-    yield ["network", network_id.name]
-    yield ["node", network_id.name, "*"]
-
-
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.

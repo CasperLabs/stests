@@ -12,22 +12,6 @@ from stests.core.utils import factory
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
-def flush_by_network(network_id: NetworkIdentifier) -> typing.Generator:
-    """Flushes network specific monitoring information.
-
-    :param network_id: A network identifier.
-
-    :returns: A generator of keypaths to be flushed.
-    
-    """
-    yield ["context", network_id.name, "*"]
-    yield ["lock", network_id.name, "*"]
-    yield ["phase", network_id.name, "*"]
-    yield ["step", network_id.name, "*"]
-    yield ["step-deploy-count", network_id.name, "*"]
-        
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
 def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run information.
 
