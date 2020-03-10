@@ -1,14 +1,14 @@
 import argparse
 
+from beautifultable import BeautifulTable
+
+from stests.cli.utils import get_table
 from stests.core import cache
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
-
 from stests.core.orchestration import ExecutionAspect
-from stests.core.orchestration import ExecutionInfo
-
-from stests.generators.wg_100 import args
+# from stests.generators.wg_100 import args
 
 
 
@@ -44,29 +44,32 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Unpack.
+    # Pull data.
     network_id = factory.create_network_id(args.network)
-
-    # Pull execution information.
-    info_list = cache.orchestration.get_info_list(network_id, args.run_type, args.run_index)
-    if not info_list:
+    data = cache.orchestration.get_info_list(network_id, args.run_type, args.run_index)
+    if not data:
         logger.log("No run information found.")
         return
 
-    # Header.
-    print("-----------------------------------------------------------------------------------------------")
-    print(f"{network_id.name} - {args.run_type}")
-    print("-----------------------------------------------------------------------------------------------")
+    # Set table.
+    cols = ["Phase / Step", "Start Time", "Duration (s)", "Action", "Status"]
+    rows = map(lambda i: [
+        i.index_label,
+        i.ts_start,
+        i.tp_elapsed_label,
+        i.step_label if i.step_label else '--'  ,      
+        i.status.name,
+    ], sorted(data, key=lambda i: i.index_label))
+    t = get_table(cols, rows)
+    t.column_alignments['Phase / Step'] = BeautifulTable.ALIGN_LEFT
+    t.column_alignments['Start Time'] = BeautifulTable.ALIGN_LEFT
+    t.column_alignments['Duration (s)'] = BeautifulTable.ALIGN_RIGHT
+    t.column_alignments['Action'] = BeautifulTable.ALIGN_RIGHT
+    t.column_alignments['Status'] = BeautifulTable.ALIGN_RIGHT
 
-    # Details.
-    print(f"Phase / Step       {'Started'.ljust(26)}    {'Time (secs)'.rjust(11)}  Status       Action")
-    for info in sorted(info_list, key=lambda i: i.index_label):
-        if info.aspect in (ExecutionAspect.RUN, ExecutionAspect.PHASE):
-            print("")
-        print(f"{info.index_label}    {info.ts_start}    {info.tp_elapsed_label.rjust(11)}  {info.status_label}   {info.step_label if info.step_label else ''}")
-
-    # Footer.
-    print("-----------------------------------------------------------------------------------------------")
+    # Render.
+    print(t)
+    print(f"{network_id.name} - {args.run_type}  - Run {args.run_index}")
 
 
 

@@ -1,5 +1,8 @@
 import argparse
 
+from beautifultable import BeautifulTable
+
+from stests.cli.utils import get_table
 from stests.core import cache
 from stests.core.utils import args_validator
 from stests.core.utils import factory
@@ -16,8 +19,23 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    for network in cache.infra.get_networks():
-        logger.log(f"""NETWORK: {network.name} -> status={network.status.name}, type={network.typeof.name}, index={network.index}""")
+    # Pull data.
+    data = cache.infra.get_networks()
+
+
+    # Set table.
+    cols = ["Name", "Type", "Status"]
+    rows = map(lambda i: [
+        i.name,
+        i.typeof.name,
+        i.status.name,
+    ], sorted(data, key=lambda i: i.index))
+    t = get_table(cols, rows)
+    t.column_alignments['Name'] = BeautifulTable.ALIGN_LEFT
+    t.column_alignments['Status'] = BeautifulTable.ALIGN_RIGHT
+
+    # Render.
+    print(t)
 
 
 # Entry point.

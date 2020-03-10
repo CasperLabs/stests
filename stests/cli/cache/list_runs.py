@@ -1,14 +1,13 @@
 import argparse
 
+from beautifultable import BeautifulTable
+
+from stests.cli.utils import get_table
 from stests.core import cache
+from stests.core.orchestration import ExecutionAspect
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
-
-from stests.core.orchestration import ExecutionAspect
-from stests.core.orchestration import ExecutionInfo
-
-from stests.generators.wg_100 import args
 
 
 
@@ -37,30 +36,31 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Unpack.
+    # Pull data.
     network_id = factory.create_network_id(args.network)
-
-    # Pull execution information.
-    info_list = cache.orchestration.get_info_list(network_id, args.run_type)
-    info_list = [i for i in info_list if i.aspect == ExecutionAspect.RUN]
-    if not info_list:
+    data = cache.orchestration.get_info_list(network_id, args.run_type)
+    data = [i for i in data if i.aspect == ExecutionAspect.RUN]
+    if not data:
         logger.log("No run information found.")
         return    
 
-    # Header.
-    print("-----------------------------------------------------------------------------------------------")
-    print(f"Network    :: Type   :: ID    :: {'Started'.ljust(26)} :: {'Time (secs)'.rjust(11)} :: Status")
-    print("-----------------------------------------------------------------------------------------------")
+    # Set table.
+    cols = ["Network", "Type", "ID", "Start Time", "Duration (s)", "Status"]
+    rows = map(lambda i: [
+        network_id.name,
+        i.run_type,
+        i.index_label.strip(),
+        i.ts_start,
+        i.tp_elapsed_label,
+        i.status_label        
+    ], sorted(data, key=lambda i: i.run_index))
+    t = get_table(cols, rows)
+    t.column_alignments['Start Time'] = BeautifulTable.ALIGN_LEFT
+    t.column_alignments['Duration (s)'] = BeautifulTable.ALIGN_RIGHT
 
-    # Details.
-    for info in sorted(info_list, key=lambda i: i.run_index):
-        if info.aspect == ExecutionAspect.RUN:
-            print(f"{network_id.name.ljust(10)} :: {info.run_type} :: {info.index_label.strip()} :: {info.ts_start} :: {info.tp_elapsed_label.rjust(11)} :: {info.status_label}")
-
-    # Footer.
-    print("-----------------------------------------------------------------------------------------------")
-    print(f"total runs = {len(info_list)}")
-    print("-----------------------------------------------------------------------------------------------")
+    # Render.
+    print(t)
+    print(f"total runs = {len(data)}")
 
 
 # Entry point.

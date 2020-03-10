@@ -43,6 +43,10 @@ class Node:
     _ts_created: datetime = get_timestamp_field()
 
     @property
+    def index_label(self):
+        return str(self.index).zfill(3)
+
+    @property
     def is_operational(self):
         return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
 
