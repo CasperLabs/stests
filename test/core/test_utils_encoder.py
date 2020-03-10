@@ -9,9 +9,14 @@ from test.core import utils_factory as factory
 
 
 FIXTURES = {
+    'as_dict',
+    'as_json',
+    'from_dict',
+    'from_json',
     'decode',
     'encode',
     'register_type',
+    'initialise',
     'ENUM_TYPE_SET',
     'ENUM_VALUE_MAP',
     'DCLASS_MAP',
@@ -68,11 +73,10 @@ def test_07():
             assert isinstance(i, dict)
             assert '_type_key' in i
             assert '_ts_created' in i
-            assert '_uid' in i
 
 
 def test_08():
-    """Test scalar types are not encoded."""
+    """Test scalar types are encoded as is."""
     for scalar in (1, True, 2.0):
         assert encoder.encode(scalar) == scalar
 

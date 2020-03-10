@@ -4,6 +4,7 @@ import typing
 from datetime import datetime as dt
 
 from stests.core.domain import *
+from stests.core.orchestration import *
 from stests.core.utils import crypto
 from stests.core.utils import factory
 
@@ -13,6 +14,13 @@ def create_account(typeof: AccountType=None) -> Account:
     return factory.create_account(
         status=random.choice(list(AccountStatus)),
         typeof=typeof or random.choice(list(AccountType))
+    )
+
+
+def create_account_id() -> AccountIdentifier:
+    AccountIdentifier(
+        index=1,
+        run=create_run_id()
     )
 
 
@@ -43,7 +51,7 @@ def create_deploy() -> Deploy:
         finalization_time_tolerance=None,
         finalization_ts=None    ,
         network="lrt1",
-        run=1,
+        run_index=1,
         run_type="WG-XXX",
         status=random.choice(list(DeployStatus)),
         typeof=DeployType.NULL
@@ -80,7 +88,11 @@ def create_node() -> Node:
     )
 
 
-def create_run_context() -> RunContext:
+def create_node_id() -> NodeIdentifier:
+    return factory.create_node_id(create_network_id(), 1)
+
+
+def create_execution_context() -> ExecutionContext:
     return RunContext(
         args=None,
         network="LOC-01",
@@ -91,8 +103,8 @@ def create_run_context() -> RunContext:
         )
 
 
-def create_run_step() -> RunStep:
-    return RunStep(
+def create_execution_info() -> ExecutionInfo:
+    return ExecutionInfo(
         network="LOC-01",
         run=1,
         run_type="WG-XXX",
@@ -101,6 +113,14 @@ def create_run_step() -> RunStep:
         ts_start=dt.now().timestamp(),
         ts_end=None
         )
+
+
+def create_run_id() -> RunIdentifier:
+    RunIdentifier(
+        network=create_network_id(),
+        index=1,
+        type="WG-XXX"
+    )
 
 
 def create_transfer() -> Transfer:
@@ -114,22 +134,28 @@ def create_transfer() -> Transfer:
         is_refundable=False,
         network="lrt1",
         node=1,
-        run=1,
+        run_index=1,
         run_type="WG-XXX",
         status=TransferStatus.PENDING
         )
 
 
-# Map: domain type to factory function.
+# Map: encodeable type to factory function.
 FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
+    # Domain types.
     Account: create_account,
+    AccountIdentifier: create_account_id,
     Block: create_block,
     Deploy: create_deploy,
     Network: create_network,
+    NetworkIdentifier: create_network_id,
     Node: create_node,
-    RunContext: create_run_context,
-    RunStep: create_run_step,
-    Transfer: create_transfer
+    NodeIdentifier: create_node_id,
+    Transfer: create_transfer,
+    # Orchestration types.
+    ExecutionContext: create_execution_context,
+    ExecutionInfo: create_execution_info,
+    RunIdentifier: create_run_id,
 }
 
 
