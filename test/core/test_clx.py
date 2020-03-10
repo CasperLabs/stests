@@ -3,6 +3,7 @@ import inspect
 from stests.core import clx
 
 
+
 FIXTURES = {
     'do_deploy_contract',
     'do_transfer',

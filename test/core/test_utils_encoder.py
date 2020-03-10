@@ -7,8 +7,6 @@ from test.core import utils_factory as factory
 
 
 
-
-
 FIXTURES = {
     'as_dict',
     'as_json',
