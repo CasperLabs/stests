@@ -22,14 +22,15 @@ def main(args):
     # Pull data.
     data = cache.infra.get_networks()
 
-
-    # Set table.
+    # Set cols/rows.
     cols = ["Name", "Type", "Status"]
     rows = map(lambda i: [
         i.name,
         i.typeof.name,
         i.status.name,
     ], sorted(data, key=lambda i: i.index))
+
+    # Set table.
     t = get_table(cols, rows)
     t.column_alignments['Name'] = BeautifulTable.ALIGN_LEFT
     t.column_alignments['Status'] = BeautifulTable.ALIGN_RIGHT

@@ -44,7 +44,7 @@ def main(args):
         logger.log("No run information found.")
         return    
 
-    # Set table.
+    # Set cols/rows.
     cols = ["Network", "Type", "ID", "Start Time", "Duration (s)", "Status"]
     rows = map(lambda i: [
         network_id.name,
@@ -54,6 +54,8 @@ def main(args):
         i.tp_elapsed_label,
         i.status_label        
     ], sorted(data, key=lambda i: i.run_index))
+
+    # Set table.
     t = get_table(cols, rows)
     t.column_alignments['Start Time'] = BeautifulTable.ALIGN_LEFT
     t.column_alignments['Duration (s)'] = BeautifulTable.ALIGN_RIGHT

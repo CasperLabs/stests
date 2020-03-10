@@ -37,7 +37,7 @@ def main(args):
         logger.log_warning(f"Network {args.network} has no nodes.")
         return
 
-    # Set table.
+    # Set cols/rows.
     cols = ["ID", "Host:Port", "Type", "Status"]
     rows = map(lambda i: [
         i.index_label,
@@ -45,6 +45,8 @@ def main(args):
         i.typeof.name,
         i.status.name,
     ], sorted(data, key=lambda i: i.index))
+
+    # Set table.
     t = get_table(cols, rows)
     t.column_alignments['Host:Port'] = BeautifulTable.ALIGN_LEFT
 
