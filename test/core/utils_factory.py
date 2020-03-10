@@ -18,7 +18,7 @@ def create_account(typeof: AccountType=None) -> Account:
 
 
 def create_account_id() -> AccountIdentifier:
-    AccountIdentifier(
+    return AccountIdentifier(
         index=1,
         run=create_run_id()
     )
@@ -93,30 +93,54 @@ def create_node_id() -> NodeIdentifier:
 
 
 def create_execution_context() -> ExecutionContext:
-    return RunContext(
+    return ExecutionContext(        
         args=None,
+        loop_count=0,
+        loop_interval=0,
         network="LOC-01",
-        node=1,
-        run=1,
+        node_index=1,
+        phase_index=1,
+        run_index=1,
         run_type="WG-XXX",
-        run_step=None
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=1,
+        step_label="a-test-step",        
         )
 
 
 def create_execution_info() -> ExecutionInfo:
     return ExecutionInfo(
+        aspect=ExecutionAspect.RUN,
         network="LOC-01",
-        run=1,
+        phase_index=1,
+        run_index=1,
         run_type="WG-XXX",
-        status=RunStepStatus.IN_PROGRESS,
-        step="dolly",
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=1,
+        step_label="a-test-step",        
+        tp_duration=None,
         ts_start=dt.now().timestamp(),
-        ts_end=None
+        ts_end=None,
+        _type_key="a-type-key"
+        )
+
+
+def create_execution_state() -> ExecutionState:
+    return ExecutionState(
+        aspect=ExecutionAspect.RUN,
+        network="LOC-01",
+        phase_index=1,
+        run_index=1,
+        run_type="WG-XXX",
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=1,
+        step_label="a-test-step",  
+        _type_key="a-type-key",      
         )
 
 
 def create_run_id() -> RunIdentifier:
-    RunIdentifier(
+    return RunIdentifier(
         network=create_network_id(),
         index=1,
         type="WG-XXX"
@@ -155,6 +179,7 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     # Orchestration types.
     ExecutionContext: create_execution_context,
     ExecutionInfo: create_execution_info,
+    ExecutionState: create_execution_state,
     RunIdentifier: create_run_id,
 }
 
