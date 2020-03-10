@@ -68,7 +68,6 @@ def test_07():
             assert isinstance(i, dict)
             assert '_type_key' in i
             assert '_ts_created' in i
-            assert '_ts_updated' in i
             assert '_uid' in i
 
 

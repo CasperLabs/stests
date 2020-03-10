@@ -6,9 +6,7 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 function main()
 {
-    source $STESTS_PATH_SH/cache/flush_infra.sh
-    source $STESTS_PATH_SH/cache/flush_monitoring.sh
-    source $STESTS_PATH_SH/cache/flush_run.sh
+    redis-cli -h $STESTS_CACHE_REDIS_HOST -p $STESTS_CACHE_REDIS_PORT FLUSHALL
 }
 
 # Invoke entry point.

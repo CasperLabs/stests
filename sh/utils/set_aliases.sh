@@ -32,30 +32,23 @@ alias stests-monitoring-start=$STESTS_PATH_SH/monitoring/start.sh
 # ALIASES: workers
 # ###############################################################
 
+alias stests-interactive=$STESTS_PATH_SH/workers/interactive.sh
+
 alias stests-workers-start=$STESTS_PATH_SH/workers/start.sh
-alias stests-workers-interactive=$STESTS_PATH_SH/workers/interactive.sh
 alias stests-workers-status=$STESTS_PATH_SH/workers/status.sh
 alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
 alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 
 # ###############################################################
-# ALIASES: broker
-# ###############################################################
-
-alias stests-broker-flush=$STESTS_PATH_SH/broker/flush.sh
-
-# ###############################################################
 # ALIASES: cache
 # ###############################################################
 
-alias stests-cache-flush-all=$STESTS_PATH_SH/cache/flush.sh
-alias stests-cache-flush-infra=$STESTS_PATH_SH/cache/flush_infra.sh
-alias stests-cache-flush-monitoring=$STESTS_PATH_SH/cache/flush_monitoring.sh
-alias stests-cache-flush-run=$STESTS_PATH_SH/cache/flush_run.sh
-
-alias stests-flush-network='_exec_cmd $STESTS_PATH_CLI/cache/flush_network.py'
-alias stests-flush-node='_exec_cmd $STESTS_PATH_CLI/cache/flush_node.py'
+alias stests-flush='$STESTS_PATH_SH/cache/flush.sh'
+alias stests-flush-broker='$STESTS_PATH_SH/cache/flush_partition.sh 0'
+alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_partition.sh 1'
+alias stests-flush-monitoring='$STESTS_PATH_SH/cache/flush_partition.sh 2'
+alias stests-flush-runs='$STESTS_PATH_SH/cache/flush_partition.sh 3 && $STESTS_PATH_SH/cache/flush_partition.sh 3'
 
 alias stests-ls-networks='_exec_cmd $STESTS_PATH_CLI/cache/list_networks.py'
 alias stests-ls-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/list_network_faucet_key.py'
@@ -67,7 +60,7 @@ alias stests-ls-run='_exec_cmd $STESTS_PATH_CLI/cache/list_run.py'
 alias stests-ls-runs='_exec_cmd $STESTS_PATH_CLI/cache/list_runs.py'
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
-alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'
+# alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
 alias stests-set-network-status='_exec_cmd $STESTS_PATH_CLI/cache/set_network_status.py'
 
