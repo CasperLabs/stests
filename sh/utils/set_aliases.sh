@@ -85,5 +85,5 @@ function _exec_generator()
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
 
-# WG-100: ERC-20 auction.
+# WG-100: Token transfer.
 alias stests-wg-100='_exec_generator 100'
