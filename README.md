@@ -69,4 +69,4 @@ Usage
 Further Information ?
 --------------------------------------
 
-Please refer to the [specification](https://casperlabs.atlassian.net/wiki/spaces/TEST/pages/156827909/Test+Platform+Specification) for further information.
+Please refer to the [specification](https://github.com/CasperLabs/stests/wiki/STESTS-Specification) for further information.
