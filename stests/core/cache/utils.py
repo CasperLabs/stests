@@ -29,7 +29,12 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
 
             with stores.get_store(partition) as store:
 
-                if operation == StoreOperation.FLUSH:
+                if operation == StoreOperation.DELETE:
+                    keypath = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
+                    _delete(store, key)
+
+                elif operation == StoreOperation.FLUSH:
                     for keypaths in func(*args, **kwargs):
                         key = ":".join([str(i) for i in keypaths])
                         _flush(store, key)

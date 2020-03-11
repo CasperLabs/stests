@@ -3,7 +3,8 @@ from stests.core import mq
 mq.initialise()
 
 # Import actors: monitoring.
-import stests.monitoring.chain
+import stests.monitoring.events
+import stests.monitoring.manager
 
 # Import actors: generators.
 import stests.generators.wg_100.meta

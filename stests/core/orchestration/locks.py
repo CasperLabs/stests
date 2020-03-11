@@ -45,3 +45,18 @@ class StepLock(PhaseLock):
     @property
     def step_index_label(self):
         return f"S-{str(self.step_index).zfill(2)}"
+
+
+@dataclasses.dataclass
+class StreamLock:
+    """Execution lock information - stream.
+    
+    """
+    # Associated network.
+    network: str
+
+    # Numerical index to distinguish between nodees upon the same network.
+    node_index: int
+
+    # Numerical index to distinguish between multiple locks.
+    lock_index: int

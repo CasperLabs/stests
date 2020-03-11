@@ -6,8 +6,7 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 function main()
 {
-    cd $STESTS_HOME
-    pipenv run python $STESTS_PATH_MONITORING
+    log "stests-monitoring-start is a deprecated command - moinitoring is now launched by the worker"
 }
 
 # Invoke entry point.

@@ -4,8 +4,41 @@ from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.domain import *
+from stests.core.orchestration import StreamLock
 
 
+
+
+@cache_op(StorePartition.MONITORING, StoreOperation.DELETE)
+def delete_stream_lock(lock: StreamLock) -> typing.Generator:
+    """Deletes astream lock.
+
+    :param ctx: Execution context information.
+
+    :returns: A keypath to be deleted.
+    
+    """
+    return [
+        "stream-lock",
+        lock.network,
+        lock.lock_index,
+    ]
+    
+
+
+@cache_op(StorePartition.MONITORING, StoreOperation.FLUSH)
+def flush_stream_locks() -> typing.Generator:
+    """Flushes all stream locks.
+
+    :param ctx: Execution context information.
+
+    :returns: A keypath to be deleted.
+    
+    """
+    return [
+        "stream-lock",
+        "*",
+    ]
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
@@ -38,3 +71,17 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
         deploy.network,
         f"{deploy.block_hash}.{deploy.deploy_hash}"
     ], deploy
+
+
+@cache_op(StorePartition.MONITORING, StoreOperation.LOCK)
+def set_stream_lock(lock: StreamLock) -> typing.Tuple[typing.List[str], StreamLock]:
+    """Encaches a lock: StreamLock.
+
+    :param lock: Information to be locked.
+
+    """
+    return [
+        "stream-lock",
+        lock.network,
+        lock.lock_index,
+    ], lock

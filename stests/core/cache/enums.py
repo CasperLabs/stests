@@ -6,9 +6,12 @@ class StoreOperation(enum.Enum):
     """Enumeration over types of cache operation.
     
     """
-    # Flush cache keys.
-    FLUSH = enum.auto()
+    # Delete a key.
+    DELETE = enum.auto()
 
+    # Flush a key set.
+    FLUSH = enum.auto()
+    
     # Get cached item.
     GET = enum.auto()
 
