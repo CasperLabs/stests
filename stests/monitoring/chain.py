@@ -10,13 +10,11 @@ from stests.core.domain import DeployStatus
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
-from stests.monitoring.correlator import correlate_finalized_deploy
-
+from stests.orchestration.actors import on_step_deploy_finalized
 
 
 # Queue to which messages will be dispatched.
 _QUEUE = "monitoring"
-
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -24,9 +22,9 @@ def launch_stream_monitors():
     """Launches network stream endpoint monitors.
     
     """
-    for network in cache.get_networks():
+    for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
-        for idx, node in enumerate(cache.get_nodes_operational(network)):
+        for idx, node in enumerate(cache.infra.get_nodes_operational(network)):
             node_id = factory.create_node_id(network_id, node.index)
             do_monitor_blocks.send_with_options(args=(node_id, ), delay=idx * 500)
             break
@@ -60,8 +58,8 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
     block = clx.get_block(node_id.network, bhash)
     block.update_on_finalization()
 
-    # Encache - skip duplicates.
-    _, encached = cache.set_network_block(block)  
+    # Encache - skip duplicates.    
+    _, encached = cache.monitoring.set_block(block)  
     if not encached:
         return
 
@@ -84,29 +82,29 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     deploy = factory.create_deploy(network_id, bhash, dhash, DeployStatus.FINALIZED)
 
     # Encache - skip duplicates.
-    _, encached = cache.set_network_deploy(deploy)
+    _, encached = cache.monitoring.set_deploy(deploy)
     if not encached:
         return
 
-    # Pull run deploy.
-    deploy = cache.get_run_deploy(dhash)
+    # Pull deploy.
+    deploy = cache.state.get_run_deploy(dhash)
     if not deploy:
         logger.log_warning(f"Could not find finalized run deploy information: {bhash} : {dhash}")
         return
 
-    # Update run deploy.
+    # Update deploy.
     deploy.update_on_finalization(bhash, finalization_ts)
-    cache.set_run_deploy(deploy)
+    cache.state.set_run_deploy(deploy)
 
-    # Increment run step deploy count.
-    ctx = cache.get_run_context(deploy.network, deploy.run, deploy.run_type)
-    cache.increment_step_deploy_count(ctx)
+    # Increment deploy counts.
+    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
+    cache.orchestration.increment_deploy_counts(ctx)
 
-    # Update run transfer.
-    transfer = cache.get_run_transfer(dhash)
+    # Update transfers.
+    transfer = cache.state.get_run_transfer(dhash)
     if transfer:
         transfer.update_on_completion()
-        cache.set_run_transfer(transfer)
+        cache.state.set_run_transfer(transfer)
     
-    # Signal to workload generator correlator.
-    correlate_finalized_deploy.send(ctx, dhash)
+    # Signal to orchestrator.
+    on_step_deploy_finalized.send(ctx, dhash)

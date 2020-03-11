@@ -34,7 +34,7 @@ def main(args):
 
     """
     # Pull.
-    network = cache.get_network_by_name(args.network)
+    network = cache.infra.get_network_by_name(args.network)
     if network is None:
         raise ValueError("Unregistered network.")
 
@@ -42,7 +42,7 @@ def main(args):
     network.status = NetworkStatus[args.status.upper()]
 
     # Push.
-    cache.set_network(network)
+    cache.infra.set_network(network)
 
     # Notify.
     logger.log(f"Network {args.network} status was updated --> {network.status}")

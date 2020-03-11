@@ -27,7 +27,7 @@ def main(args):
     network = factory.create_network(args.network)
 
     # Push.
-    cache.set_network(network)
+    cache.infra.set_network(network)
 
     # Inform.
     logger.log(f"Network {args.network} was successfully registered")

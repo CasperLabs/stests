@@ -1,12 +1,10 @@
 import argparse
+import dataclasses
 import typing
-from dataclasses import dataclass
-
-from stests.core.utils import encoder
 
 
 
-@dataclass
+@dataclasses.dataclass
 class Arguments:
     """WG-100 generator execution arguments.
     
@@ -51,7 +49,3 @@ class Arguments:
             user_bids='user_bids' in args and args.user_bids,
             user_initial_clx_balance='user_initial_clx_balance' in args and args.user_initial_clx_balance,
         )
-
-
-# Framework requirement to support serialisation scenarios.
-encoder.register_type(Arguments)

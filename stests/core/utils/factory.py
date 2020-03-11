@@ -1,7 +1,8 @@
-from datetime import datetime
 import typing
+from datetime import datetime
 
 from stests.core.domain import *
+from stests.core.orchestration import *
 from stests.core.utils import crypto
 
 
@@ -25,7 +26,7 @@ def create_account(
         node=None,
         private_key=private_key,
         public_key=public_key,
-        run=None,
+        run_index=None,
         run_type=None,
         status=status or AccountStatus.NEW,
         typeof=typeof
@@ -33,7 +34,7 @@ def create_account(
 
 
 def create_account_for_run(
-    ctx:RunContext,
+    ctx:ExecutionContext,
     typeof: AccountType,
     index: int = 1,
     private_key: str = None, 
@@ -45,8 +46,8 @@ def create_account_for_run(
     """
     account = create_account(typeof, index, private_key, public_key, status)
     account.network = ctx.network
-    account.node = ctx.node
-    account.run = ctx.run
+    account.node = ctx.node_index
+    account.run_index = ctx.run_index
     account.run_type = ctx.run_type
 
     return account
@@ -55,7 +56,7 @@ def create_account_for_run(
 def create_account_id(
     index: int,
     network: str,
-    run: int,
+    run_index: int,
     run_type: int,
     ) -> Account:
     """Returns a cache identifier: Account.
@@ -65,7 +66,7 @@ def create_account_id(
 
     return AccountIdentifier(
         index=index,
-        run=create_run_id(network_id, run, run_type)
+        run=create_run_id(network_id, run_index, run_type)
     )
 
 
@@ -118,7 +119,7 @@ def create_deploy(
         finalization_time_tolerance=None,
         finalization_ts=datetime.now() if status == DeployStatus.FINALIZED else None,
         network=network_id.name,
-        run=None,
+        run_index=None,
         run_type=None,
         status=status,
         typeof=DeployType.NULL,    
@@ -126,7 +127,7 @@ def create_deploy(
 
 
 def create_deploy_for_run(
-    ctx: RunContext,
+    ctx: ExecutionContext,
     node: Node,
     deploy_hash: str,
     typeof: DeployType
@@ -144,7 +145,7 @@ def create_deploy_for_run(
         finalization_time_tolerance=None,
         finalization_ts=None,
         network=ctx.network,
-        run=ctx.run,
+        run_index=ctx.run_index,
         run_type=ctx.run_type,        
         status=DeployStatus.DISPATCHED,
         typeof=typeof
@@ -219,55 +220,46 @@ def create_node_id(
     return NodeIdentifier(network_id, index)
 
 
-def create_run_context(
+def create_run_info(
     args: typing.Any,
+    loop_count: int,
+    loop_interval: int,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
-    run: int,
+    run_index: int,
     run_type: str
-    ) -> RunContext:
-    """Returns a domain object instance: RunContext.
+    ) -> ExecutionContext:
+    """Returns a domain object instance: ExecutionContext.
     
     """
-    return RunContext(
+    return ExecutionContext(
         args=args,
+        loop_count=loop_count,
+        loop_interval=loop_interval,
         network=network_id.name,
-        node=node_id.index,
-        run=run,
-        run_step=None,
-        run_type=run_type
-    )
-
-
-def create_run_step(ctx: RunContext, name: str) -> RunStep:
-    """Returns a domain object instance: RunStep.
-
-    """
-    return RunStep(
-        network=ctx.network,
-        run=ctx.run,
-        run_type=ctx.run_type,
-        status=RunStepStatus.IN_PROGRESS,
-        step=name,
-        step_duration=None,
-        ts_start=datetime.now(),
-        ts_end=None,
+        node_index=node_id.index,
+        run_index=run_index,
+        run_type=run_type,
+        phase_index=0,
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=0,
+        step_label=None,
     )
 
 
 def create_run_id(
     network_id: NetworkIdentifier,
-    run: int,
+    run_index: int,
     run_type: str
     ) -> RunIdentifier:
-    """Returns a cache identifier: NodeIdentifier.
+    """Returns a cache identifier: RunIdentifier.
     
     """
-    return RunIdentifier(network_id, run, run_type)
+    return RunIdentifier(network_id, run_index, run_type)
 
 
 def create_transfer(
-    ctx: RunContext,
+    ctx: ExecutionContext,
     amount: int,
     asset: str,
     cp1: Account,
@@ -288,8 +280,8 @@ def create_transfer(
         deploy_hash_refund=None,
         is_refundable=is_refundable,
         network=ctx.network,
-        node=ctx.node,
-        run=ctx.run,
+        node=ctx.node_index,
+        run_index=ctx.run_index,
         run_type=ctx.run_type,
         status=status
     )

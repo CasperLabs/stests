@@ -7,7 +7,7 @@
 #   #####  ####### #     # ######   #####      #   #      #####     #    #######  #####     #     ##### 
 
 __title__ = 'stests'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __author__ = 'Casper Labs LLC'
 __license__ = 'CasperLabs Open Source License (COSL)'
 __copyright__ = 'Copyright 2020 Casper Labs'

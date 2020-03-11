@@ -7,8 +7,9 @@ from stests.core.domain import *
 
 
 
+
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
-def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
+def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     """Encaches domain object: Block.
     
     :param block: Block domain object instance to be cached.
@@ -17,14 +18,14 @@ def set_network_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
 
     """
     return [
-        "network-block",
+        "block",
         block.network,
         f"{str(block.m_rank).zfill(7)}.{block.block_hash}"
     ], block
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
-def set_network_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
+def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
     :param block: Deploy domain object instance to be cached.
@@ -33,7 +34,7 @@ def set_network_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]
 
     """
     return [
-        "network-deploy",
+        "deploy",
         deploy.network,
         f"{deploy.block_hash}.{deploy.deploy_hash}"
     ], deploy

@@ -1,15 +1,15 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 from datetime import datetime
 
 from stests.core.domain.enums import DeployStatus
 from stests.core.domain.enums import DeployType
-from stests.core.utils.domain import *
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class Deploy(Entity):
+@dataclasses.dataclass
+class Deploy:
     """Encapsulates information pertaining to a deploy dispatched to a test network.
     
     """
@@ -41,7 +41,7 @@ class Deploy(Entity):
     network: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run: int
+    run_index: int
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str    
@@ -57,12 +57,6 @@ class Deploy(Entity):
 
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
-
-    # Timestamp: update.
-    _ts_updated: typing.Optional[datetime] = None
-
-    # Universally unique identifier.
-    _uid: str = get_uuid_field() 
 
 
     def update_on_finalization(self, bhash: str, finalization_ts: float):

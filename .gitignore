@@ -131,5 +131,6 @@ dmypy.json
 
 # Temp sub-folder
 /tmp
-tmp.sh
+tmp*.sh
 tmp.py
+TODO.txt

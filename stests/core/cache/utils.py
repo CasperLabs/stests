@@ -7,7 +7,6 @@ from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache import stores
 from stests.core.utils import encoder
-from stests.core.utils import logger
 
 
 
@@ -24,6 +23,9 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
 
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
+
+            # JIT iniitalise encoder to ensure all types are registered.
+            encoder.initialise()
 
             with stores.get_store(partition) as store:
 
@@ -52,8 +54,8 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
 
                 elif operation == StoreOperation.LOCK:
                     keypath, data = func(*args, **kwargs)
-                    data = dataclasses.asdict(data)
                     key = ":".join([str(i) for i in keypath])
+                    data = dataclasses.asdict(data)
                     return key, _setnx(store, key, data)
 
                 elif operation == StoreOperation.SET:
@@ -87,7 +89,6 @@ def _delete(store: typing.Callable, key: str):
     """Wraps redis.delete command.
     
     """
-    logger.log(f"CACHE :: delete :: {key}")
     store.delete(key)
 
 
@@ -107,11 +108,8 @@ def _get(store: typing.Callable, key: str) -> typing.Any:
     """Wraps redis.get command.
     
     """
-    logger.log(f"CACHE :: get :: {key}")
     obj = store.get(key)
-    if obj is None:
-        logger.log_warning(f"CACHE :: get :: {key} :: not found")
-    else:
+    if obj is not None:
         return _decode_item(obj)
 
 
@@ -119,7 +117,6 @@ def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]
     """Wraps redis.mget command.
     
     """
-    logger.log(f"CACHE :: get :: {search_key}")
     CHUNK_SIZE = 5000
     _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
 
@@ -130,7 +127,6 @@ def _get_count(store: typing.Callable, search_key: str) -> int:
     """Wraps redis.mget command.
     
     """
-    logger.log(f"CACHE :: get_count :: {search_key}")
     CHUNK_SIZE = 5000
     _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
 
@@ -141,8 +137,6 @@ def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
     """Wraps redis.set command.
     
     """
-    logger.log(f"CACHE :: set :: {key}")
-    
     store.set(key, json.dumps(encoder.encode(data), indent=4))
 
     return key
@@ -152,6 +146,4 @@ def _setnx(store: typing.Callable, key: str, data: typing.Any) -> typing.Tuple[s
     """Wraps redis.setnx command.
     
     """
-    logger.log(f"CACHE :: setnx :: {key}")
-
     return bool(store.setnx(key, json.dumps(encoder.encode(data), indent=4)))

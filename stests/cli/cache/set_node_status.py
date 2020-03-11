@@ -38,7 +38,7 @@ def main(args):
     node_id = factory.create_node_id(network_id, int(args.node.split(':')[-1]))
 
     # Pull.
-    node = cache.get_node(node_id)
+    node = cache.infra.get_node(node_id)
     if node is None:
         raise ValueError("Unregistered node.")
 
@@ -46,7 +46,7 @@ def main(args):
     node.status = NodeStatus[args.status.upper()]
 
     # Push.
-    cache.set_network_node(node)
+    cache.infra.set_node(node)
 
     # Notify.
     logger.log(f"Node {args.node} status was updated --> {node.status}")

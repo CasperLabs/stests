@@ -10,6 +10,9 @@ from stests.core.utils import logger
 
 
 
+# Initialisation flag.
+IS_INITIALISED = False
+
 # Set: supported enum values.  
 ENUM_TYPE_SET = set()
 
@@ -149,7 +152,7 @@ def encode(data: typing.Any) -> typing.Any:
     if type(data) in ENUM_TYPE_SET:
         return data.name
 
-    logger.log_warning(f"Encoding an unrecognized data type: {data}")
+    logger.log_warning(f"CORE :: Encoding an unrecognized data type: {data}")
 
     return data
 
@@ -183,3 +186,37 @@ def register_type(cls):
     else:
         DCLASS_MAP[f"{cls.__module__}.{cls.__name__}"] = cls
         DCLASS_SET = DCLASS_SET | { cls, }
+
+
+def _initialise():
+    """Register set of core types that require encoding/decoding.
+    
+    """
+    from stests.core import domain
+    for i in domain.TYPE_SET:
+        register_type(i)
+
+    from stests.core import orchestration
+    for i in orchestration.TYPE_SET:
+        register_type(i)
+
+
+def initialise():
+    """Register set of non-core types that require encoding/decoding.
+    
+    """
+    global IS_INITIALISED
+
+    if IS_INITIALISED:
+        return
+
+    from stests.generators.meta import GENERATOR_SET
+    for generator in GENERATOR_SET:
+        for i in generator.TYPE_SET:
+            register_type(i)
+
+    IS_INITIALISED = True
+
+
+# Initialise core types.
+_initialise()

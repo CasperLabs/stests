@@ -7,15 +7,15 @@ from stests.core.domain import Account
 from stests.core.domain import Block
 from stests.core.domain import BlockStatus
 from stests.core.domain import NetworkIdentifier
-from stests.core.domain import RunContext
+from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 
 
 @clx_op
-def get_balance(ctx: RunContext, account: Account) -> int:
+def get_balance(ctx: ExecutionContext, account: Account) -> int:
     """Returns a chain account balance.
 
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
     :param account: Account whose balance will be queried.
 
     :returns: Account balance.

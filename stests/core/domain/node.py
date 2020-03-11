@@ -1,15 +1,17 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
+from datetime import datetime
 
 from stests.core.domain.account import Account
 from stests.core.domain.enums import NodeStatus
 from stests.core.domain.enums import NodeType
-from stests.core.utils.domain import *
+from stests.core.domain.network import NetworkIdentifier
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class Node(Entity):
+@dataclasses.dataclass
+class Node:
     """Represents a node within a target network.
     
     """
@@ -40,11 +42,9 @@ class Node(Entity):
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
-    # Timestamp: update.
-    _ts_updated: typing.Optional[datetime] = None
-
-    # Universally unique identifier.
-    _uid: str = get_uuid_field() 
+    @property
+    def index_label(self):
+        return str(self.index).zfill(3)
 
     @property
     def is_operational(self):
@@ -53,3 +53,18 @@ class Node(Entity):
     @property
     def label(self):
         return f"{self.network}:{self.index}"
+
+
+@dataclasses.dataclass
+class NodeIdentifier:
+    """Information required to disambiguate between nodes.
+    
+    """ 
+    # Associated network identifer.
+    network: NetworkIdentifier
+
+    # Node index.
+    index: int
+ 
+     # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None

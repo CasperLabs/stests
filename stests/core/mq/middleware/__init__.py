@@ -9,7 +9,7 @@ from stests.core.mq.middleware.mware_logger import LoggingMiddleware
 
 # Middleware to inject when processing simulation related messages.
 MWARE = (
-    LoggingMiddleware,
+    # LoggingMiddleware,
     GroupCallbacksMiddleware,
 )
 

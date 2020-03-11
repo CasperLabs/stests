@@ -6,9 +6,8 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 function main()
 {
-    redis-cli -n 0 --scan --pattern '*' | xargs redis-cli del
-    log "MQ :: redis broker successfully flushed"
+    redis-cli -h $STESTS_CACHE_REDIS_HOST -p $STESTS_CACHE_REDIS_PORT -n $1 FLUSHDB
 }
 
 # Invoke entry point.
-main
+main $1

@@ -37,6 +37,6 @@ def get_broker() -> Broker:
 
     broker = factory.get_broker()
 
-    logger.log(f"... established connection to {EnvVars.TYPE} MQ broker")
+    logger.log(f"CORE :: established connection to {EnvVars.TYPE} MQ broker")
 
     return broker

@@ -3,6 +3,7 @@ import inspect
 from stests.core.utils import crypto
 
 
+
 FIXTURES = {
     'KeyEncoding',
     'generate_key_pair',

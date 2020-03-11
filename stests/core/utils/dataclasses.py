@@ -25,11 +25,3 @@ def get_uuid_field() -> dataclasses.field:
     return dataclasses.field(
         default_factory=lambda: str(uuid.uuid4()),
     )
-
-
-@dataclasses.dataclass
-class Entity(abc.ABC):
-    """Base class for all domain entities flowing through system.
-    
-    """
-    pass

@@ -35,7 +35,7 @@ def main(args):
 
     """    
     # Pull.
-    network = cache.get_network_by_name(args.network)
+    network = cache.infra.get_network_by_name(args.network)
     if network is None:
         raise ValueError("Unregistered network.")
 
@@ -52,7 +52,7 @@ def main(args):
     )
 
     # Push.
-    cache.set_network(network)
+    cache.infra.set_network(network)
 
     # Inform.
     logger.log(f"Network {args.network} faucet key was successfully registered")

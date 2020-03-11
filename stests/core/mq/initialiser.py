@@ -4,6 +4,7 @@ import dramatiq
 
 from stests.core.mq.brokers import get_broker
 from stests.core.mq import encoder
+from stests.core.utils import logger
 
 
 
@@ -19,6 +20,9 @@ def execute():
     from stests.core.mq.middleware import get_middleware
     for mware in get_middleware():
         broker.add_middleware(mware)
-
+    
     # Inject encoder.
+    encoder.initialise()
     dramatiq.set_encoder(encoder)
+
+    # logger.log("CORE :: broker has been initialised")

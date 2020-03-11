@@ -1,16 +1,18 @@
+import dataclasses
 import typing
-from dataclasses import dataclass
 from datetime import datetime
 
 from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
 from stests.core.domain.key_pair import PrivateKey
-from stests.core.utils.domain import *
+from stests.core.domain.network import NetworkIdentifier
+from stests.core.orchestration.identifiers import RunIdentifier
+from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
-@dataclass
-class Account(Entity):
+@dataclasses.dataclass
+class Account:
     """A non-designated account that maps to an address upon target chain.
     
     """
@@ -30,7 +32,7 @@ class Account(Entity):
     public_key: str
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run: typing.Optional[int]
+    run_index: typing.Optional[int]
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: typing.Optional[str]
@@ -47,12 +49,25 @@ class Account(Entity):
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
-    # Timestamp: update.
-    _ts_updated: typing.Optional[datetime] = None
-
-    # Universally unique identifier.
-    _uid: str = get_uuid_field()
-
     @property
     def private_key_as_pem_filepath(self):
         return PrivateKey(self.private_key).as_pem_filepath
+
+
+@dataclasses.dataclass
+class AccountIdentifier:
+    """Information required to disambiguate between accounts.
+    
+    """ 
+    # Numerical index to distinguish between accounts within same context.
+    index: int
+
+    # Associated run identifier.
+    run: RunIdentifier
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None
+
+    @property
+    def network_id(self) -> NetworkIdentifier:
+        return this.run.network

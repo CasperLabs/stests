@@ -1,13 +1,12 @@
 import argparse
 
-from stests.core import cache
-from stests.core import mq
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
-
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.args import Arguments
+from stests.orchestration.predicates import is_run_locked
+
 
 
 # Set command line arguments.
@@ -15,7 +14,7 @@ ARGS = argparse.ArgumentParser(f"Executes {constants.DESCRIPTION} workflow.")
 
 # CLI argument: network name.
 ARGS.add_argument(
-    "network",
+    "network_name",
     help="Network name {type}{id}, e.g. lrt1.",
     type=args_validator.validate_network
     )
@@ -23,7 +22,7 @@ ARGS.add_argument(
 # CLI argument: scope -> node index.
 ARGS.add_argument(
     "--node",
-    dest="node",
+    dest="node_index",
     help="Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.",
     type=args_validator.validate_node_index,
     default=0,
@@ -33,10 +32,28 @@ ARGS.add_argument(
 # CLI argument: scope -> run index.
 ARGS.add_argument(
     "--run",
-    dest="run",
+    dest="run_index",
     help="Generator run index - must be between 1 and 65536.",
     type=args_validator.validate_run_index,
     default=1
+    )
+
+# CLI argument: scope -> run index.
+ARGS.add_argument(
+    "--loop-interval",
+    dest="loop_interval",
+    help="Interval in seconds between loops.",
+    type=args_validator.validate_loop_interval,
+    default=0
+    )
+
+# CLI argument: scope -> run index.
+ARGS.add_argument(
+    "--loop-count",
+    dest="loop_count",
+    help="Number of times to loop.",
+    type=args_validator.validate_loop_count,
+    default=0
     )
 
 # CLI argument: initial CLX balance.
@@ -58,24 +75,6 @@ ARGS.add_argument(
     default=constants.CONTRACT_INITIAL_CLX_BALANCE
     )
 
-# CLI argument: token name.
-ARGS.add_argument(
-    "--token-name",
-    help=f"Name of ERC-20 token.  Default={constants.TOKEN_NAME}",
-    dest="token_name",
-    type=str,
-    default=constants.TOKEN_NAME
-    )
-
-# CLI argument: token supply.
-ARGS.add_argument(
-    "--token-supply",
-    help=f"Amount of ERC-20 token to be issued. Default={constants.TOKEN_SUPPLY}",
-    dest="token_supply",
-    type=int,
-    default=constants.TOKEN_SUPPLY
-    )
-
 # CLI argument: user accounts.
 ARGS.add_argument(
     "--user-accounts",
@@ -83,15 +82,6 @@ ARGS.add_argument(
     dest="user_accounts",
     type=int,
     default=constants.USER_ACCOUNTS
-    )
-
-# CLI argument: bids / user.
-ARGS.add_argument(
-    "--user-bids",
-    help=f"Number of bids per user to submit. Default={constants.USER_BIDS}",
-    dest="user_bids",
-    type=int,
-    default=constants.USER_BIDS
     )
 
 # CLI argument: initial CLX balance.
@@ -108,33 +98,33 @@ def main(args: argparse.Namespace):
     """Entry point.
     
     """
-    # Set run context.
-    network_id = factory.create_network_id(args.network)
-    node_id = factory.create_node_id(network_id, args.node)
-    ctx = factory.create_run_context(
+    # Import initialiser to setup upstream services / actors.
+    import stests.initialiser
+
+    # Unpack args.
+    network_id = factory.create_network_id(args.network_name)
+    node_id = factory.create_node_id(network_id, args.node_index)
+
+    # Set execution context.
+    ctx = factory.create_run_info(
         args=Arguments.create(args),
+        loop_count=args.loop_count,
+        loop_interval=args.loop_interval,
         network_id=network_id,
         node_id=node_id,
-        run=args.run,
+        run_index=args.run_index,
         run_type=constants.TYPE
     )
 
-    # Reset cache.
-    cache.flush_run(ctx)
-
-    # Initialise broker.
-    mq.initialise()
-
-    # Import actors.
-    import stests.monitoring.chain    
-    import stests.monitoring.correlator    
-    import stests.generators.wg_100.phase_1
-    import stests.generators.wg_100.phase_2
-
-    # Start workflow.
-    logger.log("... workload generator begins")
-    from stests.generators.wg_100.pipeline import PIPELINE
-    PIPELINE[0].send(ctx)
+    # Abort if a run lock cannot be acquired.
+    if is_run_locked(ctx):
+        logger.log_warning(f"WG-100 :: run {args.run_index} aborted as it is currently executing.")
+        
+    # Start run.
+    else:
+        from stests.orchestration.actors import do_run
+        do_run.send(ctx)
+        logger.log(f"WG-100 :: run {args.run_index} started")
 
 
 # Invoke entry point.

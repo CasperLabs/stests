@@ -5,40 +5,9 @@ from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.domain import *
+from stests.core.orchestration import *
 from stests.core.utils import factory
 
-
-
-@cache_op(StorePartition.INFRA, StoreOperation.FLUSH)
-def flush_network(network_id: NetworkIdentifier) -> typing.Generator:
-    """Flushes previous run information.
-
-    :param network_id: A network identifier.
-
-    :returns: A generator of keypaths to be flushed.
-    
-    """
-    yield ["network", network_id.name]
-
-    for collection in [
-        "network-block",
-        "network-deploy",
-        "network-node",
-        "run-account",
-        "run-context",
-        "run-deploy",
-        "run-event",
-        "run-step",
-        "run-step-deploy",
-        "run-step-deploy-count",
-        "run-step-lock",
-        "run-transfer",
-    ]:
-        yield [
-            collection,
-            network_id.name,
-            "*"
-        ]
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
@@ -87,7 +56,7 @@ def get_node(node_id: NodeIdentifier) -> Node:
 
     """
     return [
-        "network-node",
+        "node",
         node_id.network.name,
         f"N-{str(node_id.index).zfill(4)}"
     ]
@@ -110,10 +79,10 @@ def get_node_by_network_id(network_id: NetworkIdentifier) -> Node:
     return random.choice(nodeset)
     
 
-def get_node_by_run_context(ctx: RunContext) -> Node:
+def get_node_by_run_context(ctx: ExecutionContext) -> Node:
     """Decaches domain object: Node.
     
-    :param ctx: Generator run contextual information.
+    :param ctx: Execution context information.
 
     :returns: A registered node.
 
@@ -125,12 +94,12 @@ def get_node_by_run_context(ctx: RunContext) -> Node:
         raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
     
     # Select random if node index unspecified.
-    if ctx.node <= 0 or ctx.node is None:
+    if ctx.node_index <= 0 or ctx.node_index is None:
         return random.choice(nodeset)
 
     # Select specific with fallback to random.
     try:
-        return nodeset[ctx.node - 1]
+        return nodeset[ctx.node_index - 1]
     except IndexError:
         return random.choice(nodeset)
 
@@ -145,10 +114,10 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.
     
     """
     if network is None:
-        return ["network-node", "*"]
+        return ["node", "*"]
     else:
         return [
-            "network-node",
+            "node",
             network.name,
             "N-*"
         ]
@@ -181,7 +150,7 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
-def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
+def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     """Encaches domain object: Node.
     
     :param node: Node domain object instance to be cached.
@@ -190,7 +159,7 @@ def set_network_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
 
     """
     return [
-        "network-node",
+        "node",
         node.network,
         f"N-{str(node.index).zfill(4)}"
     ], node

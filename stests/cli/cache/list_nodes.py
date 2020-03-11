@@ -1,5 +1,8 @@
 import argparse
 
+from beautifultable import BeautifulTable
+
+from stests.cli.utils import get_table
 from stests.core import cache
 from stests.core.utils import args_validator
 from stests.core.utils import factory
@@ -23,19 +26,34 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
+    # Pull data.
     network_id=factory.create_network_id(args.network)
-    network = cache.get_network(network_id)
+    network = cache.infra.get_network(network_id)
     if network is None:
         logger.log_warning(f"Network {args.network} is unregistered.")
         return
-
-    nodeset = cache.get_nodes(network_id)
-    if not nodeset:
+    data = cache.infra.get_nodes(network_id)
+    if not data:
         logger.log_warning(f"Network {args.network} has no nodes.")
         return
 
-    for node in sorted(nodeset, key=lambda i: i.index):
-        logger.log(f"""NODE: {node.network}:N-{str(node.index).zfill(4)} -> {node.host}:{node.port} -> status={node.status.name}, type={node.typeof.name}""")
+    # Set cols/rows.
+    cols = ["ID", "Host:Port", "Type", "Status"]
+    rows = map(lambda i: [
+        i.index_label,
+        f"{i.host}:{i.port}",
+        i.typeof.name,
+        i.status.name,
+    ], sorted(data, key=lambda i: i.index))
+
+    # Set table.
+    t = get_table(cols, rows)
+    t.column_alignments['Host:Port'] = BeautifulTable.ALIGN_LEFT
+
+    # Render.
+    print(t)
+    print(f"{network_id.name} node count = {len(data)}")
+
 
 
 # Entry point.
