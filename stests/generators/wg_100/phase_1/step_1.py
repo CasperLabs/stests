@@ -2,8 +2,8 @@ import typing
 
 from stests.core.domain import AccountType
 from stests.core.orchestration import ExecutionContext
+from stests.generators import utils
 from stests.generators.wg_100 import constants
-from stests.generators.wg_100.phase_1 import utils
 
 
 # Step description.
