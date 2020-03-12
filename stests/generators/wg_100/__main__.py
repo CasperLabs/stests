@@ -118,13 +118,13 @@ def main(args: argparse.Namespace):
 
     # Abort if a run lock cannot be acquired.
     if is_run_locked(ctx):
-        logger.log_warning(f"WG-100 :: run {args.run_index} aborted as it is currently executing.")
+        logger.log_warning(f"{constants.TYPE} :: run {args.run_index} aborted as it is currently executing.")
         
     # Start run.
     else:
         from stests.orchestration.actors import do_run
         do_run.send(ctx)
-        logger.log(f"WG-100 :: run {args.run_index} started")
+        logger.log(f"{constants.TYPE} :: run {args.run_index} started")
 
 
 # Invoke entry point.

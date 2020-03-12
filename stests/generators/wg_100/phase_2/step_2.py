@@ -1,5 +1,6 @@
 from stests.core.orchestration import ExecutionContext
 from stests.generators.wg_100 import constants
+from stests.generators.wg_100 import utils_verification as uv
 from stests.generators.wg_100.phase_2 import utils
 
 
@@ -30,7 +31,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    utils.verify_deploy_count(ctx, 1)
+    uv.verify_deploy_count(ctx, 1)
 
 
 def verify_deploy(ctx: ExecutionContext, dhash: str):
@@ -40,5 +41,5 @@ def verify_deploy(ctx: ExecutionContext, dhash: str):
     :param dhash: A deploy hash.
 
     """
-    utils.verify_deploy(ctx, dhash)
-    utils.verify_refund(ctx, dhash)
+    uv.verify_deploy(ctx, dhash)
+    uv.verify_refund(ctx, dhash)

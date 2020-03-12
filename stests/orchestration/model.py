@@ -109,7 +109,7 @@ class WorkflowPhase():
         self.module = module
 
         # Associated steps.
-        self.steps: typing.List[WorkflowStep] = [WorkflowStep(ctx, i, s) for i, s in enumerate(module.STEPS)]
+        self.steps = [WorkflowStep(ctx, i, s) for i, s in enumerate(module.STEPS)]
         if self.steps:
             self.steps[-1].is_last = True
 
@@ -130,7 +130,7 @@ class Workflow():
         
         """
         # Workflow execution context information.
-        self.ctx = ctx
+        self.ctx: ExecutionContext = ctx
 
         # Python module in which the workflow is declared.
         self.module = module
