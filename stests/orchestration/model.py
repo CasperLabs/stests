@@ -15,33 +15,51 @@ class WorkflowStep():
         
         """
         # Workflow execution context information.
-        self.ctx = ctx
+        self.ctx: ExecutionContext = ctx
 
         # Index within the set of phase steps.
-        self.index = index
+        self.index: int = index
 
         # Flag indicating whether this is the last step within the phase.
-        self.is_last = False
+        self.is_last: bool = False
 
         # Python module in which the step is declared.
         self.module = module
 
         # Execution error.
-        self.error = None
+        self.error: typing.Union[str, Exception] = None
 
         # Execution result.
-        self.result = None
+        self.result: typing.Union[None, typing.Callable] = None
 
     @property
-    def description(self):
+    def description(self) -> str:
         return self.module.DESCRIPTION
 
     @property
-    def label(self):
+    def has_verifer(self) -> bool:
+        try:
+            self.module.verify
+        except AttributeError:
+            return False
+        else:
+            return True
+
+    @property
+    def has_verifer_for_deploy(self) -> bool:
+        try:
+            self.module.verify_deploy
+        except AttributeError:
+            return False
+        else:
+            return True
+
+    @property
+    def label(self) -> str:
         return self.module.LABEL
     
     @property
-    def is_async(self):     
+    def is_async(self) -> bool:     
         """Is this effectively an asynchronous step - i.e. relies upon chain events to complete."""   
         return hasattr(self.module, "verify_deploy")   
 
@@ -56,7 +74,14 @@ class WorkflowStep():
             self.error = err
 
 
-    def verify_deploy(self, dhash):
+    def verify(self):
+        """Performs step verification.
+        
+        """
+        self.module.verify(self.ctx)
+
+
+    def verify_deploy(self, dhash: str):
         """Performs step deploy verification.
         
         """
@@ -72,19 +97,19 @@ class WorkflowPhase():
         
         """
         # Workflow execution context information.
-        self.ctx = ctx
+        self.ctx: ExecutionContext = ctx
 
         # Index within the set of phases.
-        self.index = index
+        self.index: int = index
 
         # Flag indicating whether this is the last phase within the workflow.
-        self.is_last = False
+        self.is_last: bool = False
 
         # Python module in which the phase is declared.
         self.module = module
 
         # Associated steps.
-        self.steps = [WorkflowStep(ctx, i, s) for i, s in enumerate(module.STEPS)]
+        self.steps: typing.List[WorkflowStep] = [WorkflowStep(ctx, i, s) for i, s in enumerate(module.STEPS)]
         if self.steps:
             self.steps[-1].is_last = True
 

@@ -24,6 +24,15 @@ def execute(ctx: ExecutionContext):
     )
 
 
+def verify(ctx: ExecutionContext):
+    """Step verifier.
+    
+    :param ctx: Execution context information.
+
+    """
+    utils.verify_deploy_count(ctx, 1)
+
+
 def verify_deploy(ctx: ExecutionContext, dhash: str):
     """Step deploy verifier.
     
@@ -33,4 +42,3 @@ def verify_deploy(ctx: ExecutionContext, dhash: str):
     """
     utils.verify_deploy(ctx, dhash)
     utils.verify_refund(ctx, dhash)
-    utils.verify_deploy_count(ctx, 1)

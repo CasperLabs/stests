@@ -18,3 +18,13 @@ def execute(ctx: ExecutionContext):
     """      
     # TODO: push notification.
     pass
+
+
+def verify(ctx: ExecutionContext):
+    """Step verifier.
+    
+    :param ctx: Execution context information.
+
+    """
+    # TODO: verify notification was pushed
+    return True

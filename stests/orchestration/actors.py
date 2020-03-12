@@ -312,18 +312,25 @@ def on_step_deploy_finalized(ctx: ExecutionContext, dhash: str):
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> invalid step")
 
     # Verify step deploy:
-    try:
-        step.verify_deploy(dhash)
-    # ... no verifier defined.
-    except AttributeError:
+    if not step.has_verifer_for_deploy:
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verifier undefined")
         return       
+    else:
+        try:
+            step.verify_deploy(dhash)
+        except AssertionError as err:
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed")
+            return       
 
-    # ... verification failed.
-    except AssertionError as err:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed")
-        print(err)
-        return       
+    # Verify step:
+    if not step.has_verifer:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verifier undefined")
+    else:
+        try:
+            step.verify()
+        except AssertionError as err:
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verification failed")
+            return       
 
     # Step verification succeeded therefore signal step end.
     do_step_end.send(ctx)

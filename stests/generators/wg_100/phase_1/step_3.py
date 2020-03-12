@@ -3,12 +3,11 @@ from stests.generators.wg_100 import constants
 from stests.generators.wg_100.phase_1 import utils
 
 
-
 # Step description.
-DESCRIPTION = "Fund's a run faucet account."
+DESCRIPTION = "Fund's a run contract account."
 
 # Step label.
-LABEL = "fund-faucet"
+LABEL = "fund-contract"
 
 
 def execute(ctx: ExecutionContext):
@@ -19,10 +18,19 @@ def execute(ctx: ExecutionContext):
     """
     utils.do_fund_account.send(
         ctx,
-        constants.ACC_NETWORK_FAUCET,
         constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_clx_balance
+        constants.ACC_RUN_CONTRACT,
+        ctx.args.contract_initial_clx_balance
         )
+
+
+def verify(ctx: ExecutionContext):
+    """Step verifier.
+    
+    :param ctx: Execution context information.
+
+    """
+    utils.verify_deploy_count(ctx, 1)    
 
 
 def verify_deploy(ctx: ExecutionContext, dhash: str):
@@ -34,5 +42,4 @@ def verify_deploy(ctx: ExecutionContext, dhash: str):
     """
     utils.verify_deploy(ctx, dhash)
     transfer = utils.verify_transfer(ctx, dhash)
-    utils.verify_account_balance(ctx, transfer.cp2_index, ctx.args.faucet_initial_clx_balance)
-    utils.verify_deploy_count(ctx, 1)    
+    utils.verify_account_balance(ctx, transfer.cp2_index, ctx.args.contract_initial_clx_balance)
