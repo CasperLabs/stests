@@ -1,8 +1,8 @@
 import argparse
 
-from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
+from stests.core.utils.args_factory import get_argparser_for_generator
 from stests.generators.wg_100 import constants
 from stests.generators.wg_100.args import Arguments
 from stests.orchestration.predicates import is_run_locked
@@ -10,51 +10,7 @@ from stests.orchestration.predicates import is_run_locked
 
 
 # Set command line arguments.
-ARGS = argparse.ArgumentParser(f"Executes {constants.DESCRIPTION} workflow.")
-
-# CLI argument: network name.
-ARGS.add_argument(
-    "network_name",
-    help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network
-    )
-
-# CLI argument: scope -> node index.
-ARGS.add_argument(
-    "--node",
-    dest="node_index",
-    help="Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.",
-    type=args_validator.validate_node_index,
-    default=0,
-    required=False
-    )
-
-# CLI argument: scope -> run index.
-ARGS.add_argument(
-    "--run",
-    dest="run_index",
-    help="Generator run index - must be between 1 and 65536.",
-    type=args_validator.validate_run_index,
-    default=1
-    )
-
-# CLI argument: scope -> run index.
-ARGS.add_argument(
-    "--loop-interval",
-    dest="loop_interval",
-    help="Interval in seconds between loops.",
-    type=args_validator.validate_loop_interval,
-    default=0
-    )
-
-# CLI argument: scope -> run index.
-ARGS.add_argument(
-    "--loop-count",
-    dest="loop_count",
-    help="Number of times to loop.",
-    type=args_validator.validate_loop_count,
-    default=0
-    )
+ARGS = get_argparser_for_generator(f"Executes {constants.DESCRIPTION} workflow.")
 
 # CLI argument: initial CLX balance.
 ARGS.add_argument(
@@ -64,7 +20,6 @@ ARGS.add_argument(
     type=int,
     default=constants.FAUCET_INITIAL_CLX_BALANCE
     )
-
 
 # CLI argument: initial CLX balance.
 ARGS.add_argument(

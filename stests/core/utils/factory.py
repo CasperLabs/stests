@@ -235,6 +235,7 @@ def create_run_info(
     return ExecutionContext(
         args=args,
         loop_count=loop_count,
+        loop_index=0,
         loop_interval=loop_interval,
         network=network_id.name,
         node_index=node_id.index,

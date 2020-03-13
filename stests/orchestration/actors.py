@@ -1,4 +1,5 @@
 import inspect
+from datetime import datetime
 
 import dramatiq
 
@@ -17,6 +18,9 @@ from stests.orchestration import predicates
 
 # Queue to which messages will be dispatched.
 _QUEUE = "orchestration"
+
+# Default time period in milliseconds before next run loop is executed.
+_DEFAULT_LOOP_INTERVAL_MS = 1000
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -73,6 +77,33 @@ def on_run_end(ctx: ExecutionContext):
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
+
+    # Loop.
+    if ctx.loop_count != 0:
+        do_run_loop(ctx)
+
+
+def do_run_loop(ctx):
+    """Requeues execution if loop conditions are matched.
+    
+    """
+    # Increment loop count & escape if all loops are complete.
+    ctx.loop_index += 1
+    if ctx.loop_count > 0 and ctx.loop_index > ctx.loop_count:
+        return
+
+    # Reset ctx fields.
+    ctx.phase_index = 0
+    ctx.run_index += 1
+    ctx.status = ExecutionStatus.NULL
+    ctx.step_index = 0
+    ctx._ts_created = datetime.now()
+
+    # Set loop delay.
+    loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS
+
+    # Enqueue next loop.
+    do_run.send_with_options(args=(ctx, ), delay=loop_delay)
 
 
 @dramatiq.actor(queue_name=_QUEUE)

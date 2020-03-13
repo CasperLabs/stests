@@ -18,6 +18,9 @@ class ExecutionContext:
     # Number of times to loop.
     loop_count: int
 
+    # Numerical index to distinguish between loops.
+    loop_index: int
+
     # Upon successful completion of a run, the number of seconds after which a new run will be started.
     loop_interval: int
 
@@ -78,4 +81,3 @@ class ExecutionContext:
     @property
     def next_step_index_label(self):
         return f"S-{str(self.next_step_index).zfill(2)}"
-

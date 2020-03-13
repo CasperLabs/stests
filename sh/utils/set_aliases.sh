@@ -45,10 +45,7 @@ alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 # ###############################################################
 
 alias stests-flush='$STESTS_PATH_SH/cache/flush.sh'
-alias stests-flush-broker='$STESTS_PATH_SH/cache/flush_partition.sh 0'
-alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_partition.sh 1'
-alias stests-flush-monitoring='$STESTS_PATH_SH/cache/flush_partition.sh 2'
-alias stests-flush-runs='$STESTS_PATH_SH/cache/flush_partition.sh 3 && $STESTS_PATH_SH/cache/flush_partition.sh 3'
+alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_infra.sh'
 
 alias stests-ls-networks='_exec_cmd $STESTS_PATH_CLI/cache/list_networks.py'
 alias stests-ls-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/list_network_faucet_key.py'
