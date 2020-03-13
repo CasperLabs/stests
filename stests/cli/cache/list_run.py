@@ -8,7 +8,6 @@ from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.core.orchestration import ExecutionAspect
-# from stests.generators.wg_100 import args
 
 
 
@@ -35,7 +34,6 @@ ARGS.add_argument(
     help="Run identifier, e.g. 1-100.",
     type=args_validator.validate_run_index,
     )
-
 
 
 def main(args):

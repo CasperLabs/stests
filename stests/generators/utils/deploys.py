@@ -3,7 +3,7 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core.orchestration import ExecutionContext
-from stests.generators.wg_100 import constants
+from stests.generators.utils import constants
 
 
 

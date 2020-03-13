@@ -84,3 +84,6 @@ function _exec_generator()
 
 # WG-100: Token transfer.
 alias stests-wg-100='_exec_generator 100'
+
+# WG-200: Counter call/define.
+alias stests-wg-200='_exec_generator 200'
