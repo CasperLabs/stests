@@ -1,10 +1,17 @@
 import typing
 
+from casperlabs_client.abi import ABI
+
 from stests.core.clx import defaults
+from stests.core.clx import utils
 from stests.core.clx.utils import get_client
+from stests.core.clx.utils import get_client_contract_hash
+from stests.core.clx.utils import get_client_contract_path
 from stests.core.clx.utils import clx_op
 from stests.core.clx.query import get_balance
 from stests.core.domain import Account
+from stests.core.domain import ClientContractType
+from stests.core.domain import Network
 from stests.core.domain import Transfer
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
@@ -83,18 +90,39 @@ def do_transfer(
 
 
 @clx_op
-def do_deploy_contract(ctx: ExecutionContext, account: Account, wasm_filepath: str):
-    """Deploys a smart contract to chain.
+def do_deploy_client_contract(network: Network, contract_type: ClientContractType, contract_name: str) -> str:
+    """Deploys a client side smart contract to chain for future reference.
 
-    :param ctx: Execution context information.
-    :param account: Account to be associated with contract.
-    :param wasm_filepath: Path to smart contract's wasm file.
+    :param network: Network to which a client contract is being deployed.
+    :param contract_type: Type of contract to be deployed.
+    :param contract_name: Name of contract as specified in wasm blob.
 
-    :returns: Deploy hash (in hex format).
+    :returns: Contract hash (in hex format).
 
     """
-    _, client = get_client(ctx)
+    # Set client.
+    _, client = utils.get_client(network)
 
-    logger.log(f"PYCLX :: deploy-contract :: {account.key_pair.public_key.as_hex} :: {wasm_filepath}")
+    # Dispatch deploy.
+    session=utils.get_client_contract_path(contract_type)
+    session_args = ABI.args([
+        ABI.string_value("target", "hash")
+        ])
+    dhash = client.deploy(
+        session=session,
+        session_args=session_args,
+        from_addr=network.faucet.public_key,
+        private_key=network.faucet.private_key_as_pem_filepath,
+        # TODO: allow these to be passed in via standard arguments
+        payment_amount=defaults.CLX_TX_FEE,
+        gas_price=defaults.CLX_TX_GAS_PRICE
+    )
 
-    return "TODO: dispatch contract deploy"
+    # Get block hash.
+    dinfo = client.showDeploy(dhash, wait_for_processed=True)
+    bhash = dinfo.processing_results[0].block_info.summary.block_hash.hex()
+
+    # Get contract hash.
+    chash = utils.get_client_contract_hash(client, network.faucet, bhash, contract_name)
+
+    return chash

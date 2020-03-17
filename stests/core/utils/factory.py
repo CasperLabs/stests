@@ -100,6 +100,21 @@ def create_block(
         )
 
 
+def create_client_contract(
+    network: Network,
+    chash: str,
+    typeof: ClientContractType
+    ) -> ClientContract:
+    """Returns a domain object instance: ClientContract.
+    
+    """
+    return ClientContract(
+        chash=chash,
+        network=network.name,
+        typeof=typeof
+    )
+
+
 def create_deploy(
     network_id: NetworkIdentifier,
     block_hash: str,
@@ -159,6 +174,7 @@ def create_network(name_raw: str) -> Network:
     identifier = create_network_id(name_raw)
 
     return Network(
+        client_contracts=[],
         faucet=None,
         index=identifier.index,
         name=identifier.name,

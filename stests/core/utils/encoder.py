@@ -164,10 +164,18 @@ def _encode_dclass(data, obj):
     # Inject typekey for subsequent roundtrip.
     obj['_type_key'] = f"{data.__module__}.{data.__class__.__name__}"
 
+    # Set fields to be encoded.
+    fields = [i for i in dir(data) if i in obj and not i.startswith('_')]
+
     # Recurse through properties that are also registered data classes.
-    for i in [i for i in dir(data) if i in obj and not i.startswith('_') and 
-                                      type(getattr(data, i)) in DCLASS_SET]:
-        _encode_dclass(getattr(data, i), obj[i])
+    fields_dcls = [i for i in fields if type(getattr(data, i)) in DCLASS_SET]
+    for field in fields_dcls:
+        _encode_dclass(getattr(data, field), obj[field])
+
+    # Recurse properties that are lists of registered data classes.
+    # TODO: refactor so is universal.
+    if "client_contracts" in fields:
+        obj['client_contracts'] = list(map(encode, data.client_contracts))
 
     return encode(obj)
 

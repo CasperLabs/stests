@@ -32,6 +32,16 @@ class BlockStatus(enum.Flag):
     REJECTED = enum.auto()
 
 
+class ClientContractType(enum.Enum):
+    """Enumeration over set of bundled client contract types.
+    
+    """
+    STD_PAYMENT =  "standard_payment.wasm"
+    TRANSFER = "transfer_to_account.wasm"
+    TRANSFER_U512 = "transfer_to_account_u512.wasm"
+    TRANSFER_U512_STORED = "transfer_to_account_u512_stored.wasm"
+
+
 class DeployStatus(enum.Flag):
     """Flag over set of deploy states.
     
@@ -112,8 +122,9 @@ class TransferStatus(enum.Flag):
 # Full set of enums.
 ENUM_SET = {
     AccountStatus,
-    AccountType,
+    AccountType,    
     BlockStatus,
+    ClientContractType,
     DeployStatus,
     DeployType,
     NetworkStatus,

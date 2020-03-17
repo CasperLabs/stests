@@ -23,12 +23,6 @@ function _exec_cmd()
 alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 
 # ###############################################################
-# ALIASES: monitoring
-# ###############################################################
-
-alias stests-monitoring-start=$STESTS_PATH_SH/monitoring/start.sh
-
-# ###############################################################
 # ALIASES: workers
 # ###############################################################
 
@@ -41,11 +35,15 @@ alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
 alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 
 # ###############################################################
-# ALIASES: cache
+# ALIASES: cache - flush
 # ###############################################################
 
 alias stests-flush='$STESTS_PATH_SH/cache/flush.sh'
 alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_infra.sh'
+
+# ###############################################################
+# ALIASES: cache - ls
+# ###############################################################
 
 alias stests-ls-networks='_exec_cmd $STESTS_PATH_CLI/cache/list_networks.py'
 alias stests-ls-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/list_network_faucet_key.py'
@@ -55,6 +53,12 @@ alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/list_node_bon
 
 alias stests-ls-run='_exec_cmd $STESTS_PATH_CLI/cache/list_run.py'
 alias stests-ls-runs='_exec_cmd $STESTS_PATH_CLI/cache/list_runs.py'
+
+# ###############################################################
+# ALIASES: cache - set
+# ###############################################################
+
+alias stests-set-client-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_client_contracts.py'
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
 # alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'
