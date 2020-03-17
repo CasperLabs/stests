@@ -4,10 +4,6 @@ from casperlabs_client.abi import ABI
 
 from stests.core.clx import defaults
 from stests.core.clx import utils
-from stests.core.clx.utils import get_client
-from stests.core.clx.utils import get_client_contract_hash
-from stests.core.clx.utils import get_client_contract_path
-from stests.core.clx.utils import clx_op
 from stests.core.clx.query import get_balance
 from stests.core.domain import Account
 from stests.core.domain import ClientContract
@@ -15,7 +11,6 @@ from stests.core.domain import ClientContractType
 from stests.core.domain import Network
 from stests.core.domain import Transfer
 from stests.core.domain import Deploy
-from stests.core.domain import DeployStatus
 from stests.core.domain import DeployType
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
@@ -23,7 +18,7 @@ from stests.core.utils import logger
 
 
 
-@clx_op
+@utils.clx_op
 def do_refund(
     ctx: ExecutionContext,
     cp1: Account,
@@ -41,18 +36,18 @@ def do_refund(
     :returns: Dispatched deploy.
 
     """
-    assert cp1 is not None
-    assert cp2 is not None
-
+    # Set amount - escape if cp1 has insufficient funds.
     amount = amount or (get_balance(ctx, cp1) - defaults.CLX_TX_FEE)
     if amount <= 0:
         logger.log_warning("Counter party 1 does not have enough CLX to pay refund transaction fee.")
         return
 
-    return do_transfer(ctx, cp1, cp2, amount, contract, is_refundable=False, deploy_type=DeployType.REFUND)
+    (node, dhash) = do_transfer(ctx, cp1, cp2, amount, contract, is_refundable=False, deploy_type=DeployType.REFUND)
+
+    return (node, dhash, amount)
 
 
-@clx_op
+@utils.clx_op
 def do_transfer(
     ctx: ExecutionContext,
     cp1: Account,
@@ -68,12 +63,15 @@ def do_transfer(
     :param cp1: Account information of counter party 1.
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
+    :param contract: The transfer contract to call (if any).
     :param is_refundable: Flag indicating whether a refund is required.
+    :param deploy_type: The type of deploy to dispatch.
 
     :returns: Dispatched deploy & transfer.
 
     """
-    node, client  = get_client(ctx)
+    # Set client.
+    node, client  = utils.get_client(ctx)
 
     # Transfer using called contract - does not dispatch wasm.
     if contract:
@@ -105,13 +103,10 @@ def do_transfer(
 
     logger.log(f"PYCLX :: transfer :: {dhash} :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
 
-    return (
-        factory.create_deploy_for_run(ctx, node, dhash, deploy_type), 
-        factory.create_transfer(ctx, amount, "CLX", cp1, cp2, dhash, is_refundable)
-        )
+    return (node, dhash)
 
 
-@clx_op
+@utils.clx_op
 def do_deploy_client_contract(network: Network, contract_type: ClientContractType, contract_name: str) -> str:
     """Deploys a client side smart contract to chain for future reference.
 
