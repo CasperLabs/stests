@@ -52,6 +52,7 @@ alias stests-ls-nodes='_exec_cmd $STESTS_PATH_CLI/cache/list_nodes.py'
 alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/list_node_bonding_key.py'
 
 alias stests-ls-run='_exec_cmd $STESTS_PATH_CLI/cache/list_run.py'
+alias stests-ls-run-deploys='_exec_cmd $STESTS_PATH_CLI/cache/list_run_deploys.py'
 alias stests-ls-runs='_exec_cmd $STESTS_PATH_CLI/cache/list_runs.py'
 
 # ###############################################################
