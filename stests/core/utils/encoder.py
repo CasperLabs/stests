@@ -172,10 +172,7 @@ def _encode_dclass(data, obj):
     for field in fields_dcls:
         _encode_dclass(getattr(data, field), obj[field])
 
-    # Recurse properties that are lists of registered data classes.
-    # TODO: refactor so is universal.
-    if "client_contracts" in fields:
-        obj['client_contracts'] = list(map(encode, data.client_contracts))
+    # TODO: handle lists of dclasses
 
     return encode(obj)
 

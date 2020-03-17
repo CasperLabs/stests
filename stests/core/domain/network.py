@@ -2,8 +2,6 @@ import dataclasses
 import typing
 from datetime import datetime
 
-from stests.core.domain.client_contract import ClientContract
-from stests.core.domain.enums import ClientContractType
 from stests.core.domain.enums import NetworkStatus
 from stests.core.domain.enums import NetworkType
 from stests.core.utils.dataclasses import get_timestamp_field
@@ -15,9 +13,6 @@ class Network:
     """A test network.
     
     """
-    # Set of client contracts associated with network.
-    client_contracts: typing.Optional[typing.List[ClientContract]]
-
     # Primary faucet associated with network.
     faucet: typing.Optional[typing.Any]
 
@@ -41,15 +36,6 @@ class Network:
 
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
-
-
-    def get_chash(self, typeof: ClientContractType) -> str:
-        """Returns hash in hexadecimal format of a client contract.
-        
-        """
-        for contract in self.client_contracts:
-            if contract.typeof == typeof:
-                return contract.chash
 
 
 @dataclasses.dataclass

@@ -31,13 +31,11 @@ def main(args):
     network = cache.infra.get_network_by_name(args.network)
     if network is None:
         raise ValueError("Unregistered network.")
+    if network.faucet is None:
+        raise ValueError("Unregistered network faucet.")
 
     # Set contracts.
-    network.client_contracts = []
     set_contract(network, ClientContractType.TRANSFER_U512_STORED, "transfer_to_account")
-
-    # Push.
-    cache.infra.set_network(network)
 
     # Inform.
     logger.log(f"client contracts for network {args.network} were successfully registered")
@@ -47,9 +45,14 @@ def set_contract(network: Network, typeof: ClientContractType, name: str):
     """Deploys a client contract to target network.
     
     """
+    # Dispatch contract to network & await processing.
     chash = clx.do_deploy_client_contract(network, typeof, name)
+
+    # Instantiate domain object.
     contract = factory.create_client_contract(network, chash, typeof)
-    network.client_contracts.append(contract)
+
+    # Persist within cache.
+    cache.infra.set_client_contract(contract)
 
 
 # Entry point.

@@ -10,6 +10,7 @@ from stests.core.clx.utils import get_client_contract_path
 from stests.core.clx.utils import clx_op
 from stests.core.clx.query import get_balance
 from stests.core.domain import Account
+from stests.core.domain import ClientContract
 from stests.core.domain import ClientContractType
 from stests.core.domain import Network
 from stests.core.domain import Transfer
@@ -27,7 +28,8 @@ def do_refund(
     ctx: ExecutionContext,
     cp1: Account,
     cp2: Account,
-    amount: int = None
+    amount: int = None,
+    contract: ClientContract = None,
     ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a refund between 2 counter-parties & returns resulting deploy hash.
 
@@ -47,7 +49,7 @@ def do_refund(
         logger.log_warning("Counter party 1 does not have enough CLX to pay refund transaction fee.")
         return
 
-    return do_transfer(ctx, cp1, cp2, amount, False, DeployType.REFUND)
+    return do_transfer(ctx, cp1, cp2, amount, contract, is_refundable=False, deploy_type=DeployType.REFUND)
 
 
 @clx_op
@@ -56,6 +58,7 @@ def do_transfer(
     cp1: Account,
     cp2: Account,
     amount: int,
+    contract: ClientContract = None,
     is_refundable: bool = True,
     deploy_type: DeployType = DeployType.TRANSFER
     ) -> typing.Tuple[Deploy, Transfer]:
@@ -71,17 +74,36 @@ def do_transfer(
 
     """
     node, client  = get_client(ctx)
-    dhash = client.transfer(
-        amount=amount,
-        from_addr=cp1.public_key,
-        private_key=cp1.private_key_as_pem_filepath,
-        target_account_hex=cp2.public_key,
-        # TODO: allow these to be passed in via standard arguments
-        payment_amount=defaults.CLX_TX_FEE,
-        gas_price=defaults.CLX_TX_GAS_PRICE
-    )
 
-    logger.log(f"PYCLX :: transfer :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]} :: {dhash}")
+    # Transfer using called contract - does not dispatch wasm.
+    if contract:
+        session_args = ABI.args([
+            ABI.account("address", cp2.public_key),
+            ABI.big_int("amount", amount)
+            ])
+        dhash = client.deploy(
+            session_hash=bytes.fromhex(contract.chash),
+            session_args=session_args,
+            from_addr=cp1.public_key,
+            private_key=cp1.private_key_as_pem_filepath,
+            # TODO: allow these to be passed in via standard arguments
+            payment_amount=defaults.CLX_TX_FEE,
+            gas_price=defaults.CLX_TX_GAS_PRICE
+        )
+
+    # Transfer using stored contract - dispatches wasm.
+    else:
+        dhash = client.transfer(
+            amount=amount,
+            from_addr=cp1.public_key,
+            private_key=cp1.private_key_as_pem_filepath,
+            target_account_hex=cp2.public_key,
+            # TODO: allow these to be passed in via standard arguments
+            payment_amount=defaults.CLX_TX_FEE,
+            gas_price=defaults.CLX_TX_GAS_PRICE
+        )
+
+    logger.log(f"PYCLX :: transfer :: {dhash} :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
 
     return (
         factory.create_deploy_for_run(ctx, node, dhash, deploy_type), 

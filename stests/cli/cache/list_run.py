@@ -8,7 +8,6 @@ from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.core.orchestration import ExecutionAspect
-# from stests.generators.wg_100 import args
 
 
 

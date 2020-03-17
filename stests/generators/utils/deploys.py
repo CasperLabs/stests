@@ -2,6 +2,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
+from stests.core.domain import ClientContractType
 from stests.core.orchestration import ExecutionContext
 from stests.generators.wg_100 import constants
 
@@ -30,9 +31,13 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, motes
     else:
         cp1 = cache.state.get_account_by_run(ctx, cp1_index)
     cp2 = cache.state.get_account_by_run(ctx, cp2_index)
+    
+    # Set client contract.
+    contract = None if not ctx.use_called_contracts else \
+               cache.infra.get_client_contract(ctx, ClientContractType.TRANSFER_U512_STORED)
 
-    # Transfer CLX from cp1 -> cp2.
-    (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes)
+    # Transfer CLX from cp1 -> cp2.    
+    (deploy, transfer) = clx.do_transfer(ctx, cp1, cp2, motes, contract)
 
     # Update cache.
     cache.state.set_run_deploy(deploy)

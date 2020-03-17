@@ -86,5 +86,8 @@ function _exec_generator()
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
 
-# WG-100: Token transfer.
+# WG-100: Token transfer - stored contract.
 alias stests-wg-100='_exec_generator 100'
+
+# WG-110: Token transfer - called contract.
+alias stests-wg-110='_exec_generator 110'

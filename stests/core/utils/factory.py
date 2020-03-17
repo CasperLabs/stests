@@ -174,7 +174,6 @@ def create_network(name_raw: str) -> Network:
     identifier = create_network_id(name_raw)
 
     return Network(
-        client_contracts=[],
         faucet=None,
         index=identifier.index,
         name=identifier.name,
@@ -243,7 +242,8 @@ def create_run_info(
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
     run_index: int,
-    run_type: str
+    run_type: str,
+    use_called_contracts: bool
     ) -> ExecutionContext:
     """Returns a domain object instance: ExecutionContext.
     
@@ -261,6 +261,7 @@ def create_run_info(
         status=ExecutionStatus.IN_PROGRESS,
         step_index=0,
         step_label=None,
+        use_called_contracts=use_called_contracts
     )
 
 
