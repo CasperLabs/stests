@@ -5,9 +5,11 @@ source $STESTS_PATH_SH/utils.sh
 
 # Main entry point.
 function main()
-{
+{	
 	source $STESTS_PATH_SH/workers/reset_logs.sh
-	supervisord -c $STESTS_PATH_OPS/config/supervisord.conf
+	pushd $STESTS_HOME
+	pipenv run supervisord -c $STESTS_PATH_OPS/config/supervisord.conf
+	popd $STESTS_HOME
 	log "workers :: launched supervisord"
 
 	sleep 3.0

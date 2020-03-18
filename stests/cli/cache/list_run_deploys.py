@@ -35,6 +35,16 @@ ARGS.add_argument(
     type=args_validator.validate_run_index,
     )
 
+# Table columns.
+COLS = [
+    ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
+    ("Type", BeautifulTable.ALIGN_RIGHT),
+    ("Status", BeautifulTable.ALIGN_RIGHT),
+    ("Node", BeautifulTable.ALIGN_RIGHT),
+    ("Dispatch Timestamp", BeautifulTable.ALIGN_RIGHT),
+    ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
+    ("Block Hash", BeautifulTable.ALIGN_RIGHT),
+]
 
 
 def main(args):
@@ -45,34 +55,33 @@ def main(args):
     """
     # Pull data.
     network_id = factory.create_network_id(args.network)
-    data = cache.orchestration.get_info_list(network_id, args.run_type, args.run_index)
+    data = cache.state.get_deploys(network_id, args.run_type, args.run_index)
     if not data:
-        logger.log("No run information found.")
+        logger.log("No run deploys found.")
         return
 
-    # Set cols/rows.
-    cols = ["Phase / Step", "Start Time", "Duration (s)", "Action", "Status"]
+    # Set table cols/rows.
+    cols = [i for i, _ in COLS]
     rows = map(lambda i: [
-        i.index_label,
-        i.ts_start,
-        i.tp_elapsed_label,
-        i.step_label if i.step_label else '--'  ,      
-        i.status.name,
-    ], sorted(data, key=lambda i: i.index_label))
+        i.deploy_hash,      
+        i.typeof.name,
+        i.status.name,      
+        i.dispatch_node,
+        i.dispatch_ts,
+        i.label_finalization_time,
+        i.block_hash or "--"
+    ], sorted(data, key=lambda i: i.dispatch_ts))
 
     # Set table.
-    t = get_table(cols, rows)
-    t.column_alignments['Phase / Step'] = BeautifulTable.ALIGN_LEFT
-    t.column_alignments['Start Time'] = BeautifulTable.ALIGN_LEFT
-    t.column_alignments['Duration (s)'] = BeautifulTable.ALIGN_RIGHT
-    t.column_alignments['Action'] = BeautifulTable.ALIGN_RIGHT
-    t.column_alignments['Status'] = BeautifulTable.ALIGN_RIGHT
+    t = get_table(cols, rows, max_width=1080)
+
+    # Set table alignments.
+    for key, aligmnent in COLS:
+        t.column_alignments[key] = aligmnent    
 
     # Render.
     print(t)
     print(f"{network_id.name} - {args.run_type}  - Run {args.run_index}")
-
-
 
 # Entry point.
 if __name__ == '__main__':

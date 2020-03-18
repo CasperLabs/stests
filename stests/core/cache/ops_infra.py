@@ -11,6 +11,23 @@ from stests.core.utils import factory
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
+def get_client_contract(ctx: ExecutionContext, contract_type: ClientContractType) -> ClientContract:
+    """Decaches domain object: ClientContract.
+
+    :param ctx: Execution context information.
+    :param contract_type: Type of contract in question.
+
+    :returns: A registered network.
+    
+    """
+    return [
+        "client-contract",
+        ctx.network,
+        contract_type.name
+    ]
+
+
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.
 
@@ -132,6 +149,22 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
     
     """
     return [i for i in get_nodes(network) if i.is_operational]
+
+
+@cache_op(StorePartition.INFRA, StoreOperation.SET)
+def set_client_contract(contract: ClientContract) -> typing.Tuple[typing.List[str], Network]:
+    """Encaches domain object: ClientContract.
+
+    :param network: ClientContract domain object instance to be cached.
+    
+    :returns: Keypath + domain object instance.
+
+    """
+    return [
+        "client-contract",
+        contract.network,
+        contract.typeof.name
+    ], contract
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)

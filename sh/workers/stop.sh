@@ -6,8 +6,10 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 function main()
 {
-	supervisorctl -c $STESTS_PATH_OPS/config/supervisord.conf stop all &>/dev/null 
-	supervisorctl -c $STESTS_PATH_OPS/config/supervisord.conf shutdown &>/dev/null
+	pushd $STESTS_HOME
+	pipenv run supervisorctl -c $STESTS_PATH_OPS/config/supervisord.conf stop all &>/dev/null 
+	pipenv run supervisorctl -c $STESTS_PATH_OPS/config/supervisord.conf shutdown &>/dev/null
+	popd $STESTS_HOME
 	log "workers  :: killed daemon"
 }
 
