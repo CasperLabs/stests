@@ -35,6 +35,16 @@ ARGS.add_argument(
     type=args_validator.validate_run_index,
     )
 
+# Table columns.
+COLS = [
+    ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
+    ("Type", BeautifulTable.ALIGN_RIGHT),
+    ("Status", BeautifulTable.ALIGN_RIGHT),
+    ("Node", BeautifulTable.ALIGN_RIGHT),
+    ("Dispatch Timestamp", BeautifulTable.ALIGN_RIGHT),
+    ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
+    ("Block Hash", BeautifulTable.ALIGN_RIGHT),
+]
 
 
 def main(args):
@@ -50,21 +60,24 @@ def main(args):
         logger.log("No run deploys found.")
         return
 
-    # Set cols/rows.
-    cols = ["Deploy Hash", "Type", "Status", "Node"]
+    # Set table cols/rows.
+    cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         i.deploy_hash,      
         i.typeof.name,
         i.status.name,      
-        i.dispatch_node
+        i.dispatch_node,
+        i.dispatch_ts,
+        i.label_finalization_time,
+        i.block_hash or "--"
     ], sorted(data, key=lambda i: i.dispatch_ts))
 
     # Set table.
-    t = get_table(cols, rows)
-    t.column_alignments['Deploy Hash'] = BeautifulTable.ALIGN_LEFT
-    t.column_alignments['Type'] = BeautifulTable.ALIGN_RIGHT
-    t.column_alignments['Status'] = BeautifulTable.ALIGN_RIGHT
-    t.column_alignments['Node'] = BeautifulTable.ALIGN_RIGHT
+    t = get_table(cols, rows, max_width=1080)
+
+    # Set table alignments.
+    for key, aligmnent in COLS:
+        t.column_alignments[key] = aligmnent    
 
     # Render.
     print(t)

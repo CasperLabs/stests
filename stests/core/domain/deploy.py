@@ -59,6 +59,13 @@ class Deploy:
     _ts_created: datetime = get_timestamp_field()
 
 
+    @property
+    def label_finalization_time(self):
+        if self.finalization_time:
+            return format(self.finalization_time, '.4f')
+        return "--"
+
+
     def update_on_finalization(self, bhash: str, finalization_ts: float):
         """Executed when deploy has been finalized.
         
