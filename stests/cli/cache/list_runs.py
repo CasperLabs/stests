@@ -53,7 +53,7 @@ def main(args):
         i.ts_start,
         i.tp_elapsed_label,
         i.status_label        
-    ], sorted(data, key=lambda i: i.run_index))
+    ], sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}"))
 
     # Set table.
     t = get_table(cols, rows)

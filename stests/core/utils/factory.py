@@ -100,6 +100,21 @@ def create_block(
         )
 
 
+def create_client_contract(
+    network: Network,
+    chash: str,
+    typeof: ClientContractType
+    ) -> ClientContract:
+    """Returns a domain object instance: ClientContract.
+    
+    """
+    return ClientContract(
+        chash=chash,
+        network=network.name,
+        typeof=typeof
+    )
+
+
 def create_deploy(
     network_id: NetworkIdentifier,
     block_hash: str,
@@ -227,7 +242,8 @@ def create_run_info(
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
     run_index: int,
-    run_type: str
+    run_type: str,
+    use_stored_contracts: bool
     ) -> ExecutionContext:
     """Returns a domain object instance: ExecutionContext.
     
@@ -245,6 +261,7 @@ def create_run_info(
         status=ExecutionStatus.IN_PROGRESS,
         step_index=0,
         step_label=None,
+        use_stored_contracts=use_stored_contracts
     )
 
 

@@ -1,4 +1,5 @@
 from stests.core.domain.account import *
+from stests.core.domain.client_contract import *
 from stests.core.domain.block import *
 from stests.core.domain.deploy import *
 from stests.core.domain.enums import *
@@ -11,6 +12,7 @@ from stests.core.domain.transfer import *
 # Set of supported classes.
 DCLASS_SET = {
     Account,
+    ClientContract,
     Block,
     Deploy,
     Network,

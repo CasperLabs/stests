@@ -16,9 +16,9 @@ pytest = "*"
 tox = "*"
 supervisor = "*"
 apscheduler = "*"
-casperlabs-client = "*"
 typing-inspect = "*"
 beautifultable = "*"
+casperlabs-client = "*"
 
 [requires]
 python_version = "3.7"

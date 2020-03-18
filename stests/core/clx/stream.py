@@ -33,11 +33,14 @@ def stream_events(
             on_block_finalized(node, bhash)
 
 
-def _yield_events(src: typing.Union[NodeIdentifier, NetworkIdentifier], on_block_added, on_block_finalized):
+def _yield_events(
+    src: typing.Union[NodeIdentifier, NetworkIdentifier],
+    on_block_added: typing.Optional[typing.Callable],
+    on_block_finalized: typing.Optional[typing.Callable]
+    ):
     """Yields events from event source (i.e. a CLX chain).
     
     """
-    # TODO: handle client disconnects.
     node, client = get_client(src)
     for event in client.stream_events(
         block_added=on_block_added is not None,

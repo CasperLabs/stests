@@ -3,8 +3,8 @@ import argparse
 from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.core.utils.args_factory import get_argparser_for_generator
-from stests.generators.wg_100 import constants
-from stests.generators.wg_100.args import Arguments
+from stests.generators.wg_110 import constants
+from stests.generators.wg_110.args import Arguments
 from stests.orchestration.predicates import is_run_locked
 
 
@@ -69,7 +69,7 @@ def main(args: argparse.Namespace):
         node_id=node_id,
         run_index=args.run_index,
         run_type=constants.TYPE,
-        use_stored_contracts=False
+        use_stored_contracts=True
     )
 
     # Abort if a run lock cannot be acquired.
