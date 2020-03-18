@@ -25,7 +25,8 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
                 ctx,
                 constants.ACC_RUN_FAUCET,
                 acc_index,
-                ctx.args.user_initial_clx_balance
+                ctx.args.user_initial_clx_balance,
+                False
             )
 
     return get_messages

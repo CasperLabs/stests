@@ -23,13 +23,15 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
         yield utils.do_refund.message(
             ctx,
             constants.ACC_RUN_CONTRACT,
-            constants.ACC_RUN_FAUCET
+            constants.ACC_RUN_FAUCET,
+            False
         )
         for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
             yield utils.do_refund.message(
                 ctx,
                 acc_index,
-                constants.ACC_RUN_FAUCET
+                constants.ACC_RUN_FAUCET,
+                False
             )
 
     return get_messages

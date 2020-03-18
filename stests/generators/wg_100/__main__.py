@@ -68,8 +68,7 @@ def main(args: argparse.Namespace):
         network_id=network_id,
         node_id=node_id,
         run_index=args.run_index,
-        run_type=constants.TYPE,
-        use_stored_contracts=False
+        run_type=constants.TYPE
     )
 
     # Abort if a run lock cannot be acquired.

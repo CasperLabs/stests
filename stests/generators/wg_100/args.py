@@ -18,9 +18,6 @@ class Arguments:
     # Number of user accounts to generate.
     user_accounts: int
 
-    # Number of bids to submit per user.
-    user_bids: int
-
     # Initial user account CLX balance.
     user_initial_clx_balance: int
 

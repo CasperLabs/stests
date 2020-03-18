@@ -90,7 +90,7 @@ def get_contexts(network: str, run_type: str) -> ExecutionContext:
         "*"
     ]
 
-def get_run_network(ctx: ExecutionContext) -> Network:
+def get_network(ctx: ExecutionContext) -> Network:
     """Decaches domain object: Network.
     
     :param ctx: Execution context information.

@@ -48,9 +48,6 @@ class ExecutionContext:
     # Label to disambiguate a step within the context of a phase.
     step_label: typing.Optional[str]
 
-    # Flag to indicate use of so-called stored contracts, i.e. on chain contracts.
-    use_stored_contracts: bool
-
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
 

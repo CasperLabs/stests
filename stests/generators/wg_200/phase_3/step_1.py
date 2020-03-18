@@ -24,7 +24,8 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
             yield utils.do_refund.message(
                 ctx,
                 acc_index,
-                constants.ACC_RUN_FAUCET
+                constants.ACC_RUN_FAUCET,
+                True
             )
 
     return get_messages

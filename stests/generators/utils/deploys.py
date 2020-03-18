@@ -15,18 +15,19 @@ _QUEUE = "orchestration.utils"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amount: int):
+def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amount: int, use_stored_contract: bool):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 
     :param ctx: Execution context information.
     :param cp1_index: Run specific account index of counter-party one.
     :param cp2_index: Run specific account index of counter-party two.
     :param amount: Amount to be transferred.
+    :param use_stored_contract: Flag indicating whether to use stored contract.
     
     """
     # Set counterparties.
     if cp1_index == constants.ACC_NETWORK_FAUCET:
-        network = cache.orchestration.get_run_network(ctx)
+        network = cache.orchestration.get_network(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp1 = network.faucet
@@ -35,7 +36,7 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
     cp2 = cache.state.get_account_by_run(ctx, cp2_index)
     
     # Set client contract.
-    contract = None if not ctx.use_stored_contracts else \
+    contract = None if use_stored_contract == False else \
                cache.infra.get_client_contract(ctx, ClientContractType.TRANSFER_U512_STORED)
 
     # Transfer CLX from cp1 -> cp2.    
@@ -64,18 +65,19 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
+def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_contract: bool):
     """Performs a refund ot funds between 2 counterparties.
 
     :param ctx: Execution context information.
     :param cp1_index: Run specific account index of counter-party one.
     :param cp2_index: Run specific account index of counter-party two.
+    :param use_stored_contract: Flag indicating whether to use stored contract.
     
     """
     # Set counterparties.
     cp1 = cache.state.get_account_by_run(ctx, cp1_index)
     if cp2_index == constants.ACC_NETWORK_FAUCET:
-        network = cache.orchestration.get_run_network(ctx)
+        network = cache.orchestration.get_network(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp2 = network.faucet
@@ -83,7 +85,7 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
         cp2 = cache.state.get_account_by_run(ctx, cp2_index)
 
     # Set client contract.
-    contract = None if not ctx.use_stored_contracts else \
+    contract = None if not use_stored_contract else \
                cache.infra.get_client_contract(ctx, ClientContractType.TRANSFER_U512_STORED)
 
     # Refund CLX from cp1 -> cp2.

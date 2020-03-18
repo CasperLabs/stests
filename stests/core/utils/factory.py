@@ -242,8 +242,7 @@ def create_run_info(
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
     run_index: int,
-    run_type: str,
-    use_stored_contracts: bool
+    run_type: str
     ) -> ExecutionContext:
     """Returns a domain object instance: ExecutionContext.
     
@@ -261,7 +260,6 @@ def create_run_info(
         status=ExecutionStatus.IN_PROGRESS,
         step_index=0,
         step_label=None,
-        use_stored_contracts=use_stored_contracts
     )
 
 

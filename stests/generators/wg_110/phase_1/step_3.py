@@ -21,7 +21,8 @@ def execute(ctx: ExecutionContext):
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_RUN_CONTRACT,
-        ctx.args.contract_initial_clx_balance
+        ctx.args.contract_initial_clx_balance,
+        True
         )
 
 

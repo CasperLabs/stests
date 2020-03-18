@@ -20,7 +20,8 @@ def execute(ctx: ExecutionContext):
     utils.do_refund.send(
         ctx,
         constants.ACC_RUN_FAUCET,
-        constants.ACC_NETWORK_FAUCET
+        constants.ACC_NETWORK_FAUCET,
+        False
     )
 
 
