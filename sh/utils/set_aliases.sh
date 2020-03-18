@@ -62,7 +62,6 @@ alias stests-ls-runs='_exec_cmd $STESTS_PATH_CLI/cache/list_runs.py'
 alias stests-set-client-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_client_contracts.py'
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
-# alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
 alias stests-set-network-status='_exec_cmd $STESTS_PATH_CLI/cache/set_network_status.py'
 
