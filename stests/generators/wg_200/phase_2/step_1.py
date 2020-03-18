@@ -1,33 +1,23 @@
-import typing
-
 from stests.core.orchestration import ExecutionContext
-from stests.generators import utils
-from stests.generators.wg_200 import constants
+from stests.core.utils import logger
 
 
 
 # Step description.
-DESCRIPTION = "Refunds funds previously transferred from run faucet."
+DESCRIPTION = "Dispatches a notification to signal that generator has completed."
 
 # Step label.
-LABEL = "refund-run-faucet"
+LABEL = "deploys-contracts"
 
 
-def execute(ctx: ExecutionContext) -> typing.Callable:
+def execute(ctx: ExecutionContext):
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    """  
-    def get_messages():
-        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield utils.do_refund.message(
-                ctx,
-                acc_index,
-                constants.ACC_RUN_FAUCET
-            )
-
-    return get_messages
+    """      
+    # TODO: push notification.
+    pass
 
 
 def verify(ctx: ExecutionContext):
@@ -36,15 +26,5 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    utils.verify_deploy_count(ctx, ctx.args.user_accounts) 
-
-
-def verify_deploy(ctx: ExecutionContext, dhash: str):
-    """Step deploy verifier.
-    
-    :param ctx: Execution context information.
-    :param dhash: A deploy hash.
-
-    """
-    utils.verify_deploy(ctx, dhash)
-    utils.verify_refund(ctx, dhash)
+    # TODO: verify notification was pushed
+    return True
