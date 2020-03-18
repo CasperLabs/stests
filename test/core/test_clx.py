@@ -5,7 +5,7 @@ from stests.core import clx
 
 
 FIXTURES = {
-    'do_deploy_contract',
+    'do_deploy_client_contract',
     'do_transfer',
     'get_balance',
     'get_block',

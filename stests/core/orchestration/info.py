@@ -48,6 +48,7 @@ class ExecutionInfo:
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str]
 
+
     @property
     def step_index_label(self):
         if self.step_index:

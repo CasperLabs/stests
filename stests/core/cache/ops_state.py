@@ -95,6 +95,41 @@ def get_run_deploys(dhash: str) -> typing.List[Deploy]:
     return [f"deploy*{dhash}*"]
 
 
+@cache_op(StorePartition.STATE, StoreOperation.GET)
+def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> typing.List[Deploy]:
+    """Decaches domain object: Deploy.
+    
+    :param ctx: Execution context information.
+    :param run_type: Type of run that was executed.
+    :param run_index: Index of a run.
+
+    :returns: Keypath to domain object instance.
+
+    """
+    if not run_type:
+        return [
+            "deploy",
+            network_id.name,
+            "*"
+        ]
+    elif run_index:
+        run_index_label = f"R-{str(run_index).zfill(3)}"
+        return [
+            "deploy",
+            network_id.name,
+            run_type,
+            run_index_label,
+            "*"
+        ]
+    else:
+        return [
+            "deploy",
+            network_id.name,
+            run_type,
+            "*"
+        ]
+
+
 def get_run_transfer(dhash: str) -> Transfer:
     """Decaches domain object: Transfer.
     

@@ -8,6 +8,7 @@ import stests.monitoring.manager
 
 # Import actors: generators.
 import stests.generators.wg_100.meta
+import stests.generators.wg_110.meta
 
 # Import actors: orchestration.
 import stests.orchestration.actors
