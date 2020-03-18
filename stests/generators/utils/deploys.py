@@ -35,7 +35,7 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
     cp2 = cache.state.get_account_by_run(ctx, cp2_index)
     
     # Set client contract.
-    contract = None if not ctx.use_called_contracts else \
+    contract = None if not ctx.use_stored_contracts else \
                cache.infra.get_client_contract(ctx, ClientContractType.TRANSFER_U512_STORED)
 
     # Transfer CLX from cp1 -> cp2.    
@@ -83,7 +83,7 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
         cp2 = cache.state.get_account_by_run(ctx, cp2_index)
 
     # Set client contract.
-    contract = None if not ctx.use_called_contracts else \
+    contract = None if not ctx.use_stored_contracts else \
                cache.infra.get_client_contract(ctx, ClientContractType.TRANSFER_U512_STORED)
 
     # Refund CLX from cp1 -> cp2.

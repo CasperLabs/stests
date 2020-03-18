@@ -81,6 +81,8 @@ def get_client_contract_hash(
         if nk.name == contract_name:
             return nk.key.hash.hash.hex()
 
+    raise ValueError(f"{contract_name} contract hash could not be found on-chain")
+
 
 def clx_op(func: typing.Callable) -> typing.Callable:
     """Decorator over deploy operations.

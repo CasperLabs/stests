@@ -37,7 +37,6 @@ class ClientContractType(enum.Enum):
     
     """
     STD_PAYMENT =  "standard_payment.wasm"
-    TRANSFER = "transfer_to_account.wasm"
     TRANSFER_U512 = "transfer_to_account_u512.wasm"
     TRANSFER_U512_STORED = "transfer_to_account_u512_stored.wasm"
 

@@ -69,7 +69,7 @@ def main(args: argparse.Namespace):
         node_id=node_id,
         run_index=args.run_index,
         run_type=constants.TYPE,
-        use_called_contracts=True
+        use_stored_contracts=True
     )
 
     # Abort if a run lock cannot be acquired.
