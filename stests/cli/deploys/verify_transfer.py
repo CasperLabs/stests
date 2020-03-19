@@ -4,6 +4,7 @@ import random
 from casperlabs_client import CasperLabsClient
 
 from stests.core import cache
+from stests.core.domain import AccountType
 from stests.core.clx.defaults import CLX_TX_FEE
 from stests.core.clx.defaults import CLX_TX_GAS_PRICE
 from stests.core.utils import args_validator
@@ -47,7 +48,10 @@ def main(args):
     node = random.choice(nodes)
 
     # Set counter-parties.
-    counter_parties = (network.faucet, node.account)
+    counter_parties = (
+        network.faucet,
+        factory.create_account(typeof=AccountType.USER)
+        )
 
     # Perform transfer.
     _transfer(1, node, counter_parties)
@@ -57,6 +61,9 @@ def main(args):
 
 
 def _transfer(index, node, counter_parties):
+    """Perform a transfer between counter-parties.
+    
+    """
     cp1, cp2 = counter_parties
     client = CasperLabsClient(host=node.host, port=node.port)
     dhash = client.transfer(
