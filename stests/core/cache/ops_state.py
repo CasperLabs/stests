@@ -12,6 +12,12 @@ from stests.core.utils import factory
 
 
 
+# Cache collections.
+COL_ACCOUNT = "account"
+COL_DEPLOY = "deploy"
+COL_TRANSFER = "transfer"
+
+
 @cache_op(StorePartition.STATE, StoreOperation.FLUSH)
 def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run information.
@@ -22,15 +28,15 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     
     """
     for collection in [
-        "account",
-        "deploy",   
-        "transfer",
+        COL_ACCOUNT,
+        COL_DEPLOY,
+        COL_TRANSFER,
     ]:
         yield [
-            collection,
             ctx.network,
             ctx.run_type,
             ctx.run_index_label,
+            collection,
             "*"
         ]
 
@@ -45,10 +51,10 @@ def get_account(account_id: AccountIdentifier) -> Account:
 
     """
     return [
-        "account",
         account_id.run.network.name,
         account_id.run.type,
         f"R-{str(account_id.run.index).zfill(3)}",
+        COL_ACCOUNT,
         f"{str(account_id.index).zfill(6)}"
     ]
 
@@ -92,7 +98,7 @@ def get_run_deploys(dhash: str) -> typing.List[Deploy]:
     :returns: List of matching deploys.
 
     """    
-    return [f"deploy*{dhash}*"]
+    return [f"*{COL_DEPLOY}*{dhash}*"]
 
 
 @cache_op(StorePartition.STATE, StoreOperation.GET)
@@ -108,25 +114,27 @@ def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int = N
     """
     if not run_type:
         return [
-            "deploy",
             network_id.name,
-            "*"
+            "*",
+            COL_DEPLOY,
+            "*",
         ]
     elif run_index:
         run_index_label = f"R-{str(run_index).zfill(3)}"
         return [
-            "deploy",
             network_id.name,
             run_type,
             run_index_label,
-            "*"
+            COL_DEPLOY,
+            "*",
         ]
     else:
         return [
-            "deploy",
             network_id.name,
             run_type,
-            "*"
+            "*",
+            COL_DEPLOY,
+            "*",
         ]
 
 
@@ -152,7 +160,7 @@ def get_run_transfers(dhash: str) -> typing.List[Transfer]:
     :returns: Matched transfers.
 
     """    
-    return [f"transfer*{dhash}*"]
+    return [f"*{COL_TRANSFER}*{dhash}*"]
 
 
 @cache_op(StorePartition.STATE, StoreOperation.SET)
@@ -165,10 +173,10 @@ def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]
 
     """
     return [
-        "account",
         account.network,
         account.run_type,
         f"R-{str(account.run_index).zfill(3)}",
+        COL_ACCOUNT,
         str(account.index).zfill(6)
     ], account    
 
@@ -183,10 +191,10 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
     """
     return [
-        "deploy",
         deploy.network,
         deploy.run_type,
         f"R-{str(deploy.run_index).zfill(3)}",
+        COL_DEPLOY,
         f"{str(deploy.dispatch_ts.timestamp())}.{deploy.deploy_hash}"
     ], deploy
 
@@ -201,10 +209,10 @@ def set_run_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Trans
 
     """
     return [
-        "transfer",
         transfer.network,
         transfer.run_type,
         f"R-{str(transfer.run_index).zfill(3)}",
+        COL_TRANSFER,
         transfer.asset.lower(),
         transfer.deploy_hash
     ], transfer
