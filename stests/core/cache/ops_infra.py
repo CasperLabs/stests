@@ -10,6 +10,13 @@ from stests.core.utils import factory
 
 
 
+# Cache collections.
+COL_CONTRACT = "client-contract"
+COL_NETWORK = "network"
+COL_NODE = "node"
+
+
+
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
 def get_client_contract(ctx: ExecutionContext, contract_type: ClientContractType) -> ClientContract:
     """Decaches domain object: ClientContract.
@@ -21,9 +28,9 @@ def get_client_contract(ctx: ExecutionContext, contract_type: ClientContractType
     
     """
     return [
-        "client-contract",
         ctx.network,
-        contract_type.name
+        COL_CONTRACT,
+        contract_type.name,
     ]
 
 
@@ -37,8 +44,8 @@ def get_network(network_id: NetworkIdentifier) -> Network:
     
     """
     return [
-        "network",
-        network_id.name
+        network_id.name,
+        COL_NETWORK,
     ]
 
 
@@ -60,7 +67,10 @@ def get_networks() -> typing.List[Network]:
     :returns: List of registered networks.
     
     """
-    return ["network", "*"]
+    return [
+        "*",
+        COL_NETWORK,
+        ]
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
@@ -73,8 +83,8 @@ def get_node(node_id: NodeIdentifier) -> Node:
 
     """
     return [
-        "node",
         node_id.network.name,
+        COL_NODE,
         f"N-{str(node_id.index).zfill(4)}"
     ]
 
@@ -131,11 +141,11 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.
     
     """
     if network is None:
-        return ["node", "*"]
+        return ["*", COL_NODE, "*"]
     else:
         return [
-            "node",
             network.name,
+            COL_NODE,
             "N-*"
         ]
 
@@ -161,8 +171,8 @@ def set_client_contract(contract: ClientContract) -> typing.Tuple[typing.List[st
 
     """
     return [
-        "client-contract",
         contract.network,
+        COL_CONTRACT,
         contract.typeof.name
     ], contract
 
@@ -177,8 +187,8 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
 
     """
     return [
-        "network",
         network.name,
+        COL_NETWORK,
     ], network
 
 
@@ -192,7 +202,7 @@ def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
 
     """
     return [
-        "node",
         node.network,
+        COL_NODE,
         f"N-{str(node.index).zfill(4)}"
     ], node

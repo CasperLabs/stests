@@ -7,6 +7,11 @@ from stests.core.domain import *
 from stests.core.orchestration import StreamLock
 
 
+# Cache collections.
+COL_CONTRACT = "client-contract"
+COL_NETWORK = "network"
+COL_NODE = "node"
+
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.DELETE)
