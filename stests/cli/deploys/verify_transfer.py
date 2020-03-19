@@ -21,6 +21,10 @@ ARGS.add_argument(
     type=args_validator.validate_network
     )
 
+# Amount to ping-pong.
+AMOUNT = int(1e8)
+
+
 
 def main(args):
     """Entry point.
@@ -43,13 +47,20 @@ def main(args):
     node = random.choice(nodes)
 
     # Set counter-parties.
-    cp1 = network.faucet
-    cp2 = node.account
+    counter_parties = (network.faucet, node.account)
 
     # Perform transfer.
+    _transfer(1, node, counter_parties)
+
+    # Perform refund.
+    _transfer(2, node, tuple(reversed(counter_parties)))
+
+
+def _transfer(index, node, counter_parties):
+    cp1, cp2 = counter_parties
     client = CasperLabsClient(host=node.host, port=node.port)
     dhash = client.transfer(
-        amount=int(1e8),
+        amount=AMOUNT,
         target_account_hex=cp2.public_key,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
@@ -59,11 +70,10 @@ def main(args):
     )
 
     dinfo = client.showDeploy(dhash, wait_for_processed=False)
-    print(f"transfer status (immediate): {dinfo.status}")
+    print(f"transfer {index} status (immediate): {dinfo.status}")
 
     dinfo = client.showDeploy(dhash, wait_for_processed=True)
-    print(f"transfer status (processed): {dinfo.status}")
-
+    print(f"transfer {index} status (processed): {dinfo.status}")
 
 
 # Entry point.
