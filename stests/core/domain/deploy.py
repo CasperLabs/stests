@@ -68,6 +68,10 @@ class Deploy:
             return format(self.finalization_time, '.4f')
         return "--"
 
+    @property
+    def label_account_index(self):
+        return f"A-{str(self.account_index).zfill(6)}"
+
 
     def update_on_finalization(self, bhash: str, finalization_ts: float):
         """Executed when deploy has been finalized.

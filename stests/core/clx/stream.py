@@ -1,14 +1,13 @@
 import typing
 
-from stests.core.clx.utils import get_client
-from stests.core.clx.utils import clx_op
+from stests.core.clx import utils
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
 
 
 
-@clx_op
+@utils.clx_op
 def stream_events(
     src: typing.Union[NodeIdentifier, NetworkIdentifier],
     on_block_added: typing.Callable = None,
@@ -41,7 +40,7 @@ def _yield_events(
     """Yields events from event source (i.e. a CLX chain).
     
     """
-    node, client = get_client(src)
+    node, client = utils.get_client(src)
     for event in client.stream_events(
         block_added=on_block_added is not None,
         block_finalized=on_block_finalized is not None

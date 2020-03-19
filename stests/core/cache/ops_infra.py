@@ -18,7 +18,7 @@ COL_NODE = "node"
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
-def get_client_contract(ctx: ExecutionContext, contract_type: ClientContractType) -> ClientContract:
+def get_client_contract(ctx: ExecutionContext, contract_type: NetworkContractType) -> ClientContract:
     """Decaches domain object: ClientContract.
 
     :param ctx: Execution context information.

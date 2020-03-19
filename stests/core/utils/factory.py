@@ -53,6 +53,25 @@ def create_account_for_run(
     return account
 
 
+def create_account_contract(
+    account: Account,
+    ctx: ExecutionContext,
+    chash: str,
+    typeof: ClientContractType
+    ) -> AccountContract:
+    """Returns a domain object instance: Account.
+    
+    """
+    return AccountContract(
+        account_index=account.index,
+        contract_hash=chash,
+        network=ctx.network,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        typeof=typeof,
+    )
+
+
 def create_account_id(
     index: int,
     network: str,

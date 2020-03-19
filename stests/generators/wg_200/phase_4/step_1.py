@@ -1,19 +1,16 @@
 import typing
 
-from stests.core.domain import AccountType
-from stests.core.domain import ClientContractType
 from stests.core.orchestration import ExecutionContext
-from stests.core.utils import logger
 from stests.generators import utils
 from stests.generators.wg_200 import constants
 
 
 
 # Step description.
-DESCRIPTION = "Dispatches a notification to signal that generator has completed."
+DESCRIPTION = "Refunds funds previously transferred from run faucet."
 
 # Step label.
-LABEL = "deploy-user-contracts"
+LABEL = "refund-run-faucet"
 
 
 def execute(ctx: ExecutionContext) -> typing.Callable:
@@ -21,10 +18,15 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     
     :param ctx: Execution context information.
 
-    """
+    """  
     def get_messages():
-        for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield utils.do_set_account_contract.message(ctx, account_index, ClientContractType.COUNTER_DEFINE)
+        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+            yield utils.do_refund.message(
+                ctx,
+                acc_index,
+                constants.ACC_RUN_FAUCET,
+                True
+            )
 
     return get_messages
 
@@ -35,7 +37,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    utils.verify_deploy_count(ctx, ctx.args.user_accounts)    
+    utils.verify_deploy_count(ctx, ctx.args.user_accounts) 
 
 
 def verify_deploy(ctx: ExecutionContext, dhash: str):
@@ -46,3 +48,4 @@ def verify_deploy(ctx: ExecutionContext, dhash: str):
 
     """
     utils.verify_deploy(ctx, dhash)
+    utils.verify_refund(ctx, dhash)

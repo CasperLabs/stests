@@ -50,7 +50,4 @@ def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: 
     """
     account = cache.state.get_account_by_index(ctx, account_index)
     assert account
-    print(222, account_index, account)
-    print(clx.get_balance(ctx, account), expected)
     assert clx.get_balance(ctx, account) == expected
-    print(333)

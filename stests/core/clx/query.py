@@ -1,8 +1,7 @@
 import typing
 from datetime import datetime
 
-from stests.core.clx.utils import get_client
-from stests.core.clx.utils import clx_op
+from stests.core.clx import utils
 from stests.core.domain import Account
 from stests.core.domain import Block
 from stests.core.domain import BlockStatus
@@ -11,7 +10,8 @@ from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 
 
-@clx_op
+
+@utils.clx_op
 def get_balance(ctx: ExecutionContext, account: Account) -> int:
     """Returns a chain account balance.
 
@@ -21,7 +21,7 @@ def get_balance(ctx: ExecutionContext, account: Account) -> int:
     :returns: Account balance.
 
     """
-    _, client = get_client(ctx)
+    _, client = utils.get_client(ctx)
     try:
         balance = client.balance(
             address=account.public_key,
@@ -35,7 +35,7 @@ def get_balance(ctx: ExecutionContext, account: Account) -> int:
         return balance
 
 
-@clx_op
+@utils.clx_op
 def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
     """Queries network for information pertaining to a specific block.
 
@@ -45,7 +45,7 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
     :returns: Block information.
 
     """
-    _, client = get_client(network_id)
+    _, client = utils.get_client(network_id)
     info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
     return factory.create_block(
@@ -62,7 +62,7 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
         )
 
 
-@clx_op
+@utils.clx_op
 def get_deploys(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str]:
     """Queries network for set of deploys associated with a specific block.
 
@@ -72,12 +72,12 @@ def get_deploys(network_id: NetworkIdentifier, block_hash: str) -> typing.List[s
     :returns: Block information.
 
     """
-    _, client = get_client(network_id)
+    _, client = utils.get_client(network_id)
 
     return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=block_hash, full_view=False))
 
 
-@clx_op
+@utils.clx_op
 def get_last_block_hash(client) -> str:
     """Returns a chain's last block hash.
     
@@ -85,3 +85,23 @@ def get_last_block_hash(client) -> str:
     last_block_info = next(client.showBlocks(1))
 
     return last_block_info.summary.block_hash.hex()
+
+
+@utils.clx_op
+def get_contract_hash(ctx: ExecutionContext, account: Account, dhash: str) -> str:
+    """Returns hash of an on-chain contract.
+    
+    :param ctx: Execution context information.
+    :param account: On-chain account under which contract was deployed.
+    :param dhash: Hash of a previously processed deploy.
+
+    :returns: Hash of on-chain contract.
+
+    """
+    _, client = utils.get_client(ctx)
+
+    dinfo = client.showDeploy(dhash, wait_for_processed=True)
+    bhash = dinfo.processing_results[0].block_info.summary.block_hash.hex()
+    chash = utils.get_client_contract_hash(client, account, bhash, "counter")
+
+    return chash

@@ -5,6 +5,7 @@ from stests.core import clx
 from stests.core.domain import AccountType
 from stests.core.domain import ClientContractType
 from stests.core.domain import DeployType
+from stests.core.domain import NetworkContractType
 from stests.core.orchestration import ExecutionContext
 from stests.generators.utils import constants
 from stests.core.utils import factory
@@ -38,7 +39,7 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
     
     # Set client contract.
     contract = None if use_stored_contract == False else \
-               cache.infra.get_client_contract(ctx, ClientContractType.TRANSFER_U512_STORED)
+               cache.infra.get_client_contract(ctx, NetworkContractType.TRANSFER_U512_STORED)
 
     # Transfer CLX from cp1 -> cp2.    
     (node, dhash) = clx.do_transfer(ctx, cp1, cp2, amount, contract)
@@ -88,7 +89,7 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
 
     # Set client contract.
     contract = None if not use_stored_contract else \
-               cache.infra.get_client_contract(ctx, ClientContractType.TRANSFER_U512_STORED)
+               cache.infra.get_client_contract(ctx, NetworkContractType.TRANSFER_U512_STORED)
 
     # Refund CLX from cp1 -> cp2.
     (node, dhash, amount) = clx.do_refund(ctx, cp1, cp2, contract=contract)
@@ -117,7 +118,11 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_set_contract(ctx: ExecutionContext, account_index: int, contract_type: ClientContractType):
+def do_set_account_contract(
+    ctx: ExecutionContext,
+    account_index: int,
+    contract_type: ClientContractType
+    ):
     """Deploys a contract under a known account.
 
     :param ctx: Execution context information.

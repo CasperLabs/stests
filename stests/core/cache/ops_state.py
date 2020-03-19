@@ -14,6 +14,7 @@ from stests.core.utils import factory
 
 # Cache collections.
 COL_ACCOUNT = "account"
+COL_ACCOUNT_CONTRACT = "account-contract"
 COL_DEPLOY = "deploy"
 COL_TRANSFER = "transfer"
 
@@ -29,6 +30,7 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """
     for collection in [
         COL_ACCOUNT,
+        COL_ACCOUNT_CONTRACT,
         COL_DEPLOY,
         COL_TRANSFER,
     ]:
@@ -138,6 +140,25 @@ def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int = N
         ]
 
 
+@cache_op(StorePartition.STATE, StoreOperation.GET)
+def get_deploys_by_account(ctx: ExecutionContext, account_index: int) -> typing.List[Deploy]:
+    """Decaches domain object: Deploy.
+    
+    :param ctx: Execution context information.
+    :param account_index: Index of an account.
+
+    :returns: Keypath to domain object instance.
+
+    """
+    return [
+        ctx.network,
+        ctx.run_type,
+        ctx.run_index_label,
+        COL_DEPLOY,
+        f"*.A-{str(account_index).zfill(6)}"
+    ]
+
+
 def get_transfer(dhash: str) -> Transfer:
     """Decaches domain object: Transfer.
     
@@ -182,6 +203,26 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
 
 
 @cache_op(StorePartition.STATE, StoreOperation.SET)
+def set_account_contract(contract: AccountContract) -> typing.Tuple[typing.List[str], AccountContract]:
+    """Encaches domain object: Deploy.
+    
+    :param contract: AccountContract domain object instance to be cached.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    path = [
+        contract.network,
+        contract.run_type,
+        contract.label_run_index,
+        COL_ACCOUNT_CONTRACT,
+        f"{contract.label_account_index}.{contract.typeof.name}",
+    ]
+
+    return path, contract
+
+
+@cache_op(StorePartition.STATE, StoreOperation.SET)
 def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
@@ -195,7 +236,7 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
         deploy.run_type,
         f"R-{str(deploy.run_index).zfill(3)}",
         COL_DEPLOY,
-        f"{str(deploy.dispatch_ts.timestamp())}.{deploy.deploy_hash}"
+        f"{str(deploy.dispatch_ts.timestamp())}.{deploy.deploy_hash}.{deploy.label_account_index}"
     ], deploy
 
 
