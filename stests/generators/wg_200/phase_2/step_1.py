@@ -13,7 +13,7 @@ from stests.generators.wg_200 import constants
 DESCRIPTION = "Dispatches a notification to signal that generator has completed."
 
 # Step label.
-LABEL = "deploy-user-contract"
+LABEL = "deploy-user-contracts"
 
 
 def execute(ctx: ExecutionContext) -> typing.Callable:
@@ -23,8 +23,8 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
 
     """
     def get_messages():
-        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield utils.do_set_contract.message(ctx, acc_index, ClientContractType.COUNTER_DEFINE)
+        for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+            yield utils.do_set_contract.message(ctx, account_index, ClientContractType.COUNTER_DEFINE)
 
     return get_messages
 

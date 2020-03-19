@@ -33,8 +33,8 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
             raise ValueError("Network faucet account does not exist.")
         cp1 = network.faucet
     else:
-        cp1 = cache.state.get_account_by_run(ctx, cp1_index)
-    cp2 = cache.state.get_account_by_run(ctx, cp2_index)
+        cp1 = cache.state.get_account_by_index(ctx, cp1_index)
+    cp2 = cache.state.get_account_by_index(ctx, cp2_index)
     
     # Set client contract.
     contract = None if use_stored_contract == False else \
@@ -45,6 +45,7 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
 
     # Set info. 
     deploy = factory.create_deploy_for_run(
+        account=cp1,
         ctx=ctx, 
         node=node, 
         deploy_hash=dhash, 
@@ -61,8 +62,8 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
         )
 
     # Update cache.
-    cache.state.set_run_deploy(deploy)
-    cache.state.set_run_transfer(transfer)
+    cache.state.set_deploy(deploy)
+    cache.state.set_transfer(transfer)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -76,14 +77,14 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
     
     """
     # Set counterparties.
-    cp1 = cache.state.get_account_by_run(ctx, cp1_index)
+    cp1 = cache.state.get_account_by_index(ctx, cp1_index)
     if cp2_index == constants.ACC_NETWORK_FAUCET:
         network = cache.orchestration.get_network(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp2 = network.faucet
     else:
-        cp2 = cache.state.get_account_by_run(ctx, cp2_index)
+        cp2 = cache.state.get_account_by_index(ctx, cp2_index)
 
     # Set client contract.
     contract = None if not use_stored_contract else \
@@ -94,6 +95,7 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
 
     # Set info. 
     deploy = factory.create_deploy_for_run(
+        account=cp1,
         ctx=ctx, 
         node=node, 
         deploy_hash=dhash, 
@@ -110,8 +112,8 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
         )
 
     # Update cache.
-    cache.state.set_run_deploy(deploy)
-    cache.state.set_run_transfer(transfer)
+    cache.state.set_deploy(deploy)
+    cache.state.set_transfer(transfer)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -124,13 +126,14 @@ def do_set_contract(ctx: ExecutionContext, account_index: int, contract_type: Cl
     
     """
     # Pull account info.
-    account = cache.state.get_account_by_run(ctx, account_index)
+    account = cache.state.get_account_by_index(ctx, account_index)
 
     # Deploy contract.
     (node, dhash) = clx.do_deploy_contract(ctx, account, contract_type)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(
+        account=account,
         ctx=ctx, 
         node=node, 
         deploy_hash=dhash, 
@@ -138,4 +141,4 @@ def do_set_contract(ctx: ExecutionContext, account_index: int, contract_type: Cl
         )
 
     # Update cache.
-    cache.state.set_run_deploy(deploy)
+    cache.state.set_deploy(deploy)

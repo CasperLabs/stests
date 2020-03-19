@@ -52,6 +52,10 @@ class Account:
     def private_key_as_pem_filepath(self):
         return PrivateKey(self.private_key).as_pem_filepath
 
+    @property
+    def label_index(self):
+        return f"A-{str(self.index).zfill(6)}"
+
 
 @dataclasses.dataclass
 class AccountIdentifier:
@@ -70,3 +74,7 @@ class AccountIdentifier:
     @property
     def network_id(self) -> NetworkIdentifier:
         return this.run.network
+
+    @property
+    def label_index(self):
+        return f"A-{str(self.index).zfill(6)}"

@@ -55,11 +55,11 @@ def get_account(account_id: AccountIdentifier) -> Account:
         account_id.run.type,
         f"R-{str(account_id.run.index).zfill(3)}",
         COL_ACCOUNT,
-        f"{str(account_id.index).zfill(6)}"
+        account_id.label_index
     ]
 
 
-def get_account_by_run(ctx: ExecutionContext, index: int) -> Account:
+def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
     """Decaches domain object: Account.
     
     :param ctx: Execution context information.
@@ -76,7 +76,7 @@ def get_account_by_run(ctx: ExecutionContext, index: int) -> Account:
         ))
 
 
-def get_run_deploy(dhash: str) -> Deploy:
+def get_deploy(dhash: str) -> Deploy:
     """Decaches domain object: Deploy.
     
     :param dhash: A deploy hash.
@@ -84,13 +84,13 @@ def get_run_deploy(dhash: str) -> Deploy:
     :returns: A run deploy.
 
     """    
-    deploys = get_run_deploys(dhash)
+    deploys = _get_deploys(dhash)
 
     return deploys[-1] if deploys else None
 
 
 @cache_op(StorePartition.STATE, StoreOperation.GET)
-def get_run_deploys(dhash: str) -> typing.List[Deploy]:
+def _get_deploys(dhash: str) -> typing.List[Deploy]:
     """Decaches collection of domain objects: Deploy.
     
     :param dhash: A deploy hash.
@@ -138,7 +138,7 @@ def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int = N
         ]
 
 
-def get_run_transfer(dhash: str) -> Transfer:
+def get_transfer(dhash: str) -> Transfer:
     """Decaches domain object: Transfer.
     
     :param dhash: A deploy hash.
@@ -146,13 +146,13 @@ def get_run_transfer(dhash: str) -> Transfer:
     :returns: A run deploy.
 
     """    
-    transfers = get_run_transfers(dhash)
+    transfers = get_transfers(dhash)
 
     return transfers[-1] if transfers else None
 
 
 @cache_op(StorePartition.STATE, StoreOperation.GET)
-def get_run_transfers(dhash: str) -> typing.List[Transfer]:
+def get_transfers(dhash: str) -> typing.List[Transfer]:
     """Decaches collection of domain objects: Transfer.
     
     :param dhash: A deploy hash.
@@ -164,7 +164,7 @@ def get_run_transfers(dhash: str) -> typing.List[Transfer]:
 
 
 @cache_op(StorePartition.STATE, StoreOperation.SET)
-def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
+def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
     """Encaches domain object: Account.
     
     :param account: Account domain object instance to be cached.
@@ -177,12 +177,12 @@ def set_run_account(account: Account) -> typing.Tuple[typing.List[str], Account]
         account.run_type,
         f"R-{str(account.run_index).zfill(3)}",
         COL_ACCOUNT,
-        str(account.index).zfill(6)
+        account.label_index,
     ], account    
 
 
 @cache_op(StorePartition.STATE, StoreOperation.SET)
-def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
+def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
     :param deploy: Deploy domain object instance to be cached.
@@ -200,7 +200,7 @@ def set_run_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
 
 @cache_op(StorePartition.STATE, StoreOperation.SET)
-def set_run_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
+def set_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
     """Encaches domain object: Transfer.
     
     :param transfer: Transfer domain object instance to be cached.

@@ -125,6 +125,7 @@ def create_deploy(
     
     """
     return Deploy(
+        account_index=None,
         block_hash=block_hash,
         deploy_hash=deploy_hash,
         dispatch_node=None,
@@ -142,6 +143,7 @@ def create_deploy(
 
 
 def create_deploy_for_run(
+    account: Account,
     ctx: ExecutionContext,
     node: Node,
     deploy_hash: str,
@@ -151,6 +153,7 @@ def create_deploy_for_run(
 
     """
     return Deploy(
+        account_index=account.index,
         block_hash=None,
         deploy_hash=deploy_hash,
         dispatch_node=node.index,

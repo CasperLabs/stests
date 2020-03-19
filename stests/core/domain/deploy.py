@@ -13,6 +13,9 @@ class Deploy:
     """Encapsulates information pertaining to a deploy dispatched to a test network.
     
     """
+    # Index of account with which the deploy is associated.
+    account_index: typing.Optional[int]
+
     # Associated block hash in event of finalization. 
     block_hash: str
 
