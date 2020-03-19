@@ -33,6 +33,5 @@ def verify(ctx):
     :param ctx: Execution context information.
 
     """    
-    print(666)
     # TODO: get count of created accounts and confirm = ctx.args.user_accounts + 1
     return True

@@ -36,8 +36,9 @@ class ClientContractType(enum.Enum):
     """Enumeration over set of bundled client contract types.
     
     """
+    COUNTER_CALL = "counter_call.wasm"
+    COUNTER_DEFINE = "counter_define.wasm"
     STD_PAYMENT =  "standard_payment.wasm"
-    TRANSFER_U512 = "transfer_to_account_u512.wasm"
     TRANSFER_U512_STORED = "transfer_to_account_u512_stored.wasm"
 
 
@@ -56,6 +57,7 @@ class DeployType(enum.Flag):
     
     """
     NULL = enum.auto()
+    CONTRACT = enum.auto()
     TRANSFER = enum.auto()
     REFUND = enum.auto()
     

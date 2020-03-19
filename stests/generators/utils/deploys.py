@@ -2,6 +2,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
+from stests.core.domain import AccountType
 from stests.core.domain import ClientContractType
 from stests.core.domain import DeployType
 from stests.core.orchestration import ExecutionContext
@@ -111,3 +112,30 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
     # Update cache.
     cache.state.set_run_deploy(deploy)
     cache.state.set_run_transfer(transfer)
+
+
+@dramatiq.actor(queue_name=_QUEUE)
+def do_set_contract(ctx: ExecutionContext, account_index: int, contract_type: ClientContractType):
+    """Deploys a contract under a known account.
+
+    :param ctx: Execution context information.
+    :param account_index: Index of account to which a contract will be deployed.
+    :param contract_type: Type of contract to deploy.
+    
+    """
+    # Pull account info.
+    account = cache.state.get_account_by_run(ctx, account_index)
+
+    # Deploy contract.
+    (node, dhash) = clx.do_deploy_contract(ctx, account, contract_type)
+
+    # Set info. 
+    deploy = factory.create_deploy_for_run(
+        ctx=ctx, 
+        node=node, 
+        deploy_hash=dhash, 
+        typeof=DeployType.CONTRACT
+        )
+
+    # Update cache.
+    cache.state.set_run_deploy(deploy)

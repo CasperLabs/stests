@@ -9,6 +9,7 @@ from stests.core.domain import Account
 from stests.core.domain import ClientContract
 from stests.core.domain import ClientContractType
 from stests.core.domain import Network
+from stests.core.domain import Node
 from stests.core.domain import Transfer
 from stests.core.domain import Deploy
 from stests.core.domain import DeployType
@@ -73,7 +74,7 @@ def do_transfer(
     # Set client.
     node, client  = utils.get_client(ctx)
 
-    # Transfer using called contract - does not dispatch wasm.
+    # Transfer using on-chain contract hash - does not dispatch wasm.
     if contract:
         session_args = ABI.args([
             ABI.account("address", cp2.public_key),
@@ -89,13 +90,13 @@ def do_transfer(
             gas_price=defaults.CLX_TX_GAS_PRICE
         )
 
-    # Transfer using stored contract - dispatches wasm.
+    # Transfer using local contract - dispatches wasm.
     else:
         dhash = client.transfer(
             amount=amount,
+            target_account_hex=cp2.public_key,
             from_addr=cp1.public_key,
             private_key=cp1.private_key_as_pem_filepath,
-            target_account_hex=cp2.public_key,
             # TODO: allow these to be passed in via standard arguments
             payment_amount=defaults.CLX_TX_FEE,
             gas_price=defaults.CLX_TX_GAS_PRICE
@@ -146,3 +147,36 @@ def do_deploy_client_contract(network: Network, contract_type: ClientContractTyp
     logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: contract-hash={chash}")
 
     return chash
+
+
+@utils.clx_op
+def do_deploy_contract(ctx: ExecutionContext, account: Account, contract_type: ClientContractType) -> typing.Tuple[Node, str]:
+    """Deploys a smart contract to chain for future use.
+
+    :param ctx: Execution context information.
+    :param account: Account under which contract will be deployed.
+    :param contract_type: Type of contract to be deployed.
+
+    :returns: 2 member tuple -> (node, deploy hash)
+
+    """
+    # Set client.
+    node, client = utils.get_client(ctx)
+
+    # Dispatch deploy.
+    session=utils.get_client_contract_path(ClientContractType[contract_type])
+    session_args = ABI.args([
+        ABI.string_value("target", "hash")
+        ])
+    dhash = client.deploy(
+        session=session,
+        session_args=session_args,
+        from_addr=account.public_key,
+        private_key=account.private_key_as_pem_filepath,
+        # TODO: allow these to be passed in via standard arguments
+        payment_amount=defaults.CLX_TX_FEE,
+        gas_price=defaults.CLX_TX_GAS_PRICE
+    )
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: deploy-hash={dhash}")
+
+    return (node, dhash)

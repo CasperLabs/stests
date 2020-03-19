@@ -31,7 +31,7 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
     if not encached:
         return
     
-    logger.log(f"processing finalized block: {bhash}")
+    logger.log(f"PYCLX :: processing finalized block: {bhash}")
 
     # Enqueue finalized deploys.
     for dhash in clx.get_deploys(node_id.network, bhash):  
@@ -61,6 +61,7 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     # Pull run deploy - escape if none found.
     deploy = cache.state.get_run_deploy(dhash)
     if not deploy:
+        logger.log(f"deploy info not found in db: {bhash} :: {dhash}")
         return
 
     # Update deploy.

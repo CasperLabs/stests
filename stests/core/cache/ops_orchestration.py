@@ -2,13 +2,19 @@ import random
 import typing
 
 import stests.core.cache.ops_infra as infra
-from stests.core.cache.enums import StoreOperation
-from stests.core.cache.enums import StorePartition
+from stests.core.cache.enums import *
 from stests.core.cache.utils import cache_op
 from stests.core.domain import *
 from stests.core.orchestration import *
 from stests.core.utils import factory
 
+
+# Cache collections.
+COL_DEPLOY_COUNT = "deploy-count"
+COL_CONTEXT = "context"
+COL_LOCK = "lock"
+COL_STATE = "state"
+COL_INFO = "info"
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
@@ -21,17 +27,16 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     
     """
     for collection in [
-        "context",
-        "deploy-count",
-        "info",
-        "lock",
-        "state",
+        COL_CONTEXT,
+        COL_DEPLOY_COUNT,
+        COL_INFO,
+        COL_STATE,
     ]:
         yield [
-            collection,
             ctx.network,
             ctx.run_type,
             ctx.run_index_label,
+            collection,
             "*"
         ]
 
@@ -46,10 +51,11 @@ def flush_locks(ctx: ExecutionContext) -> typing.Generator:
     
     """
     yield [
-        "lock",
         ctx.network,
         ctx.run_type,
-        f"{ctx.run_index_label}*",
+        ctx.run_index_label,
+        COL_LOCK,
+        "*",
     ]
 
 
@@ -67,28 +73,12 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
     run_index_label = f"R-{str(run_index).zfill(3)}"
 
     return [
-        "context",
         network,
         run_type,
-        run_index_label
+        run_index_label,
+        COL_CONTEXT
     ]
 
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_contexts(network: str, run_type: str) -> ExecutionContext:
-    """Decaches domain object: ExecutionContext.
-    
-    :param ctx: Execution context information.
-
-    :returns: Cached run context information.
-
-    """
-    return [
-        "context",
-        network,
-        run_type,
-        "*"
-    ]
 
 def get_network(ctx: ExecutionContext) -> Network:
     """Decaches domain object: Network.
@@ -101,7 +91,7 @@ def get_network(ctx: ExecutionContext) -> Network:
     network_id = factory.create_network_id(ctx.network)
 
     return infra.get_network(network_id)
-
+    
 
 def get_step(ctx: ExecutionContext) -> ExecutionInfo:
     """Decaches domain object: ExecutionInfo.
@@ -180,74 +170,63 @@ def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], RunLoc
 
     """
     return [
-        "lock",
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label
+        ctx.run_index_label,
+        COL_LOCK,
+        "-"
     ]
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
-def lock_run(lock: RunLock) -> typing.Tuple[typing.List[str], RunLock]:
-    """Encaches a lock: RunLock.
+def lock_execution(aspect: ExecutionAspect, lock: RunLock) -> typing.Tuple[typing.List[str], RunLock]:
+    """Encaches a lock: ExecutionLock.
 
+    :param aspect: Aspect of execution to be locked.
     :param lock: Information to be locked.
 
     """
-    return [
-        "lock",
+    path = [
         lock.network,
         lock.run_type,
-        lock.run_index_label
-    ], lock
+        lock.run_index_label,
+        COL_LOCK,
+    ]
 
+    if aspect == ExecutionAspect.RUN:
+        path.append("-")
+    elif aspect == ExecutionAspect.PHASE:
+        path.append(lock.phase_index_label)
+    elif aspect == ExecutionAspect.STEP:
+        path.append(f"{lock.phase_index_label}.{lock.step_index_label}")
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
-def lock_phase(lock: PhaseLock) -> typing.Tuple[typing.List[str], PhaseLock]:
-    """Encaches a lock: PhaseLock.
-
-    :param lock: Information to be locked.
-
-    """
-    return [
-        "lock",
-        lock.network,
-        lock.run_type,
-        f"{lock.run_index_label}.{lock.phase_index_label}",
-    ], lock
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
-def lock_step(lock: StepLock) -> typing.Tuple[typing.List[str], StepLock]:
-    """Encaches a lock: StepLock.
-
-    :param lock: Information to be locked.
-
-    """
-    return [
-        "lock",
-        lock.network,
-        lock.run_type,
-        f"{lock.run_index_label}.{lock.phase_index_label}.{lock.step_index_label}",
-    ], lock
+    return path, lock
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_run_info(ctx: ExecutionContext) -> ExecutionContext:
-    """Decaches domain object: ExecutionContext.
+def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
+    """Decaches domain object: ExecutionInfo.
     
-    :param ctx: Execution context information.
+    :param ctx: Execution information.
 
     :returns: Keypath to domain object instance.
 
     """
-    return [
-        "info",
+    path = [
         ctx.network,
         ctx.run_type,
         ctx.run_index_label,
-        "-"
+        COL_INFO,
     ]
+
+    if aspect == ExecutionAspect.RUN:
+        path.append("-")
+    elif aspect == ExecutionAspect.PHASE:
+        path.append(ctx.phase_index_label)
+    elif aspect == ExecutionAspect.STEP:
+        path.append(f"{ctx.phase_index_label}.{ctx.step_index_label}")
+
+    return path
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
@@ -263,121 +242,28 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
     """
     if not run_type:
         return [
-            "info",
             network_id.name,
+            "*",
+            COL_INFO,
             "*"
         ]
     elif run_index:
         run_index_label = f"R-{str(run_index).zfill(3)}"
         return [
-            "info",
             network_id.name,
             run_type,
             run_index_label,
+            COL_INFO,
             "*"
         ]
     else:
         return [
-            "info",
             network_id.name,
             run_type,
-            "*"
+            "*",
+            COL_INFO,
+            "*",
         ]
-
-
-def update_run_info(ctx: ExecutionContext) -> ExecutionInfo:
-    """Updates domain object: ExecutionContext.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    # Pull.
-    info = get_run_info(ctx)
-
-    # Update.
-    # TODO: set error from context.
-    info.end(ctx.status, None)
-
-    # Recache.
-    set_info(info)
-
-    return info
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_phase_info(ctx: ExecutionContext) -> ExecutionInfo:
-    """Decaches domain object: ExecutionInfo.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath to domain object instance.
-
-    """
-    return [
-        "info",
-        ctx.network,
-        ctx.run_type,
-        ctx.run_index_label,
-        ctx.phase_index_label,
-    ]
-
-
-def update_phase_info(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionInfo:
-    """Updates domain object: ExecutionInfo.
-    
-    :param ctx: Execution context information.
-    :param status: New execution state.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    # Pull & update.
-    info = get_phase_info(ctx)
-    info.end(status, None)
-
-    # Recache.
-    set_info(info)
-
-    return info
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_step_info(ctx: ExecutionContext) -> ExecutionInfo:
-    """Decaches domain object: ExecutionInfo.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath to domain object instance.
-
-    """
-    return [
-        "info",
-        ctx.network,
-        ctx.run_type,
-        ctx.run_index_label,
-        f"{ctx.phase_index_label}.{ctx.step_index_label}"
-    ]
-
-
-def update_step_info(ctx: ExecutionContext, status: ExecutionStatus) -> ExecutionInfo:
-    """Updates domain object: ExecutionInfo.
-    
-    :param ctx: Execution context information.
-    :param status: New execution state.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    # Pull & update.
-    info = get_step_info(ctx)
-    info.end(status, None)
-
-    # Recache.
-    set_info(info)
-
-    return info
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
@@ -389,12 +275,14 @@ def set_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], Executi
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        "context",
+    path = [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label
-    ], ctx
+        ctx.run_index_label,
+        COL_CONTEXT,
+    ]
+
+    return path, ctx
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
@@ -406,30 +294,21 @@ def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInf
     :returns: Keypath + domain object instance.
 
     """
+    path = [
+            info.network,
+            info.run_type,
+            info.run_index_label,
+            COL_INFO,
+    ]
+
     if info.phase_index and info.step_index:
-        return [
-            "info",
-            info.network,
-            info.run_type,
-            info.run_index_label,
-            f"{info.phase_index_label}.{info.step_index_label}"
-        ], info
+        path.append(f"{info.phase_index_label}.{info.step_index_label}")
     elif info.phase_index:
-        return [
-            "info",
-            info.network,
-            info.run_type,
-            info.run_index_label,
-            info.phase_index_label,
-            ], info
+        path.append(info.phase_index_label)
     else:
-        return [
-            "info",
-            info.network,
-            info.run_type,
-            info.run_index_label,
-            "-",
-        ], info
+        path.append("-")
+
+    return path, info
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
@@ -441,62 +320,59 @@ def set_state(state: ExecutionState) -> typing.Tuple[typing.List[str], Execution
     :returns: Keypath + domain object instance.
 
     """
+    path = [
+        state.network,
+        state.run_type,
+        state.run_index_label,
+        COL_STATE,
+    ]
+
     if state.aspect == ExecutionAspect.RUN:
-        return [
-            "state",
-            state.network,
-            state.run_type,
-            state.run_index_label,
-            "-"
-        ], state 
-
+        path.append("-")
     elif state.aspect == ExecutionAspect.PHASE:
-        return [
-            "state",
-            state.network,
-            state.run_type,
-            state.run_index_label,
-            state.phase_index_label,
-        ], state 
-
+        path.append(state.phase_index_label)
     elif state.aspect == ExecutionAspect.STEP:
-        return [
-            "state",
-            state.network,
-            state.run_type,
-            state.run_index_label,
-            f"{state.phase_index_label}.{state.step_index_label}"
-        ], state
+        path.append(f"{state.phase_index_label}.{state.step_index_label}")
+
+    return path, state
+
+
+def update_info(ctx: ExecutionContext, aspect: ExecutionAspect, status: ExecutionStatus) -> ExecutionInfo:
+    """Updates domain object: ExecutionContext.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    # Pull.
+    info = get_info(ctx, aspect)
+
+    # Update.
+    info.end(status, None)
+
+    # Recache.
+    set_info(info)
+
+    return info
 
 
 def _get_keypath_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> typing.List[str]:
     """Returns keypath used when working with a deploy count.
     
     """
+    path = [
+            ctx.network,
+            ctx.run_type,
+            ctx.run_index_label,
+            COL_DEPLOY_COUNT,
+    ]
+
     if aspect == ExecutionAspect.RUN:
-        return [
-            "deploy-count",
-            ctx.network,
-            ctx.run_type,
-            ctx.run_index_label,
-            "-",
-        ]
-
+        path.append("-")
     elif aspect == ExecutionAspect.PHASE:
-        return [
-            "deploy-count",
-            ctx.network,
-            ctx.run_type,
-            ctx.run_index_label,
-            ctx.phase_index_label,
-        ]
-
+        path.append(ctx.phase_index_label)
     elif aspect == ExecutionAspect.STEP:
-        return [
-            "deploy-count",
-            ctx.network,
-            ctx.run_type,
-            ctx.run_index_label,
-            f"{ctx.phase_index_label}.{ctx.step_index_label}",            
-        ]
+        path.append(f"{ctx.phase_index_label}.{ctx.step_index_label}")
 
+    return path
