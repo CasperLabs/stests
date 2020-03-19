@@ -35,6 +35,12 @@ alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
 alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 
 # ###############################################################
+# ALIASES: deploys
+# ###############################################################
+
+alias stests-verify-transfer='_exec_cmd $STESTS_PATH_CLI/deploys/verify_transfer.py'
+
+# ###############################################################
 # ALIASES: cache - flush
 # ###############################################################
 
