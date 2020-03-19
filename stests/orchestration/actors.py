@@ -337,10 +337,6 @@ def on_step_deploy_finalized(ctx: ExecutionContext, dhash: str):
     :param dhash: Hash of a finalized deploy.
 
     """
-    print(111)
-    print(ctx)
-    print(dhash)
-
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
