@@ -76,6 +76,8 @@ def _transfer(index, node, counter_parties):
         gas_price=CLX_TX_GAS_PRICE
     )
 
+    print(f"transfer {index} depoy-hash: {dhash}")
+
     dinfo = client.showDeploy(dhash, wait_for_processed=False)
     print(f"transfer {index} status (immediate): {dinfo.status}")
 
