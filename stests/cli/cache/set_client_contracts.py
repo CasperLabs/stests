@@ -46,13 +46,13 @@ def set_contract(network: Network, typeof: NetworkContractType, name: str):
     
     """
     # Dispatch contract to network & await processing.
-    chash = clx.do_deploy_client_contract(network, typeof, name)
+    chash = clx.do_deploy_network_contract(network, typeof, name)
 
     # Instantiate domain object.
-    contract = factory.create_client_contract(network, chash, typeof)
+    contract = factory.create_network_contract(network, chash, typeof)
 
     # Persist within cache.
-    cache.infra.set_client_contract(contract)
+    cache.infra.set_network_contract(contract)
 
 
 # Entry point.

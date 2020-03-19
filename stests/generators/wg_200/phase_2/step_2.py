@@ -3,7 +3,7 @@ import typing
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
-from stests.core.domain import ClientContractType
+from stests.core.domain import AccountContractType
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -50,7 +50,7 @@ def _set_user_contract_hash(ctx, account_index):
         ctx=ctx,
         account=account,
         chash=chash,
-        typeof=ClientContractType.COUNTER_DEFINE
+        typeof=AccountContractType.COUNTER_DEFINE
     )
 
     # Cache contract.

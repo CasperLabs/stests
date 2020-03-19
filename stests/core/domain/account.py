@@ -4,7 +4,7 @@ from datetime import datetime
 
 from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
-from stests.core.domain.enums import ClientContractType
+from stests.core.domain.enums import AccountContractType
 from stests.core.domain.key_pair import PrivateKey
 from stests.core.domain.network import NetworkIdentifier
 from stests.core.utils.dataclasses import get_timestamp_field
@@ -79,7 +79,7 @@ class AccountContract:
     run_type: typing.Optional[str]
 
     # Type of client contract.
-    typeof: ClientContractType
+    typeof: AccountContractType
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None

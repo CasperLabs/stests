@@ -102,6 +102,6 @@ def get_contract_hash(ctx: ExecutionContext, account: Account, dhash: str) -> st
 
     dinfo = client.showDeploy(dhash, wait_for_processed=True)
     bhash = dinfo.processing_results[0].block_info.summary.block_hash.hex()
-    chash = utils.get_client_contract_hash(client, account, bhash, "counter")
+    chash = utils.get_contract_hash(client, account, bhash, "counter")
 
     return chash

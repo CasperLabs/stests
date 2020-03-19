@@ -8,7 +8,7 @@ from stests.core.utils.dataclasses import get_timestamp_field
 
 
 @dataclasses.dataclass
-class ClientContract:
+class NetworkContract:
     """A test network.
     
     """

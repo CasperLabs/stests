@@ -2,6 +2,13 @@ import enum
 
 
 
+class AccountContractType(enum.Enum):
+    """Enumeration over set of bundled client contract types.
+    
+    """
+    COUNTER_DEFINE = "counter_define.wasm"
+
+
 class AccountStatus(enum.Flag):
     """Flag over set of account states.
     
@@ -30,15 +37,6 @@ class BlockStatus(enum.Flag):
     ADDED = enum.auto()
     FINALIZED = enum.auto()
     REJECTED = enum.auto()
-
-
-class ClientContractType(enum.Enum):
-    """Enumeration over set of bundled client contract types.
-    
-    """
-    COUNTER_DEFINE = "counter_define.wasm"
-    STD_PAYMENT =  "standard_payment.wasm"
-    TRANSFER_U512_STORED = "transfer_to_account_u512_stored.wasm"
 
 
 class DeployStatus(enum.Flag):
@@ -131,7 +129,7 @@ ENUM_SET = {
     AccountStatus,
     AccountType,    
     BlockStatus,
-    ClientContractType,
+    AccountContractType,
     DeployStatus,
     DeployType,
     NetworkContractType,

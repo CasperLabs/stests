@@ -3,7 +3,7 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
-from stests.core.domain import ClientContractType
+from stests.core.domain import AccountContractType
 from stests.core.domain import DeployType
 from stests.core.domain import NetworkContractType
 from stests.core.orchestration import ExecutionContext
@@ -39,7 +39,7 @@ def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amoun
     
     # Set client contract.
     contract = None if use_stored_contract == False else \
-               cache.infra.get_client_contract(ctx, NetworkContractType.TRANSFER_U512_STORED)
+               cache.infra.get_network_contract(ctx, NetworkContractType.TRANSFER_U512_STORED)
 
     # Transfer CLX from cp1 -> cp2.    
     (node, dhash) = clx.do_transfer(ctx, cp1, cp2, amount, contract)
@@ -89,7 +89,7 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
 
     # Set client contract.
     contract = None if not use_stored_contract else \
-               cache.infra.get_client_contract(ctx, NetworkContractType.TRANSFER_U512_STORED)
+               cache.infra.get_network_contract(ctx, NetworkContractType.TRANSFER_U512_STORED)
 
     # Refund CLX from cp1 -> cp2.
     (node, dhash, amount) = clx.do_refund(ctx, cp1, cp2, contract=contract)
@@ -121,7 +121,7 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
 def do_set_account_contract(
     ctx: ExecutionContext,
     account_index: int,
-    contract_type: ClientContractType
+    contract_type: AccountContractType
     ):
     """Deploys a contract under a known account.
 
@@ -134,7 +134,7 @@ def do_set_account_contract(
     account = cache.state.get_account_by_index(ctx, account_index)
 
     # Deploy contract.
-    (node, dhash) = clx.do_deploy_contract(ctx, account, contract_type)
+    (node, dhash) = clx.do_deploy_account_contract(ctx, account, contract_type)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(

@@ -57,7 +57,7 @@ def create_account_contract(
     account: Account,
     ctx: ExecutionContext,
     chash: str,
-    typeof: ClientContractType
+    typeof: AccountContractType
     ) -> AccountContract:
     """Returns a domain object instance: Account.
     
@@ -117,21 +117,6 @@ def create_block(
         timestamp=timestamp,
         validator_id=validator_id
         )
-
-
-def create_client_contract(
-    network: Network,
-    chash: str,
-    typeof: ClientContractType
-    ) -> ClientContract:
-    """Returns a domain object instance: ClientContract.
-    
-    """
-    return ClientContract(
-        chash=chash,
-        network=network.name,
-        typeof=typeof
-    )
 
 
 def create_deploy(
@@ -202,6 +187,21 @@ def create_network(name_raw: str) -> Network:
         name_raw=name_raw,
         status=NetworkStatus.HEALTHY,
         typeof=identifier.type
+    )
+
+
+def create_network_contract(
+    network: Network,
+    chash: str,
+    typeof: NetworkContractType
+    ) -> NetworkContract:
+    """Returns a domain object instance: NetworkContract.
+    
+    """
+    return NetworkContract(
+        chash=chash,
+        network=network.name,
+        typeof=typeof
     )
 
 
