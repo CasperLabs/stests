@@ -36,6 +36,16 @@ ARGS.add_argument(
     )
 
 
+# Table columns.
+COLS = [
+    ("Phase / Step", BeautifulTable.ALIGN_LEFT),
+    ("Start Time", BeautifulTable.ALIGN_LEFT),
+    ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
+    ("Action", BeautifulTable.ALIGN_RIGHT),
+    ("Status", BeautifulTable.ALIGN_RIGHT),
+]
+
+
 def main(args):
     """Entry point.
     
@@ -50,22 +60,21 @@ def main(args):
         return
 
     # Set cols/rows.
-    cols = ["Phase / Step", "Start Time", "Duration (s)", "Action", "Status"]
+    cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         i.index_label,
         i.ts_start,
         i.tp_elapsed_label,
-        i.step_label if i.step_label else '--'  ,      
+        i.step_label if i.step_label else '--',      
         i.status.name,
     ], sorted(data, key=lambda i: i.index_label))
 
     # Set table.
     t = get_table(cols, rows)
-    t.column_alignments['Phase / Step'] = BeautifulTable.ALIGN_LEFT
-    t.column_alignments['Start Time'] = BeautifulTable.ALIGN_LEFT
-    t.column_alignments['Duration (s)'] = BeautifulTable.ALIGN_RIGHT
-    t.column_alignments['Action'] = BeautifulTable.ALIGN_RIGHT
-    t.column_alignments['Status'] = BeautifulTable.ALIGN_RIGHT
+
+    # Set table alignments.
+    for key, aligmnent in COLS:
+        t.column_alignments[key] = aligmnent    
 
     # Render.
     print(t)

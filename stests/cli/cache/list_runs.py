@@ -30,6 +30,17 @@ ARGS.add_argument(
     )
 
 
+# Table columns.
+COLS = [
+    ("Network", BeautifulTable.ALIGN_LEFT),
+    ("Type", BeautifulTable.ALIGN_LEFT),
+    ("ID", BeautifulTable.ALIGN_LEFT),
+    ("Start Time", BeautifulTable.ALIGN_LEFT),
+    ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
+    ("Status", BeautifulTable.ALIGN_RIGHT),
+]
+
+
 def main(args):
     """Entry point.
     
@@ -45,20 +56,22 @@ def main(args):
         return    
 
     # Set cols/rows.
-    cols = ["Network", "Type", "ID", "Start Time", "Duration (s)", "Status"]
+    cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         network_id.name,
         i.run_type,
         i.index_label.strip(),
         i.ts_start,
         i.tp_elapsed_label,
-        i.status_label        
+        i.status_label.strip()
     ], sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}"))
 
     # Set table.
     t = get_table(cols, rows)
-    t.column_alignments['Start Time'] = BeautifulTable.ALIGN_LEFT
-    t.column_alignments['Duration (s)'] = BeautifulTable.ALIGN_RIGHT
+
+    # Set table alignments.
+    for key, aligmnent in COLS:
+        t.column_alignments[key] = aligmnent  
 
     # Render.
     print(t)

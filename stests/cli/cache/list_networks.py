@@ -13,6 +13,14 @@ from stests.core.utils import logger
 ARGS = argparse.ArgumentParser("Lists set of registered networks.")
 
 
+# Table columns.
+COLS = [
+    ("Name", BeautifulTable.ALIGN_LEFT),
+    ("Type", BeautifulTable.ALIGN_LEFT),
+    ("Status", BeautifulTable.ALIGN_RIGHT),
+]
+
+
 def main(args):
     """Entry point.
     
@@ -23,7 +31,7 @@ def main(args):
     data = cache.infra.get_networks()
 
     # Set cols/rows.
-    cols = ["Name", "Type", "Status"]
+    cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         i.name,
         i.typeof.name,
@@ -32,8 +40,10 @@ def main(args):
 
     # Set table.
     t = get_table(cols, rows)
-    t.column_alignments['Name'] = BeautifulTable.ALIGN_LEFT
-    t.column_alignments['Status'] = BeautifulTable.ALIGN_RIGHT
+
+    # Set table alignments.
+    for key, aligmnent in COLS:
+        t.column_alignments[key] = aligmnent    
 
     # Render.
     print(t)

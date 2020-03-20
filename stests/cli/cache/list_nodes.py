@@ -20,6 +20,14 @@ ARGS.add_argument(
     )
 
 
+# Table columns.
+COLS = [
+    ("ID", BeautifulTable.ALIGN_LEFT),
+    ("Host:Port", BeautifulTable.ALIGN_LEFT),
+    ("Type", BeautifulTable.ALIGN_LEFT),
+    ("Status", BeautifulTable.ALIGN_RIGHT),
+]
+
 def main(args):
     """Entry point.
     
@@ -38,7 +46,7 @@ def main(args):
         return
 
     # Set cols/rows.
-    cols = ["ID", "Host:Port", "Type", "Status"]
+    cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         i.index_label,
         f"{i.host}:{i.port}",
@@ -48,7 +56,10 @@ def main(args):
 
     # Set table.
     t = get_table(cols, rows)
-    t.column_alignments['Host:Port'] = BeautifulTable.ALIGN_LEFT
+
+    # Set table alignments.
+    for key, aligmnent in COLS:
+        t.column_alignments[key] = aligmnent    
 
     # Render.
     print(t)
