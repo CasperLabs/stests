@@ -54,10 +54,20 @@ def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
 
     """
     deploy = utils.verify_deploy(ctx, bhash, dhash)
+    _verify_counter(ctx, deploy.account_index, bhash)
 
-    account = cache.state.get_account_by_index(ctx, deploy.account_index)
+
+def _verify_counter(ctx: ExecutionContext, account_index: int, bhash: str):
+    """Verfies that a counter has been incremented the correct number of times. 
+    
+    :param ctx: Execution context information.
+    :param bhash: A block hash.
+
+    """
+    account = cache.state.get_account_by_index(ctx, account_index)
     _, client = clx.get_client(ctx)
     state = client.queryState(bhash, account.public_key, "counter/count", "address")
+
     assert state.cl_value.value.i32 == ctx.args.increments
 
 
