@@ -53,6 +53,7 @@ alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_infra.sh'
 
 alias stests-ls-networks='_exec_cmd $STESTS_PATH_CLI/cache/list_networks.py'
 alias stests-ls-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/list_network_faucet_key.py'
+alias stests-ls-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/list_network_contracts.py'
 
 alias stests-ls-nodes='_exec_cmd $STESTS_PATH_CLI/cache/list_nodes.py'
 alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/list_node_bonding_key.py'
