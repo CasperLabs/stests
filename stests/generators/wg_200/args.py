@@ -12,6 +12,9 @@ class Arguments:
     # Initial faucet account CLX balance.
     faucet_initial_clx_balance: int
 
+    # Number of times counters will be incremented.
+    increments: int
+
     # Number of user accounts to generate.
     user_accounts: int
 
@@ -30,6 +33,7 @@ class Arguments:
         """
         return cls(
             faucet_initial_clx_balance='faucet_initial_clx_balance' in args and args.faucet_initial_clx_balance,
+            increments='increments' in args and args.increments,
             user_accounts='user_accounts' in args and args.user_accounts,
             user_initial_clx_balance='user_initial_clx_balance' in args and args.user_initial_clx_balance,
         )

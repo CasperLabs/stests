@@ -8,13 +8,15 @@ from stests.core.domain import TransferStatus
 
 
 
-def verify_deploy(ctx: ExecutionContext, dhash: str):
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
     """Verifies that a deploy is in a finalized state.
     
     """
     deploy = cache.state.get_deploy(dhash)
     assert deploy
     assert deploy.status == DeployStatus.FINALIZED
+
+    return deploy
 
 
 def verify_deploy_count(ctx: ExecutionContext, expected: int, aspect: ExecutionAspect = ExecutionAspect.STEP):
@@ -31,6 +33,8 @@ def verify_refund(ctx: ExecutionContext, dhash: str) -> Transfer:
     refund = cache.state.get_transfer(dhash)
     assert refund
     assert refund.status == TransferStatus.COMPLETE
+
+    return refund
 
 
 def verify_transfer(ctx: ExecutionContext, dhash: str) -> Transfer:
@@ -51,3 +55,5 @@ def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: 
     account = cache.state.get_account_by_index(ctx, account_index)
     assert account
     assert clx.get_balance(ctx, account) == expected
+
+    return account

@@ -137,16 +137,16 @@ def do_deploy_network_contract(
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: deploy-hash={dhash} -> awaiting processing")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: dhash={dhash} -> awaiting processing")
 
     # Get block hash.
     dinfo = client.showDeploy(dhash, wait_for_processed=True)
     bhash = dinfo.processing_results[0].block_info.summary.block_hash.hex()
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: deploy-hash={dhash} -> processing complete")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: dhash={dhash} -> processing complete")
 
     # Get contract hash.
     chash = utils.get_contract_hash(client, network.faucet, bhash, contract_name)
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: contract-hash={chash}")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: chash={chash}")
 
     return chash
 
@@ -185,6 +185,6 @@ def do_deploy_account_contract(
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: deploy-hash={dhash}")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: dhash={dhash}")
 
     return (node, dhash)

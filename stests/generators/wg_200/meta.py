@@ -4,7 +4,6 @@ from stests.generators.wg_200.constants import TYPE
 from stests.generators.wg_200 import phase_1
 from stests.generators.wg_200 import phase_2
 from stests.generators.wg_200 import phase_3
-from stests.generators.wg_200 import phase_4
 
 
 
@@ -18,5 +17,4 @@ PHASES = (
     phase_1,
     phase_2,
     phase_3,
-    phase_4,
 )

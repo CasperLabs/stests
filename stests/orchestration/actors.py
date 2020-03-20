@@ -330,10 +330,11 @@ def do_step_error(ctx: ExecutionContext, err: str):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_step_deploy_finalized(ctx: ExecutionContext, dhash: str):   
+def on_step_deploy_finalized(ctx: ExecutionContext, bhash: str, dhash: str):   
     """Processes a finalized deploy within the context of a step.
     
     :param ctx: Execution context information.
+    :param bhash: Hash of a finalized block.
     :param dhash: Hash of a finalized deploy.
 
     """
@@ -348,7 +349,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, dhash: str):
         return       
     else:
         try:
-            step.verify_deploy(dhash)
+            step.verify_deploy(bhash, dhash)
         except AssertionError as err:
             logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed")
             return       

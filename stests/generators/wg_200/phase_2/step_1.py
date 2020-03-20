@@ -13,7 +13,7 @@ from stests.generators.wg_200 import constants
 DESCRIPTION = "Dispatches a notification to signal that generator has completed."
 
 # Step label.
-LABEL = "deploy-user-contracts"
+LABEL = "deploy-counter-define-wasm"
 
 
 def execute(ctx: ExecutionContext) -> typing.Callable:
@@ -38,11 +38,11 @@ def verify(ctx: ExecutionContext):
     utils.verify_deploy_count(ctx, ctx.args.user_accounts)    
 
 
-def verify_deploy(ctx: ExecutionContext, dhash: str):
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.
     :param dhash: A deploy hash.
 
     """
-    utils.verify_deploy(ctx, dhash)
+    utils.verify_deploy(ctx, bhash, dhash)

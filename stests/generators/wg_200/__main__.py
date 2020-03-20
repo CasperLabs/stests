@@ -21,6 +21,15 @@ ARGS.add_argument(
     default=constants.FAUCET_INITIAL_CLX_BALANCE
     )
 
+# CLI argument: increments.
+ARGS.add_argument(
+    "--increments",
+    help=f"Number of times counters will be incremented. Default={constants.INCREMENTS}",
+    dest="increments",
+    type=int,
+    default=constants.INCREMENTS
+    )
+
 # CLI argument: user accounts.
 ARGS.add_argument(
     "--user-accounts",

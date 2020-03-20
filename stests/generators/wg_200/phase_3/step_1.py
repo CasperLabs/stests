@@ -19,7 +19,16 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     :param ctx: Execution context information.
 
     """  
-    print("TODO: invoke counter increment")
+    def get_messages():
+        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+            yield utils.do_refund.message(
+                ctx,
+                acc_index,
+                constants.ACC_RUN_FAUCET,
+                True
+            )
+
+    return get_messages
 
 
 def verify(ctx: ExecutionContext):
@@ -28,5 +37,15 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    return True
+    utils.verify_deploy_count(ctx, ctx.args.user_accounts) 
 
+
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
+    """Step deploy verifier.
+    
+    :param ctx: Execution context information.
+    :param dhash: A deploy hash.
+
+    """
+    utils.verify_deploy(ctx, bhash, dhash)
+    utils.verify_refund(ctx, dhash)

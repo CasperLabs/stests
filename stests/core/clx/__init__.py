@@ -1,3 +1,4 @@
+from stests.core.clx.defaults import *
 from stests.core.clx.deploy import do_deploy_account_contract
 from stests.core.clx.deploy import do_deploy_network_contract
 from stests.core.clx.deploy import do_refund

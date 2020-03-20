@@ -23,12 +23,12 @@ def stream_events(
     for node, event in _yield_events(src, on_block_added, on_block_finalized):
         if on_block_added and event.HasField("block_added"):
             bhash = event.block_added.block.summary.block_hash.hex()
-            logger.log(f"PYCLX :: stream_events :: block added :: {bhash}")
+            logger.log(f"PYCLX :: stream_events :: block added :: bhash={bhash}")
             on_block_added(node, bhash)
 
         elif on_block_finalized and event.HasField("new_finalized_block"):
             bhash = event.new_finalized_block.block_hash.hex()
-            logger.log(f"PYCLX :: stream_events :: block finalized :: {bhash}")
+            logger.log(f"PYCLX :: stream_events :: block finalized :: bhash={bhash}")
             on_block_finalized(node, bhash)
 
 

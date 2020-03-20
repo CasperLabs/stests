@@ -57,6 +57,7 @@ class DeployType(enum.Flag):
     CONTRACT = enum.auto()
     TRANSFER = enum.auto()
     REFUND = enum.auto()
+    COUNTER_CALL = enum.auto()
 
 
 class NetworkContractType(enum.Enum):
