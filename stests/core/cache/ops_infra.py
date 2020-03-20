@@ -61,6 +61,22 @@ def get_network_contract(ctx: ExecutionContext, contract_type: NetworkContractTy
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
+def get_network_contracts(network_id: NetworkIdentifier) -> typing.List[NetworkContract]:
+    """Decaches domain object: NetworkContract.
+
+    :param network_id: A network identifier.
+
+    :returns: Collection of registered network contracts.
+    
+    """
+    return [
+        ctx.network,
+        COL_CONTRACT,
+        "*",
+    ]
+
+
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
 def get_networks() -> typing.List[Network]:
     """Decaches domain objects: Network.
 
