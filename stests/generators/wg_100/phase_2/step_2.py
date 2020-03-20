@@ -20,7 +20,8 @@ def execute(ctx: ExecutionContext):
     utils.do_refund.send(
         ctx,
         constants.ACC_RUN_FAUCET,
-        constants.ACC_NETWORK_FAUCET
+        constants.ACC_NETWORK_FAUCET,
+        False
     )
 
 
@@ -33,12 +34,12 @@ def verify(ctx: ExecutionContext):
     utils.verify_deploy_count(ctx, 1)
 
 
-def verify_deploy(ctx: ExecutionContext, dhash: str):
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.
     :param dhash: A deploy hash.
 
     """
-    utils.verify_deploy(ctx, dhash)
+    utils.verify_deploy(ctx, bhash, dhash)
     utils.verify_refund(ctx, dhash)

@@ -5,13 +5,7 @@ from casperlabs_client.abi import ABI
 from stests.core.clx import defaults
 from stests.core.clx import utils
 from stests.core.clx.query import get_balance
-from stests.core.domain import Account
-from stests.core.domain import ClientContract
-from stests.core.domain import ClientContractType
-from stests.core.domain import Network
-from stests.core.domain import Transfer
-from stests.core.domain import Deploy
-from stests.core.domain import DeployType
+from stests.core.domain import *
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -24,7 +18,7 @@ def do_refund(
     cp1: Account,
     cp2: Account,
     amount: int = None,
-    contract: ClientContract = None,
+    contract: NetworkContract = None,
     ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a refund between 2 counter-parties & returns resulting deploy hash.
 
@@ -53,7 +47,7 @@ def do_transfer(
     cp1: Account,
     cp2: Account,
     amount: int,
-    contract: ClientContract = None,
+    contract: NetworkContract = None,
     is_refundable: bool = True,
     deploy_type: DeployType = DeployType.TRANSFER
     ) -> typing.Tuple[Deploy, Transfer]:
@@ -73,12 +67,14 @@ def do_transfer(
     # Set client.
     node, client  = utils.get_client(ctx)
 
-    # Transfer using called contract - does not dispatch wasm.
+    # Transfer using on-chain contract hash - does not dispatch wasm.
     if contract:
+        # Set args.
         session_args = ABI.args([
             ABI.account("address", cp2.public_key),
             ABI.big_int("amount", amount)
             ])
+        # Dispatch.
         dhash = client.deploy(
             session_hash=bytes.fromhex(contract.chash),
             session_args=session_args,
@@ -89,13 +85,14 @@ def do_transfer(
             gas_price=defaults.CLX_TX_GAS_PRICE
         )
 
-    # Transfer using stored contract - dispatches wasm.
+    # Transfer using local contract - dispatches wasm.
     else:
+        # Dispatch.
         dhash = client.transfer(
             amount=amount,
+            target_account_hex=cp2.public_key,
             from_addr=cp1.public_key,
             private_key=cp1.private_key_as_pem_filepath,
-            target_account_hex=cp2.public_key,
             # TODO: allow these to be passed in via standard arguments
             payment_amount=defaults.CLX_TX_FEE,
             gas_price=defaults.CLX_TX_GAS_PRICE
@@ -107,7 +104,11 @@ def do_transfer(
 
 
 @utils.clx_op
-def do_deploy_client_contract(network: Network, contract_type: ClientContractType, contract_name: str) -> str:
+def do_deploy_network_contract(
+    network: Network,
+    contract_type: NetworkContractType,
+    contract_name: str
+    ) -> str:
     """Deploys a client side smart contract to chain for future reference.
 
     :param network: Network to which a client contract is being deployed.
@@ -120,11 +121,13 @@ def do_deploy_client_contract(network: Network, contract_type: ClientContractTyp
     # Set client.
     _, client = utils.get_client(network)
 
-    # Dispatch deploy.
-    session=utils.get_client_contract_path(contract_type)
+    # Set args.
+    session=utils.get_contract_path(contract_type)
     session_args = ABI.args([
         ABI.string_value("target", "hash")
         ])
+
+    # Dispatch.
     dhash = client.deploy(
         session=session,
         session_args=session_args,
@@ -134,12 +137,54 @@ def do_deploy_client_contract(network: Network, contract_type: ClientContractTyp
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: dhash={dhash} -> awaiting processing")
 
     # Get block hash.
     dinfo = client.showDeploy(dhash, wait_for_processed=True)
     bhash = dinfo.processing_results[0].block_info.summary.block_hash.hex()
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: dhash={dhash} -> processing complete")
 
     # Get contract hash.
-    chash = utils.get_client_contract_hash(client, network.faucet, bhash, contract_name)
+    chash = utils.get_contract_hash(client, network.faucet, bhash, contract_name)
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: chash={chash}")
 
     return chash
+
+
+@utils.clx_op
+def do_deploy_account_contract(
+    ctx: ExecutionContext,
+    account: Account,
+    contract_type: AccountContractType
+    ) -> typing.Tuple[Node, str]:
+    """Deploys a smart contract to chain for future use.
+
+    :param ctx: Execution context information.
+    :param account: Account under which contract will be deployed.
+    :param contract_type: Type of contract to be deployed.
+
+    :returns: 2 member tuple -> (node, deploy hash)
+
+    """
+    # Set client.
+    node, client = utils.get_client(ctx)
+
+    # Set args.
+    session=utils.get_contract_path(AccountContractType[contract_type])
+    session_args = ABI.args([
+        ABI.string_value("target", "hash")
+        ])
+    
+    # Dispatch.
+    dhash = client.deploy(
+        session=session,
+        session_args=session_args,
+        from_addr=account.public_key,
+        private_key=account.private_key_as_pem_filepath,
+        # TODO: allow these to be passed in via standard arguments
+        payment_amount=defaults.CLX_TX_FEE,
+        gas_price=defaults.CLX_TX_GAS_PRICE
+    )
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: dhash={dhash}")
+
+    return (node, dhash)

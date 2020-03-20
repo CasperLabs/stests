@@ -7,6 +7,11 @@ from stests.core.domain import *
 from stests.core.orchestration import StreamLock
 
 
+# Cache collections.
+COL_BLOCK = "block"
+COL_DEPLOY = "deploy"
+COL_STREAM_LOCK = "stream-lock"
+
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.DELETE)
@@ -19,11 +24,10 @@ def delete_stream_lock(lock: StreamLock) -> typing.Generator:
     
     """
     return [
-        "stream-lock",
         lock.network,
+        COL_STREAM_LOCK,
         lock.lock_index,
     ]
-    
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.FLUSH)
@@ -36,7 +40,8 @@ def flush_stream_locks() -> typing.Generator:
     
     """
     return [
-        "stream-lock",
+        "*",
+        COL_STREAM_LOCK,
         "*",
     ]
 
@@ -51,8 +56,8 @@ def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
 
     """
     return [
-        "block",
         block.network,
+        COL_BLOCK,
         f"{str(block.m_rank).zfill(7)}.{block.block_hash}"
     ], block
 
@@ -67,8 +72,8 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
     """
     return [
-        "deploy",
         deploy.network,
+        COL_DEPLOY,
         f"{deploy.block_hash}.{deploy.deploy_hash}"
     ], deploy
 
@@ -81,7 +86,7 @@ def set_stream_lock(lock: StreamLock) -> typing.Tuple[typing.List[str], StreamLo
 
     """
     return [
-        "stream-lock",
         lock.network,
+        COL_STREAM_LOCK,
         lock.lock_index,
     ], lock

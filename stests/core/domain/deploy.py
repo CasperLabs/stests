@@ -13,6 +13,9 @@ class Deploy:
     """Encapsulates information pertaining to a deploy dispatched to a test network.
     
     """
+    # Index of account with which the deploy is associated.
+    account_index: typing.Optional[int]
+
     # Associated block hash in event of finalization. 
     block_hash: str
 
@@ -64,6 +67,10 @@ class Deploy:
         if self.finalization_time:
             return format(self.finalization_time, '.4f')
         return "--"
+
+    @property
+    def label_account_index(self):
+        return f"A-{str(self.account_index).zfill(6)}"
 
 
     def update_on_finalization(self, bhash: str, finalization_ts: float):

@@ -35,6 +35,12 @@ alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
 alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 
 # ###############################################################
+# ALIASES: deploys
+# ###############################################################
+
+alias stests-verify-transfer='_exec_cmd $STESTS_PATH_CLI/deploys/verify_transfer.py'
+
+# ###############################################################
 # ALIASES: cache - flush
 # ###############################################################
 
@@ -62,7 +68,6 @@ alias stests-ls-runs='_exec_cmd $STESTS_PATH_CLI/cache/list_runs.py'
 alias stests-set-client-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_client_contracts.py'
 
 alias stests-set-network='_exec_cmd $STESTS_PATH_CLI/cache/set_network.py'
-# alias stests-set-network-contracts='_exec_cmd $STESTS_PATH_CLI/cache/set_network_contracts.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_CLI/cache/set_network_faucet_key.py'
 alias stests-set-network-status='_exec_cmd $STESTS_PATH_CLI/cache/set_network_status.py'
 
@@ -92,3 +97,6 @@ alias stests-wg-100='_exec_generator 100'
 
 # WG-110: Token transfer - called contract.
 alias stests-wg-110='_exec_generator 110'
+
+# WG-200: Counter call/define.
+alias stests-wg-200='_exec_generator 200'

@@ -1,14 +1,13 @@
 import typing
 
-from stests.core.clx.utils import get_client
-from stests.core.clx.utils import clx_op
+from stests.core.clx import utils
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
 
 
 
-@clx_op
+@utils.clx_op
 def stream_events(
     src: typing.Union[NodeIdentifier, NetworkIdentifier],
     on_block_added: typing.Callable = None,
@@ -24,12 +23,12 @@ def stream_events(
     for node, event in _yield_events(src, on_block_added, on_block_finalized):
         if on_block_added and event.HasField("block_added"):
             bhash = event.block_added.block.summary.block_hash.hex()
-            logger.log(f"PYCLX :: stream_events :: block added :: {bhash}")
+            logger.log(f"PYCLX :: stream_events :: block added :: bhash={bhash}")
             on_block_added(node, bhash)
 
         elif on_block_finalized and event.HasField("new_finalized_block"):
             bhash = event.new_finalized_block.block_hash.hex()
-            logger.log(f"PYCLX :: stream_events :: block finalized :: {bhash}")
+            logger.log(f"PYCLX :: stream_events :: block finalized :: bhash={bhash}")
             on_block_finalized(node, bhash)
 
 
@@ -41,7 +40,7 @@ def _yield_events(
     """Yields events from event source (i.e. a CLX chain).
     
     """
-    node, client = get_client(src)
+    node, client = utils.get_client(src)
     for event in client.stream_events(
         block_added=on_block_added is not None,
         block_finalized=on_block_finalized is not None
