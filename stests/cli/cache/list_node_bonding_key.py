@@ -34,7 +34,11 @@ def main(args):
     # Pull.
     node = cache.infra.get_node(node_id)
     if node is None:
-        raise ValueError("Unregistered node.")
+        logger.log_warning("Unregistered node.")
+        return
+    if node.account is None:
+        logger.log_warning("Unregistered node bonding key.")
+        return
 
     # Inform.
     logger.log(f"""NODE: {node.label} -> bonding pvk {node.account.private_key}""")
