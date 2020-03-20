@@ -1,4 +1,5 @@
 import argparse
+import pathlib
 
 from stests.core import cache
 from stests.core.domain import AccountStatus
@@ -23,8 +24,8 @@ ARGS.add_argument(
 # Set CLI argument: private key in PEM format.
 ARGS.add_argument(
     "pem_path",
-    help="Path to the faucet private key in PEM format.",
-    type=str
+    help="Absolute path to the faucet private key in PEM format.",
+    type=args_validator.validate_filepath
     )
 
 

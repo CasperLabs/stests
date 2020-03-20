@@ -1,4 +1,5 @@
 import argparse
+import pathlib
 
 from stests.core.domain import NetworkType
 
@@ -27,6 +28,17 @@ LOOP_INTERVAL_MAX = 1209600  # 2 weeks
 # Loop count min/max
 LOOP_COUNT_MIN = -1
 LOOP_COUNT_MAX = 65536
+
+
+def validate_filepath(value):
+    """Argument verifier: a file path.
+    
+    """
+    path = pathlib.Path(value)
+    if not path.exists():
+        raise ValueError(f"Invalid file path, expecting an absolute file path: {value}")
+
+    return value
 
 
 def validate_run_index(value):

@@ -23,8 +23,8 @@ ARGS.add_argument(
 # Set CLI argument: private key in PEM format.
 ARGS.add_argument(
     "pem_path",
-    help="Path to the node's private key in PEM format.",
-    type=str
+    help="Absolute path to the node's private key in PEM format.",
+    type=args_validator.validate_filepath
     )
 
 

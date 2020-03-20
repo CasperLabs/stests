@@ -70,7 +70,7 @@ def get_network_contracts(network_id: NetworkIdentifier) -> typing.List[NetworkC
     
     """
     return [
-        ctx.network,
+        network_id.name,
         COL_CONTRACT,
         "*",
     ]
