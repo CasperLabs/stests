@@ -81,11 +81,11 @@ class WorkflowStep():
         self.module.verify(self.ctx)
 
 
-    def verify_deploy(self, dhash: str):
+    def verify_deploy(self, bhash: str, dhash: str):
         """Performs step deploy verification.
         
         """
-        self.module.verify_deploy(self.ctx, dhash)
+        self.module.verify_deploy(self.ctx, bhash, dhash)
 
 
 class WorkflowPhase():

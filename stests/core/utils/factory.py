@@ -53,6 +53,25 @@ def create_account_for_run(
     return account
 
 
+def create_account_contract(
+    account: Account,
+    ctx: ExecutionContext,
+    chash: str,
+    typeof: AccountContractType
+    ) -> AccountContract:
+    """Returns a domain object instance: Account.
+    
+    """
+    return AccountContract(
+        account_index=account.index,
+        contract_hash=chash,
+        network=ctx.network,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        typeof=typeof,
+    )
+
+
 def create_account_id(
     index: int,
     network: str,
@@ -100,21 +119,6 @@ def create_block(
         )
 
 
-def create_client_contract(
-    network: Network,
-    chash: str,
-    typeof: ClientContractType
-    ) -> ClientContract:
-    """Returns a domain object instance: ClientContract.
-    
-    """
-    return ClientContract(
-        chash=chash,
-        network=network.name,
-        typeof=typeof
-    )
-
-
 def create_deploy(
     network_id: NetworkIdentifier,
     block_hash: str,
@@ -125,6 +129,7 @@ def create_deploy(
     
     """
     return Deploy(
+        account_index=None,
         block_hash=block_hash,
         deploy_hash=deploy_hash,
         dispatch_node=None,
@@ -142,6 +147,7 @@ def create_deploy(
 
 
 def create_deploy_for_run(
+    account: Account,
     ctx: ExecutionContext,
     node: Node,
     deploy_hash: str,
@@ -151,6 +157,7 @@ def create_deploy_for_run(
 
     """
     return Deploy(
+        account_index=account.index,
         block_hash=None,
         deploy_hash=deploy_hash,
         dispatch_node=node.index,
@@ -180,6 +187,21 @@ def create_network(name_raw: str) -> Network:
         name_raw=name_raw,
         status=NetworkStatus.HEALTHY,
         typeof=identifier.type
+    )
+
+
+def create_network_contract(
+    network: Network,
+    chash: str,
+    typeof: NetworkContractType
+    ) -> NetworkContract:
+    """Returns a domain object instance: NetworkContract.
+    
+    """
+    return NetworkContract(
+        chash=chash,
+        network=network.name,
+        typeof=typeof
     )
 
 
@@ -242,8 +264,7 @@ def create_run_info(
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
     run_index: int,
-    run_type: str,
-    use_stored_contracts: bool
+    run_type: str
     ) -> ExecutionContext:
     """Returns a domain object instance: ExecutionContext.
     
@@ -261,7 +282,6 @@ def create_run_info(
         status=ExecutionStatus.IN_PROGRESS,
         step_index=0,
         step_label=None,
-        use_stored_contracts=use_stored_contracts
     )
 
 

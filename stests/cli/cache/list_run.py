@@ -36,7 +36,6 @@ ARGS.add_argument(
     )
 
 
-
 def main(args):
     """Entry point.
     

@@ -31,7 +31,7 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
     if not encached:
         return
     
-    logger.log(f"processing finalized block: {bhash}")
+    logger.log(f"PYCLX :: processing finalized block: bhash={bhash}")
 
     # Enqueue finalized deploys.
     for dhash in clx.get_deploys(node_id.network, bhash):  
@@ -56,26 +56,25 @@ def on_finalized_deploy(network_id: NetworkIdentifier, bhash: str, dhash: str, f
     if not encached:
         return
 
-    logger.log(f"processing finalized deploy: {bhash} :: {dhash}")
-
     # Pull run deploy - escape if none found.
-    deploy = cache.state.get_run_deploy(dhash)
+    deploy = cache.state.get_deploy(dhash)
     if not deploy:
         return
+    logger.log(f"PYCLX :: run deploy finalized: dhash={dhash} :: bhash={bhash}")
 
     # Update deploy.
     deploy.update_on_finalization(bhash, finalization_ts)
-    cache.state.set_run_deploy(deploy)
+    cache.state.set_deploy(deploy)
 
     # Increment deploy counts.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
     cache.orchestration.increment_deploy_counts(ctx)
 
     # Update transfers.
-    transfer = cache.state.get_run_transfer(dhash)
+    transfer = cache.state.get_transfer(dhash)
     if transfer:
         transfer.update_on_completion()
-        cache.state.set_run_transfer(transfer)
+        cache.state.set_transfer(transfer)
     
     # Signal to orchestrator.
-    on_step_deploy_finalized.send(ctx, dhash)
+    on_step_deploy_finalized.send(ctx, bhash, dhash)

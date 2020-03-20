@@ -23,13 +23,15 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
         yield utils.do_refund.message(
             ctx,
             constants.ACC_RUN_CONTRACT,
-            constants.ACC_RUN_FAUCET
+            constants.ACC_RUN_FAUCET,
+            True
         )
         for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
             yield utils.do_refund.message(
                 ctx,
                 acc_index,
-                constants.ACC_RUN_FAUCET
+                constants.ACC_RUN_FAUCET,
+                True
             )
 
     return get_messages
@@ -44,12 +46,12 @@ def verify(ctx: ExecutionContext):
     utils.verify_deploy_count(ctx, 1 + ctx.args.user_accounts) 
 
 
-def verify_deploy(ctx: ExecutionContext, dhash: str):
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.
     :param dhash: A deploy hash.
 
     """
-    utils.verify_deploy(ctx, dhash)
+    utils.verify_deploy(ctx, bhash, dhash)
     utils.verify_refund(ctx, dhash)

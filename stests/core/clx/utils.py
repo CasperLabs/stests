@@ -5,8 +5,9 @@ import casperlabs_client
 
 from stests.core import cache
 from stests.core.domain import Account
-from stests.core.domain import ClientContractType
+from stests.core.domain import AccountContractType
 from stests.core.domain import Network
+from stests.core.domain import NetworkContractType
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
@@ -49,7 +50,9 @@ def get_client(src: typing.Union[Node, NodeIdentifier, Network, NetworkIdentifie
     )
 
 
-def get_client_contract_path(contract_type=ClientContractType) -> pathlib.Path:
+def get_contract_path(
+    contract_type: typing.Union[AccountContractType, NetworkContractType]
+    ) -> pathlib.Path:
     """Returns a path to a client side contract.
 
     :param contract_type: Type of contract to be deployed.
@@ -60,7 +63,7 @@ def get_client_contract_path(contract_type=ClientContractType) -> pathlib.Path:
     return pathlib.Path(casperlabs_client.__file__).parent / contract_type.value
 
 
-def get_client_contract_hash(
+def get_contract_hash(
     client: casperlabs_client.CasperLabsClient,
     account: Account,
     bhash: str,

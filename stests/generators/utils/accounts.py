@@ -21,4 +21,4 @@ def do_create_account(ctx: ExecutionContext, index: int, typeof: AccountType):
 
     """
     account = factory.create_account_for_run(ctx, index=index, typeof=typeof)
-    cache.state.set_run_account(account)
+    cache.state.set_account(account)

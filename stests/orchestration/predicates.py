@@ -145,17 +145,13 @@ def was_lock_acquired(aspect: ExecutionAspect, ctx: ExecutionContext) -> bool:
     """
     if aspect == ExecutionAspect.RUN:
         lock = factory.create_run_lock(ctx)
-        _, acquired = cache.orchestration.lock_run(lock)
-
     elif aspect == ExecutionAspect.PHASE:
         lock = factory.create_phase_lock(ctx, ctx.next_phase_index)
-        _, acquired = cache.orchestration.lock_phase(lock)
-
     elif aspect == ExecutionAspect.STEP:
         lock = factory.create_step_lock(ctx, ctx.next_step_index)
-        _, acquired = cache.orchestration.lock_step(lock)
-    
     else:
         return False
+
+    _, acquired = cache.orchestration.lock_execution(aspect, lock)
 
     return acquired

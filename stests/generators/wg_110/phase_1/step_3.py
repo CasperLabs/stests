@@ -21,7 +21,8 @@ def execute(ctx: ExecutionContext):
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_RUN_CONTRACT,
-        ctx.args.contract_initial_clx_balance
+        ctx.args.contract_initial_clx_balance,
+        True
         )
 
 
@@ -34,13 +35,13 @@ def verify(ctx: ExecutionContext):
     utils.verify_deploy_count(ctx, 1)    
 
 
-def verify_deploy(ctx: ExecutionContext, dhash: str):
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.
     :param dhash: A deploy hash.
 
     """
-    utils.verify_deploy(ctx, dhash)
+    utils.verify_deploy(ctx, bhash, dhash)
     transfer = utils.verify_transfer(ctx, dhash)
     utils.verify_account_balance(ctx, transfer.cp2_index, ctx.args.contract_initial_clx_balance)

@@ -70,7 +70,7 @@ def on_run_end(ctx: ExecutionContext):
     # Update cache.
     cache.orchestration.set_context(ctx)
     cache.orchestration.set_state(run_state)
-    cache.orchestration.update_run_info(ctx)
+    cache.orchestration.update_info(ctx, ExecutionAspect.RUN, ExecutionStatus.COMPLETE)
 
     # Locks can now be flushed.
     cache.orchestration.flush_locks(ctx)    
@@ -123,7 +123,7 @@ def on_run_error(ctx: ExecutionContext, err: str):
     # Update cache.
     cache.orchestration.set_context(ctx)
     cache.orchestration.set_state(run_state)
-    cache.orchestration.update_run_info(ctx)
+    cache.orchestration.update_info(ctx, ExecutionAspect.RUN, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")
@@ -176,7 +176,7 @@ def on_phase_end(ctx: ExecutionContext):
 
     # Update cache.
     cache.orchestration.set_state(phase_state)
-    cache.orchestration.update_phase_info(ctx, ExecutionStatus.COMPLETE)
+    cache.orchestration.update_info(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> ends")
@@ -201,7 +201,7 @@ def on_phase_error(ctx: ExecutionContext, err: str):
 
     # Update cache.
     cache.orchestration.set_state(phase_state)
-    cache.orchestration.update_phase_info(ctx, ExecutionStatus.ERROR)
+    cache.orchestration.update_info(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> unhandled error")
@@ -297,7 +297,7 @@ def do_step_end(ctx: ExecutionContext):
 
     # Update cache.
     cache.orchestration.set_state(step_state)
-    cache.orchestration.update_step_info(ctx, ExecutionStatus.COMPLETE)
+    cache.orchestration.update_info(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> end")
@@ -322,7 +322,7 @@ def do_step_error(ctx: ExecutionContext, err: str):
 
     # Update cache.
     cache.orchestration.set_state(step_state)
-    cache.orchestration.update_step_info(ctx, ExecutionStatus.ERROR)
+    cache.orchestration.update_info(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> unhandled error")
@@ -330,10 +330,11 @@ def do_step_error(ctx: ExecutionContext, err: str):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_step_deploy_finalized(ctx: ExecutionContext, dhash: str):   
+def on_step_deploy_finalized(ctx: ExecutionContext, bhash: str, dhash: str):   
     """Processes a finalized deploy within the context of a step.
     
     :param ctx: Execution context information.
+    :param bhash: Hash of a finalized block.
     :param dhash: Hash of a finalized deploy.
 
     """
@@ -348,7 +349,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, dhash: str):
         return       
     else:
         try:
-            step.verify_deploy(dhash)
+            step.verify_deploy(bhash, dhash)
         except AssertionError as err:
             logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed")
             return       
