@@ -37,6 +37,7 @@ ARGS.add_argument(
 
 # Table columns.
 COLS = [
+    ("#", BeautifulTable.ALIGN_LEFT),
     ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
     ("Type", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
@@ -60,9 +61,13 @@ def main(args):
         logger.log("No run deploys found.")
         return
 
+    # Sort data.
+    data = sorted(data, key=lambda i: i.dispatch_ts)
+
     # Set table cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
+        data.index(i) + 1,
         i.deploy_hash,      
         i.typeof.name,
         i.status.name,      
@@ -70,7 +75,7 @@ def main(args):
         i.dispatch_ts,
         i.label_finalization_time,
         i.block_hash or "--"
-    ], sorted(data, key=lambda i: i.dispatch_ts))
+    ], data)
 
     # Set table.
     t = get_table(cols, rows, max_width=1080)

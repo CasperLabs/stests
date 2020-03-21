@@ -5,7 +5,7 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import AccountType
-from stests.core.domain import AccountContractType
+from stests.core.domain import ContractType
 from stests.core.domain import DeployType
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory

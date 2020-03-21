@@ -1,7 +1,7 @@
 import typing
 
 from stests.core.domain import AccountType
-from stests.core.domain import AccountContractType
+from stests.core.domain import ContractType
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.generators import utils
@@ -24,7 +24,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     """
     def get_messages():
         for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield utils.do_set_account_contract.message(ctx, account_index, AccountContractType.COUNTER_DEFINE)
+            yield utils.do_set_contract.message(ctx, account_index, ContractType.COUNTER_DEFINE)
 
     return get_messages
 

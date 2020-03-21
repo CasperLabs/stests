@@ -18,7 +18,7 @@ def do_refund(
     cp1: Account,
     cp2: Account,
     amount: int = None,
-    contract: NetworkContract = None,
+    contract: Contract = None,
     ) -> typing.Tuple[Deploy, Transfer]:
     """Executes a refund between 2 counter-parties & returns resulting deploy hash.
 
@@ -36,7 +36,7 @@ def do_refund(
         logger.log_warning("Counter party 1 does not have enough CLX to pay refund transaction fee.")
         return
 
-    (node, dhash) = do_transfer(ctx, cp1, cp2, amount, contract, is_refundable=False, deploy_type=DeployType.REFUND)
+    (node, dhash) = do_transfer(ctx, cp1, cp2, amount, contract, is_refundable=False, deploy_type=DeployType.TRANSFER_REFUND)
 
     return (node, dhash, amount)
 
@@ -47,7 +47,7 @@ def do_transfer(
     cp1: Account,
     cp2: Account,
     amount: int,
-    contract: NetworkContract = None,
+    contract: Contract = None,
     is_refundable: bool = True,
     deploy_type: DeployType = DeployType.TRANSFER
     ) -> typing.Tuple[Deploy, Transfer]:
@@ -76,7 +76,7 @@ def do_transfer(
             ])
         # Dispatch.
         dhash = client.deploy(
-            session_hash=bytes.fromhex(contract.chash),
+            session_hash=bytes.fromhex(contract.hash),
             session_args=session_args,
             from_addr=cp1.public_key,
             private_key=cp1.private_key_as_pem_filepath,
@@ -106,7 +106,7 @@ def do_transfer(
 @utils.clx_op
 def do_deploy_network_contract(
     network: Network,
-    contract_type: NetworkContractType,
+    contract_type: ContractType,
     contract_name: str
     ) -> str:
     """Deploys a client side smart contract to chain for future reference.
@@ -152,10 +152,10 @@ def do_deploy_network_contract(
 
 
 @utils.clx_op
-def do_deploy_account_contract(
+def do_deploy_contract(
     ctx: ExecutionContext,
     account: Account,
-    contract_type: AccountContractType
+    contract_type: ContractType
     ) -> typing.Tuple[Node, str]:
     """Deploys a smart contract to chain for future use.
 
@@ -170,7 +170,7 @@ def do_deploy_account_contract(
     node, client = utils.get_client(ctx)
 
     # Set args.
-    session=utils.get_contract_path(AccountContractType[contract_type])
+    session=utils.get_contract_path(ContractType[contract_type])
     session_args = ABI.args([
         ABI.string_value("target", "hash")
         ])

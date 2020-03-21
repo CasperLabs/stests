@@ -12,11 +12,10 @@ from stests.core.domain.transfer import *
 # Set of supported classes.
 DCLASS_SET = {
     Account,
-    AccountContract,
+    Contract,
     Block,
     Deploy,
     Network,
-    NetworkContract,
     Node,
     Transfer,
 }

@@ -2,25 +2,27 @@ import dataclasses
 import typing
 from datetime import datetime
 
-from stests.core.domain.enums import AccountContractType
-from stests.core.domain.enums import NetworkContractType
+from stests.core.domain.enums import ContractType
 from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
 @dataclasses.dataclass
-class AccountContract:
+class Contract:
     """A contract associated with an account.
     
     """
     # Numerical index to distinguish between multiple accounts.
     account_index: int
 
-    # Hash key that points to the stored contract.
-    contract_hash: str
+    # Hash of contract - relevant when deploying using --session-hash.
+    hash: typing.Optional[str]
+
+    # Name of contract - relevant when deploying using --session-name.
+    name: typing.Optional[str]
 
     # Associated network.
-    network: typing.Optional[str]
+    network: str
     
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: typing.Optional[int]
@@ -29,7 +31,7 @@ class AccountContract:
     run_type: typing.Optional[str]
 
     # Type of client contract.
-    typeof: AccountContractType
+    typeof: ContractType
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
@@ -44,25 +46,3 @@ class AccountContract:
     @property
     def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
-
-
-@dataclasses.dataclass
-class NetworkContract:
-    """A test network.
-    
-    """
-    # Hash key that points to the stored contract.
-    chash: str
-
-    # Associated network.
-    network: typing.Optional[str]
-    
-    # Type of client contract.
-    typeof: NetworkContractType
-
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
-

@@ -3,7 +3,7 @@ import argparse
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import Network
-from stests.core.domain import NetworkContractType
+from stests.core.domain import ContractType
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -35,24 +35,31 @@ def main(args):
         raise ValueError("Unregistered network faucet.")
 
     # Set contracts.
-    set_contract(network, NetworkContractType.TRANSFER_U512_STORED, "transfer_to_account")
+    _set_contract(network, ContractType.TRANSFER_U512_STORED, "transfer_to_account")
+    _set_contract(network, ContractType.COUNTER_DEFINE, "counter")
 
     # Inform.
     logger.log(f"client contracts for network {args.network} were successfully registered")
 
 
-def set_contract(network: Network, typeof: NetworkContractType, name: str):
+def _set_contract(network: Network, typeof: ContractType, name: str):
     """Deploys a client contract to target network.
     
     """
     # Dispatch contract to network & await processing.
-    chash = clx.do_deploy_network_contract(network, typeof, name)
+    contract_hash = clx.do_deploy_network_contract(network, typeof, name)
 
     # Instantiate domain object.
-    contract = factory.create_network_contract(network, chash, typeof)
+    contract = factory.create_contract(
+        network,
+        network.faucet,
+        contract_hash=contract_hash,
+        contract_name=name,
+        contract_type=typeof,
+        )
 
     # Persist within cache.
-    cache.infra.set_network_contract(contract)
+    cache.infra.set_contract(contract)
 
 
 # Entry point.

@@ -32,7 +32,6 @@ ARGS.add_argument(
 
 # Table columns.
 COLS = [
-    ("Network", BeautifulTable.ALIGN_LEFT),
     ("Type", BeautifulTable.ALIGN_LEFT),
     ("ID", BeautifulTable.ALIGN_LEFT),
     ("Start Time", BeautifulTable.ALIGN_LEFT),
@@ -55,16 +54,18 @@ def main(args):
         logger.log("No run information found.")
         return    
 
+    # Sort data.
+    data = sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}")
+
     # Set cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
-        network_id.name,
         i.run_type,
         i.index_label.strip(),
         i.ts_start,
         i.tp_elapsed_label,
         i.status_label.strip()
-    ], sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}"))
+    ], data)
 
     # Set table.
     t = get_table(cols, rows)

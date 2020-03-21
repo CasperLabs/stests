@@ -18,6 +18,39 @@ COL_NODE = "node"
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
+def get_contract(ctx: ExecutionContext, contract_type: ContractType) -> Contract:
+    """Decaches domain object: Contract.
+
+    :param ctx: Execution context information.
+    :param contract_type: Type of contract in question.
+
+    :returns: A registered network.
+    
+    """
+    return [
+        ctx.network,
+        COL_CONTRACT,
+        contract_type.name,
+    ]
+
+
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
+def get_contracts(network_id: NetworkIdentifier) -> typing.List[Contract]:
+    """Decaches domain object: Contract.
+
+    :param network_id: A network identifier.
+
+    :returns: Collection of registered network contracts.
+    
+    """
+    return [
+        network_id.name,
+        COL_CONTRACT,
+        "*",
+    ]
+
+
+@cache_op(StorePartition.INFRA, StoreOperation.GET)
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.
 
@@ -41,39 +74,6 @@ def get_network_by_name(name: str) -> Network:
 
     """
     return get_network(factory.create_network_id(name))
-
-
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
-def get_network_contract(ctx: ExecutionContext, contract_type: NetworkContractType) -> NetworkContract:
-    """Decaches domain object: NetworkContract.
-
-    :param ctx: Execution context information.
-    :param contract_type: Type of contract in question.
-
-    :returns: A registered network.
-    
-    """
-    return [
-        ctx.network,
-        COL_CONTRACT,
-        contract_type.name,
-    ]
-
-
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
-def get_network_contracts(network_id: NetworkIdentifier) -> typing.List[NetworkContract]:
-    """Decaches domain object: NetworkContract.
-
-    :param network_id: A network identifier.
-
-    :returns: Collection of registered network contracts.
-    
-    """
-    return [
-        network_id.name,
-        COL_CONTRACT,
-        "*",
-    ]
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.GET)
@@ -178,6 +178,24 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
+def set_contract(contract: Contract) -> typing.Tuple[typing.List[str], Network]:
+    """Encaches domain object: Contract.
+
+    :param network: Contract domain object instance to be cached.
+    
+    :returns: Keypath + domain object instance.
+
+    """
+    path = [
+        contract.network,
+        COL_CONTRACT,
+        contract.typeof.name
+    ]
+
+    return path, contract
+
+
+@cache_op(StorePartition.INFRA, StoreOperation.SET)
 def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     """Encaches domain object: Network.
 
@@ -186,26 +204,12 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     :returns: Keypath + domain object instance.
 
     """
-    return [
+    path = [
         network.name,
         COL_NETWORK,
-    ], network
+    ]
 
-
-@cache_op(StorePartition.INFRA, StoreOperation.SET)
-def set_network_contract(contract: NetworkContract) -> typing.Tuple[typing.List[str], Network]:
-    """Encaches domain object: NetworkContract.
-
-    :param network: NetworkContract domain object instance to be cached.
-    
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        contract.network,
-        COL_CONTRACT,
-        contract.typeof.name
-    ], contract
+    return path, network
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
@@ -217,8 +221,10 @@ def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     :returns: Keypath + domain object instance.
 
     """
-    return [
+    path = [
         node.network,
         COL_NODE,
         f"N-{str(node.index).zfill(4)}"
-    ], node
+    ]
+
+    return path, node

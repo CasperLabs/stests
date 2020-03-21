@@ -203,10 +203,10 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
 
 
 @cache_op(StorePartition.STATE, StoreOperation.SET)
-def set_account_contract(contract: AccountContract) -> typing.Tuple[typing.List[str], AccountContract]:
-    """Encaches domain object: Deploy.
+def set_contract(contract: Contract) -> typing.Tuple[typing.List[str], Contract]:
+    """Encaches domain object: Contract.
     
-    :param contract: AccountContract domain object instance to be cached.
+    :param contract: Contract domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 

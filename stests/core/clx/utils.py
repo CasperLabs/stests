@@ -5,9 +5,9 @@ import casperlabs_client
 
 from stests.core import cache
 from stests.core.domain import Account
-from stests.core.domain import AccountContractType
+from stests.core.domain import ContractType
 from stests.core.domain import Network
-from stests.core.domain import NetworkContractType
+from stests.core.domain import ContractType
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
@@ -51,7 +51,7 @@ def get_client(src: typing.Union[Node, NodeIdentifier, Network, NetworkIdentifie
 
 
 def get_contract_path(
-    contract_type: typing.Union[AccountContractType, NetworkContractType]
+    contract_type: typing.Union[ContractType, ContractType]
     ) -> pathlib.Path:
     """Returns a path to a client side contract.
 

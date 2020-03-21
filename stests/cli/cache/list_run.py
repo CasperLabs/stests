@@ -59,6 +59,9 @@ def main(args):
         logger.log("No run information found.")
         return
 
+    # Sort data.
+    data = sorted(data, key=lambda i: i.index_label)
+
     # Set cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
@@ -67,7 +70,7 @@ def main(args):
         i.tp_elapsed_label,
         i.step_label if i.step_label else '--',      
         i.status.name,
-    ], sorted(data, key=lambda i: i.index_label))
+    ], data)
 
     # Set table.
     t = get_table(cols, rows)
