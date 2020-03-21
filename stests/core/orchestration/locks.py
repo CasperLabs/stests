@@ -1,5 +1,5 @@
 import dataclasses
-
+import typing
 
 
 @dataclasses.dataclass
@@ -16,6 +16,9 @@ class RunLock:
     # Type of workflow, e.g. WG-100 ...etc.
     run_type: str
 
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str]
+
     @property
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
@@ -29,6 +32,9 @@ class PhaseLock(RunLock):
     # Numerical index to distinguish between multiple phases within a run.
     phase_index: int
 
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str]
+
     @property
     def phase_index_label(self):
         return f"P-{str(self.phase_index).zfill(2)}"
@@ -41,6 +47,9 @@ class StepLock(PhaseLock):
     """
     # Numerical index to distinguish between multiple steps within a phase.
     step_index: int
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str]
 
     @property
     def step_index_label(self):
@@ -60,3 +69,7 @@ class StreamLock:
 
     # Numerical index to distinguish between multiple locks.
     lock_index: int
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None
+

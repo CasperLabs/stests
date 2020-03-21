@@ -4,11 +4,15 @@ from stests.core import clx
 
 
 
-FIXTURES = {
-    'do_deploy_client_contract',
+FUNCTIONS = {
+    'do_deploy_contract',
+    'do_deploy_network_contract',
+    'do_refund',
     'do_transfer',
     'get_balance',
     'get_block',
+    'get_client',
+    'get_contract_hash',
     'get_deploys',
     'stream_events',
 }
@@ -21,6 +25,6 @@ def test_01():
 
 def test_02():
     """Test slots are exposed."""
-    for func in FIXTURES:
+    for func in FUNCTIONS:
         assert inspect.isfunction(getattr(clx, func))
 

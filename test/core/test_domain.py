@@ -3,7 +3,6 @@ import dataclasses
 from stests.core.domain import DCLASS_SET
 from stests.core.domain import ENUM_SET
 from stests.core.domain import TYPE_SET
-from stests.core.domain import Node
 from stests.core.utils import encoder
 from test.core import utils_factory as factory
 

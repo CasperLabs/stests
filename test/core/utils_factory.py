@@ -40,8 +40,21 @@ def create_block() -> Block:
     )
 
 
+def create_contract() -> Contract:
+    return Contract(
+        account_index=1,
+        hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
+        name="tests-contract",
+        network="lrt1",
+        run_type=None,
+        run_index=None,
+        typeof=ContractType.TRANSFER_U512_STORED
+    )
+
+
 def create_deploy() -> Deploy:
     return Deploy(
+        account_index=1,
         block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
         deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
         dispatch_node=1,
@@ -49,7 +62,7 @@ def create_deploy() -> Deploy:
         finalization_time=None,
         finalization_time_is_acceptable=None,
         finalization_time_tolerance=None,
-        finalization_ts=None    ,
+        finalization_ts=None,
         network="lrt1",
         run_index=1,
         run_type="WG-XXX",
@@ -92,10 +105,28 @@ def create_node_id() -> NodeIdentifier:
     return factory.create_node_id(create_network_id(), 1)
 
 
+def create_transfer() -> Transfer:
+    return Transfer(
+        amount=int(1e7),
+        asset="CLX",
+        cp1_index=1,
+        cp2_index=2,
+        deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
+        deploy_hash_refund=None,
+        is_refundable=False,
+        network="lrt1",
+        node=1,
+        run_index=1,
+        run_type="WG-XXX",
+        status=TransferStatus.PENDING
+        )
+
+
 def create_execution_context() -> ExecutionContext:
     return ExecutionContext(        
         args=None,
         loop_count=0,
+        loop_index=0,
         loop_interval=0,
         network="LOC-01",
         node_index=1,
@@ -138,6 +169,40 @@ def create_execution_state() -> ExecutionState:
         _type_key="a-type-key",      
         )
 
+def create_lock_run() -> RunLock:
+    return RunLock(
+        network="lrt1",
+        run_index=1,
+        run_type="WG-XXX",
+    )
+
+
+def create_lock_phase() -> PhaseLock:
+    return PhaseLock(
+        network="lrt1",
+        run_index=1,
+        run_type="WG-XXX",
+        phase_index=1,
+    )
+
+
+def create_lock_step() -> StepLock:
+    return StepLock(
+        network="lrt1",
+        run_index=1,
+        run_type="WG-XXX",
+        phase_index=1,
+        step_index=1
+    )
+
+
+def create_lock_stream() -> StreamLock:
+    return StreamLock(
+        network="lrt1",
+        node_index=1,
+        lock_index=1
+    )
+
 
 def create_run_id() -> RunIdentifier:
     return RunIdentifier(
@@ -147,22 +212,6 @@ def create_run_id() -> RunIdentifier:
     )
 
 
-def create_transfer() -> Transfer:
-    return Transfer(
-        amount=int(1e7),
-        asset="CLX",
-        cp1_index=1,
-        cp2_index=2,
-        deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
-        deploy_hash_refund=None,
-        is_refundable=False,
-        network="lrt1",
-        node=1,
-        run_index=1,
-        run_type="WG-XXX",
-        status=TransferStatus.PENDING
-        )
-
 
 # Map: encodeable type to factory function.
 FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
@@ -170,6 +219,7 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     Account: create_account,
     AccountIdentifier: create_account_id,
     Block: create_block,
+    Contract: create_contract,
     Deploy: create_deploy,
     Network: create_network,
     NetworkIdentifier: create_network_id,
@@ -181,6 +231,11 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     ExecutionInfo: create_execution_info,
     ExecutionState: create_execution_state,
     RunIdentifier: create_run_id,
+
+    RunLock: create_lock_run,
+    PhaseLock: create_lock_phase,
+    StepLock: create_lock_step,
+    StreamLock: create_lock_stream,
 }
 
 
