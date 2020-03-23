@@ -8,7 +8,7 @@ from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
-from stests.core.orchestration import StreamLock
+from stests.core.domain import NodeStreamLock
 from stests.monitoring.events import on_finalized_block
 
 
@@ -57,7 +57,7 @@ def do_monitor_node(node_id: NodeIdentifier):
     # Attempt to obtain a stream lock.
     locked = False
     for i in range(_STREAM_PER_NETWORK_COUNT):
-        lock = StreamLock(
+        lock = NodeStreamLock(
             network=node_id.network.name,
             node_index=node_id.index,
             lock_index=i + 1

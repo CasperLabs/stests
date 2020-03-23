@@ -4,18 +4,18 @@ from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.domain import *
-from stests.core.orchestration import StreamLock
 
 
 # Cache collections.
 COL_BLOCK = "block"
+COL_BLOCK_LOCK = "block-lock"
 COL_DEPLOY = "deploy"
 COL_STREAM_LOCK = "stream-lock"
 
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.DELETE)
-def delete_stream_lock(lock: StreamLock) -> typing.Generator:
+def delete_stream_lock(lock: NodeStreamLock) -> typing.Generator:
     """Deletes astream lock.
 
     :param ctx: Execution context information.
@@ -62,6 +62,20 @@ def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     ], block
 
 
+@cache_op(StorePartition.MONITORING, StoreOperation.LOCK)
+def set_block_lock(lock: BlockLock) -> typing.Tuple[typing.List[str], BlockLock]:
+    """Encaches a lock: BlockLock.
+
+    :param lock: Information to be locked.
+
+    """
+    return [
+        lock.network,
+        COL_BLOCK_LOCK,
+        lock.block_hash,
+    ], lock
+
+
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
 def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
@@ -79,8 +93,8 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.LOCK)
-def set_stream_lock(lock: StreamLock) -> typing.Tuple[typing.List[str], StreamLock]:
-    """Encaches a lock: StreamLock.
+def set_stream_lock(lock: NodeStreamLock) -> typing.Tuple[typing.List[str], NodeStreamLock]:
+    """Encaches a lock: NodeStreamLock.
 
     :param lock: Information to be locked.
 

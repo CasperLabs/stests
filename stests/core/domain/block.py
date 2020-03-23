@@ -57,3 +57,18 @@ class Block:
         
         """
         self.status = BlockStatus.FINALIZED
+
+
+@dataclasses.dataclass
+class BlockLock:
+    """Execution lock information - block.
+    
+    """
+    # Block hash (blake2b) identifier.
+    block_hash: str
+
+    # Associated network.
+    network: str
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None
