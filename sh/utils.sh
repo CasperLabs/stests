@@ -39,8 +39,3 @@ function log()
 function pushd () {
     command pushd "$@" > /dev/null
 }
-
-# Wraps popd command to suppress stdout.
-function popd () {
-    command popd "$@" > /dev/null
-}

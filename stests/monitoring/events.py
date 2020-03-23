@@ -3,6 +3,7 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core.utils import factory
+from stests.core.domain import BlockLock
 from stests.core.domain import DeployStatus
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
@@ -22,6 +23,15 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
     :param bhash: Hash of finalized block.
 
     """
+    # Escape if already processed.
+    lock = BlockLock(
+        network=node_id.network.name,
+        block_hash=bhash,
+    )
+    _, locked = cache.monitoring.set_block_lock(lock)
+    if locked:
+        return
+
     # Query block info & set block status accordingly.
     block = clx.get_block(node_id, bhash)
     block.update_on_finalization()
