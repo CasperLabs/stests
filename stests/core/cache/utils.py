@@ -52,6 +52,15 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
                     key = ":".join([str(i) for i in keypath])
                     return int(store.get(key))
 
+                elif operation == StoreOperation.GET_ONE:
+                    keypath = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
+                    if key.find("*") >= 0:
+                        all = _get_all(store, key)
+                        return all[0] if all else []
+                    else:
+                        return _get(store, key)
+
                 elif operation == StoreOperation.INCR:
                     keypath = func(*args, **kwargs)
                     key = ":".join([str(i) for i in keypath])

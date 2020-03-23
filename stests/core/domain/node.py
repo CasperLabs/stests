@@ -43,6 +43,10 @@ class Node:
     _ts_created: datetime = get_timestamp_field()
 
     @property
+    def address(self):
+        return f"{self.host}:{self.port}"
+
+    @property
     def index_label(self):
         return str(self.index).zfill(3)
 

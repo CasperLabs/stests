@@ -48,8 +48,8 @@ def flush_stream_locks() -> typing.Generator:
     ]
 
 
-@cache_op(StorePartition.MONITORING, StoreOperation.GET)
-def _get_block(block_hash: str) -> typing.List[str]:
+@cache_op(StorePartition.MONITORING, StoreOperation.GET_ONE)
+def get_block(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str]:
     """Returns domain object: Block.
     
     :param block_hash: Hash of a cached block.
@@ -58,13 +58,14 @@ def _get_block(block_hash: str) -> typing.List[str]:
 
     """
     return [
-        "*",
+        network_id.name,
         COL_BLOCK,
         f"*.{block_hash}"
     ]
 
 
-def get_block(block_hash: str) -> typing.List[str]:
+@cache_op(StorePartition.MONITORING, StoreOperation.GET_ONE)
+def get_block_info(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str]:
     """Returns domain object: Block.
     
     :param block_hash: Hash of a cached block.
@@ -72,9 +73,43 @@ def get_block(block_hash: str) -> typing.List[str]:
     :returns: Cached block information.
 
     """
-    encached = _get_block(block_hash)
+    return [
+        network_id.name,
+        COL_BLOCK_INFO,
+        f"*.{block_hash}"
+    ]
 
-    return encached[0] if encached else None
+
+@cache_op(StorePartition.MONITORING, StoreOperation.GET_ONE)
+def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> typing.List[str]:
+    """Returns domain object: Deploy.
+    
+    :param block_hash: Hash of a cached block.
+
+    :returns: Cached block information.
+
+    """
+    return [
+        network_id.name,
+        COL_DEPLOY,
+        f"*.{deploy_hash}"
+    ]
+
+
+@cache_op(StorePartition.MONITORING, StoreOperation.GET_ONE)
+def get_deploy_info(network_id: NetworkIdentifier, deploy_hash: str) -> typing.List[str]:
+    """Returns domain object: Block.
+    
+    :param block_hash: Hash of a cached block.
+
+    :returns: Cached block information.
+
+    """
+    return [
+        network_id.name,
+        COL_DEPLOY_INFO,
+        f"*.{deploy_hash}"
+    ]
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
