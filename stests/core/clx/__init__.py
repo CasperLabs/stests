@@ -1,5 +1,7 @@
 from stests.core.clx.defaults import *
 from stests.core.clx.deploy import do_deploy_contract
+from stests.core.clx.deploy import do_deploy_contract_to_name
+from stests.core.clx.deploy import do_deploy_contract_to_hash
 from stests.core.clx.deploy import do_deploy_network_contract
 from stests.core.clx.deploy import do_refund
 from stests.core.clx.deploy import do_transfer

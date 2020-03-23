@@ -40,6 +40,10 @@ class Contract:
     _ts_created: datetime = get_timestamp_field()
 
     @property
+    def hash_as_bytes(self):
+        return bytes.fromhex(self.hash)    
+
+    @property
     def label_account_index(self):
         return f"A-{str(self.account_index).zfill(6)}"
 

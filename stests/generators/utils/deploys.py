@@ -17,7 +17,13 @@ _QUEUE = "orchestration.utils"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_fund_account(ctx: ExecutionContext, cp1_index: int, cp2_index: int, amount: int, use_stored_contract: bool):
+def do_fund_account(
+    ctx: ExecutionContext,
+    cp1_index: int,
+    cp2_index: int,
+    amount: int,
+    use_stored_contract: bool
+    ):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 
     :param ctx: Execution context information.
@@ -134,7 +140,7 @@ def do_set_contract(
     account = cache.state.get_account_by_index(ctx, account_index)
 
     # Deploy contract.
-    (node, dhash) = clx.do_deploy_contract(ctx, account, contract_type)
+    (node, dhash) = clx.do_deploy_contract_to_name(ctx, account, contract_type)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(

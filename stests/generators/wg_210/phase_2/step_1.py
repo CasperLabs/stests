@@ -1,6 +1,7 @@
 import typing
 
 import dramatiq
+from casperlabs_client.abi import ABI
 
 from stests.core import cache
 from stests.core import clx
@@ -11,7 +12,7 @@ from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.generators import utils
-from stests.generators.wg_200 import constants
+from stests.generators.wg_210 import constants
 
 
 
@@ -31,7 +32,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     def get_messages():
         for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
             for _ in range(0, ctx.args.increments):
-                yield do_increment_counter_0.message(ctx, account_index)
+                yield do_increment_counter_1.message(ctx, account_index)
 
     return get_messages
 
@@ -65,25 +66,34 @@ def _verify_counter(ctx: ExecutionContext, account_index: int, bhash: str):
 
     """
     account = cache.state.get_account_by_index(ctx, account_index)
-
     _, client = clx.get_client(ctx)
-    state = client.queryState(bhash, account.public_key, "counter/count", "address")
 
+    state = client.queryState(bhash, account.public_key, "counter/count", "address")
     assert state.cl_value.value.i32 == ctx.args.increments
 
 
 @dramatiq.actor(queue_name=constants.TYPE)
-def do_increment_counter_0(ctx: ExecutionContext, account_index: int):
+def do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     """Dispatches counter increment deploy.
     
     """
     # Set account.
     account = cache.state.get_account_by_index(ctx, account_index)
 
-    # Deploy.
+    # Set contract.
+    contract = cache.infra.get_contract(ctx, ContractType.COUNTER_DEFINE)
+    print(contract)
+
+    # Set args.
+    session_args = ABI.args([
+        ABI.string_value("target", "counter_inc")
+        ])
+
+    # Dispatch deploy.
     node, client = clx.get_client(ctx)
     dhash = client.deploy(
-        session_name="counter_inc",
+        session_args=session_args,
+        session_hash=contract.hash_as_bytes,
         from_addr=account.public_key,
         private_key=account.private_key_as_pem_filepath,
         # TODO: allow these to be passed in via standard arguments

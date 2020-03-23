@@ -122,6 +122,7 @@ def create_run_lock(ctx: ExecutionContext) -> RunLock:
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
+        _type_key=None,
     )
 
 
@@ -139,6 +140,7 @@ def create_phase_lock(ctx: ExecutionContext, phase_index: int) -> PhaseLock:
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         phase_index=phase_index,
+        _type_key=None,
     )
 
 
@@ -157,4 +159,5 @@ def create_step_lock(ctx: ExecutionContext, step_index: int) -> StepLock:
         run_type=ctx.run_type,
         phase_index=ctx.phase_index,
         step_index=step_index,
+        _type_key=None,
     )

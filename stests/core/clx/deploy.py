@@ -76,7 +76,7 @@ def do_transfer(
             ])
         # Dispatch.
         dhash = client.deploy(
-            session_hash=bytes.fromhex(contract.hash),
+            session_hash=contract.hash_as_bytes,
             session_args=session_args,
             from_addr=cp1.public_key,
             private_key=cp1.private_key_as_pem_filepath,
@@ -158,6 +158,80 @@ def do_deploy_contract(
     contract_type: ContractType
     ) -> typing.Tuple[Node, str]:
     """Deploys a smart contract to chain for future use.
+
+    :param ctx: Execution context information.
+    :param account: Account under which contract will be deployed.
+    :param contract_type: Type of contract to be deployed.
+
+    :returns: 2 member tuple -> (node, deploy hash)
+
+    """
+    # Set client.
+    node, client = utils.get_client(ctx)
+
+    # Set args.
+    session=utils.get_contract_path(ContractType[contract_type])
+    session_args = ABI.args([
+        ABI.string_value("target", "hash"),
+        ])
+    
+    # Dispatch.
+    dhash = client.deploy(
+        session=session,
+        session_args=session_args,
+        from_addr=account.public_key,
+        private_key=account.private_key_as_pem_filepath,
+        # TODO: allow these to be passed in via standard arguments
+        payment_amount=defaults.CLX_TX_FEE,
+        gas_price=defaults.CLX_TX_GAS_PRICE
+    )
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: dhash={dhash}")
+
+    return (node, dhash)
+
+
+@utils.clx_op
+def do_deploy_contract_to_name(
+    ctx: ExecutionContext,
+    account: Account,
+    contract_type: ContractType
+    ) -> typing.Tuple[Node, str]:
+    """Deploys a smart contract to a known name for future use.
+
+    :param ctx: Execution context information.
+    :param account: Account under which contract will be deployed.
+    :param contract_type: Type of contract to be deployed.
+
+    :returns: 2 member tuple -> (node, deploy hash)
+
+    """
+    # Set client.
+    node, client = utils.get_client(ctx)
+
+    # Set args.
+    session=utils.get_contract_path(ContractType[contract_type])
+    
+    # Dispatch.
+    dhash = client.deploy(
+        session=session,
+        from_addr=account.public_key,
+        private_key=account.private_key_as_pem_filepath,
+        # TODO: allow these to be passed in via standard arguments
+        payment_amount=defaults.CLX_TX_FEE,
+        gas_price=defaults.CLX_TX_GAS_PRICE
+    )
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: dhash={dhash}")
+
+    return (node, dhash)
+
+
+@utils.clx_op
+def do_deploy_contract_to_hash(
+    ctx: ExecutionContext,
+    account: Account,
+    contract_type: ContractType
+    ) -> typing.Tuple[Node, str]:
+    """Deploys a smart contract to a hash for future use.
 
     :param ctx: Execution context information.
     :param account: Account under which contract will be deployed.

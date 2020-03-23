@@ -239,47 +239,59 @@ def do_step(ctx: ExecutionContext):
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
 
     # Execute.
-    do_step_execute(ctx, step)
-
-
-def do_step_execute(ctx: ExecutionContext, step: WorkflowStep):
-    """Performs step execution.
-    
-    :param ctx: Execution context information.
-    :param step: Step related execution information.
-    
-    """
-    # Execute step.
     step.execute()
 
     # Process errors.
     if step.error:
         do_step_error.send(ctx, str(step.error))
 
-    # Async steps are processed by deploy listeners.
+    # Exception if step result != None | func.
+    elif step.result is not None and not inspect.isfunction(step.result):
+        raise TypeError("Expecting either none or a message factory from a step function.")
+
+    # Process result for async ops.
     elif step.is_async:
-        if step.result is not None:
-            if inspect.isfunction(step.result):
-                message_factory = step.result()
-                group = dramatiq.group(message_factory)
-                group.run()
-            else:
-                raise TypeError("Expecting either none or a message factory from a step function.")
-        logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> listening for chain events")
+        on_step_execute_async(ctx, step)
 
-    # Sync steps are processed inline.
+    # Process result for sync ops.
     else:
-        if step.result is None:
-            do_step_end.send(ctx)
+        on_step_execute_sync(ctx, step)
 
-        elif inspect.isfunction(step.result):
-            message_factory = step.result()
-            group = dramatiq.group(message_factory)
-            group.add_completion_callback(do_step_end.message(ctx))
-            group.run()
 
-        else:
-            raise TypeError("Expecting either none or a message factory from a step function.")
+def on_step_execute_async(ctx: ExecutionContext, step: WorkflowStep):
+    """Performs asynchronous step execution.
+    
+    :param ctx: Execution context information.
+    :param step: Step related execution information.
+    
+    """
+    # Message factories will be dispatched as a group, chain monitoring
+    # subsequently signals to orchestrator that next step can be executed.
+    if inspect.isfunction(step.result):
+        message_factory = step.result()
+        group = dramatiq.group(message_factory)
+        group.run()
+
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> listening for chain events")
+
+
+def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
+    """Performs step execution.
+    
+    :param ctx: Execution context information.
+    :param step: Step related execution information.
+    
+    """
+    # Simply signal step end when unit of work executed.
+    if step.result is None:
+        do_step_end.send(ctx)
+
+    # Dispatch message facctory as a group - note the completion callback.
+    elif inspect.isfunction(step.result):
+        message_factory = step.result()
+        group = dramatiq.group(message_factory)
+        group.add_completion_callback(do_step_end.message(ctx))
+        group.run()
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -289,6 +301,8 @@ def do_step_end(ctx: ExecutionContext):
     :param ctx: Execution context information.
     
     """
+    # TODO: verify step execution before proceeding to next step.
+
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
 
