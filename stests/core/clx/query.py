@@ -6,6 +6,7 @@ from stests.core.domain import Account
 from stests.core.domain import Block
 from stests.core.domain import BlockStatus
 from stests.core.domain import NetworkIdentifier
+from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 
@@ -36,20 +37,23 @@ def get_balance(ctx: ExecutionContext, account: Account) -> int:
 
 
 @utils.clx_op
-def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
+def get_block(
+    node_id: NodeIdentifier,
+    block_hash: str
+    ) -> Block:
     """Queries network for information pertaining to a specific block.
 
-    :param network_id: A network identifier.
+    :param node_id: A node identifier.
     :param block_hash: Hash of a block.
 
     :returns: Block information.
 
     """
-    _, client = utils.get_client(network_id)
+    _, client = utils.get_client(node_id)
     info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
     return factory.create_block(
-        network_id=network_id,
+        network_id=node_id.network,
         block_hash=block_hash,
         deploy_cost_total=info.status.stats.deploy_cost_total,
         deploy_count=info.summary.header.deploy_count, 

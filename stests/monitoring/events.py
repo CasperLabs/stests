@@ -23,7 +23,7 @@ def on_finalized_block(node_id: NodeIdentifier, bhash: str):
 
     """
     # Query block info & set block status accordingly.
-    block = clx.get_block(node_id.network, bhash)
+    block = clx.get_block(node_id, bhash)
     block.update_on_finalization()
 
     # Encache - skip duplicates.    
