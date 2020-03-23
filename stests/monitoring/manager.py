@@ -70,7 +70,7 @@ def do_monitor_node(node_id: NodeIdentifier):
     if not locked:
         return
 
-    # Callback,
+    # Callback.
     def _on_block_finalized(_, bhash):
         on_finalized_block.send(node_id, bhash)
 

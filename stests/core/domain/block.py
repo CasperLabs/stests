@@ -51,6 +51,13 @@ class Block:
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
+    @property
+    def hash(self):
+        return self.block_hash
+
+    @property
+    def label_m_rank(self):
+        return f"{str(self.m_rank).zfill(7)}"
 
     def update_on_finalization(self):
         """Executed when block has been finalized.
@@ -66,6 +73,9 @@ class BlockLock:
     """
     # Block hash (blake2b) identifier.
     block_hash: str
+
+    # Type of event for which the lock is being acquired.
+    event_type: str
 
     # Associated network.
     network: str

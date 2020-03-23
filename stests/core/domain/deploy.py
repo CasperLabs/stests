@@ -61,6 +61,9 @@ class Deploy:
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
+    @property
+    def hash(self):
+        return self.deploy_hash
 
     @property
     def label_finalization_time(self):
