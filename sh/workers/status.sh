@@ -8,7 +8,7 @@ function main()
 {
 	pushd $STESTS_HOME
 	pipenv run supervisorctl -c $STESTS_PATH_OPS/config/supervisord.conf status all
-	popd $STESTS_HOME
+	popd -1
 }
 
 # Invoke entry point.

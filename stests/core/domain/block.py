@@ -51,9 +51,34 @@ class Block:
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
+    @property
+    def hash(self):
+        return self.block_hash
+
+    @property
+    def label_m_rank(self):
+        return f"{str(self.m_rank).zfill(7)}"
 
     def update_on_finalization(self):
         """Executed when block has been finalized.
         
         """
         self.status = BlockStatus.FINALIZED
+
+
+@dataclasses.dataclass
+class BlockLock:
+    """Execution lock information - block.
+    
+    """
+    # Block hash (blake2b) identifier.
+    block_hash: str
+
+    # Type of event for which the lock is being acquired.
+    event_type: str
+
+    # Associated network.
+    network: str
+
+    # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None

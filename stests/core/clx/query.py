@@ -6,9 +6,12 @@ from stests.core.domain import Account
 from stests.core.domain import Block
 from stests.core.domain import BlockStatus
 from stests.core.domain import NetworkIdentifier
+from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 
+from google.protobuf.json_format import MessageToDict
+from google.protobuf.json_format import MessageToJson
 
 
 @utils.clx_op
@@ -36,45 +39,49 @@ def get_balance(ctx: ExecutionContext, account: Account) -> int:
 
 
 @utils.clx_op
-def get_block(network_id: NetworkIdentifier, block_hash: str) -> Block:
+def get_block_by_node(
+    node_id: NodeIdentifier,
+    block_hash: str
+    ) -> typing.Union[typing.Dict, Block]:
     """Queries network for information pertaining to a specific block.
 
-    :param network_id: A network identifier.
+    :param node_id: A node identifier.
     :param block_hash: Hash of a block.
 
-    :returns: Block information.
+    :returns: 2 member tuple: (block info, block summary).
 
     """
-    _, client = utils.get_client(network_id)
-    info = client.showBlock(block_hash_base16=block_hash, full_view=False)
+    _, client = utils.get_client(node_id)
+    block_info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
-    return factory.create_block(
-        network_id=network_id,
+    return MessageToDict(block_info), factory.create_block(
+        network_id=node_id.network,
         block_hash=block_hash,
-        deploy_cost_total=info.status.stats.deploy_cost_total,
-        deploy_count=info.summary.header.deploy_count, 
-        deploy_gas_price_avg=info.status.stats.deploy_gas_price_avg,
-        j_rank=info.summary.header.j_rank,
-        m_rank=info.summary.header.main_rank,
-        size_bytes=info.status.stats.block_size_bytes,
-        timestamp=datetime.fromtimestamp(info.summary.header.timestamp / 1000.0),
-        validator_id=info.summary.header.validator_public_key.hex()
+        deploy_cost_total=block_info.status.stats.deploy_cost_total,
+        deploy_count=block_info.summary.header.deploy_count, 
+        deploy_gas_price_avg=block_info.status.stats.deploy_gas_price_avg,
+        j_rank=block_info.summary.header.j_rank,
+        m_rank=block_info.summary.header.main_rank,
+        size_bytes=block_info.status.stats.block_size_bytes,
+        timestamp=datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
+        validator_id=block_info.summary.header.validator_public_key.hex()
         )
 
 
 @utils.clx_op
-def get_deploys(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str]:
-    """Queries network for set of deploys associated with a specific block.
+def get_deploys_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.List[typing.Union[str, typing.Dict]]:
+    """Queries node for a set of deploys associated with a specific block.
 
-    :param network_id: A network identifier.
+    :param node_id: A node identifier.
     :param block_hash: Hash of a block.
 
-    :returns: Block information.
+    :returns: 2 member tuple: (deploy hash, deploy info).
 
     """
-    _, client = utils.get_client(network_id)
+    _, client = utils.get_client(node_id)
+    deploys = client.showDeploys(block_hash_base16=block_hash, full_view=False)
 
-    return (i.deploy.deploy_hash.hex() for i in client.showDeploys(block_hash_base16=block_hash, full_view=False))
+    return ((i.deploy.deploy_hash.hex(), MessageToDict(i)) for i in deploys)
 
 
 @utils.clx_op

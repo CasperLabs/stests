@@ -61,6 +61,13 @@ class Deploy:
     # Timestamp: create.
     _ts_created: datetime = get_timestamp_field()
 
+    @property
+    def hash(self):
+        return self.deploy_hash
+
+    @property
+    def is_from_run(self):
+        return self.run_type is not None
 
     @property
     def label_finalization_time(self):
@@ -71,6 +78,10 @@ class Deploy:
     @property
     def label_account_index(self):
         return f"A-{str(self.account_index).zfill(6)}"
+
+    @property
+    def label_run_index(self):
+        return f"R-{str(self.run_index).zfill(3)}"
 
 
     def update_on_finalization(self, bhash: str, finalization_ts: float):

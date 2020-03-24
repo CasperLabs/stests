@@ -43,6 +43,10 @@ class Node:
     _ts_created: datetime = get_timestamp_field()
 
     @property
+    def address(self):
+        return f"{self.host}:{self.port}"
+
+    @property
     def index_label(self):
         return str(self.index).zfill(3)
 
@@ -67,4 +71,22 @@ class NodeIdentifier:
     index: int
  
      # Type key of associated object used in serialisation scenarios.
+    _type_key: typing.Optional[str] = None
+
+
+@dataclasses.dataclass
+class NodeStreamLock:
+    """Execution lock information - stream.
+    
+    """
+    # Associated network.
+    network: str
+
+    # Numerical index to distinguish between nodees upon the same network.
+    node_index: int
+
+    # Numerical index to distinguish between multiple locks.
+    lock_index: int
+
+    # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None

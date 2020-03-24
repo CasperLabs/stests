@@ -18,6 +18,9 @@ class StoreOperation(enum.Enum):
     # Get count of cached item.
     GET_COUNT = enum.auto()
 
+    # Get a single cached item.
+    GET_ONE = enum.auto()
+
     # Atomically increment a counter.
     INCR = enum.auto()
 

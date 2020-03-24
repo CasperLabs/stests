@@ -78,26 +78,13 @@ def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
         ))
 
 
+@cache_op(StorePartition.STATE, StoreOperation.GET_ONE)
 def get_deploy(dhash: str) -> Deploy:
     """Decaches domain object: Deploy.
     
     :param dhash: A deploy hash.
 
     :returns: A run deploy.
-
-    """    
-    deploys = _get_deploys(dhash)
-
-    return deploys[-1] if deploys else None
-
-
-@cache_op(StorePartition.STATE, StoreOperation.GET)
-def _get_deploys(dhash: str) -> typing.List[Deploy]:
-    """Decaches collection of domain objects: Deploy.
-    
-    :param dhash: A deploy hash.
-
-    :returns: List of matching deploys.
 
     """    
     return [f"*{COL_DEPLOY}*{dhash}*"]

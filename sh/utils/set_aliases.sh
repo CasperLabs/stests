@@ -13,7 +13,7 @@ function _exec_cmd()
     # Execute script.
     pushd $STESTS_HOME
     pipenv run python $s_path $s_args
-    popd
+    popd -1
 }
 
 # ###############################################################
@@ -76,6 +76,13 @@ alias stests-set-network-status='_exec_cmd $STESTS_PATH_CLI/cache/set_network_st
 alias stests-set-node='_exec_cmd $STESTS_PATH_CLI/cache/set_node.py'
 alias stests-set-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/set_node_bonding_key.py'
 alias stests-set-node-status='_exec_cmd $STESTS_PATH_CLI/cache/set_node_status.py'
+
+# ###############################################################
+# ALIASES: cache - vw
+# ###############################################################
+
+alias stests-view-block-info='_exec_cmd $STESTS_PATH_CLI/cache/view_block_info.py'
+alias stests-view-deploy-info='_exec_cmd $STESTS_PATH_CLI/cache/view_deploy_info.py'
 
 # ###############################################################
 # ALIASES: generators

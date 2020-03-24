@@ -17,7 +17,6 @@ DCLASS_SET = {
     PhaseLock,
     RunLock,
     StepLock,
-    StreamLock,
 }
 
 # Full domain type set.
