@@ -27,5 +27,11 @@ IDENTIFIER_SET = {
     NodeIdentifier,
 }
 
+# Set of supported identifiers.
+LOCK_SET = {
+    BlockLock,
+    NodeStreamLock,
+}
+
 # Full domain type set.
-TYPE_SET = DCLASS_SET | IDENTIFIER_SET | ENUM_SET
+TYPE_SET = DCLASS_SET | IDENTIFIER_SET | ENUM_SET | LOCK_SET

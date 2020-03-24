@@ -1,0 +1,1 @@
+from stests.monitoring.events.block_finalisation import on_finalized_block
