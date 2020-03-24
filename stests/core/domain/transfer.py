@@ -1,8 +1,6 @@
 import dataclasses
 import typing
-from datetime import datetime
 
-from stests.core.utils.dataclasses import get_timestamp_field
 from stests.core.domain.enums import TransferStatus
 
     
@@ -50,9 +48,6 @@ class Transfer:
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
-
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
 
 
     def update_on_completion(self):

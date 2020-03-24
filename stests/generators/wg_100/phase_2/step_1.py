@@ -1,3 +1,4 @@
+import random
 import typing
 
 from stests.core.orchestration import ExecutionContext
@@ -7,10 +8,10 @@ from stests.generators.wg_100 import constants
 
 
 # Step description.
-DESCRIPTION = "Refunds funds previously transferred from run faucet."
+DESCRIPTION = "Refunds funds previously transferred to a contract account."
 
 # Step label.
-LABEL = "refund-run-faucet"
+LABEL = "refund-contract"
 
 
 def execute(ctx: ExecutionContext) -> typing.Callable:
@@ -18,23 +19,14 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     
     :param ctx: Execution context information.
 
-    """  
-    def get_messages():
-        yield utils.do_refund.message(
-            ctx,
-            constants.ACC_RUN_CONTRACT,
-            constants.ACC_RUN_FAUCET,
-            False
+    """
+    # Refund: contract -> run faucet.
+    utils.do_refund.send(
+        ctx,
+        constants.ACC_RUN_CONTRACT,
+        constants.ACC_RUN_FAUCET,
+        False
         )
-        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield utils.do_refund.message(
-                ctx,
-                acc_index,
-                constants.ACC_RUN_FAUCET,
-                False
-            )
-
-    return get_messages
 
 
 def verify(ctx: ExecutionContext):
@@ -43,7 +35,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    utils.verify_deploy_count(ctx, 1 + ctx.args.user_accounts) 
+    utils.verify_deploy_count(ctx, 1) 
 
 
 def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
@@ -54,4 +46,4 @@ def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
 
     """
     utils.verify_deploy(ctx, bhash, dhash)
-    utils.verify_refund(ctx, dhash)
+    utils.verify_transfer(ctx, dhash)

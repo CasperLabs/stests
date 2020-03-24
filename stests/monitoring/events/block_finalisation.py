@@ -54,7 +54,7 @@ def _process_finalized_deploy(network_id: NetworkIdentifier, block: Block, deplo
     logger.log(f"PYCLX :: processing finalized deploy: bhash={block.hash} :: dhash={deploy_hash}")
 
     # Set deploy summary.
-    deploy = factory.create_deploy(network_id, block.hash, deploy_hash, DeployStatus.FINALIZED)
+    deploy = factory.create_deploy(network_id, block, deploy_hash, DeployStatus.FINALIZED)
 
     # Encache deploy summary + info.
     cache.monitoring.set_deploy(block, deploy)
@@ -77,7 +77,7 @@ def _process_finalized_deploy_for_run(block: Block, deploy: Deploy):
     logger.log(f"PYCLX :: run deploy finalized: dhash={deploy.hash} :: bhash={block.hash}")
 
     # Update deploy.
-    deploy.update_on_finalization(block.hash, block.timestamp.timestamp())
+    deploy.update_on_finalization(block)
     cache.state.set_deploy(deploy)
 
     # Increment deploy counts.

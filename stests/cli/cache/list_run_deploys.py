@@ -42,6 +42,7 @@ COLS = [
     ("Type", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
     ("Node", BeautifulTable.ALIGN_RIGHT),
+    ("Acc.", BeautifulTable.ALIGN_RIGHT),
     ("Dispatch Timestamp", BeautifulTable.ALIGN_RIGHT),
     ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
     ("Block Hash", BeautifulTable.ALIGN_RIGHT),
@@ -72,6 +73,7 @@ def main(args):
         i.typeof.name,
         i.status.name,      
         i.dispatch_node,
+        i.account_index,
         i.dispatch_ts,
         i.label_finalization_time,
         i.block_hash or "--"

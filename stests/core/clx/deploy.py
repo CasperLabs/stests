@@ -30,10 +30,14 @@ def do_refund(
     :returns: Dispatched deploy.
 
     """
-    # Set amount - escape if cp1 has insufficient funds.
-    amount = amount or (get_balance(ctx, cp1) - defaults.CLX_TX_FEE)
+    # If amount is unspecified, set amount to entire balance.
+    if amount is None:
+        balance = get_balance(ctx, cp1) 
+        amount = balance - defaults.CLX_TX_FEE
+    
+    # Escape if cp1 has insufficient funds.
     if amount <= 0:
-        logger.log_warning("Counter party 1 does not have enough CLX to pay refund transaction fee.")
+        logger.log_warning(f"Counter party 1 does not have enough CLX to pay refund transaction fee, balance={amount}.")
         return
 
     (node, dhash) = do_transfer(ctx, cp1, cp2, amount, contract, is_refundable=False, deploy_type=DeployType.TRANSFER_REFUND)

@@ -63,6 +63,7 @@ def main(args: argparse.Namespace):
     # Set execution context.
     ctx = factory.create_run_info(
         args=Arguments.create(args),
+        deploys_per_second=args.deploys_per_second,
         loop_count=args.loop_count,
         loop_interval=args.loop_interval,
         network_id=network_id,

@@ -2,9 +2,9 @@ import dataclasses
 import typing
 from datetime import datetime
 
+from stests.core.domain.block import Block
 from stests.core.domain.enums import DeployStatus
 from stests.core.domain.enums import DeployType
-from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
@@ -17,7 +17,10 @@ class Deploy:
     account_index: typing.Optional[int]
 
     # Associated block hash in event of finalization. 
-    block_hash: str
+    block_hash: typing.Optional[str]
+
+    # Associated block rank. 
+    block_rank: typing.Optional[int]
 
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
@@ -58,9 +61,6 @@ class Deploy:
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
 
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
-
     @property
     def hash(self):
         return self.deploy_hash
@@ -84,11 +84,12 @@ class Deploy:
         return f"R-{str(self.run_index).zfill(3)}"
 
 
-    def update_on_finalization(self, bhash: str, finalization_ts: float):
+    def update_on_finalization(self, block: Block):
         """Executed when deploy has been finalized.
         
         """
-        self.block_hash = bhash
+        self.block_hash = block.hash
+        self.block_rank = block.m_rank
         self.status = DeployStatus.FINALIZED
-        self.finalization_ts = datetime.fromtimestamp(finalization_ts)
-        self.finalization_time = finalization_ts - self.dispatch_ts.timestamp()
+        self.finalization_ts = block.timestamp
+        self.finalization_time = block.timestamp.timestamp() - self.dispatch_ts.timestamp()

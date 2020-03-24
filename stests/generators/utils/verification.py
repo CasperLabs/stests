@@ -13,8 +13,8 @@ def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
     
     """
     deploy = cache.state.get_deploy(dhash)
-    assert deploy
-    assert deploy.status == DeployStatus.FINALIZED
+    assert deploy, f"deploy could not be retrieved: {dhash}"
+    assert deploy.status == DeployStatus.FINALIZED, f"deploy is not FINALIZED : {dhash}"
 
     return deploy
 
@@ -23,18 +23,8 @@ def verify_deploy_count(ctx: ExecutionContext, expected: int, aspect: ExecutionA
     """Verifies that a step's count of finalized deploys tallies.
     
     """
-    assert cache.orchestration.get_deploy_count(ctx, aspect) == expected
-
-
-def verify_refund(ctx: ExecutionContext, dhash: str) -> Transfer:
-    """Verifies that a refund between counter-parties completed.
-    
-    """
-    refund = cache.state.get_transfer(dhash)
-    assert refund
-    assert refund.status == TransferStatus.COMPLETE
-
-    return refund
+    count = cache.orchestration.get_deploy_count(ctx, aspect) 
+    assert count == expected, f"deploy count mismatch: actual={count}, expected={expected}"
 
 
 def verify_transfer(ctx: ExecutionContext, dhash: str) -> Transfer:
@@ -42,8 +32,8 @@ def verify_transfer(ctx: ExecutionContext, dhash: str) -> Transfer:
     
     """
     transfer = cache.state.get_transfer(dhash)
-    assert transfer
-    assert transfer.status == TransferStatus.COMPLETE
+    assert transfer, f"transfer could not be retrieved: {dhash}"
+    assert transfer.status == TransferStatus.COMPLETE, f"transfer is not COMPLETE : {dhash}"
 
     return transfer
 
@@ -53,7 +43,10 @@ def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: 
     
     """
     account = cache.state.get_account_by_index(ctx, account_index)
-    assert account
-    assert clx.get_balance(ctx, account) == expected
+    assert account, f"account {account_index} could not be retrieved"
+
+    balance = clx.get_balance(ctx, account)
+    assert clx.get_balance(ctx, account) == expected, \
+           f"account balance mismatch: account_index={account_index}, actual={balance}, expected={expected}"
 
     return account

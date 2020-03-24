@@ -1,12 +1,10 @@
 import dataclasses
 import typing
-from datetime import datetime
 
 from stests.core.domain.enums import AccountStatus
 from stests.core.domain.enums import AccountType
 from stests.core.domain.key_pair import PrivateKey
 from stests.core.domain.network import NetworkIdentifier
-from stests.core.utils.dataclasses import get_timestamp_field
 
 
 @dataclasses.dataclass
@@ -43,9 +41,6 @@ class Account:
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
-
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
 
     @property
     def private_key_as_pem_filepath(self):

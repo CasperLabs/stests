@@ -1,3 +1,4 @@
+import random
 import typing
 
 from stests.core.orchestration import ExecutionContext
@@ -19,17 +20,22 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     :param ctx: Execution context information.
 
     """
-    def get_messages():
-        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield utils.do_fund_account.message(
+    # Set dispatch window.
+    deploy_count = ctx.args.user_accounts
+    dispatch_window = ctx.get_dispatch_window_ms(ctx.args.user_accounts)
+
+    # Transfer: run faucet -> user.
+    for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        utils.do_fund_account.send_with_options(
+            args = (
                 ctx,
                 constants.ACC_RUN_FAUCET,
                 acc_index,
                 ctx.args.user_initial_clx_balance,
                 False
-            )
-
-    return get_messages
+            ),
+            delay=random.randint(0, dispatch_window)
+        )
 
 
 def verify(ctx: ExecutionContext):

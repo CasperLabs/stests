@@ -125,7 +125,7 @@ def create_contract(
 
 def create_deploy(
     network_id: NetworkIdentifier,
-    block_hash: str,
+    block: Block,
     deploy_hash: str,
     status: DeployStatus
     ) -> Deploy:
@@ -134,7 +134,8 @@ def create_deploy(
     """
     return Deploy(
         account_index=None,
-        block_hash=block_hash,
+        block_hash=block.hash,
+        block_rank=block.m_rank,
         deploy_hash=deploy_hash,
         dispatch_node=None,
         dispatch_ts=datetime.now() if status == DeployStatus.DISPATCHED else None,
@@ -163,6 +164,7 @@ def create_deploy_for_run(
     return Deploy(
         account_index=account.index,
         block_hash=None,
+        block_rank=None,
         deploy_hash=deploy_hash,
         dispatch_node=node.index,
         dispatch_ts=datetime.now(),
@@ -248,6 +250,7 @@ def create_node_id(
 
 def create_run_info(
     args: typing.Any,
+    deploys_per_second: int,
     loop_count: int,
     loop_interval: int,
     network_id: NetworkIdentifier,
@@ -260,6 +263,7 @@ def create_run_info(
     """
     return ExecutionContext(
         args=args,
+        deploys_per_second=deploys_per_second,
         loop_count=loop_count,
         loop_index=0,
         loop_interval=loop_interval,

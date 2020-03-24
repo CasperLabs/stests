@@ -48,4 +48,4 @@ def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
 
     """
     utils.verify_deploy(ctx, bhash, dhash)
-    utils.verify_refund(ctx, dhash)
+    utils.verify_transfer(ctx, dhash)

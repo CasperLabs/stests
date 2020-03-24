@@ -1,3 +1,6 @@
+import random
+import typing
+
 from stests.core.orchestration import ExecutionContext
 from stests.generators import utils
 from stests.generators.wg_100 import constants
@@ -5,24 +8,33 @@ from stests.generators.wg_100 import constants
 
 
 # Step description.
-DESCRIPTION = "Refunds funds previously transferred from network faucet."
+DESCRIPTION = "Refunds funds previously transferred to user accounts."
 
 # Step label.
-LABEL = "refund-network-faucet"
+LABEL = "refund-users"
 
 
-def execute(ctx: ExecutionContext):
+def execute(ctx: ExecutionContext) -> typing.Callable:
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    """     
-    utils.do_refund.send(
-        ctx,
-        constants.ACC_RUN_FAUCET,
-        constants.ACC_NETWORK_FAUCET,
-        False
-    )
+    """
+    # Set dispatch window.
+    deploy_count = ctx.args.user_accounts + 1
+    dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
+
+    # Refund: user -> run faucet.
+    for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        utils.do_refund.send_with_options(
+            args = (
+                ctx,
+                acc_index,
+                constants.ACC_RUN_FAUCET,
+                False
+            ),
+            delay=random.randint(0, dispatch_window)
+        )    
 
 
 def verify(ctx: ExecutionContext):
@@ -31,7 +43,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    utils.verify_deploy_count(ctx, 1)
+    utils.verify_deploy_count(ctx, 1 + ctx.args.user_accounts) 
 
 
 def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
@@ -42,4 +54,4 @@ def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
 
     """
     utils.verify_deploy(ctx, bhash, dhash)
-    utils.verify_refund(ctx, dhash)
+    utils.verify_transfer(ctx, dhash)
