@@ -21,7 +21,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
 
     """
     # Set dispatch window.
-    deploy_count = ctx.args.user_accounts + 1
+    deploy_count = ctx.args.user_accounts
     dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
 
     # Refund: user -> run faucet.
@@ -43,7 +43,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    utils.verify_deploy_count(ctx, 1 + ctx.args.user_accounts) 
+    utils.verify_deploy_count(ctx, ctx.args.user_accounts) 
 
 
 def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):

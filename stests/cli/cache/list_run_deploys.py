@@ -73,7 +73,7 @@ def main(args):
         i.typeof.name,
         i.status.name,      
         i.dispatch_node,
-        i.account_index,
+        i.label_account_index,
         i.dispatch_ts,
         i.label_finalization_time,
         i.block_hash or "--"

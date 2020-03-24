@@ -37,7 +37,7 @@ def do_refund(
     
     # Escape if cp1 has insufficient funds.
     if amount <= 0:
-        logger.log_warning(f"Counter party 1 does not have enough CLX to pay refund transaction fee, balance={amount}.")
+        logger.log_warning(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={balance}.")
         return
 
     (node, dhash) = do_transfer(ctx, cp1, cp2, amount, contract, is_refundable=False, deploy_type=DeployType.TRANSFER_REFUND)
