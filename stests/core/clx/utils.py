@@ -34,7 +34,7 @@ def get_client(src: typing.Union[Node, NodeIdentifier, Network, NetworkIdentifie
     elif isinstance(src, NetworkIdentifier):
         node = cache.infra.get_node_by_network_id(src)
     elif isinstance(src, ExecutionContext):
-        node = cache.infra.get_node_by_run_context(src)
+        node = cache.infra.get_node_by_ctx(src)
     else:
         raise ValueError("Cannot derive node from input source.")
 

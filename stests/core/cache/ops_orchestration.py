@@ -80,51 +80,6 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
     ]
 
 
-def get_network(ctx: ExecutionContext) -> Network:
-    """Decaches domain object: Network.
-    
-    :param ctx: Execution context information.
-
-    :returns: A registered network.
-
-    """
-    network_id = factory.create_network_id(ctx.network)
-
-    return infra.get_network(network_id)
-    
-
-def get_step(ctx: ExecutionContext) -> ExecutionInfo:
-    """Decaches domain object: ExecutionInfo.
-    
-    :param ctx: Execution context information.
-
-    :returns: Cached run step information.
-
-    """
-    steps = get_steps(ctx)
-    steps = sorted(steps, key=lambda i: i.ts_start)
-
-    return steps[-1] if steps else None
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_steps(ctx: ExecutionContext) -> typing.List[ExecutionInfo]:
-    """Decaches collection of domain objects: ExecutionInfo.
-
-    :param ctx: Execution context information.
-
-    :returns: List of run steps.
-    
-    """
-    return [
-        "step",
-        ctx.network,
-        ctx.run_type,
-        ctx.run_index_label,
-        "*"
-        ]
-        
-
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNT)
 def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
     """Returns count of deploys within the scope of an execution aspect.
@@ -136,71 +91,6 @@ def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
 
     """
     return _get_keypath_deploy_count(ctx, aspect)
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
-def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP):
-    """Increments (atomically) count of run step deploys.
-
-    :param ctx: Execution context information.
-    :param aspect: Aspect of execution in scope.
-
-    """
-    return _get_keypath_deploy_count(ctx, aspect)
-
-
-def increment_deploy_counts(ctx: ExecutionContext):
-    """Increments (atomically) count of deploys.
-
-    :param ctx: Execution context information.
-
-    """
-    increment_deploy_count(ctx, ExecutionAspect.RUN)
-    increment_deploy_count(ctx, ExecutionAspect.PHASE)
-    increment_deploy_count(ctx, ExecutionAspect.STEP)
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
-def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], RunLock]:
-    """Decaches domain object: RunLock.
-    
-    :param ctx: Execution context information.
-
-    :returns: Cached run step information.
-
-    """
-    return [
-        ctx.network,
-        ctx.run_type,
-        ctx.run_index_label,
-        COL_LOCK,
-        "-"
-    ]
-
-
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
-def lock_execution(aspect: ExecutionAspect, lock: RunLock) -> typing.Tuple[typing.List[str], RunLock]:
-    """Encaches a lock: ExecutionLock.
-
-    :param aspect: Aspect of execution to be locked.
-    :param lock: Information to be locked.
-
-    """
-    path = [
-        lock.network,
-        lock.run_type,
-        lock.run_index_label,
-        COL_LOCK,
-    ]
-
-    if aspect == ExecutionAspect.RUN:
-        path.append("-")
-    elif aspect == ExecutionAspect.PHASE:
-        path.append(lock.phase_index_label)
-    elif aspect == ExecutionAspect.STEP:
-        path.append(f"{lock.phase_index_label}.{lock.step_index_label}")
-
-    return path, lock
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
@@ -264,6 +154,71 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
             COL_INFO,
             "*",
         ]
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], ExecutionLock]:
+    """Decaches domain object: ExecutionLock.
+    
+    :param ctx: Execution context information.
+
+    :returns: Cached run step information.
+
+    """
+    return [
+        ctx.network,
+        ctx.run_type,
+        ctx.run_index_label,
+        COL_LOCK,
+        "-"
+    ]
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
+def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP):
+    """Increments (atomically) count of run step deploys.
+
+    :param ctx: Execution context information.
+    :param aspect: Aspect of execution in scope.
+
+    """
+    return _get_keypath_deploy_count(ctx, aspect)
+
+
+def increment_deploy_counts(ctx: ExecutionContext):
+    """Increments (atomically) count of deploys.
+
+    :param ctx: Execution context information.
+
+    """
+    increment_deploy_count(ctx, ExecutionAspect.RUN)
+    increment_deploy_count(ctx, ExecutionAspect.PHASE)
+    increment_deploy_count(ctx, ExecutionAspect.STEP)
+    
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
+def lock_execution(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typing.List[str], ExecutionLock]:
+    """Encaches a lock: ExecutionLock.
+
+    :param aspect: Aspect of execution to be locked.
+    :param lock: Information to be locked.
+
+    """
+    path = [
+        lock.network,
+        lock.run_type,
+        lock.run_index_label,
+        COL_LOCK,
+    ]
+
+    if aspect == ExecutionAspect.RUN:
+        path.append("-")
+    elif aspect == ExecutionAspect.PHASE:
+        path.append(lock.phase_index_label)
+    elif aspect == ExecutionAspect.STEP:
+        path.append(f"{lock.phase_index_label}.{lock.step_index_label}")
+
+    return path, lock
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
