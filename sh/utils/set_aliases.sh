@@ -81,8 +81,8 @@ alias stests-set-node-status='_exec_cmd $STESTS_PATH_CLI/cache/set_node_status.p
 # ALIASES: cache - vw
 # ###############################################################
 
-alias stests-vw-block-info='_exec_cmd $STESTS_PATH_CLI/cache/view_block_info.py'
-alias stests-vw-deploy-info='_exec_cmd $STESTS_PATH_CLI/cache/view_deploy_info.py'
+alias stests-view-block-info='_exec_cmd $STESTS_PATH_CLI/cache/view_block_info.py'
+alias stests-view-deploy-info='_exec_cmd $STESTS_PATH_CLI/cache/view_deploy_info.py'
 
 # ###############################################################
 # ALIASES: generators

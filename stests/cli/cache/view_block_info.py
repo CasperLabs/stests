@@ -12,7 +12,7 @@ from stests.core.utils import logger
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays deploy information pulled from chain.")
+ARGS = argparse.ArgumentParser("Displays block information pulled from chain.")
 
 # CLI argument: network name.
 ARGS.add_argument(

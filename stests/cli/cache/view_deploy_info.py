@@ -13,7 +13,7 @@ from stests.core.orchestration import ExecutionAspect
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays deploy information pulled from chain.")
+ARGS = argparse.ArgumentParser("Displays deploy information either pulled from chain or from stests cache.")
 
 # CLI argument: network name.
 ARGS.add_argument(
