@@ -15,14 +15,23 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
     # Set command line arguments.
     args = argparse.ArgumentParser(f"Executes {description} workflow.")
 
-    # CLI argument: network name.
+    # network name.
     args.add_argument(
         "network_name",
         help="Network name {type}{id}, e.g. lrt1.",
         type=args_validator.validate_network,
         )
 
-    # CLI argument: scope -> node index.
+    # deploys per second.
+    args.add_argument(
+        "--deploys-per-second",
+        dest="deploys_per_second",
+        help="Number of deploys to dispatch per second.",
+        type=args_validator.validate_deploys_per_second,
+        default=0,
+        )
+
+    # node index.
     args.add_argument(
         "--node",
         dest="node_index",
@@ -32,7 +41,7 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         required=False,
         )
 
-    # CLI argument: scope -> run index.
+    # run index.
     args.add_argument(
         "--run",
         dest="run_index",
@@ -41,7 +50,7 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         default=1,
         )
 
-    # CLI argument: scope -> run index.
+    # loop interval.
     args.add_argument(
         "--loop-interval",
         dest="loop_interval",
@@ -50,7 +59,7 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         default=0,
         )
 
-    # CLI argument: scope -> run index.
+    # loop count.
     args.add_argument(
         "--loop-count",
         dest="loop_count",
