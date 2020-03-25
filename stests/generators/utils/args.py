@@ -65,7 +65,7 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         dest="loop_interval",
         help="Interval in seconds between loops.",
         type=args_validator.validate_loop_interval,
-        default=2,
+        default=0,
         )
 
     # parallel count.
