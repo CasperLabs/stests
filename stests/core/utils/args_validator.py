@@ -5,6 +5,10 @@ from stests.core.domain import NetworkType
 
 
 
+# Loop count min/max
+DEPLOYS_PER_SECOND_MIN = 0
+DEPLOYS_PER_SECOND_MAX = 1000
+
 # Network index min/max.
 NETWORK_INDEX_MIN = 1
 NETWORK_INDEX_MAX = 99
@@ -28,6 +32,13 @@ LOOP_INTERVAL_MAX = 1209600  # 2 weeks
 # Loop count min/max
 LOOP_COUNT_MIN = -1
 LOOP_COUNT_MAX = 65536
+
+
+def validate_deploys_per_second(value):
+    """Argument verifier: generator run index.
+    
+    """
+    return _validate_int(value, DEPLOYS_PER_SECOND_MIN, DEPLOYS_PER_SECOND_MAX, "Deploys per second")
 
 
 def validate_filepath(value):

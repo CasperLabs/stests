@@ -1,13 +1,14 @@
 from stests.core.orchestration import ExecutionContext
-from stests.core.utils import logger
+from stests.generators import utils
+from stests.generators.wg_110 import constants
 
 
 
 # Step description.
-DESCRIPTION = "Dispatches a notification to signal that generator has completed."
+DESCRIPTION = "Refunds funds previously transferred to a run-faucet account."
 
 # Step label.
-LABEL = "notify-completion"
+LABEL = "refund-faucet"
 
 
 def execute(ctx: ExecutionContext):
@@ -15,9 +16,13 @@ def execute(ctx: ExecutionContext):
     
     :param ctx: Execution context information.
 
-    """      
-    # TODO: push notification.
-    pass
+    """     
+    utils.do_refund.send(
+        ctx,
+        constants.ACC_RUN_FAUCET,
+        constants.ACC_NETWORK_FAUCET,
+        True
+    )
 
 
 def verify(ctx: ExecutionContext):
@@ -26,5 +31,15 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    # TODO: verify notification was pushed
-    return True
+    utils.verify_deploy_count(ctx, 1)
+
+
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
+    """Step deploy verifier.
+    
+    :param ctx: Execution context information.
+    :param dhash: A deploy hash.
+
+    """
+    utils.verify_deploy(ctx, bhash, dhash)
+    utils.verify_transfer(ctx, dhash)

@@ -65,6 +65,19 @@ def get_network(network_id: NetworkIdentifier) -> Network:
     ]
 
 
+def get_network_by_ctx(ctx: ExecutionContext) -> Network:
+    """Decaches domain object: Network.
+    
+    :param ctx: Execution context information.
+
+    :returns: A registered network.
+
+    """
+    network_id = factory.create_network_id(ctx.network)
+
+    return get_network(network_id)
+
+
 def get_network_by_name(name: str) -> Network:
     """Decaches domain object: Network.
     
@@ -122,7 +135,7 @@ def get_node_by_network_id(network_id: NetworkIdentifier) -> Node:
     return random.choice(nodeset)
     
 
-def get_node_by_run_context(ctx: ExecutionContext) -> Node:
+def get_node_by_ctx(ctx: ExecutionContext) -> Node:
     """Decaches domain object: Node.
     
     :param ctx: Execution context information.

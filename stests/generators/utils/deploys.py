@@ -35,7 +35,7 @@ def do_fund_account(
     """
     # Set counterparties.
     if cp1_index == constants.ACC_NETWORK_FAUCET:
-        network = cache.orchestration.get_network(ctx)
+        network = cache.infra.get_network_by_ctx(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp1 = network.faucet
@@ -86,7 +86,7 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
     # Set counterparties.
     cp1 = cache.state.get_account_by_index(ctx, cp1_index)
     if cp2_index == constants.ACC_NETWORK_FAUCET:
-        network = cache.orchestration.get_network(ctx)
+        network = cache.infra.get_network_by_ctx(ctx)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp2 = network.faucet

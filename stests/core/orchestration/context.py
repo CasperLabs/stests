@@ -1,9 +1,7 @@
 import dataclasses
 import typing
-from datetime import datetime
 
 from stests.core.orchestration.enums import ExecutionStatus
-from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
@@ -14,6 +12,9 @@ class ExecutionContext:
     """
     # Associated run arguments.
     args: typing.Optional[typing.Any]
+
+    # Number of deploys to dispatch per second.
+    deploys_per_second: int
 
     # Number of times to loop.
     loop_count: int
@@ -51,9 +52,6 @@ class ExecutionContext:
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
 
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
-
     @property
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
@@ -81,3 +79,12 @@ class ExecutionContext:
     @property
     def next_step_index_label(self):
         return f"S-{str(self.next_step_index).zfill(2)}"
+
+
+    def get_dispatch_window_ms(self, deploy_count):
+        """Returns a time window during which deploys will be dispatched.
+        
+        """
+        if self.deploys_per_second:
+            return int((deploy_count / self.deploys_per_second) * 1000)
+        return 0

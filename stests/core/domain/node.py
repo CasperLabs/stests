@@ -1,12 +1,10 @@
 import dataclasses
 import typing
-from datetime import datetime
 
 from stests.core.domain.account import Account
 from stests.core.domain.enums import NodeStatus
 from stests.core.domain.enums import NodeType
 from stests.core.domain.network import NetworkIdentifier
-from stests.core.utils.dataclasses import get_timestamp_field
 
 
 
@@ -38,9 +36,6 @@ class Node:
     
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
-
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
 
     @property
     def address(self):

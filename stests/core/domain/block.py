@@ -3,7 +3,6 @@ import typing
 from datetime import datetime
 
 from stests.core.domain.enums import BlockStatus
-from stests.core.utils.dataclasses import get_timestamp_field
 
     
 
@@ -47,9 +46,6 @@ class Block:
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
-
-    # Timestamp: create.
-    _ts_created: datetime = get_timestamp_field()
 
     @property
     def hash(self):

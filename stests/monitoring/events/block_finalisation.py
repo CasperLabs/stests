@@ -1,4 +1,7 @@
+from datetime import datetime
+
 import dramatiq
+from google.protobuf.json_format import MessageToDict
 
 from stests.core import cache
 from stests.core import clx
@@ -26,7 +29,21 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
 
     """
     # Query chain.
-    block_info, block = clx.get_block_by_node(node_id, block_hash)
+    block_info = clx.get_block_by_node(node_id, block_hash)
+
+    # Set block summary.
+    block = factory.create_block(
+        network_id=node_id.network,
+        block_hash=block_hash,
+        deploy_cost_total=block_info.status.stats.deploy_cost_total,
+        deploy_count=block_info.summary.header.deploy_count, 
+        deploy_gas_price_avg=block_info.status.stats.deploy_gas_price_avg,
+        j_rank=block_info.summary.header.j_rank,
+        m_rank=block_info.summary.header.main_rank,
+        size_bytes=block_info.status.stats.block_size_bytes,
+        timestamp=datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
+        validator_id=block_info.summary.header.validator_public_key.hex()
+        )
     block.update_on_finalization()
 
     # Encache block summary (escape if duplicate).    
@@ -35,7 +52,7 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
         logger.log(f"PYCLX :: processing finalized block: bhash={block_hash}")
 
         # Encache block info.    
-        cache.monitoring.set_block_info(block, block_info)
+        cache.monitoring.set_block_info(block, MessageToDict(block_info))
     
         # Query chain & process deploys. 
         for deploy_hash, deploy_info in clx.get_deploys_by_node(node_id, block_hash):
@@ -54,7 +71,7 @@ def _process_finalized_deploy(network_id: NetworkIdentifier, block: Block, deplo
     logger.log(f"PYCLX :: processing finalized deploy: bhash={block.hash} :: dhash={deploy_hash}")
 
     # Set deploy summary.
-    deploy = factory.create_deploy(network_id, block.hash, deploy_hash, DeployStatus.FINALIZED)
+    deploy = factory.create_deploy(network_id, block, deploy_hash, DeployStatus.FINALIZED)
 
     # Encache deploy summary + info.
     cache.monitoring.set_deploy(block, deploy)
@@ -77,7 +94,7 @@ def _process_finalized_deploy_for_run(block: Block, deploy: Deploy):
     logger.log(f"PYCLX :: run deploy finalized: dhash={deploy.hash} :: bhash={block.hash}")
 
     # Update deploy.
-    deploy.update_on_finalization(block.hash, block.timestamp.timestamp())
+    deploy.update_on_finalization(block)
     cache.state.set_deploy(deploy)
 
     # Increment deploy counts.

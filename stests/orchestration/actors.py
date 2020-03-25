@@ -8,6 +8,7 @@ from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionStatus
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
+from stests.core.utils.exceptions import IgnoreableAssertionError
 
 from stests.orchestration.model import Workflow
 from stests.orchestration.model import WorkflowStep
@@ -97,7 +98,6 @@ def do_run_loop(ctx):
     ctx.run_index += 1
     ctx.status = ExecutionStatus.NULL
     ctx.step_index = 0
-    ctx._ts_created = datetime.now()
 
     # Set loop delay.
     loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS
@@ -339,8 +339,7 @@ def do_step_error(ctx: ExecutionContext, err: str):
     cache.orchestration.update_info(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> unhandled error")
-    logger.log_error(err)
+    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {ctx.step_label} -> unhandled error: {err}")
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -365,8 +364,8 @@ def on_step_deploy_finalized(ctx: ExecutionContext, bhash: str, dhash: str):
         try:
             step.verify_deploy(bhash, dhash)
         except AssertionError as err:
-            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed")
-            return       
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed: {err} :: {dhash}")
+            return
 
     # Verify step:
     if not step.has_verifer:
@@ -375,8 +374,10 @@ def on_step_deploy_finalized(ctx: ExecutionContext, bhash: str, dhash: str):
         try:
             step.verify()
         except AssertionError as err:
+            if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
+                return
             logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verification failed")
-            return       
+            return
 
     # Step verification succeeded therefore signal step end.
     do_step_end.send(ctx)

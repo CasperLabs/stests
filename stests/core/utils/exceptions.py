@@ -26,7 +26,7 @@ class LibraryException(Exception):
 
 
 class InvalidEnvironmentVariable(LibraryException):
-    """Raised when a library environment variable hasbeen misconfigured.
+    """Raised when a library environment variable has been misconfigured.
     
     """
     def __init__(self, name, val, expected=None):
@@ -43,3 +43,10 @@ class InvalidEnvironmentVariable(LibraryException):
                 expected = " | ".join(list(expected.keys()))
             err = f"{err}.  Expected {expected}"
         super(InvalidEnvironmentVariable, self).__init__(err)
+
+
+class IgnoreableAssertionError(AssertionError):
+    """Raised when an assertion may raise an error that can be igonored.
+    
+    """
+    pass

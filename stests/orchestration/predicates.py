@@ -144,11 +144,11 @@ def was_lock_acquired(aspect: ExecutionAspect, ctx: ExecutionContext) -> bool:
 
     """
     if aspect == ExecutionAspect.RUN:
-        lock = factory.create_run_lock(ctx)
+        lock = factory.create_lock(aspect, ctx, None, None)
     elif aspect == ExecutionAspect.PHASE:
-        lock = factory.create_phase_lock(ctx, ctx.next_phase_index)
+        lock = factory.create_lock(aspect, ctx, ctx.next_phase_index, None)
     elif aspect == ExecutionAspect.STEP:
-        lock = factory.create_step_lock(ctx, ctx.next_step_index)
+        lock = factory.create_lock(aspect, ctx, ctx.phase_index, ctx.next_step_index)
     else:
         return False
 

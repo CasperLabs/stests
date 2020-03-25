@@ -11,53 +11,29 @@ def create_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> ExecutionInfo
     :returns: ExecutionInfo instance configured as per aspect.
 
     """
-    if aspect == ExecutionAspect.RUN:
-        return ExecutionInfo(
-            aspect=aspect,
-            network=ctx.network,
-            phase_index=None,
-            run_index=ctx.run_index,
-            run_type=ctx.run_type,
-            status=ExecutionStatus.IN_PROGRESS,
-            step_index=None,
-            step_label=None,
-            tp_duration=None,
-            ts_start=datetime.now(),
-            ts_end=None,
-            _type_key=None
-        )
+    info = ExecutionInfo(
+        aspect=aspect,
+        network=ctx.network,
+        phase_index=None,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=None,
+        step_label=None,
+        tp_duration=None,
+        ts_start=datetime.now(),
+        ts_end=None,
+        _type_key=None,
+    )
 
-    elif aspect == ExecutionAspect.PHASE:
-        return ExecutionInfo(
-            aspect=aspect,
-            network=ctx.network,
-            phase_index=ctx.phase_index,
-            run_index=ctx.run_index,
-            run_type=ctx.run_type,
-            status=ExecutionStatus.IN_PROGRESS,
-            step_index=None,
-            step_label=None,
-            tp_duration=None,
-            ts_start=datetime.now(),
-            ts_end=None,
-            _type_key=None
-        )
-
+    if aspect == ExecutionAspect.PHASE:
+        info.phase_index = ctx.phase_index
     elif aspect == ExecutionAspect.STEP:
-        return ExecutionInfo(
-            aspect=aspect,
-            network=ctx.network,
-            phase_index=ctx.phase_index,
-            run_index=ctx.run_index,
-            run_type=ctx.run_type,
-            status=ExecutionStatus.IN_PROGRESS,
-            step_index=ctx.step_index,
-            step_label=ctx.step_label,
-            tp_duration=None,
-            ts_start=datetime.now(),
-            ts_end=None,
-            _type_key=None
-        )
+        info.phase_index = ctx.phase_index
+        info.step_index = ctx.step_index
+        info.step_label = ctx.step_label
+
+    return info
 
 
 def create_state(aspect: ExecutionAspect, ctx: ExecutionContext, status: ExecutionStatus = None) -> ExecutionState:
@@ -70,47 +46,51 @@ def create_state(aspect: ExecutionAspect, ctx: ExecutionContext, status: Executi
     :returns: ExecutionState instance configured as per aspect.
 
     """
-    if aspect == ExecutionAspect.RUN:
-        return ExecutionState(
-            aspect=aspect,
-            network=ctx.network,
-            phase_index=None,
-            run_index=ctx.run_index,
-            run_type=ctx.run_type,
-            status=ctx.status,
-            step_index=None,
-            step_label=None,
-            _type_key=None
-        )
+    state = ExecutionState(
+        aspect=aspect,
+        network=ctx.network,
+        phase_index=None,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        status=ctx.status,
+        step_index=None,
+        step_label=None,
+        _type_key=None
+    )
 
-    elif aspect == ExecutionAspect.PHASE:
-        return ExecutionState(
-            aspect=aspect,
-            network=ctx.network,
-            phase_index=ctx.phase_index,
-            run_index=ctx.run_index,
-            run_type=ctx.run_type,
-            status=status,
-            step_index=None,
-            step_label=None,
-            _type_key=None
-        )
-
+    if aspect == ExecutionAspect.PHASE:
+        state.phase_index = ctx.phase_index
     elif aspect == ExecutionAspect.STEP:
-        return ExecutionState(
-            aspect=aspect,
-            network=ctx.network,
-            phase_index=ctx.phase_index,
-            run_index=ctx.run_index,
-            run_type=ctx.run_type,
-            status=status,
-            step_index=ctx.step_index,
-            step_label=ctx.step_label,
-            _type_key=None
-        )
+        state.phase_index = ctx.phase_index
+        state.step_index = ctx.step_index
+        state.step_label = ctx.step_label
+
+    return state
 
 
-def create_run_lock(ctx: ExecutionContext) -> RunLock:
+def create_lock(aspect: ExecutionAspect, ctx: ExecutionContext, phase_index: int, step_index: int) -> ExecutionLock:
+    """Factory: Returns an execution lock.
+    
+    :param aspect: Aspect of execution in scope.
+    :param ctx: Execution context information.
+    :param phase_index: Index of phase being locked.
+    :param step_index: Index of step being locked.
+
+    :returns: An execution lock.
+
+    """
+    return ExecutionLock(
+        aspect=aspect,
+        network=ctx.network,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        phase_index=phase_index,
+        step_index=step_index,
+        _type_key=None,
+    )
+
+
+def create_run_lock(ctx: ExecutionContext) -> ExecutionLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -118,15 +98,18 @@ def create_run_lock(ctx: ExecutionContext) -> RunLock:
     :returns: An execution lock.
 
     """
-    return RunLock(
+    return ExecutionLock(
+        aspect=ExecutionAspect.RUN,
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
+        phase_index=None,
+        step_index=None,
         _type_key=None,
     )
 
 
-def create_phase_lock(ctx: ExecutionContext, phase_index: int) -> PhaseLock:
+def create_phase_lock(ctx: ExecutionContext, phase_index: int) -> ExecutionLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -135,16 +118,18 @@ def create_phase_lock(ctx: ExecutionContext, phase_index: int) -> PhaseLock:
     :returns: An execution lock.
 
     """
-    return PhaseLock(
+    return ExecutionLock(
+        aspect=ExecutionAspect.PHASE,
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         phase_index=phase_index,
+        step_index=None,
         _type_key=None,
     )
 
 
-def create_step_lock(ctx: ExecutionContext, step_index: int) -> StepLock:
+def create_step_lock(ctx: ExecutionContext, step_index: int) -> ExecutionLock:
     """Factory: Returns an execution lock.
     
     :param ctx: Execution context information.
@@ -153,7 +138,8 @@ def create_step_lock(ctx: ExecutionContext, step_index: int) -> StepLock:
     :returns: An execution lock.
 
     """
-    return StepLock(
+    return ExecutionLock(
+        aspect=ExecutionAspect.STEP,
         network=ctx.network,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
