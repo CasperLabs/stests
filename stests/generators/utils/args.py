@@ -48,7 +48,6 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         help="Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.",
         type=args_validator.validate_node_index,
         default=0,
-        required=False,
         )
 
     # run index.
@@ -66,7 +65,7 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         dest="loop_interval",
         help="Interval in seconds between loops.",
         type=args_validator.validate_loop_interval,
-        default=0,
+        default=1,
         )
 
     # loop count.
@@ -78,4 +77,14 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         default=0,
         )
     
+    # parallel count.
+    args.add_argument(
+        "--parallel-count",
+        dest="parallel_count",
+        help="Number of runs to launch in parallel.",
+        type=args_validator.validate_parallel_count,
+        default=1,
+        )
+
+
     return args

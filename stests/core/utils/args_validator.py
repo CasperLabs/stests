@@ -34,6 +34,10 @@ LOOP_INTERVAL_MAX = 1209600  # 2 weeks
 LOOP_COUNT_MIN = -1
 LOOP_COUNT_MAX = 65536
 
+# Parallel count min/max
+PARALLEL_COUNT_MIN = 1
+PARALLEL_COUNT_MAX = 127
+
 
 def validate_deploys_per_second(value):
     """Argument verifier: generator run index.
@@ -138,6 +142,13 @@ def validate_node_name(value):
     validate_node_index(name.split(":")[1])
 
     return name
+
+
+def validate_parallel_count(value):
+    """Argument verifier: parallel count.
+    
+    """
+    return _validate_int(value, PARALLEL_COUNT_MIN, PARALLEL_COUNT_MAX, "Parallel count")
 
 
 def validate_run_index(value):

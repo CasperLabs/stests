@@ -197,7 +197,7 @@ def increment_deploy_counts(ctx: ExecutionContext):
     
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
-def lock_execution(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typing.List[str], ExecutionLock]:
+def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typing.List[str], ExecutionLock]:
     """Encaches a lock: ExecutionLock.
 
     :param aspect: Aspect of execution to be locked.

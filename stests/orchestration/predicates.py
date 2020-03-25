@@ -77,6 +77,6 @@ def was_lock_acquired(aspect: ExecutionAspect, ctx: ExecutionContext) -> bool:
     else:
         return False
 
-    _, acquired = cache.orchestration.lock_execution(aspect, lock)
+    _, acquired = cache.orchestration.set_lock(aspect, lock)
 
     return acquired
