@@ -34,8 +34,9 @@ def do_run(ctx: ExecutionContext):
     if not _can_run(ctx):
         return
     
-    # Perform pre-run tasks.
-    _do_pre_run_tasks(ctx)
+    # Enqueue next when in PERIODIC mode.
+    if ctx.execution_mode == ExecutionMode.PERIODIC:
+        _loop(encoder.clone(ctx))
 
     # Update ctx.
     ctx.status = ExecutionStatus.IN_PROGRESS
@@ -81,8 +82,8 @@ def on_run_end(ctx: ExecutionContext):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
 
-    # Loop when in sequential mode.
-    if ctx.execution_mode == ExecutionMode.SEQUENTIAL and ctx.loop_count != 0:
+    # Enqueue next when in SEQUENTIAL mode.
+    if ctx.execution_mode == ExecutionMode.SEQUENTIAL:
         _loop(ctx)
 
 
@@ -162,13 +163,3 @@ def _loop(ctx):
     # Enqueue next loop.
     do_run.send_with_options(args=(ctx, ), delay=loop_delay)
 
-
-def _do_pre_run_tasks(ctx: ExecutionContext):
-    """Performs pre-run tasks.
-    
-    :param ctx: Execution context information.
-    
-    """
-    # Enqueue next run when in PERIODIC mode.
-    if ctx.execution_mode == ExecutionMode.PERIODIC:
-        _loop(encoder.clone(ctx))
