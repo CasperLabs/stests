@@ -50,6 +50,15 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         default=0,
         )
 
+    # loop count.
+    args.add_argument(
+        "--loop",
+        dest="loop_count",
+        help="Number of times to loop.",
+        type=args_validator.validate_loop_count,
+        default=0,
+        )
+    
     # loop interval.
     args.add_argument(
         "--loop-interval",
@@ -59,18 +68,9 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         default=1,
         )
 
-    # loop count.
-    args.add_argument(
-        "--loop-count",
-        dest="loop_count",
-        help="Number of times to loop.",
-        type=args_validator.validate_loop_count,
-        default=0,
-        )
-    
     # parallel count.
     args.add_argument(
-        "--parallel-count",
+        "--parallel",
         dest="parallel_count",
         help="Number of runs to launch in parallel.",
         type=args_validator.validate_parallel_count,
