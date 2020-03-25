@@ -5,6 +5,7 @@ from stests.core.orchestration import ExecutionContext
 from stests.core.orchestration import ExecutionAspect
 from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
+from stests.core.utils.exceptions import IgnoreableAssertionError
 
 
 
@@ -24,7 +25,7 @@ def verify_deploy_count(ctx: ExecutionContext, expected: int, aspect: ExecutionA
     
     """
     count = cache.orchestration.get_deploy_count(ctx, aspect) 
-    assert count == expected, f"deploy count mismatch: actual={count}, expected={expected}"
+    assert count == expected, IgnoreableAssertionError(f"deploy count mismatch: actual={count}, expected={expected}")
 
 
 def verify_transfer(ctx: ExecutionContext, dhash: str) -> Transfer:

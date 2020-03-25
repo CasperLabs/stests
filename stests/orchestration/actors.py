@@ -8,6 +8,7 @@ from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionStatus
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
+from stests.core.utils.exceptions import IgnoreableAssertionError
 
 from stests.orchestration.model import Workflow
 from stests.orchestration.model import WorkflowStep
@@ -373,8 +374,10 @@ def on_step_deploy_finalized(ctx: ExecutionContext, bhash: str, dhash: str):
         try:
             step.verify()
         except AssertionError as err:
+            if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
+                return
             logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verification failed")
-            return       
+            return
 
     # Step verification succeeded therefore signal step end.
     do_step_end.send(ctx)
