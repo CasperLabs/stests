@@ -12,8 +12,8 @@ TYPE = "WG-210"
 # DEFAULTS
 # --------------------------------------------------------------------
 
-# Default faucet's initial CLX balance = 10m.
-FAUCET_INITIAL_CLX_BALANCE = int(1e10)
+# Default faucet's initial CLX balance.
+FAUCET_INITIAL_CLX_BALANCE = int(1e11)
 
 # Default number of times counters will be incremented.
 INCREMENTS = 3
@@ -21,7 +21,7 @@ INCREMENTS = 3
 # Default number of user accounts to generate.
 USER_ACCOUNTS = 5
 
-# Default user's CLX balance = 1m.
+# Default user's CLX balance.
 USER_INITIAL_CLX_BALANCE = int(1e8)
 
 # --------------------------------------------------------------------
