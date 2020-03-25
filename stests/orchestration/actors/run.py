@@ -156,6 +156,7 @@ def _loop(ctx):
     
     # Reset ctx fields.
     ctx.phase_index = 0
+    ctx.run_index_parent = ctx.run_index
     ctx.run_index = run_index
     ctx.status = ExecutionStatus.NULL
     ctx.step_index = 0

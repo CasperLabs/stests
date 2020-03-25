@@ -62,7 +62,7 @@ def _get_ctx(
     # Set unique run identifier.
     run_index = cache.orchestration.increment_generator_run_count()
 
-    return factory.create_run_info(
+    return factory.create_ctx(
         args=meta.Arguments.create(args),
         deploys_per_second=args.deploys_per_second,
         execution_mode=args.execution_mode,

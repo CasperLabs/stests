@@ -123,6 +123,39 @@ def create_contract(
     )
 
 
+def create_ctx(
+    args: typing.Any,
+    deploys_per_second: int,
+    loop_count: int,
+    loop_interval: int,
+    execution_mode: ExecutionMode,
+    network_id: NetworkIdentifier,
+    node_id: NodeIdentifier,
+    run_index: int,
+    run_type: str
+    ) -> ExecutionContext:
+    """Returns a domain object instance: ExecutionContext.
+    
+    """
+    return ExecutionContext(
+        args=args,
+        deploys_per_second=deploys_per_second,
+        execution_mode=ExecutionMode[execution_mode.upper()],
+        loop_count=loop_count,
+        loop_index=0,
+        loop_interval=loop_interval,
+        network=network_id.name,
+        node_index=node_id.index,
+        run_index=run_index,
+        run_index_parent=None,
+        run_type=run_type,
+        phase_index=0,
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=0,
+        step_label=None,
+    )
+
+
 def create_deploy(
     network_id: NetworkIdentifier,
     block: Block,
@@ -246,38 +279,6 @@ def create_node_id(
     
     """
     return NodeIdentifier(network_id, index)
-
-
-def create_run_info(
-    args: typing.Any,
-    deploys_per_second: int,
-    loop_count: int,
-    loop_interval: int,
-    execution_mode: ExecutionMode,
-    network_id: NetworkIdentifier,
-    node_id: NodeIdentifier,
-    run_index: int,
-    run_type: str
-    ) -> ExecutionContext:
-    """Returns a domain object instance: ExecutionContext.
-    
-    """
-    return ExecutionContext(
-        args=args,
-        deploys_per_second=deploys_per_second,
-        execution_mode=ExecutionMode[execution_mode.upper()],
-        loop_count=loop_count,
-        loop_index=0,
-        loop_interval=loop_interval,
-        network=network_id.name,
-        node_index=node_id.index,
-        run_index=run_index,
-        run_type=run_type,
-        phase_index=0,
-        status=ExecutionStatus.IN_PROGRESS,
-        step_index=0,
-        step_label=None,
-    )
 
 
 def create_run_id(

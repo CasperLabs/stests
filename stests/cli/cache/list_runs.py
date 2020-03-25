@@ -18,7 +18,7 @@ ARGS = argparse.ArgumentParser("Displays summary information for all runs.")
 ARGS.add_argument(
     "network",
     help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network
+    type=args_validator.validate_network,
     )
 
 # CLI argument: run type.
@@ -32,11 +32,12 @@ ARGS.add_argument(
 
 # Table columns.
 COLS = [
-    ("Type", BeautifulTable.ALIGN_LEFT),
     ("ID", BeautifulTable.ALIGN_LEFT),
+    ("Generator", BeautifulTable.ALIGN_LEFT),
     ("Start Time", BeautifulTable.ALIGN_LEFT),
     ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
+    ("Parent ID", BeautifulTable.ALIGN_RIGHT),
 ]
 
 
@@ -55,20 +56,22 @@ def main(args):
         return    
 
     # Sort data.
-    data = sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}")
+    data = sorted(data, key=lambda i: i.run_index)
+    # data = sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}")
 
     # Set cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
-        i.run_type,
         i.index_label.strip(),
+        i.run_type,
         i.ts_start,
         i.tp_elapsed_label,
-        i.status_label.strip()
+        i.status_label.strip(),
+        i.run_index_parent_label.strip(),
     ], data)
 
     # Set table.
-    t = get_table(cols, rows)
+    t = get_table(cols, rows, max_width=1080)
 
     # Set table alignments.
     for key, aligmnent in COLS:

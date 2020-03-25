@@ -21,6 +21,7 @@ def create_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> ExecutionInfo
         network=ctx.network,
         phase_index=None,
         run_index=ctx.run_index,
+        run_index_parent=ctx.run_index_parent,
         run_type=ctx.run_type,
         status=ExecutionStatus.IN_PROGRESS,
         step_index=None,
