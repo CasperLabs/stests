@@ -50,6 +50,15 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         default=1,
         )
 
+    # run index.
+    args.add_argument(
+        "--run-mode",
+        dest="run_mode",
+        help="Generator run mode - sequential | batch | paralell.",
+        type=args_validator.validate_run_index,
+        default=1,
+        )
+
     # loop interval.
     args.add_argument(
         "--loop-interval",
