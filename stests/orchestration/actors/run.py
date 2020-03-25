@@ -2,8 +2,10 @@ import dramatiq
 
 from stests.core import cache
 from stests.core.orchestration import ExecutionAspect
-from stests.core.orchestration import ExecutionStatus
 from stests.core.orchestration import ExecutionContext
+from stests.core.orchestration import ExecutionMode
+from stests.core.orchestration import ExecutionStatus
+from stests.core.utils import encoder
 from stests.core.utils import logger
 from stests.orchestration import factory
 from stests.orchestration import predicates
@@ -14,8 +16,11 @@ from stests.orchestration.actors.phase import do_phase
 # Queue to which messages will be dispatched.
 _QUEUE = "orchestration"
 
-# Default time period in milliseconds before next run loop is executed.
-_DEFAULT_LOOP_INTERVAL_MS = 1000
+# Map: execution mode - > time period (in milliseconds) before next loop is executed.
+_DEFAULT_LOOP_INTERVAL_MS = {
+    ExecutionMode.SEQUENTIAL: int(2e3),
+    ExecutionMode.PERIODIC: int(6e5),
+}
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -28,6 +33,9 @@ def do_run(ctx: ExecutionContext):
     # Escape if unexecutable.
     if not _can_run(ctx):
         return
+    
+    # Perform pre-run tasks.
+    _do_pre_run_tasks(ctx)
 
     # Update ctx.
     ctx.status = ExecutionStatus.IN_PROGRESS
@@ -73,8 +81,8 @@ def on_run_end(ctx: ExecutionContext):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
 
-    # Loop.
-    if ctx.loop_count != 0:
+    # Loop when in sequential mode.
+    if ctx.execution_mode == ExecutionMode.SEQUENTIAL and ctx.loop_count != 0:
         _loop(ctx)
 
 
@@ -133,6 +141,10 @@ def _loop(ctx):
     """Requeues execution if loop conditions are matched.
     
     """
+    # Escape if not looping.
+    if ctx.loop_count == 0:
+        return
+
     # Increment loop count & escape if all loops are complete.
     ctx.loop_index += 1
     if ctx.loop_count > 0 and ctx.loop_index > ctx.loop_count:
@@ -145,7 +157,18 @@ def _loop(ctx):
     ctx.step_index = 0
 
     # Set loop delay.
-    loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS
+    loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS[ctx.execution_mode]
 
     # Enqueue next loop.
     do_run.send_with_options(args=(ctx, ), delay=loop_delay)
+
+
+def _do_pre_run_tasks(ctx: ExecutionContext):
+    """Performs pre-run tasks.
+    
+    :param ctx: Execution context information.
+    
+    """
+    # Enqueue next run when in PERIODIC mode.
+    if ctx.execution_mode == ExecutionMode.PERIODIC:
+        _loop(encoder.clone(ctx))

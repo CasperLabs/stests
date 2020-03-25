@@ -49,7 +49,7 @@ def validate_execution_mode(value):
     name = str(value)
 
     # Validate network type.
-    mode = [i for i in ExecutionMode if name.startswith(i.name.lower())]
+    mode = [i for i in ExecutionMode if name == i.name.lower()]
     if not mode:
         raise argparse.ArgumentError("Invalid execution mode")
 
