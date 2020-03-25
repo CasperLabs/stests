@@ -24,7 +24,7 @@ def do_phase(ctx: ExecutionContext):
     
     """
     # Escape if unexecutable.
-    if not predicates.can_start_phase(ctx):
+    if not _can_start(ctx):
         return
 
     # Update ctx.
@@ -94,3 +94,31 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> unhandled error")
     logger.log_error(err)
+
+
+def _can_start(ctx: ExecutionContext) -> bool:
+    """Returns flag indicating whether a phase increment is valid.
+    
+    :param ctx: Execution context information.
+
+    :returns: Flag indicating whether a phase increment is valid.
+
+    """
+    # False if workflow invalid.
+    wflow, wflow_is_valid = predicates.is_valid_wflow(ctx)
+    if not wflow_is_valid:
+        return False
+
+    # False if next phase not found.
+    phase = wflow.get_phase(ctx.next_phase_index)
+    if phase is None:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> invalid phase index")
+        return False
+    
+    # False if next phase locked.
+    if not predicates.was_lock_acquired(ExecutionAspect.PHASE, ctx):
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> unacquired phase lock")
+        return False
+    
+    # All tests passed, therefore return true.    
+    return True

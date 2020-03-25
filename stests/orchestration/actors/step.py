@@ -8,7 +8,6 @@ from stests.core.orchestration import ExecutionStatus
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.core.utils.exceptions import IgnoreableAssertionError
-
 from stests.orchestration.model import Workflow
 from stests.orchestration.model import WorkflowStep
 from stests.orchestration import factory
@@ -28,7 +27,7 @@ def do_step(ctx: ExecutionContext):
     
     """
     # Escape if unexecutable.
-    if not predicates.can_start_step(ctx):
+    if not _can_start(ctx):
         return
 
     # Set step.
@@ -195,3 +194,36 @@ def on_step_deploy_finalized(ctx: ExecutionContext, bhash: str, dhash: str):
 
     # Step verification succeeded therefore signal step end.
     on_step_end.send(ctx)
+
+
+def _can_start(ctx: ExecutionContext) -> bool:
+    """Returns flag indicating whether a step increment is valid.
+    
+    :param ctx: Execution context information.
+
+    :returns: Flag indicating whether a step increment is valid.
+
+    """
+    # False if workflow invalid.
+    wflow, wflow_is_valid = predicates.is_valid_wflow(ctx)
+    if not wflow_is_valid:
+        return False
+
+    # False if current phase not found.
+    phase = wflow.get_phase(ctx.phase_index)
+    if phase is None:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> invalid phase index")
+        return False
+    
+    # False if next step not found.
+    step = phase.get_step(ctx.next_step_index)
+    if step is None:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.next_step_index_label} -> invalid step index")
+        return False
+
+    # False if next step locked - can happen when processing groups of messages.
+    if not predicates.was_lock_acquired(ExecutionAspect.STEP, ctx):
+        return False
+    
+    # All tests passed, therefore return true.    
+    return True

@@ -70,12 +70,14 @@ def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
     :returns: A cached account.
 
     """
-    return get_account(factory.create_account_id(
+    account_id = factory.create_account_id(
         index,
         ctx.network,
         ctx.run_index,
         ctx.run_type
-        ))
+        )
+
+    return get_account(account_id)
 
 
 @cache_op(StorePartition.STATE, StoreOperation.GET_ONE)

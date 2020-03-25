@@ -2,99 +2,12 @@ import typing
 
 from stests.core import cache
 from stests.core.orchestration import ExecutionAspect
+from stests.core.orchestration import ExecutionLock
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.orchestration import factory
 from stests.orchestration.model import Workflow
 
-
-
-def can_start_run(ctx: ExecutionContext) -> bool:
-    """Returns flag indicating whether a run increment is valid.
-    
-    :param ctx: Execution context information.
-
-    :returns: Flag indicating whether a run increment is valid.
-
-    """
-    # False if workflow invalid.
-    _, wflow_is_valid = is_valid_wflow(ctx)
-    if not wflow_is_valid:
-        return False
-
-    # False if phase/step are not initialised.
-    if ctx.phase_index != 0 or ctx.step_index != 0:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> invalid context (phase & step must be set to zero)")
-        return False
-
-    # False if locked.
-    if not was_lock_acquired(ExecutionAspect.RUN, ctx):
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unacquired lock")
-        return False
-
-    # All tests passed, therefore return true.    
-    return True
-
-
-def can_start_phase(ctx: ExecutionContext) -> bool:
-    """Returns flag indicating whether a phase increment is valid.
-    
-    :param ctx: Execution context information.
-
-    :returns: Flag indicating whether a phase increment is valid.
-
-    """
-    # False if workflow invalid.
-    wflow, wflow_is_valid = is_valid_wflow(ctx)
-    if not wflow_is_valid:
-        return False
-
-    # False if next phase not found.
-    phase = wflow.get_phase(ctx.next_phase_index)
-    if phase is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> invalid phase index")
-        return False
-    
-    # False if next phase locked.
-    if not was_lock_acquired(ExecutionAspect.PHASE, ctx):
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> unacquired phase lock")
-        return False
-    
-    # All tests passed, therefore return true.    
-    return True
-
-
-def can_start_step(ctx: ExecutionContext) -> bool:
-    """Returns flag indicating whether a step increment is valid.
-    
-    :param ctx: Execution context information.
-
-    :returns: Flag indicating whether a step increment is valid.
-
-    """
-    # False if workflow invalid.
-    wflow, wflow_is_valid = is_valid_wflow(ctx)
-    if not wflow_is_valid:
-        return False
-
-    # False if current phase not found.
-    phase = wflow.get_phase(ctx.phase_index)
-    if phase is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> invalid phase index")
-        return False
-    
-    # False if next step not found.
-    step = phase.get_step(ctx.next_step_index)
-    if step is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.next_step_index_label} -> invalid step index")
-        return False
-
-    # False if next step locked - can happen when processing groups of messages.
-    if not was_lock_acquired(ExecutionAspect.STEP, ctx):
-        return False
-    
-    # All tests passed, therefore return true.    
-    return True
 
 
 def is_run_locked(ctx: ExecutionContext) -> bool:
@@ -143,12 +56,24 @@ def was_lock_acquired(aspect: ExecutionAspect, ctx: ExecutionContext) -> bool:
     :returns: Flag indicating whether an execution lock was acquired
 
     """
+    # Lock factory.
+    def _create_lock(phase_index: int = None, step_index: int = None):
+        return ExecutionLock(
+            aspect=aspect,
+            network=ctx.network,
+            run_index=ctx.run_index,
+            run_type=ctx.run_type,
+            phase_index=phase_index,
+            step_index=step_index,
+            _type_key=None,
+        )
+
     if aspect == ExecutionAspect.RUN:
-        lock = factory.create_lock(aspect, ctx, None, None)
+        lock = _create_lock()
     elif aspect == ExecutionAspect.PHASE:
-        lock = factory.create_lock(aspect, ctx, ctx.next_phase_index, None)
+        lock = _create_lock(ctx.next_phase_index)
     elif aspect == ExecutionAspect.STEP:
-        lock = factory.create_lock(aspect, ctx, ctx.phase_index, ctx.next_step_index)
+        lock = _create_lock(ctx.phase_index, ctx.next_step_index)
     else:
         return False
 

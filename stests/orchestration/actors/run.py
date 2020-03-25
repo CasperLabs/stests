@@ -26,7 +26,7 @@ def do_run(ctx: ExecutionContext):
     
     """
     # Escape if unexecutable.
-    if not predicates.can_start_run(ctx):
+    if not _can_run(ctx):
         return
 
     # Update ctx.
@@ -75,29 +75,7 @@ def on_run_end(ctx: ExecutionContext):
 
     # Loop.
     if ctx.loop_count != 0:
-        do_run_loop(ctx)
-
-
-def do_run_loop(ctx):
-    """Requeues execution if loop conditions are matched.
-    
-    """
-    # Increment loop count & escape if all loops are complete.
-    ctx.loop_index += 1
-    if ctx.loop_count > 0 and ctx.loop_index > ctx.loop_count:
-        return
-
-    # Reset ctx fields.
-    ctx.phase_index = 0
-    ctx.run_index += 1
-    ctx.status = ExecutionStatus.NULL
-    ctx.step_index = 0
-
-    # Set loop delay.
-    loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS
-
-    # Enqueue next loop.
-    do_run.send_with_options(args=(ctx, ), delay=loop_delay)
+        _loop(ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -122,3 +100,52 @@ def on_run_error(ctx: ExecutionContext, err: str):
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")
     logger.log_error(err)
+
+
+def _can_run(ctx: ExecutionContext) -> bool:
+    """Returns flag indicating whether a run increment is valid.
+    
+    :param ctx: Execution context information.
+
+    :returns: Flag indicating whether a run increment is valid.
+
+    """
+    # False if workflow invalid.
+    _, wflow_is_valid = predicates.is_valid_wflow(ctx)
+    if not wflow_is_valid:
+        return False
+
+    # False if phase/step are not initialised.
+    if ctx.phase_index != 0 or ctx.step_index != 0:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> invalid context (phase & step must be set to zero)")
+        return False
+
+    # False if locked.
+    if not predicates.was_lock_acquired(ExecutionAspect.RUN, ctx):
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unacquired lock")
+        return False
+
+    # All tests passed, therefore return true.    
+    return True
+
+
+def _loop(ctx):
+    """Requeues execution if loop conditions are matched.
+    
+    """
+    # Increment loop count & escape if all loops are complete.
+    ctx.loop_index += 1
+    if ctx.loop_count > 0 and ctx.loop_index > ctx.loop_count:
+        return
+
+    # Reset ctx fields.
+    ctx.phase_index = 0
+    ctx.run_index += 1
+    ctx.status = ExecutionStatus.NULL
+    ctx.step_index = 0
+
+    # Set loop delay.
+    loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS
+
+    # Enqueue next loop.
+    do_run.send_with_options(args=(ctx, ), delay=loop_delay)
