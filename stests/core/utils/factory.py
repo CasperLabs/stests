@@ -253,6 +253,7 @@ def create_run_info(
     deploys_per_second: int,
     loop_count: int,
     loop_interval: int,
+    execution_mode: ExecutionMode,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier,
     run_index: int,
@@ -264,6 +265,7 @@ def create_run_info(
     return ExecutionContext(
         args=args,
         deploys_per_second=deploys_per_second,
+        execution_mode=ExecutionMode[execution_mode.upper()],
         loop_count=loop_count,
         loop_index=0,
         loop_interval=loop_interval,

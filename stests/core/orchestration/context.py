@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from stests.core.orchestration.enums import ExecutionStatus
+from stests.core.orchestration.enums import ExecutionMode
 
 
 
@@ -15,6 +16,9 @@ class ExecutionContext:
 
     # Number of deploys to dispatch per second.
     deploys_per_second: int
+
+    # Mode of execution.
+    execution_mode: ExecutionMode
 
     # Number of times to loop.
     loop_count: int

@@ -1,6 +1,7 @@
 import argparse
 
 from stests.core.utils import args_validator
+from stests.core.orchestration import ExecutionMode
 
 
 
@@ -31,6 +32,15 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         default=0,
         )
 
+    # execution mode.
+    args.add_argument(
+        "--execution-mode",
+        dest="execution_mode",
+        help="Generator execution mode - sequential | periodical.",
+        type=args_validator.validate_execution_mode,
+        default=ExecutionMode.SEQUENTIAL.name.lower(),
+        )
+
     # node index.
     args.add_argument(
         "--node",
@@ -46,15 +56,6 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         "--run",
         dest="run_index",
         help="Generator run index - must be between 1 and 65536.",
-        type=args_validator.validate_run_index,
-        default=1,
-        )
-
-    # run index.
-    args.add_argument(
-        "--run-mode",
-        dest="run_mode",
-        help="Generator run mode - sequential | batch | paralell.",
         type=args_validator.validate_run_index,
         default=1,
         )
