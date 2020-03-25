@@ -151,9 +151,12 @@ def _loop(ctx):
     if ctx.loop_count > 0 and ctx.loop_index > ctx.loop_count:
         return
 
+    # Set unique run identifier.
+    run_index = cache.orchestration.increment_generator_run_count()
+    
     # Reset ctx fields.
     ctx.phase_index = 0
-    ctx.run_index += 1
+    ctx.run_index = run_index
     ctx.status = ExecutionStatus.NULL
     ctx.step_index = 0
 
@@ -162,4 +165,3 @@ def _loop(ctx):
 
     # Enqueue next loop.
     do_run.send_with_options(args=(ctx, ), delay=loop_delay)
-

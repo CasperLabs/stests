@@ -50,15 +50,6 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         default=0,
         )
 
-    # run index.
-    args.add_argument(
-        "--run",
-        dest="run_index",
-        help="Generator run index - must be between 1 and 65536.",
-        type=args_validator.validate_run_index,
-        default=1,
-        )
-
     # loop interval.
     args.add_argument(
         "--loop-interval",

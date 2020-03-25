@@ -1,16 +1,20 @@
 import argparse
 import typing
 
+from stests.core import cache
+from stests.core.domain import NetworkIdentifier
+from stests.core.domain import NodeIdentifier
 from stests.core.utils import factory
 from stests.core.utils import logger
 from stests.core.orchestration import ExecutionContext
-from stests.orchestration.predicates import is_run_locked
 
 
 
-def start_generator(meta):
+def start_generator(meta: typing.Any):
     """Entry point.
-    
+
+    :param meta: Generator meta-data.
+
     """
     # Parse cli args.        
     args = meta.ARGS.parse_args()
@@ -18,26 +22,46 @@ def start_generator(meta):
     # Import initialiser to setup upstream services / actors.
     import stests.initialiser
 
+    # Import dramatiq actor used to ping message to broker.
+    from stests.orchestration.actors import do_run
+
     # Unpack args.
     network_id = factory.create_network_id(args.network_name)
     node_id = factory.create_node_id(network_id, args.node_index)
 
-    # Start generators in parallel.    
+    # Start generator(s).    
     for ctx in _get_ctx_list(meta, args, network_id, node_id):
-        _start(ctx)
+        do_run.send(ctx)
+        logger.log(f"{ctx.run_type} :: run {ctx.run_index} started")
 
 
-def _get_ctx_list(meta, args, network_id, node_id) -> typing.Generator:
+def _get_ctx_list(
+    meta: typing.Any,
+    args: argparse.Namespace,
+    network_id: NetworkIdentifier,
+    node_id: NodeIdentifier
+    ) -> typing.Generator:
+    """Returns execution context 
+    
+    """
     return map(
-        lambda i: _get_ctx(meta, args, network_id, node_id, i), 
+        lambda _: _get_ctx(meta, args, network_id, node_id), 
         range(1, args.parallel_count + 1)
         )
 
 
-def _get_ctx(meta, args, network_id, node_id, run_offset) -> ExecutionContext:
-    """Returns run specific execution context.
+def _get_ctx(
+    meta: typing.Any,
+    args: argparse.Namespace,
+    network_id: NetworkIdentifier,
+    node_id: NodeIdentifier
+    ) -> ExecutionContext:
+    """Returns generator run execution context.
     
     """
+    # Set unique run identifier.
+    run_index = cache.orchestration.increment_generator_run_count()
+
     return factory.create_run_info(
         args=meta.Arguments.create(args),
         deploys_per_second=args.deploys_per_second,
@@ -46,23 +70,7 @@ def _get_ctx(meta, args, network_id, node_id, run_offset) -> ExecutionContext:
         loop_interval=args.loop_interval,
         network_id=network_id,
         node_id=node_id,
-        run_index=args.run_index + run_offset -1,
+        run_index=run_index,
         run_type=meta.TYPE
     )
 
-
-def _start(ctx: ExecutionContext):
-    """Attempt to start a generator.
-    
-    """
-    # JIT import to avoid import collision.
-    from stests.orchestration.actors import do_run
-
-    # Abort if a run lock cannot be acquired.
-    if is_run_locked(ctx):
-        logger.log_warning(f"{ctx.run_type} :: run {ctx.run_index} aborted as it is currently executing.")
-        return
-        
-    # Start run.
-    do_run.send(ctx)
-    logger.log(f"{ctx.run_type} :: run {ctx.run_index} started")

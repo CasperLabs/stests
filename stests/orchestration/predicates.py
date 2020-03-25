@@ -10,17 +10,6 @@ from stests.orchestration.model import Workflow
 
 
 
-def is_run_locked(ctx: ExecutionContext) -> bool:
-    """Returns flag indicating whether a run is currently locked.
-    
-    :param ctx: Execution context information.
-
-    :returns: Flag indicating whether a run is currently locked.
-
-    """
-    return cache.orchestration.get_lock_run(ctx) is not None
-
-
 def is_valid_wflow(ctx: ExecutionContext) -> typing.Tuple[typing.Optional[Workflow], bool]:
     """Predicate determining whether the workflow to be executed is valid or not.
     

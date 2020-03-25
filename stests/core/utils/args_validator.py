@@ -155,7 +155,7 @@ def validate_run_index(value):
     """Argument verifier: generator run index.
     
     """
-    return _validate_int(value, RUN_INDEX_MIN, RUN_INDEX_MAX, "Generator")
+    return _validate_int(value, RUN_INDEX_MIN, RUN_INDEX_MAX, "Generator run index")
 
 
 def validate_run_type(value):

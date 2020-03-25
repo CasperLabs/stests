@@ -64,7 +64,7 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
                 elif operation == StoreOperation.INCR:
                     keypath = func(*args, **kwargs)
                     key = ":".join([str(i) for i in keypath])
-                    store.incrby(key, 1)
+                    return store.incrby(key, 1)
 
                 elif operation == StoreOperation.LOCK:
                     keypath, data = func(*args, **kwargs)
