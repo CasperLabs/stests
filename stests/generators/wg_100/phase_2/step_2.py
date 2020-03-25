@@ -22,7 +22,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     """
     # Set dispatch window.
     deploy_count = ctx.args.user_accounts
-    dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
+    deploy_dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
 
     # Refund: user -> run faucet.
     for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
@@ -33,7 +33,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
                 constants.ACC_RUN_FAUCET,
                 False
             ),
-            delay=random.randint(0, dispatch_window)
+            delay=random.randint(0, deploy_dispatch_window)
         )    
 
 

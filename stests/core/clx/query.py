@@ -39,10 +39,7 @@ def get_balance(ctx: ExecutionContext, account: Account) -> int:
 
 
 @utils.clx_op
-def get_block_by_node(
-    node_id: NodeIdentifier,
-    block_hash: str
-    ) -> typing.Union[typing.Dict, Block]:
+def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
     """Queries network for information pertaining to a specific block.
 
     :param node_id: A node identifier.
@@ -52,20 +49,8 @@ def get_block_by_node(
 
     """
     _, client = utils.get_client(node_id)
-    block_info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
-    return MessageToDict(block_info), factory.create_block(
-        network_id=node_id.network,
-        block_hash=block_hash,
-        deploy_cost_total=block_info.status.stats.deploy_cost_total,
-        deploy_count=block_info.summary.header.deploy_count, 
-        deploy_gas_price_avg=block_info.status.stats.deploy_gas_price_avg,
-        j_rank=block_info.summary.header.j_rank,
-        m_rank=block_info.summary.header.main_rank,
-        size_bytes=block_info.status.stats.block_size_bytes,
-        timestamp=datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
-        validator_id=block_info.summary.header.validator_public_key.hex()
-        )
+    return client.showBlock(block_hash_base16=block_hash, full_view=False)
 
 
 @utils.clx_op

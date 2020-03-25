@@ -82,4 +82,7 @@ def _get_message(msg: str, level: str) -> str:
     if msg is None:
         return _NULL_MSG
 
-    return f"{dt.datetime.utcnow()} [{level}] [{str(os.getpid()).zfill(5)}] STESTS :: {str(msg).strip()}"
+    timestamp = dt.datetime.utcnow().isoformat()
+    pid = str(os.getpid()).zfill(5)
+
+    return f"{timestamp}Z [{level}] [{pid}] STESTS :: {str(msg).strip()}"
