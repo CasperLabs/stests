@@ -1,5 +1,4 @@
 import inspect
-from datetime import datetime
 
 import dramatiq
 
@@ -19,193 +18,6 @@ from stests.orchestration import predicates
 
 # Queue to which messages will be dispatched.
 _QUEUE = "orchestration"
-
-# Default time period in milliseconds before next run loop is executed.
-_DEFAULT_LOOP_INTERVAL_MS = 1000
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_run(ctx: ExecutionContext):
-    """Runs a workflow.
-    
-    :param ctx: Execution context information.
-    
-    """
-    # Escape if unexecutable.
-    if not predicates.can_start_run(ctx):
-        return
-
-    # Update ctx.
-    ctx.status = ExecutionStatus.IN_PROGRESS
-
-    # Set info/state.
-    run_info = factory.create_info(ExecutionAspect.RUN, ctx)
-    run_state = factory.create_state(ExecutionAspect.RUN, ctx)
-
-    # Update cache.
-    cache.flush_by_run(ctx)
-    cache.orchestration.set_context(ctx)
-    cache.orchestration.set_info(run_info)
-    cache.orchestration.set_state(run_state)
-
-    # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> starts")
-
-    # Run phase.
-    do_phase.send(ctx)
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_run_end(ctx: ExecutionContext):
-    """Ends a workflow.
-    
-    :param ctx: Execution context information.
-    
-    """
-    # Update ctx.
-    ctx.status = ExecutionStatus.COMPLETE
-
-    # Set info/state.
-    run_state = factory.create_state(ExecutionAspect.RUN, ctx)
-
-    # Update cache.
-    cache.orchestration.set_context(ctx)
-    cache.orchestration.set_state(run_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.RUN, ExecutionStatus.COMPLETE)
-
-    # Locks can now be flushed.
-    cache.orchestration.flush_locks(ctx)    
-
-    # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
-
-    # Loop.
-    if ctx.loop_count != 0:
-        do_run_loop(ctx)
-
-
-def do_run_loop(ctx):
-    """Requeues execution if loop conditions are matched.
-    
-    """
-    # Increment loop count & escape if all loops are complete.
-    ctx.loop_index += 1
-    if ctx.loop_count > 0 and ctx.loop_index > ctx.loop_count:
-        return
-
-    # Reset ctx fields.
-    ctx.phase_index = 0
-    ctx.run_index += 1
-    ctx.status = ExecutionStatus.NULL
-    ctx.step_index = 0
-
-    # Set loop delay.
-    loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS
-
-    # Enqueue next loop.
-    do_run.send_with_options(args=(ctx, ), delay=loop_delay)
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_run_error(ctx: ExecutionContext, err: str):
-    """Ends a workflow phase in error.
-    
-    :param ctx: Execution context information.
-    :param err: Execution error information.
-    
-    """
-    # Update ctx.
-    ctx.status = ExecutionStatus.ERROR
-
-    # Set info/state.
-    run_state = factory.create_state(ExecutionAspect.RUN, ctx)
-
-    # Update cache.
-    cache.orchestration.set_context(ctx)
-    cache.orchestration.set_state(run_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.RUN, ExecutionStatus.ERROR)
-
-    # Inform.
-    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")
-    logger.log_error(err)
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_phase(ctx: ExecutionContext):
-    """Runs a workflow phase.
-    
-    :param ctx: Execution context information.
-    
-    """
-    # Escape if unexecutable.
-    if not predicates.can_start_phase(ctx):
-        return
-
-    # Update ctx.
-    ctx.phase_index += 1
-    ctx.step_index = 0
-
-    # Set info/state.
-    phase_info = factory.create_info(ExecutionAspect.PHASE, ctx)
-    phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, ExecutionStatus.IN_PROGRESS)
-
-    # Update cache.
-    cache.orchestration.set_context(ctx)
-    cache.orchestration.set_info(phase_info)
-    cache.orchestration.set_state(phase_state)
-
-    # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
-
-    # Run step.
-    do_step.send(ctx)
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_phase_end(ctx: ExecutionContext):
-    """Ends a workflow phase.
-    
-    :param ctx: Execution context information.
-    
-    """
-    # Set phase.
-    phase = Workflow.get_phase_(ctx, ctx.phase_index)
-
-    # Set info/state.
-    phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, status=ExecutionStatus.COMPLETE)
-
-    # Update cache.
-    cache.orchestration.set_state(phase_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
-
-    # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> ends")
-
-    # Enqueue either end of workflow or next phase. 
-    if phase.is_last:
-        on_run_end.send(ctx)
-    else:
-        do_phase.send(ctx)
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def on_phase_error(ctx: ExecutionContext, err: str):
-    """Ends a workflow phase in error.
-    
-    :param ctx: Execution context information.
-    :param err: Execution error information.
-    
-    """
-    # Set info/state.
-    phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, status=ExecutionStatus.ERROR)
-
-    # Update cache.
-    cache.orchestration.set_state(phase_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
-
-    # Inform.
-    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> unhandled error")
-    logger.log_error(err)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -243,7 +55,7 @@ def do_step(ctx: ExecutionContext):
 
     # Process errors.
     if step.error:
-        do_step_error.send(ctx, str(step.error))
+        on_step_error.send(ctx, str(step.error))
 
     # Exception if step result != None | func.
     elif step.result is not None and not inspect.isfunction(step.result):
@@ -284,18 +96,18 @@ def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
     """
     # Simply signal step end when unit of work executed.
     if step.result is None:
-        do_step_end.send(ctx)
+        on_step_end.send(ctx)
 
     # Dispatch message facctory as a group - note the completion callback.
     elif inspect.isfunction(step.result):
         message_factory = step.result()
         group = dramatiq.group(message_factory)
-        group.add_completion_callback(do_step_end.message(ctx))
+        group.add_completion_callback(on_step_end.message(ctx))
         group.run()
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_step_end(ctx: ExecutionContext):
+def on_step_end(ctx: ExecutionContext):
     """Ends a workflow step.
     
     :param ctx: Execution context information.
@@ -318,13 +130,15 @@ def do_step_end(ctx: ExecutionContext):
 
     # Enqueue either end of phase or next step. 
     if step.is_last:
+        # JIT import to avoid circularity.
+        from stests.orchestration.actors.phase import on_phase_end
         on_phase_end.send(ctx)
     else:
         do_step.send(ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_step_error(ctx: ExecutionContext, err: str):
+def on_step_error(ctx: ExecutionContext, err: str):
     """Ends a workflow step in error.
     
     :param ctx: Execution context information.
@@ -380,4 +194,4 @@ def on_step_deploy_finalized(ctx: ExecutionContext, bhash: str, dhash: str):
             return
 
     # Step verification succeeded therefore signal step end.
-    do_step_end.send(ctx)
+    on_step_end.send(ctx)
