@@ -31,7 +31,7 @@ ARGS.add_argument(
 # CLI argument: run index.
 ARGS.add_argument(
     "run_index",
-    help="Run identifier, e.g. 1-100.",
+    help="Run identifier.",
     type=args_validator.validate_run_index,
     )
 

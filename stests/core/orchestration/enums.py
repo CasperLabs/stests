@@ -10,6 +10,14 @@ class ExecutionAspect(enum.Flag):
     STEP = enum.auto()
 
 
+class ExecutionMode(enum.Flag):
+    """Flag over set of execution modes.
+    
+    """
+    SEQUENTIAL = enum.auto()
+    PERIODIC = enum.auto()
+
+
 class ExecutionStatus(enum.Flag):
     """Flag over set of execution states.
     
@@ -23,5 +31,6 @@ class ExecutionStatus(enum.Flag):
 # Full set of enums.
 ENUM_SET = {
     ExecutionAspect,
+    ExecutionMode,
     ExecutionStatus,
 }
