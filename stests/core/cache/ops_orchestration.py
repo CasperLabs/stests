@@ -10,11 +10,12 @@ from stests.core.utils import factory
 
 
 # Cache collections.
-COL_DEPLOY_COUNT = "deploy-count"
 COL_CONTEXT = "context"
+COL_DEPLOY_COUNT = "deploy-count"
+COL_GENERATOR_RUN_COUNT = "generator-run-count"
+COL_INFO = "info"
 COL_LOCK = "lock"
 COL_STATE = "state"
-COL_INFO = "info"
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
@@ -194,10 +195,23 @@ def increment_deploy_counts(ctx: ExecutionContext):
     increment_deploy_count(ctx, ExecutionAspect.RUN)
     increment_deploy_count(ctx, ExecutionAspect.PHASE)
     increment_deploy_count(ctx, ExecutionAspect.STEP)
-    
+
+
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
+def increment_generator_run_count():
+    """Increments (atomically) count of generator runs.
+
+    :param ctx: Execution context information.
+    :param aspect: Aspect of execution in scope.
+
+    """
+    path = [COL_GENERATOR_RUN_COUNT]
+
+    return path
+
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
-def lock_execution(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typing.List[str], ExecutionLock]:
+def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typing.List[str], ExecutionLock]:
     """Encaches a lock: ExecutionLock.
 
     :param aspect: Aspect of execution to be locked.

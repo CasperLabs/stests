@@ -16,7 +16,7 @@ TYPE = "WG-110"
 CONTRACT_INITIAL_CLX_BALANCE = int(1e8)
 
 # Default faucet's initial CLX balance = 10m.
-FAUCET_INITIAL_CLX_BALANCE = int(1e10)
+FAUCET_INITIAL_CLX_BALANCE = int(1e11)
 
 # Default number of user accounts to generate.
 USER_ACCOUNTS = 5

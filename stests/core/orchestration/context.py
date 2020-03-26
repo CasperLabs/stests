@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from stests.core.orchestration.enums import ExecutionStatus
+from stests.core.orchestration.enums import ExecutionMode
 
 
 
@@ -15,6 +16,9 @@ class ExecutionContext:
 
     # Number of deploys to dispatch per second.
     deploys_per_second: int
+
+    # Mode of execution.
+    execution_mode: ExecutionMode
 
     # Number of times to loop.
     loop_count: int
@@ -33,6 +37,9 @@ class ExecutionContext:
 
     # Numerical index to distinguish between multiple runs.
     run_index: int
+
+    # Index of parent run in a loop scenario.
+    run_index_parent: typing.Optional[int]
 
     # Type of run, e.g. WG-100 ...etc.
     run_type: str
@@ -54,6 +61,10 @@ class ExecutionContext:
 
     @property
     def run_index_label(self):
+        return f"R-{str(self.run_index).zfill(3)}"
+
+    @property
+    def run_index_parent_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
     @property

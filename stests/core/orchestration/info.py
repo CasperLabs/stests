@@ -24,6 +24,9 @@ class ExecutionInfo:
     # Numerical index to distinguish between multiple runs.
     run_index: int
 
+    # Index of parent run in a loop scenario.
+    run_index_parent: typing.Optional[int]
+
     # Type of run, e.g. WG-100 ...etc.
     run_type: str
 
@@ -96,6 +99,11 @@ class ExecutionInfo:
     def run_index_label(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
+    @property
+    def run_index_parent_label(self):
+        if self.run_index_parent:
+            return f"R-{str(self.run_index_parent).zfill(3)}"
+        return "--"
 
     @property
     def status_label(self):

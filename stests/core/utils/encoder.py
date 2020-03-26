@@ -57,6 +57,13 @@ def from_json(as_json: str) -> typing.Any:
     return decode(json.loads(as_json))
 
 
+def clone(data: typing.Any) -> typing.Any:
+    """Returns a clone of a data class.
+    
+    """
+    return from_dict(as_dict(data))
+
+
 def decode(obj: typing.Any) -> typing.Any:
     """Decodes previously encoded information.
     

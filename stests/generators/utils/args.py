@@ -1,13 +1,14 @@
 import argparse
 
 from stests.core.utils import args_validator
+from stests.core.orchestration import ExecutionMode
 
 
 
-def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
+def get_argparser(description: str) -> argparse.ArgumentParser:
     """Factory method: returns standard argument parser for a generator.
     
-    :param description: Description ofto be assigned to parser.
+    :param description: Description to be assigned to parser.
 
     :returns: Standard argument parser for a generator.
 
@@ -31,6 +32,15 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         default=0,
         )
 
+    # execution mode.
+    args.add_argument(
+        "--execution-mode",
+        dest="execution_mode",
+        help="Generator execution mode - sequential | periodical.",
+        type=args_validator.validate_execution_mode,
+        default=ExecutionMode.SEQUENTIAL.name.lower(),
+        )
+
     # node index.
     args.add_argument(
         "--node",
@@ -38,18 +48,17 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         help="Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.",
         type=args_validator.validate_node_index,
         default=0,
-        required=False,
         )
 
-    # run index.
+    # loop count.
     args.add_argument(
-        "--run",
-        dest="run_index",
-        help="Generator run index - must be between 1 and 65536.",
-        type=args_validator.validate_run_index,
-        default=1,
+        "--loop",
+        dest="loop_count",
+        help="Number of times to loop.",
+        type=args_validator.validate_loop_count,
+        default=0,
         )
-
+    
     # loop interval.
     args.add_argument(
         "--loop-interval",
@@ -59,13 +68,14 @@ def get_argparser_for_generator(description: str) -> argparse.ArgumentParser:
         default=0,
         )
 
-    # loop count.
+    # parallel count.
     args.add_argument(
-        "--loop-count",
-        dest="loop_count",
-        help="Number of times to loop.",
-        type=args_validator.validate_loop_count,
-        default=0,
+        "--parallel",
+        dest="parallel_count",
+        help="Number of runs to launch in parallel.",
+        type=args_validator.validate_parallel_count,
+        default=1,
         )
-    
+
+
     return args

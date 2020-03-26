@@ -2,6 +2,7 @@ import argparse
 import pathlib
 
 from stests.core.domain import NetworkType
+from stests.core.orchestration import ExecutionMode
 
 
 
@@ -33,12 +34,30 @@ LOOP_INTERVAL_MAX = 1209600  # 2 weeks
 LOOP_COUNT_MIN = -1
 LOOP_COUNT_MAX = 65536
 
+# Parallel count min/max
+PARALLEL_COUNT_MIN = 1
+PARALLEL_COUNT_MAX = 127
+
 
 def validate_deploys_per_second(value):
     """Argument verifier: generator run index.
     
     """
     return _validate_int(value, DEPLOYS_PER_SECOND_MIN, DEPLOYS_PER_SECOND_MAX, "Deploys per second")
+
+
+def validate_execution_mode(value):
+    """Argument verifier: generator execution mode.
+    
+    """
+    name = str(value)
+
+    # Validate network type.
+    mode = [i for i in ExecutionMode if name == i.name.lower()]
+    if not mode:
+        raise argparse.ArgumentError("Invalid execution mode")
+
+    return name
 
 
 def validate_filepath(value):
@@ -50,21 +69,6 @@ def validate_filepath(value):
         raise ValueError(f"Invalid file path, expecting an absolute file path: {value}")
 
     return value
-
-
-def validate_run_index(value):
-    """Argument verifier: generator run index.
-    
-    """
-    return _validate_int(value, RUN_INDEX_MIN, RUN_INDEX_MAX, "Generator")
-
-
-def validate_run_type(value):
-    """Argument verifier: generator run type.
-    
-    """
-    # TODO
-    return str(value).upper()
 
 
 def validate_loop_interval(value):
@@ -79,13 +83,6 @@ def validate_loop_count(value):
     
     """
     return _validate_int(value, LOOP_COUNT_MIN, LOOP_COUNT_MAX, "Loop count")
-
-
-def validate_network_index(value):
-    """Argument verifier: network index.
-    
-    """
-    return _validate_int(value, NETWORK_INDEX_MIN, NETWORK_INDEX_MAX, "Network")
 
 
 def validate_network(value):
@@ -103,6 +100,13 @@ def validate_network(value):
     validate_network_index(name[len(network_types[0].name):])
 
     return name
+
+
+def validate_network_index(value):
+    """Argument verifier: network index.
+    
+    """
+    return _validate_int(value, NETWORK_INDEX_MIN, NETWORK_INDEX_MAX, "Network")
 
 
 def validate_node_address(value):
@@ -138,6 +142,28 @@ def validate_node_name(value):
     validate_node_index(name.split(":")[1])
 
     return name
+
+
+def validate_parallel_count(value):
+    """Argument verifier: parallel count.
+    
+    """
+    return _validate_int(value, PARALLEL_COUNT_MIN, PARALLEL_COUNT_MAX, "Parallel count")
+
+
+def validate_run_index(value):
+    """Argument verifier: generator run index.
+    
+    """
+    return _validate_int(value, RUN_INDEX_MIN, RUN_INDEX_MAX, "Generator run index")
+
+
+def validate_run_type(value):
+    """Argument verifier: generator run type.
+    
+    """
+    # TODO
+    return str(value).upper()
 
 
 def _validate_host(value):
