@@ -61,9 +61,19 @@ Usage
 3.  Run a generator:
 
     ```
-    stests-wg-100 poc1 --run 1 --user-accounts 5
-    stests-wg-100 poc1 --run 2 --user-accounts 50
-    stests-wg-100 poc1 --run 3 --user-accounts 500
+    # Run once.
+    stests-wg-100 poc1 --user-accounts 5
+    stests-wg-100 poc1 --user-accounts 50
+    stests-wg-100 poc1 --user-accounts 500
+
+    # Run 2 in parallel.
+    stests-wg-100 poc1 --user-accounts 5 --parallel 2
+    
+    # Run 2 in parallel, each looping 4 times or until a failure occurs.
+    stests-wg-100 poc1 --user-accounts 5 --parallel 2 --loop 4
+
+    # Run 2 in parallel, each looping 4 times every 10 minutes.
+    stests-wg-100 poc1 --user-accounts 5 --parallel 2 --loop 4 --loop-interval 600 --execution-mode periodic
     ```
 
 Further Information ?
