@@ -41,8 +41,6 @@ def get_client(src: typing.Union[Node, NodeIdentifier, Network, NetworkIdentifie
     if not node:
         raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")
 
-    logger.log(f"PYCLX :: connecting to node :: {node.network}:N-{str(node.index).zfill(4)} :: {node.host}:{node.port}")
-
     # TODO: get node id / client ssl cert.
     return node, casperlabs_client.CasperLabsClient(
         host=node.host,
@@ -98,16 +96,10 @@ def clx_op(func: typing.Callable) -> typing.Callable:
     def wrapper(*args, **kwargs):
         # Pre log.
         messages = {
-            "get_block": lambda args: f"bhash={args[-1]}",
-            "get_deploys": lambda args: f"bhash={args[-1]}",
-            "get_balance": lambda args: f"pbk={args[-1].public_key}",
+            "get_block": lambda args: f"block-hash={args[-1]}",
+            "get_deploys": lambda args: f"block-hash={args[-1]}",
+            "get_balance": lambda args: f"address={args[-1].public_key}",
         }
-        try:
-            message = messages[func.__name__]
-        except KeyError:
-            logger.log(f"PYCLX :: {func.__name__} :: executing ...")
-        else:
-            logger.log(f"PYCLX :: {func.__name__} :: {message(args)}")
 
         try:
             return func(*args, **kwargs)

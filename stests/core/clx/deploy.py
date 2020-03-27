@@ -102,7 +102,7 @@ def do_transfer(
             gas_price=defaults.CLX_TX_GAS_PRICE
         )
 
-    logger.log(f"PYCLX :: transfer :: {dhash} :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
+    logger.log(f"PYCLX :: deploy dispatched :: deploy-hash={dhash} :: TRANSFER :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
 
     return (node, dhash)
 
@@ -141,16 +141,16 @@ def do_deploy_network_contract(
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: dhash={dhash} -> awaiting processing")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: deploy-hash={dhash} -> awaiting processing")
 
     # Get block hash.
     dinfo = client.showDeploy(dhash, wait_for_processed=True)
     bhash = dinfo.processing_results[0].block_info.summary.block_hash.hex()
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: dhash={dhash} -> processing complete")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: deploy-hash={dhash} -> processing complete")
 
     # Get contract hash.
     chash = utils.get_contract_hash(client, network.faucet, bhash, contract_name)
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: chash={chash}")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type.value} :: contract-hash={chash}")
 
     return chash
 
@@ -189,7 +189,7 @@ def do_deploy_contract(
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: dhash={dhash}")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: deploy-hash={dhash}")
 
     return (node, dhash)
 
@@ -224,7 +224,7 @@ def do_deploy_contract_to_name(
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: dhash={dhash}")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: deploy-hash={dhash}")
 
     return (node, dhash)
 
@@ -263,6 +263,6 @@ def do_deploy_contract_to_hash(
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: dhash={dhash}")
+    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: deploy-hash={dhash}")
 
     return (node, dhash)

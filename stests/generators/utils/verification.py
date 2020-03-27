@@ -19,7 +19,7 @@ def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str) -> Deploy:
     deploy = cache.state.get_deploy(dhash)
     assert deploy, f"deploy could not be retrieved: {dhash}"
     assert deploy.status == DeployStatus.FINALIZED, f"deploy is not FINALIZED : {dhash}"
-    assert deploy.block_hash == bhash, f"finalized deploy block hash mismatch : bhash={bhash}"
+    assert deploy.block_hash == bhash, f"finalized deploy block hash mismatch : block-hash={bhash}"
 
     return deploy
 

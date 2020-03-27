@@ -28,10 +28,8 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
     :param block_hash: Hash of finalized block.
 
     """
-    # Query chain.
+    # Query chain & set block.
     block_info = clx.get_block_by_node(node_id, block_hash)
-
-    # Set block summary.
     block = factory.create_block(
         network_id=node_id.network,
         block_hash=block_hash,
@@ -46,25 +44,32 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
         )
     block.update_on_finalization()
 
-    # Encache block summary (escape if duplicate).    
+    # Encache block (escape if duplicate).    
     _, encached = cache.monitoring.set_block(block)
-    if encached:
-        logger.log(f"PYCLX :: processing finalized block: bhash={block_hash}")
+    if not encached:
+        return
 
-        # Encache block info.    
-        cache.monitoring.set_block_info(block, MessageToDict(block_info))
-    
-        # Query chain & process deploys. 
-        for deploy_hash, deploy_info in clx.get_deploys_by_node(node_id, block_hash):
-            _process_finalized_deploy(node_id, block, deploy_hash, deploy_info)
+    # Encache block info.    
+    cache.monitoring.set_block_info(block, MessageToDict(block_info))
+
+    # Query chain, process deploys, build collection of run deploys.
+    deploys = clx.get_deploys_by_node(node_id, block_hash)
+    run_deploys = []
+    for deploy_hash, deploy_info in deploys:
+        _process_monitored_deploy(node_id, block, deploy_hash, deploy_info)
+        run_deploys.append(cache.state.get_deploy(deploy_hash))
+
+    # Process run deploys.
+    for idx, run_deploy in enumerate([i for i in run_deploys if i]):
+        if idx == 0:
+            logger.log(f"PYCLX :: block finalized: block-hash={block.hash}")
+        _process_run_deploy(node_id, block, run_deploy)
 
 
-def _process_finalized_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_info: dict):
-    """Performs finalized deploy processing.
+def _process_monitored_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_info: dict):
+    """Performs monitored deploy processing.
     
     """
-    logger.log(f"PYCLX :: processing finalized deploy: bhash={block.hash} :: dhash={deploy_hash}")
-
     # Set deploy summary.
     deploy = factory.create_deploy_on_block_finalisation(node_id, block, deploy_hash)
 
@@ -72,31 +77,25 @@ def _process_finalized_deploy(node_id: NodeIdentifier, block: Block, deploy_hash
     cache.monitoring.set_deploy(block, deploy)
     cache.monitoring.set_deploy_info(block, deploy, deploy_info)
 
-    # Process run deploy - escape if N/A.
-    run_deploy = cache.state.get_deploy(deploy_hash)
-    if run_deploy:
-        _process_finalized_deploy_for_run(node_id, block, run_deploy)
 
-
-def _process_finalized_deploy_for_run(node_id: NodeIdentifier, block: Block, deploy: Deploy):
-    """Performs finalized deploy processing.
+def _process_run_deploy(node_id: NodeIdentifier, block: Block, deploy: Deploy):
+    """Performs a deploy dispatched during a run.
     
     """
-    logger.log(f"PYCLX :: run deploy finalized: dhash={deploy.hash} :: bhash={block.hash}")
+    logger.log(f"PYCLX :: deploy finalized: deploy-hash={deploy.hash} :: block-hash={block.hash}")
 
     # Update deploy.
     deploy.update_on_finalization(block)
     cache.state.set_deploy(deploy)
 
-    # Increment deploy counts.
-    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
-    cache.orchestration.increment_deploy_counts(ctx)
-
-    # Update transfers.
+    # Update transfer.
     transfer = cache.state.get_transfer(deploy.hash)
     if transfer:
         transfer.update_on_completion()
         cache.state.set_transfer(transfer)
-    
+
+    # Set execution context.
+    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
+
     # Signal to orchestrator.
     on_step_deploy_finalized.send(ctx, node_id, block.hash, deploy.hash)

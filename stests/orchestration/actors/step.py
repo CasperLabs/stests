@@ -166,12 +166,15 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, bha
     :param dhash: Hash of a finalized deploy.
 
     """
+    # Increment deploy counts.
+    cache.orchestration.increment_deploy_counts(ctx)
+
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> invalid step")
 
-    # Verify step deploy:
+    # Verify deploy.
     if not step.has_verifer_for_deploy:
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verifier undefined")
         return       
@@ -182,7 +185,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, bha
             logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed: {err} :: {dhash}")
             return
 
-    # Verify step:
+    # Verify step.
     if not step.has_verifer:
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verifier undefined")
     else:

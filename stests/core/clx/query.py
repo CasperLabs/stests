@@ -9,6 +9,7 @@ from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
+from stests.core.utils import logger
 
 from google.protobuf.json_format import MessageToDict
 from google.protobuf.json_format import MessageToJson
@@ -48,7 +49,7 @@ def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
     :returns: 2 member tuple: (block info, block summary).
 
     """
-    _, client = utils.get_client(node_id)
+    node, client = utils.get_client(node_id)
 
     return client.showBlock(block_hash_base16=block_hash, full_view=False)
 
@@ -63,7 +64,8 @@ def get_deploys_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.List
     :returns: 2 member tuple: (deploy hash, deploy info).
 
     """
-    _, client = utils.get_client(node_id)
+    node, client = utils.get_client(node_id)
+
     deploys = client.showDeploys(block_hash_base16=block_hash, full_view=False)
 
     return ((i.deploy.deploy_hash.hex(), MessageToDict(i)) for i in deploys)
