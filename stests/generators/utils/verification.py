@@ -1,5 +1,7 @@
 from stests.core import cache
 from stests.core import clx
+from stests.core.domain import Account
+from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.orchestration import ExecutionContext
 from stests.core.orchestration import ExecutionAspect
@@ -9,7 +11,7 @@ from stests.core.utils.exceptions import IgnoreableAssertionError
 
 
 
-def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
+def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str) -> Deploy:
     """Verifies that a deploy is in a finalized state.
     
     """
@@ -28,7 +30,7 @@ def verify_deploy_count(ctx: ExecutionContext, expected: int, aspect: ExecutionA
     assert count == expected, IgnoreableAssertionError(f"deploy count mismatch: actual={count}, expected={expected}")
 
 
-def verify_transfer(ctx: ExecutionContext, dhash: str) -> Transfer:
+def verify_transfer(ctx: ExecutionContext, bhash: str, dhash: str) -> Transfer:
     """Verifies that a transfer between counter-parties completed.
     
     """
@@ -39,7 +41,7 @@ def verify_transfer(ctx: ExecutionContext, dhash: str) -> Transfer:
     return transfer
 
 
-def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: int):
+def verify_account_balance(ctx: ExecutionContext, bhash: str, account_index: int, expected: int) -> Account:
     """Verifies that an account balance is as per expectation.
     
     """

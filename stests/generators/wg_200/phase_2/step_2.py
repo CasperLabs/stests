@@ -7,6 +7,7 @@ from stests.core import clx
 from stests.core.domain import AccountType
 from stests.core.domain import ContractType
 from stests.core.domain import DeployType
+from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -45,7 +46,7 @@ def verify(ctx: ExecutionContext):
     utils.verify_deploy_count(ctx, ctx.args.user_accounts * ctx.args.increments)    
 
 
-def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str):
+def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, bhash: str, dhash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.

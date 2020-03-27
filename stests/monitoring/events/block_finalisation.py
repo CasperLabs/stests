@@ -56,22 +56,17 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
     
         # Query chain & process deploys. 
         for deploy_hash, deploy_info in clx.get_deploys_by_node(node_id, block_hash):
-            _process_finalized_deploy(node_id.network, block, deploy_hash, deploy_info)
+            _process_finalized_deploy(node_id, block, deploy_hash, deploy_info)
 
 
-def _process_finalized_deploy(network_id: NetworkIdentifier, block: Block, deploy_hash: str, deploy_info: dict):
+def _process_finalized_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_info: dict):
     """Performs finalized deploy processing.
     
-    :param network_id: Identifier of network upon which a block has been finalized.
-    :param block: Finalized block summary.
-    :param deploy_hash: Hash of finalized deploy.
-    :param deploy_info: Deploy information returned from node.
-
     """
     logger.log(f"PYCLX :: processing finalized deploy: bhash={block.hash} :: dhash={deploy_hash}")
 
     # Set deploy summary.
-    deploy = factory.create_deploy(network_id, block, deploy_hash, DeployStatus.FINALIZED)
+    deploy = factory.create_deploy_on_block_finalisation(node_id, block, deploy_hash)
 
     # Encache deploy summary + info.
     cache.monitoring.set_deploy(block, deploy)
@@ -80,16 +75,12 @@ def _process_finalized_deploy(network_id: NetworkIdentifier, block: Block, deplo
     # Process run deploy - escape if N/A.
     run_deploy = cache.state.get_deploy(deploy_hash)
     if run_deploy:
-        _process_finalized_deploy_for_run(block, run_deploy)
+        _process_finalized_deploy_for_run(node_id, block, run_deploy)
 
 
-def _process_finalized_deploy_for_run(block: Block, deploy: Deploy):
+def _process_finalized_deploy_for_run(node_id: NodeIdentifier, block: Block, deploy: Deploy):
     """Performs finalized deploy processing.
     
-    :param network_id: Identifier of network upon which a block has been finalized.
-    :param block: Finalized block summary.
-    :param deploy: A deploy that had been dispatched.
-
     """
     logger.log(f"PYCLX :: run deploy finalized: dhash={deploy.hash} :: bhash={block.hash}")
 
@@ -108,4 +99,4 @@ def _process_finalized_deploy_for_run(block: Block, deploy: Deploy):
         cache.state.set_transfer(transfer)
     
     # Signal to orchestrator.
-    on_step_deploy_finalized.send(ctx, block.hash, deploy.hash)
+    on_step_deploy_finalized.send(ctx, node_id, block.hash, deploy.hash)

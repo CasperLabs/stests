@@ -31,6 +31,9 @@ class Deploy:
     # Moment in time when deploy dispatched to CLX network.
     dispatch_ts: typing.Optional[datetime]
 
+    # Node which emitted finalization event of the block in which deploy was included.
+    finalization_node: typing.Optional[int]
+
     # Time between dispatch & deploy finality.
     finalization_time: typing.Optional[float]
 
