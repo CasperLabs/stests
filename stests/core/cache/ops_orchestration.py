@@ -249,7 +249,11 @@ def increment_generator_run_count(network: str, generator_type: str) -> typing.L
     :param aspect: Aspect of execution in scope.
 
     """
-    path = [COL_GENERATOR_RUN_COUNT]
+    path = [
+        network,
+        generator_type,
+        COL_GENERATOR_RUN_COUNT
+        ]
 
     return path
 

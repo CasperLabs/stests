@@ -15,20 +15,20 @@ from google.protobuf.json_format import MessageToJson
 
 
 @utils.clx_op
-def get_balance(ctx: ExecutionContext, account: Account) -> int:
+def get_balance(src: typing.Union[ExecutionContext, NodeIdentifier], account: Account, block_hash: str = None) -> int:
     """Returns a chain account balance.
 
-    :param ctx: Execution context information.
+    :param src: The source from which a network node will be derived.
     :param account: Account whose balance will be queried.
 
     :returns: Account balance.
 
     """
-    _, client = utils.get_client(ctx)
+    _, client = utils.get_client(src)
     try:
         balance = client.balance(
             address=account.public_key,
-            block_hash=get_last_block_hash(client)
+            block_hash=block_hash or get_last_block_hash(client)
             )
     except Exception as err:
         if "Failed to find base key at path" in err.details:
