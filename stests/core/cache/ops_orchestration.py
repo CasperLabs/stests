@@ -81,6 +81,26 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
     ]
 
 
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+def get_context_list(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionContext]:
+    """Decaches domain object: ExecutionContext.
+    
+    :param network_id: Identifier of network being tested.
+    :param run_type: Generator run type, e.g. wg-100.
+
+    :returns: Cached run context information.
+
+    """
+    path = [
+        network_id.name,
+        "WG-*" if run_type is None else run_type,
+        "R-*",
+        COL_CONTEXT,
+    ]
+
+    return path
+
+
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNT)
 def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
     """Returns count of deploys within the scope of an execution aspect.
@@ -124,7 +144,7 @@ def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
 def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> typing.List[ExecutionInfo]:
     """Decaches domain object: ExecutionContext.
     
-    :param ctx: Execution context information.
+    :param network_id: Identifier of network being tested.
     :param run_type: Type of run that was executed.
     :param run_index: Index of a run.
 
@@ -198,7 +218,7 @@ def increment_deploy_counts(ctx: ExecutionContext):
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
-def increment_generator_run_count():
+def increment_generator_run_count(network: str, generator_type: str) -> typing.List[str]:
     """Increments (atomically) count of generator runs.
 
     :param ctx: Execution context information.

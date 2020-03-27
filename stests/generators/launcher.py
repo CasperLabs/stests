@@ -60,7 +60,7 @@ def _get_ctx(
     
     """
     # Set unique run identifier.
-    run_index = cache.orchestration.increment_generator_run_count()
+    run_index = cache.orchestration.increment_generator_run_count(network_id.name, meta.TYPE)
 
     return factory.create_ctx(
         args=meta.Arguments.create(args),

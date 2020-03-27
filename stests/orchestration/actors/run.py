@@ -152,7 +152,7 @@ def _loop(ctx):
         return
 
     # Set unique run identifier.
-    run_index = cache.orchestration.increment_generator_run_count()
+    run_index = cache.orchestration.increment_generator_run_count(ctx.network, ctx.run_type)
     
     # Reset ctx fields.
     ctx.phase_index = 0
