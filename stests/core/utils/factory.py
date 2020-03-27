@@ -156,11 +156,10 @@ def create_ctx(
     )
 
 
-def create_deploy(
-    network_id: NetworkIdentifier,
+def create_deploy_on_block_finalisation(
+    node_id: NodeIdentifier,
     block: Block,
-    deploy_hash: str,
-    status: DeployStatus
+    deploy_hash: str
     ) -> Deploy:
     """Returns a domain object instance: Deploy.
     
@@ -171,16 +170,17 @@ def create_deploy(
         block_rank=block.m_rank,
         deploy_hash=deploy_hash,
         dispatch_node=None,
-        dispatch_ts=datetime.now() if status == DeployStatus.DISPATCHED else None,
+        dispatch_ts=None,
+        finalization_node=node_id.index,
         finalization_time=None,
         finalization_time_is_acceptable=None,
         finalization_time_tolerance=None,
-        finalization_ts=datetime.now() if status == DeployStatus.FINALIZED else None,
-        network=network_id.name,
+        finalization_ts=datetime.now(),
+        network=node_id.network.name,
         run_index=None,
         run_type=None,
-        status=status,
-        typeof=DeployType.NULL,    
+        status=DeployStatus.FINALIZED,
+        typeof=DeployType.MONITORED,    
     )
 
 
@@ -201,6 +201,7 @@ def create_deploy_for_run(
         deploy_hash=deploy_hash,
         dispatch_node=node.index,
         dispatch_ts=datetime.now(),
+        finalization_node=None,
         finalization_time=None,
         finalization_time_is_acceptable=None,
         finalization_time_tolerance=None,

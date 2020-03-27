@@ -1,6 +1,7 @@
 import typing
 
 from stests.core.orchestration import ExecutionContext
+from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
 from stests.generators.meta import GENERATOR_MAP as MODULES
 
@@ -81,11 +82,11 @@ class WorkflowStep():
         self.module.verify(self.ctx)
 
 
-    def verify_deploy(self, bhash: str, dhash: str):
+    def verify_deploy(self, node_id: NodeIdentifier, bhash: str, dhash: str):
         """Performs step deploy verification.
         
         """
-        self.module.verify_deploy(self.ctx, bhash, dhash)
+        self.module.verify_deploy(self.ctx, node_id, bhash, dhash)
 
 
 class WorkflowPhase():

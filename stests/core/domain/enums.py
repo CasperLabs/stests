@@ -59,6 +59,7 @@ class DeployType(enum.Flag):
     COUNTER_CALL = enum.auto()
     TRANSFER = enum.auto()
     TRANSFER_REFUND = enum.auto()
+    MONITORED = enum.auto()
 
 
 class NetworkStatus(enum.Flag):
