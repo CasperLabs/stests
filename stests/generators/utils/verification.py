@@ -50,7 +50,7 @@ def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, bhash
     account = cache.state.get_account_by_index(ctx, account_index)
     assert account, f"account {account_index} could not be retrieved"
 
-    balance = clx.get_balance(ctx, account)
+    balance = clx.get_balance(node_id, account, block_hash=bhash)
     assert balance == expected, f"account balance mismatch: account_index={account_index}, actual={balance}, expected={expected}"
 
     return account
