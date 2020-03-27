@@ -37,6 +37,9 @@ class Transfer:
     # Associated node index.
     node: int
 
+    # Numerical index to distinguish between multiple phase within a generator.
+    phase_index: typing.Optional[int]
+
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: int
 
@@ -45,6 +48,12 @@ class Transfer:
 
     # Status of transfer.
     status: TransferStatus
+
+    # Numerical index to distinguish between multiple steps within a generator.
+    step_index: typing.Optional[int]
+
+    # Label to disambiguate a step within the context of a phase.
+    step_label: typing.Optional[str]
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None

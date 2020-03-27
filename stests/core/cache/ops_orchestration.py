@@ -115,7 +115,7 @@ def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
 
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNTS)
-def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str, run_index: int) -> typing.List[str]:
+def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, run_index: int = None) -> typing.List[str]:
     """Returns count of deploys within the scope of an execution aspect.
 
     :param network_id: Identifier of network being tested.
@@ -125,16 +125,32 @@ def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str, run_inde
     :returns: Count of deploys.
 
     """
-    run_index_label = f"R-{str(run_index).zfill(3)}"    
-
-    path = [
-        network_id.name,
-        run_type,
-        run_index_label,
-        COL_DEPLOY_COUNT,
-        "*"
-    ]
-
+    if run_type is None:
+        path = [
+            network_id.name,
+            "*",
+            "*",
+            COL_DEPLOY_COUNT,
+            "-"
+        ]
+    elif run_index:
+        run_index_label = f"R-{str(run_index).zfill(3)}"
+        path = [
+            network_id.name,
+            run_type,
+            run_index_label,
+            COL_DEPLOY_COUNT,
+            "*"
+        ]
+    else:
+        path = [
+            network_id.name,
+            run_type,
+            "*",
+            COL_DEPLOY_COUNT,
+            "*",
+        ]
+    
     return path
 
 

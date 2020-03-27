@@ -49,11 +49,20 @@ class Deploy:
     # Associated network.
     network: str
 
+    # Numerical index to distinguish between multiple phase within a generator.
+    phase_index: typing.Optional[int]
+
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: int
 
     # Type of generator, e.g. WG-100 ...etc.
     run_type: str    
+
+    # Numerical index to distinguish between multiple steps within a generator.
+    step_index: typing.Optional[int]
+
+    # Label to disambiguate a step within the context of a phase.
+    step_label: typing.Optional[str]
 
     # Deploy's processing status.
     status: DeployStatus

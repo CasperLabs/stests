@@ -177,9 +177,12 @@ def create_deploy_on_block_finalisation(
         finalization_time_tolerance=None,
         finalization_ts=datetime.now(),
         network=node_id.network.name,
+        phase_index=None,
         run_index=None,
         run_type=None,
         status=DeployStatus.FINALIZED,
+        step_index=None,
+        step_label=None,
         typeof=DeployType.MONITORED,    
     )
 
@@ -207,10 +210,13 @@ def create_deploy_for_run(
         finalization_time_tolerance=None,
         finalization_ts=None,
         network=ctx.network,
+        phase_index=ctx.phase_index,
         run_index=ctx.run_index,
         run_type=ctx.run_type,        
         status=DeployStatus.DISPATCHED,
-        typeof=typeof
+        step_index=ctx.step_index,
+        step_label=ctx.step_label,
+        typeof=typeof,
     )
 
 
@@ -316,7 +322,10 @@ def create_transfer(
         is_refundable=is_refundable,
         network=ctx.network,
         node=ctx.node_index,
+        phase_index=ctx.phase_index,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
+        step_index=ctx.step_index,
+        step_label=ctx.step_label,
         status=status
     )

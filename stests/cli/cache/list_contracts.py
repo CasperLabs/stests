@@ -55,7 +55,7 @@ def main(args):
     ], sorted(data, key=lambda i: i.typeof.name))
 
     # Set table.
-    t = get_table(cols, rows, max_width=1080)
+    t = get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:

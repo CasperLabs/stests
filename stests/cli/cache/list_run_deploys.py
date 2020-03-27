@@ -4,6 +4,7 @@ from beautifultable import BeautifulTable
 
 from stests.cli.utils import get_table
 from stests.core import cache
+from stests.core.domain import DeployStatus
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -42,7 +43,7 @@ COLS = [
     ("Type", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
     ("Node", BeautifulTable.ALIGN_RIGHT),
-    ("Acc.", BeautifulTable.ALIGN_RIGHT),
+    ("Account", BeautifulTable.ALIGN_RIGHT),
     ("Dispatch Timestamp", BeautifulTable.ALIGN_RIGHT),
     ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
     ("Block Hash", BeautifulTable.ALIGN_RIGHT),
@@ -73,14 +74,14 @@ def main(args):
         i.typeof.name,
         i.status.name,      
         i.dispatch_node,
-        i.label_account_index,
+        i.account_index,
         i.dispatch_ts,
         i.label_finalization_time,
         i.block_hash or "--"
     ], data)
 
     # Set table.
-    t = get_table(cols, rows, max_width=1080)
+    t = get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:
@@ -88,7 +89,7 @@ def main(args):
 
     # Render.
     print(t)
-    print(f"{network_id.name} - {args.run_type}  - Run {args.run_index}")
+    print(f"{network_id.name} - {args.run_type}  - Run {args.run_index} :: Finalized deploys = {len([i for i in data if i.status == DeployStatus.FINALIZED])} / {len(data)}")
 
 # Entry point.
 if __name__ == '__main__':

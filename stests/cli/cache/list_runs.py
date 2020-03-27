@@ -43,11 +43,11 @@ ARGS.add_argument(
 COLS = [
     ("Generator", BeautifulTable.ALIGN_LEFT),
     ("ID", BeautifulTable.ALIGN_LEFT),
-    ("Start Time", BeautifulTable.ALIGN_LEFT),
-    ("End Time", BeautifulTable.ALIGN_LEFT),
+    ("Execution Start Time", BeautifulTable.ALIGN_LEFT),
+    ("Execution End Time", BeautifulTable.ALIGN_LEFT),
     ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
+    ("Deploys", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
-    ("Parent ID", BeautifulTable.ALIGN_RIGHT),
     ("Step", BeautifulTable.ALIGN_RIGHT),
 ]
 
@@ -72,24 +72,27 @@ def main(args):
             if status.name.lower().startswith(args.status.lower()):
                 data = [i for i in data if i.status == status]
                 break
-        #         print(status)
-        # print(args.status)
 
-
-    # Associate info with ctx.
+    # Associate info with execution context.
     ctx_list = cache.orchestration.get_context_list(network_id, args.run_type)
     for i in data:
         i.ctx = _get_ctx(i, ctx_list)
+
+    # Associate info with deploy count.
+    keys, counts = cache.orchestration.get_deploy_count_list(network_id, args.run_type)
+    counts = dict(zip(keys, counts))
+    for i in data:
+        i.deploy_count = _get_deploy_count(i, counts)
 
     # Sort data.
     data = sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}")
 
     # Set cols/rows.
     cols = [i for i, _ in COLS]
-    rows = map(lambda i: _get_row(i), data)
+    rows = map(lambda i: _get_row(i, counts), data)
 
     # Set table.
-    t = get_table(cols, rows, max_width=1080)
+    t = get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:
@@ -101,25 +104,38 @@ def main(args):
 
 
 def _get_ctx(i, ctx_list):
+    """Returns execution context associated with a run.
+    
+    """
     for ctx in ctx_list:
         if i.run_type == ctx.run_type and i.run_index == ctx.run_index:
             return ctx
 
 
-def _get_row(i):
+def _get_deploy_count(i, counts):
+    """Returns count of deploys dispatched during course of a run.
+    
+    """
+    key = f"{i.network}:{i.run_type}:{i.run_index_label}:deploy-count:-"
+
+    return counts.get(key, "--")
+
+
+def _get_row(i, counts):
     """Returns table row data.
     
     """
+    deploy_count = _get_deploy_count(i, counts)
+
     return [
         i.run_type,
         i.index_label.strip(),
-        i.ts_start,
-        "--" if i.ts_end is None else i.ts_end,
+        i.ts_start.isoformat()[:-3],
+        i.ts_end.isoformat()[:-3] if i.ts_end else "--",
         i.tp_elapsed_label,
+        i.deploy_count,
         i.status_label.strip(),
-        i.run_index_parent_label.strip(),
-        "--" if (i.ctx is None or i.ctx.status == ExecutionStatus.COMPLETE) else \
-        f"{i.ctx.step_label.strip()} > {i.ctx.label_step.strip()}",
+        "--" if (i.ctx is None or i.ctx.status == ExecutionStatus.COMPLETE) else f"{i.ctx.step_label.rjust(20)}",
     ]
 
 

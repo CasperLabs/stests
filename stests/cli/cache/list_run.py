@@ -39,10 +39,10 @@ ARGS.add_argument(
 # Table columns.
 COLS = [
     ("Phase / Step", BeautifulTable.ALIGN_LEFT),
-    ("Start Time", BeautifulTable.ALIGN_LEFT),
-    ("End Time", BeautifulTable.ALIGN_LEFT),
+    ("Execution Start Time", BeautifulTable.ALIGN_LEFT),
+    ("Execution End Time", BeautifulTable.ALIGN_LEFT),
     ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
-    ("Deploys Dispatched", BeautifulTable.ALIGN_RIGHT),
+    ("Deploys", BeautifulTable.ALIGN_RIGHT),
     ("Action", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
 ]
@@ -72,15 +72,7 @@ def main(args):
 
     # Set cols/rows.
     cols = [i for i, _ in COLS]
-    rows = map(lambda i: [
-        i.index_label,
-        i.ts_start,
-        "--" if not i.ts_end else i.ts_end,
-        i.tp_elapsed_label,
-        counts.get(i.index_label.strip(), 0),
-        i.step_label if i.step_label else '--',      
-        i.status.name,
-    ], data)
+    rows = map(lambda i: _get_row(i, counts), data)
 
     # Set table.
     t = get_table(cols, rows)
@@ -92,6 +84,21 @@ def main(args):
     # Render.
     print(t)
     print(f"{network_id.name} - {args.run_type}  - Run {args.run_index}")
+
+
+def _get_row(i, counts):
+    """Returns table row data.
+    
+    """
+    return [
+        i.index_label,
+        i.ts_start,
+        "--" if not i.ts_end else i.ts_end,
+        i.tp_elapsed_label,
+        counts.get(i.index_label.strip(), 0),
+        i.step_label if i.step_label else '--',      
+        i.status.name,
+    ]
 
 
 # Entry point.
