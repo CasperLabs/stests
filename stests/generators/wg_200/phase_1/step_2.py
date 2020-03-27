@@ -8,7 +8,7 @@ from stests.generators.wg_200 import constants
 DESCRIPTION = "Fund's a run faucet account."
 
 # Step label.
-LABEL = "fund-faucet"
+LABEL = "fund-run-faucet"
 
 
 def execute(ctx: ExecutionContext):

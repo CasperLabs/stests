@@ -52,6 +52,11 @@ def cache_op(partition: StorePartition, operation: StoreOperation):
                     key = ":".join([str(i) for i in keypath])
                     return int(store.get(key))
 
+                elif operation == StoreOperation.GET_COUNTS:
+                    keypath = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
+                    return _get_all_counts(store, key)
+
                 elif operation == StoreOperation.GET_ONE:
                     keypath = func(*args, **kwargs)
                     key = ":".join([str(i) for i in keypath])
@@ -136,14 +141,15 @@ def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]
     return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
 
-def _get_count(store: typing.Callable, search_key: str) -> int:
+def _get_all_counts(store: typing.Callable, search_key: str) -> typing.List[typing.Any]:
     """Wraps redis.mget command.
     
     """
     CHUNK_SIZE = 5000
     _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
+    counts = [int(i) for i in store.mget(keys)]
 
-    return len(keys)
+    return [i.decode('utf8') for i in keys], counts
 
 
 def _set(store: typing.Callable, key: str, data: typing.Any) -> str:

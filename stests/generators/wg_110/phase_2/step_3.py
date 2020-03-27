@@ -8,7 +8,7 @@ from stests.generators.wg_110 import constants
 DESCRIPTION = "Refunds funds previously transferred to a run-faucet account."
 
 # Step label.
-LABEL = "refund-faucet"
+LABEL = "refund-run-faucet"
 
 
 def execute(ctx: ExecutionContext):

@@ -2,7 +2,7 @@ from beautifultable import BeautifulTable
 
 
 
-def get_table(cols, rows, max_width=120) -> BeautifulTable:
+def get_table(cols, rows, max_width=1080) -> BeautifulTable:
     """Returns a table ready for printing to stdout.
     
     :param cols: Table columns.

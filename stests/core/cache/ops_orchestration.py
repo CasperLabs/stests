@@ -114,6 +114,30 @@ def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
     return _get_keypath_deploy_count(ctx, aspect)
 
 
+@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNTS)
+def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str, run_index: int) -> typing.List[str]:
+    """Returns count of deploys within the scope of an execution aspect.
+
+    :param network_id: Identifier of network being tested.
+    :param run_type: Type of run that was executed.
+    :param run_index: Index of a run.
+
+    :returns: Count of deploys.
+
+    """
+    run_index_label = f"R-{str(run_index).zfill(3)}"    
+
+    path = [
+        network_id.name,
+        run_type,
+        run_index_label,
+        COL_DEPLOY_COUNT,
+        "*"
+    ]
+
+    return path
+
+
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
     """Decaches domain object: ExecutionInfo.
@@ -142,7 +166,7 @@ def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
 
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
 def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> typing.List[ExecutionInfo]:
-    """Decaches domain object: ExecutionContext.
+    """Decaches domain object: ExecutionInfo.
     
     :param network_id: Identifier of network being tested.
     :param run_type: Type of run that was executed.
@@ -284,10 +308,10 @@ def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInf
 
     """
     path = [
-            info.network,
-            info.run_type,
-            info.run_index_label,
-            COL_INFO,
+        info.network,
+        info.run_type,
+        info.run_index_label,
+        COL_INFO,
     ]
 
     if info.phase_index and info.step_index:
@@ -351,10 +375,10 @@ def _get_keypath_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) ->
     
     """
     path = [
-            ctx.network,
-            ctx.run_type,
-            ctx.run_index_label,
-            COL_DEPLOY_COUNT,
+        ctx.network,
+        ctx.run_type,
+        ctx.run_index_label,
+        COL_DEPLOY_COUNT,
     ]
 
     if aspect == ExecutionAspect.RUN:

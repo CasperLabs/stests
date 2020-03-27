@@ -97,7 +97,7 @@ def main(args):
 
     # Render.
     print(t)
-    print(f"total runs = {len(data)}")
+    print(f"Total runs = {len(data)}.  ")
 
 
 def _get_ctx(i, ctx_list):
