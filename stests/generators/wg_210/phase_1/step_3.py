@@ -51,4 +51,4 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, bhash: str, dh
     """
     utils.verify_deploy(ctx, bhash, dhash)
     transfer = utils.verify_transfer(ctx, bhash, dhash)
-    utils.verify_account_balance(ctx, bhash, transfer.cp2_index, ctx.args.user_initial_clx_balance)
+    utils.verify_account_balance(ctx, node_id, bhash, transfer.cp2_index, ctx.args.user_initial_clx_balance)

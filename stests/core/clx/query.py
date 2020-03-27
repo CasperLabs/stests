@@ -15,16 +15,16 @@ from google.protobuf.json_format import MessageToJson
 
 
 @utils.clx_op
-def get_balance(ctx: ExecutionContext, account: Account) -> int:
+def get_balance(src: typing.Union[ExecutionContext, NodeIdentifier], account: Account) -> int:
     """Returns a chain account balance.
 
-    :param ctx: Execution context information.
+    :param src: The source from which a network node will be derived.
     :param account: Account whose balance will be queried.
 
     :returns: Account balance.
 
     """
-    _, client = utils.get_client(ctx)
+    _, client = utils.get_client(src)
     try:
         balance = client.balance(
             address=account.public_key,

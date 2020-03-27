@@ -3,6 +3,7 @@ from stests.core import clx
 from stests.core.domain import Account
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
+from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.orchestration import ExecutionAspect
 from stests.core.domain import Transfer
@@ -18,6 +19,7 @@ def verify_deploy(ctx: ExecutionContext, bhash: str, dhash: str) -> Deploy:
     deploy = cache.state.get_deploy(dhash)
     assert deploy, f"deploy could not be retrieved: {dhash}"
     assert deploy.status == DeployStatus.FINALIZED, f"deploy is not FINALIZED : {dhash}"
+    assert deploy.block_hash == bhash, f"finalized deploy block hash mismatch : bhash={bhash}"
 
     return deploy
 
@@ -41,7 +43,7 @@ def verify_transfer(ctx: ExecutionContext, bhash: str, dhash: str) -> Transfer:
     return transfer
 
 
-def verify_account_balance(ctx: ExecutionContext, bhash: str, account_index: int, expected: int) -> Account:
+def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, bhash: str, account_index: int, expected: int) -> Account:
     """Verifies that an account balance is as per expectation.
     
     """
@@ -49,7 +51,6 @@ def verify_account_balance(ctx: ExecutionContext, bhash: str, account_index: int
     assert account, f"account {account_index} could not be retrieved"
 
     balance = clx.get_balance(ctx, account)
-    assert clx.get_balance(ctx, account) == expected, \
-           f"account balance mismatch: account_index={account_index}, actual={balance}, expected={expected}"
+    assert balance == expected, f"account balance mismatch: account_index={account_index}, actual={balance}, expected={expected}"
 
     return account
