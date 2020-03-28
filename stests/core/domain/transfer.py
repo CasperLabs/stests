@@ -58,9 +58,3 @@ class Transfer:
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
 
-
-    def update_on_completion(self):
-        """Executed when transfer has been completed.
-        
-        """
-        self.status = TransferStatus.COMPLETE

@@ -135,7 +135,7 @@ def _get_row(i, counts):
         i.tp_elapsed_label,
         i.deploy_count,
         i.status_label.strip(),
-        "--" if (i.ctx is None or i.ctx.status == ExecutionStatus.COMPLETE) else f"{i.ctx.step_label.rjust(20)}",
+        "--".rjust(20) if (i.ctx is None or i.ctx.status == ExecutionStatus.COMPLETE) else f"{i.ctx.step_label.rjust(20)}",
     ]
 
 

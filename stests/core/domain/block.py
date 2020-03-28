@@ -55,12 +55,6 @@ class Block:
     def label_m_rank(self):
         return f"{str(self.m_rank).zfill(7)}"
 
-    def update_on_finalization(self):
-        """Executed when block has been finalized.
-        
-        """
-        self.status = BlockStatus.FINALIZED
-
 
 @dataclasses.dataclass
 class BlockLock:

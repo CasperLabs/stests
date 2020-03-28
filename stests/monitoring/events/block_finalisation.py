@@ -12,6 +12,7 @@ from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
+from stests.core.domain import TransferStatus
 from stests.core.utils import logger
 from stests.orchestration.actors import on_step_deploy_finalized
 
@@ -30,7 +31,7 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
     """
     # Query chain & set block.
     block_info = clx.get_block_by_node(node_id, block_hash)
-    block = factory.create_block(
+    block = factory.create_block_on_finalisation(
         network_id=node_id.network,
         block_hash=block_hash,
         deploy_cost_total=block_info.status.stats.deploy_cost_total,
@@ -42,7 +43,6 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
         timestamp=datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
         validator_id=block_info.summary.header.validator_public_key.hex()
         )
-    block.update_on_finalization()
 
     # Encache block (escape if duplicate).    
     _, encached = cache.monitoring.set_block(block)
@@ -85,13 +85,17 @@ def _process_run_deploy(node_id: NodeIdentifier, block: Block, deploy: Deploy):
     logger.log(f"PYCLX :: deploy finalized: deploy-hash={deploy.hash} :: block-hash={block.hash}")
 
     # Update deploy.
-    deploy.update_on_finalization(block)
+    deploy.block_hash = block.hash
+    deploy.block_rank = block.m_rank
+    deploy.status = DeployStatus.FINALIZED
+    deploy.finalization_ts = block.timestamp
+    deploy.finalization_time = block.timestamp.timestamp() - deploy.dispatch_ts.timestamp()    
     cache.state.set_deploy(deploy)
 
     # Update transfer.
     transfer = cache.state.get_transfer(deploy.hash)
     if transfer:
-        transfer.update_on_completion()
+        transfer.status = TransferStatus.COMPLETE
         cache.state.set_transfer(transfer)
 
     # Set execution context.

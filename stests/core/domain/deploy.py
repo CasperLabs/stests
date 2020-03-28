@@ -94,14 +94,3 @@ class Deploy:
     @property
     def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
-
-
-    def update_on_finalization(self, block: Block):
-        """Executed when deploy has been finalized.
-        
-        """
-        self.block_hash = block.hash
-        self.block_rank = block.m_rank
-        self.status = DeployStatus.FINALIZED
-        self.finalization_ts = block.timestamp
-        self.finalization_time = block.timestamp.timestamp() - self.dispatch_ts.timestamp()

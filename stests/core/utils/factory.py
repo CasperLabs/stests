@@ -70,7 +70,7 @@ def create_account_id(
     )
 
 
-def create_block(
+def create_block_on_finalisation(
     network_id: NetworkIdentifier,
     block_hash: str,
     deploy_cost_total: int,
@@ -94,7 +94,7 @@ def create_block(
         m_rank=m_rank,
         network=network_id.name,
         size_bytes=size_bytes,
-        status=BlockStatus.NULL,
+        status=BlockStatus.FINALIZED,
         timestamp=timestamp,
         validator_id=validator_id
         )
