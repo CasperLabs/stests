@@ -29,8 +29,10 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
     :param block_hash: Hash of finalized block.
 
     """
-    # Query chain & set block.
+    # Get block info.
     block_info = clx.get_block_by_node(node_id, block_hash)
+
+    # Set block.
     block = factory.create_block_on_finalisation(
         network_id=node_id.network,
         block_hash=block_hash,
@@ -52,21 +54,13 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
     # Encache block info.    
     cache.monitoring.set_block_info(block, MessageToDict(block_info))
 
-    # Query chain, process deploys, build collection of run deploys.
-    deploys = clx.get_deploys_by_node(node_id, block_hash)
-    run_deploys = []
-    for deploy_hash, deploy_info in deploys:
-        _process_monitored_deploy(node_id, block, deploy_hash, deploy_info)
-        run_deploys.append(cache.state.get_deploy(deploy_hash))
-
-    # Process run deploys.
-    for idx, run_deploy in enumerate([i for i in run_deploys if i]):
-        if idx == 0:
-            logger.log(f"PYCLX :: block finalized: block-hash={block.hash}")
-        _process_run_deploy(node_id, block, run_deploy)
+    # Get deploys & process.
+    for deploy_hash, deploy_info in clx.get_deploys_by_node(node_id, block_hash):
+        _process_deploy(node_id, block, deploy_hash, deploy_info)
+        _process_deploy_of_run(node_id, block, deploy_hash)
 
 
-def _process_monitored_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_info: dict):
+def _process_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_info: dict):
     """Performs monitored deploy processing.
     
     """
@@ -78,10 +72,15 @@ def _process_monitored_deploy(node_id: NodeIdentifier, block: Block, deploy_hash
     cache.monitoring.set_deploy_info(block, deploy, deploy_info)
 
 
-def _process_run_deploy(node_id: NodeIdentifier, block: Block, deploy: Deploy):
+def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: str):
     """Performs a deploy dispatched during a run.
     
     """
+    # Set run deploy.
+    deploy = cache.state.get_deploy(deploy_hash)
+    if not deploy:
+        return
+    
     logger.log(f"PYCLX :: deploy finalized: deploy-hash={deploy.hash} :: block-hash={block.hash}")
 
     # Update deploy.
