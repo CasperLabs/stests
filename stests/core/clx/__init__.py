@@ -1,7 +1,5 @@
 from stests.core.clx.defaults import *
-from stests.core.clx.deploy import do_deploy_contract
 from stests.core.clx.deploy import do_deploy_contract_to_name
-from stests.core.clx.deploy import do_deploy_contract_to_hash
 from stests.core.clx.deploy import do_refund
 from stests.core.clx.deploy import do_transfer
 from stests.core.clx.query import get_balance
@@ -14,3 +12,4 @@ from stests.core.clx.utils import get_client
 
 from stests.core.clx import contracts
 from stests.core.clx.contracts import CONTRACTS
+from stests.core.clx.contracts import install as install_contract

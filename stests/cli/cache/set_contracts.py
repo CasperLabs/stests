@@ -4,10 +4,10 @@ import typing
 from stests.core import cache
 from stests.core import clx
 from stests.core.domain import Network
-from stests.core.domain import ContractType
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
+
 
 
 
@@ -47,24 +47,28 @@ def _install_contract(network: Network, contract: typing.Callable):
     """Installs a smart contract upon target network.
     
     """
-    logger.log(f"{contract.Metadata.TYPE.value} :: installation starts ... please wait")
+    logger.log(f"{contract.TYPE.value} :: installation starts ... please wait")
 
     # Dispatch contract to network & await processing.
-    contract_hash = contract.install(network)
+    contract_hash = clx.install_contract(
+        network,
+        network.faucet,
+        contract,
+    )
 
     # Instantiate domain object.
     contract_info = factory.create_contract(
         network,
         network.faucet,
         contract_hash=contract_hash,
-        contract_name=contract.Metadata.NAME,
-        contract_type=contract.Metadata.TYPE,
+        contract_name=contract.NAME,
+        contract_type=contract.TYPE,
         )
 
-    # Persist within cache.
+    # Update cache.
     cache.infra.set_contract(contract_info)
 
-    logger.log(f"{contract.Metadata.TYPE.value} :: installed -> contract-hash={contract_hash}")
+    logger.log(f"{contract.TYPE.value} :: installed -> contract-hash={contract_hash}")
 
 
 # Entry point.

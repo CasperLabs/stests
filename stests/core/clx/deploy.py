@@ -108,93 +108,6 @@ def do_transfer(
 
 
 @utils.clx_op
-def do_deploy_network_contract(
-    network: Network,
-    account: Account,
-    metadata: typing.Callable,
-    ) -> str:
-    """Deploys a client side smart contract to chain for future reference.
-
-    :param network: Network into which contract is being installed.
-    :param account: Account under which contract will be installed - defaults to network faucet account.
-    :param meta: Contract specific metadata.
-
-    :returns: Contract hash (in hex format).
-
-    """
-    # Set client.
-    _, client = utils.get_client(network)
-
-    # Set args.
-    session=utils.get_contract_path(metadata.TYPE)
-    session_args = ABI.args([
-        ABI.string_value("target", "hash")
-        ])
-
-    # Dispatch.
-    dhash = client.deploy(
-        session=session,
-        session_args=session_args,
-        from_addr=network.faucet.public_key,
-        private_key=network.faucet.private_key_as_pem_filepath,
-        # TODO: allow these to be passed in via standard arguments
-        payment_amount=defaults.CLX_TX_FEE,
-        gas_price=defaults.CLX_TX_GAS_PRICE
-    )
-    logger.log(f"PYCLX :: deploy-contract :: {metadata.WASM} :: deploy-hash={dhash} -> awaiting processing")
-
-    # Get block hash.
-    dinfo = client.showDeploy(dhash, wait_for_processed=True)
-    bhash = dinfo.processing_results[0].block_info.summary.block_hash.hex()
-    logger.log(f"PYCLX :: deploy-contract :: {metadata.WASM} :: deploy-hash={dhash} -> processing complete")
-
-    # Get contract hash.
-    chash = utils.get_contract_hash(client, network.faucet, bhash, metadata.NAME)
-    logger.log(f"PYCLX :: deploy-contract :: {metadata.WASM} :: contract-hash={chash}")
-
-    return chash
-
-
-@utils.clx_op
-def do_deploy_contract(
-    ctx: ExecutionContext,
-    account: Account,
-    contract_type: ContractType
-    ) -> typing.Tuple[Node, str]:
-    """Deploys a smart contract to chain for future use.
-
-    :param ctx: Execution context information.
-    :param account: Account under which contract will be deployed.
-    :param contract_type: Type of contract to be deployed.
-
-    :returns: 2 member tuple -> (node, deploy hash)
-
-    """
-    # Set client.
-    node, client = utils.get_client(ctx)
-
-    # Set args.
-    session=utils.get_contract_path(ContractType[contract_type])
-    session_args = ABI.args([
-        ABI.string_value("target", "hash"),
-        ])
-    
-    # Dispatch.
-    dhash = client.deploy(
-        session=session,
-        session_args=session_args,
-        from_addr=account.public_key,
-        private_key=account.private_key_as_pem_filepath,
-        # TODO: allow these to be passed in via standard arguments
-        payment_amount=defaults.CLX_TX_FEE,
-        gas_price=defaults.CLX_TX_GAS_PRICE
-    )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: deploy-hash={dhash}")
-
-    return (node, dhash)
-
-
-@utils.clx_op
 def do_deploy_contract_to_name(
     ctx: ExecutionContext,
     account: Account,
@@ -218,45 +131,6 @@ def do_deploy_contract_to_name(
     # Dispatch.
     dhash = client.deploy(
         session=session,
-        from_addr=account.public_key,
-        private_key=account.private_key_as_pem_filepath,
-        # TODO: allow these to be passed in via standard arguments
-        payment_amount=defaults.CLX_TX_FEE,
-        gas_price=defaults.CLX_TX_GAS_PRICE
-    )
-    logger.log(f"PYCLX :: deploy-contract :: {contract_type} :: deploy-hash={dhash}")
-
-    return (node, dhash)
-
-
-@utils.clx_op
-def do_deploy_contract_to_hash(
-    ctx: ExecutionContext,
-    account: Account,
-    contract_type: ContractType
-    ) -> typing.Tuple[Node, str]:
-    """Deploys a smart contract to a hash for future use.
-
-    :param ctx: Execution context information.
-    :param account: Account under which contract will be deployed.
-    :param contract_type: Type of contract to be deployed.
-
-    :returns: 2 member tuple -> (node, deploy hash)
-
-    """
-    # Set client.
-    node, client = utils.get_client(ctx)
-
-    # Set args.
-    session=utils.get_contract_path(ContractType[contract_type])
-    session_args = ABI.args([
-        ABI.string_value("target", "hash")
-        ])
-    
-    # Dispatch.
-    dhash = client.deploy(
-        session=session,
-        session_args=session_args,
         from_addr=account.public_key,
         private_key=account.private_key_as_pem_filepath,
         # TODO: allow these to be passed in via standard arguments
