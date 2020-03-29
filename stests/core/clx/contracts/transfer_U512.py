@@ -2,7 +2,6 @@ import typing
 
 from casperlabs_client.abi import ABI
 
-from stests.core import cache
 from stests.core.clx import defaults
 from stests.core.clx import utils
 from stests.core.clx.query import get_balance
@@ -15,16 +14,13 @@ from stests.core.utils import logger
 
 
 # Type of contract.
-TYPE = ContractType.TRANSFER_U512_STORED
+TYPE = ContractType.TRANSFER_U512
 
 # Wasm file name.
-WASM = "transfer_to_account_u512_stored.wasm"
+WASM = "transfer_to_account_u512.wasm"
 
 # Name of contract - see use when passed as session-name.
 NAME = "transfer_to_account"
-
-# Contract metadata JIT loaded from cache.
-_contract = None
 
 
 def execute(
@@ -46,21 +42,11 @@ def execute(
     # Set client.
     node, client  = utils.get_client(ctx)
 
-    # Set contract.
-    global _contract
-    if _contract is None:
-        _contract = cache.infra.get_contract(ctx, TYPE)    
-
-    # Set args.
-    session_args = ABI.args([
-        ABI.account("address", cp2.public_key),
-        ABI.big_int("amount", amount),
-        ])
-
     # Dispatch deploy.
-    deploy_hash = client.deploy(
-        session_hash=_contract.hash_as_bytes,
-        session_args=session_args,
+    # TODO - consider using generic deploy method ?
+    deploy_hash = client.transfer(
+        amount=amount,
+        target_account_hex=cp2.public_key,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
         # TODO: review how these are being assigned
@@ -68,7 +54,7 @@ def execute(
         gas_price=defaults.CLX_TX_GAS_PRICE,
     )
 
-    logger.log(f"PYCLX :: deploy dispatched :: deploy-hash={deploy_hash} :: TRANSFER_U512_STORED :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
+    logger.log(f"PYCLX :: deploy dispatched :: deploy-hash={deploy_hash} :: TRANSFER_U512 :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
 
     return (node, deploy_hash)
 

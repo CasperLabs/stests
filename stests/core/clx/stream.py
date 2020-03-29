@@ -7,7 +7,6 @@ from stests.core.utils import logger
 
 
 
-@utils.clx_op
 def stream_events(
     src: typing.Union[NodeIdentifier, NetworkIdentifier],
     on_block_added: typing.Callable = None,

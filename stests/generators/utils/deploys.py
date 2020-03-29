@@ -43,12 +43,11 @@ def do_fund_account(
         cp1 = cache.state.get_account_by_index(ctx, cp1_index)
     cp2 = cache.state.get_account_by_index(ctx, cp2_index)
     
-    # Set client contract.
-    contract = None if use_stored_contract == False else \
-               cache.infra.get_contract(ctx, ContractType.TRANSFER_U512_STORED)
+    # Set contract.
+    transfer = clx.contracts.transfer_U512_stored if use_stored_contract else clx.contracts.transfer_U512
 
     # Transfer CLX from cp1 -> cp2.    
-    (node, dhash) = clx.do_transfer(ctx, cp1, cp2, amount, contract)
+    (node, dhash) = transfer.execute(ctx, cp1, cp2, amount)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(
@@ -97,8 +96,11 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
     contract = None if not use_stored_contract else \
                cache.infra.get_contract(ctx, ContractType.TRANSFER_U512_STORED)
 
+    # Set contract.
+    transfer = clx.contracts.transfer_U512_stored if use_stored_contract else clx.contracts.transfer_U512
+
     # Refund CLX from cp1 -> cp2.
-    (node, dhash, amount) = clx.do_refund(ctx, cp1, cp2, contract=contract)
+    (node, dhash, amount) = transfer.execute_refund(ctx, cp1, cp2)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(

@@ -83,28 +83,3 @@ def get_contract_hash(
             return nk.key.hash.hash.hex()
 
     raise ValueError(f"{contract_name} contract hash could not be found on-chain")
-
-
-def clx_op(func: typing.Callable) -> typing.Callable:
-    """Decorator over deploy operations.
-    
-    :param func: Inner function being decorated.
-
-    :returns: Wrapped function.
-
-    """
-    def wrapper(*args, **kwargs):
-        # Pre log.
-        messages = {
-            "get_block": lambda args: f"block-hash={args[-1]}",
-            "get_deploys": lambda args: f"block-hash={args[-1]}",
-            "get_balance": lambda args: f"address={args[-1].public_key}",
-        }
-
-        try:
-            return func(*args, **kwargs)
-        except Exception as err:
-            logger.log_error(f"PYCLX :: {err}")
-            raise err
-
-    return wrapper

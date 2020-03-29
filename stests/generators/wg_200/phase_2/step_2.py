@@ -70,7 +70,7 @@ def _verify_counter(ctx: ExecutionContext, account_index: int, bhash: str):
     _, client = clx.get_client(ctx)
     state = client.queryState(bhash, account.public_key, "counter/count", "address")
 
-    assert state.cl_value.value.i32 == ctx.args.increments
+    assert state.cl_value.value.i32 == ctx.args.increments, "counter verification failed"
 
 
 @dramatiq.actor(queue_name=constants.TYPE)

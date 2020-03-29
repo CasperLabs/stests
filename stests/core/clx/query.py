@@ -15,8 +15,7 @@ from google.protobuf.json_format import MessageToDict
 from google.protobuf.json_format import MessageToJson
 
 
-@utils.clx_op
-def get_balance(src: typing.Union[ExecutionContext, NodeIdentifier], account: Account, block_hash: str = None) -> int:
+def get_balance(src: typing.Union[ExecutionContext, NetworkIdentifier, NodeIdentifier], account: Account, block_hash: str = None) -> int:
     """Returns a chain account balance.
 
     :param src: The source from which a network node will be derived.
@@ -39,7 +38,6 @@ def get_balance(src: typing.Union[ExecutionContext, NodeIdentifier], account: Ac
         return balance
 
 
-@utils.clx_op
 def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
     """Queries network for information pertaining to a specific block.
 
@@ -54,7 +52,6 @@ def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
     return client.showBlock(block_hash_base16=block_hash, full_view=False)
 
 
-@utils.clx_op
 def get_deploys_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.List[typing.Union[str, typing.Dict]]:
     """Queries node for a set of deploys associated with a specific block.
 
@@ -71,7 +68,6 @@ def get_deploys_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.List
     return ((i.deploy.deploy_hash.hex(), MessageToDict(i)) for i in deploys)
 
 
-@utils.clx_op
 def get_last_block_hash(client) -> str:
     """Returns a chain's last block hash.
     
@@ -81,7 +77,6 @@ def get_last_block_hash(client) -> str:
     return last_block_info.summary.block_hash.hex()
 
 
-@utils.clx_op
 def get_contract_hash(ctx: ExecutionContext, account: Account, dhash: str) -> str:
     """Returns hash of an on-chain contract.
     

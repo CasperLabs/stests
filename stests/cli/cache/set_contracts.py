@@ -36,7 +36,7 @@ def main(args):
         raise ValueError("Unregistered network faucet.")
 
     # Install contracts.
-    for contract in clx.CONTRACTS:
+    for contract in clx.CONTRACTS_SINGLETON:
         _install_contract(network, contract)
 
     # Inform.
