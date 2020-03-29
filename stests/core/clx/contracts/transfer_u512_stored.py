@@ -23,6 +23,9 @@ WASM = "transfer_to_account_u512_stored.wasm"
 # Name of contract - see use when passed as session-name.
 NAME = "transfer_to_account"
 
+# Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
+IS_SINGLETON = True
+
 # Contract metadata JIT loaded from cache.
 _contract = None
 

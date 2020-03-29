@@ -50,7 +50,7 @@ def _install_contract(network: Network, contract: typing.Callable):
     logger.log(f"{contract.TYPE.value} :: installation starts ... please wait")
 
     # Dispatch contract to network & await processing.
-    contract_hash = clx.install_contract(
+    contract_hash = clx.contracts.install_singleton(
         network,
         network.faucet,
         contract,

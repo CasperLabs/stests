@@ -142,14 +142,14 @@ def do_set_contract(
     account = cache.state.get_account_by_index(ctx, account_index)
 
     # Deploy contract.
-    (node, dhash) = clx.do_deploy_contract_to_name(ctx, account, contract_type)
+    (node, deploy_hash) = clx.contracts.install_named(ctx, account, contract_type)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(
         account=account,
         ctx=ctx, 
         node=node, 
-        deploy_hash=dhash, 
+        deploy_hash=deploy_hash, 
         typeof=DeployType.CONTRACT_INSTALL
         )
 

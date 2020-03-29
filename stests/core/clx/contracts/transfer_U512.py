@@ -22,6 +22,9 @@ WASM = "transfer_to_account_u512.wasm"
 # Name of contract - see use when passed as session-name.
 NAME = "transfer_to_account"
 
+# Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
+IS_SINGLETON = False
+
 
 def execute(
     ctx: ExecutionContext,
