@@ -60,7 +60,7 @@ class DeployType(enum.Flag):
     """
     NULL = enum.auto()
     CONTRACT_INSTALL = enum.auto()
-    COUNTER_CALL = enum.auto()
+    COUNTER_DEFINE = enum.auto()
     TRANSFER = enum.auto()
     TRANSFER_REFUND = enum.auto()
     MONITORED = enum.auto()

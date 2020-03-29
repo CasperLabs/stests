@@ -81,7 +81,7 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     if not deploy:
         return
     
-    logger.log(f"PYCLX :: deploy finalized: deploy-hash={deploy.hash} :: block-hash={block.hash}")
+    logger.log(f"PYCLX :: deploy finalized :: {deploy.hash} :: block-hash={block.hash}")
 
     # Update deploy.
     deploy.block_hash = block.hash

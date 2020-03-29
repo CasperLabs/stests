@@ -109,7 +109,7 @@ def do_increment_counter_1(ctx: ExecutionContext, account_index: int):
         ctx=ctx, 
         node=node, 
         deploy_hash=dhash, 
-        typeof=DeployType.COUNTER_CALL
+        typeof=DeployType.COUNTER_DEFINE
         )
 
     # Update cache.

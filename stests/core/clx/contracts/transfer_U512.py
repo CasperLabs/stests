@@ -57,7 +57,7 @@ def execute(
         gas_price=defaults.CLX_TX_GAS_PRICE,
     )
 
-    logger.log(f"PYCLX :: deploy dispatched :: deploy-hash={deploy_hash} :: TRANSFER_U512 :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
+    logger.log(f"PYCLX :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512 :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
 
     return (node, deploy_hash)
 

@@ -4,13 +4,10 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.domain import AccountType
-from stests.core.domain import ContractType
 from stests.core.domain import DeployType
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
-from stests.core.utils import logger
 from stests.generators import utils
 from stests.generators.wg_200 import constants
 
@@ -32,7 +29,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     def get_messages():
         for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
             for _ in range(0, ctx.args.increments):
-                yield do_increment_counter_0.message(ctx, account_index)
+                yield _increment_counter_0.message(ctx, account_index)
 
     return get_messages
 
@@ -46,60 +43,39 @@ def verify(ctx: ExecutionContext):
     utils.verify_deploy_count(ctx, ctx.args.user_accounts * ctx.args.increments)    
 
 
-def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, bhash: str, dhash: str):
+def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.
-    :param bhash: A block hash.
-    :param dhash: A deploy hash.
+    :param node_id: Identifier of node which emitted block finalisation event.
+    :param block_hash: A finalized block hash.
+    :param deploy_hash: A finalized deploy hash.
 
     """
-    deploy = utils.verify_deploy(ctx, bhash, dhash)
-    _verify_counter(ctx, deploy.account_index, bhash)
-
-
-def _verify_counter(ctx: ExecutionContext, account_index: int, bhash: str):
-    """Verfies that a counter has been incremented the correct number of times. 
-    
-    :param ctx: Execution context information.
-    :param bhash: A block hash.
-
-    """
-    account = cache.state.get_account_by_index(ctx, account_index)
-
-    _, client = clx.get_client(ctx)
-    state = client.queryState(bhash, account.public_key, "counter/count", "address")
-
-    assert state.cl_value.value.i32 == ctx.args.increments, "counter verification failed"
+    deploy = utils.verify_deploy(ctx, block_hash, deploy_hash)
+    account = cache.state.get_account_by_index(ctx, deploy.account_index)
+    count = clx.contracts.counter_define.get_count(node_id, account, block_hash)
+    assert count == ctx.args.increments, "counter verification failed"
 
 
 @dramatiq.actor(queue_name=constants.TYPE)
-def do_increment_counter_0(ctx: ExecutionContext, account_index: int):
+def _increment_counter_0(ctx: ExecutionContext, account_index: int):
     """Dispatches counter increment deploy.
     
     """
     # Set account.
     account = cache.state.get_account_by_index(ctx, account_index)
 
-    # Deploy.
-    node, client = clx.get_client(ctx)
-    dhash = client.deploy(
-        session_name="counter_inc",
-        from_addr=account.public_key,
-        private_key=account.private_key_as_pem_filepath,
-        # TODO: allow these to be passed in via standard arguments
-        payment_amount=clx.CLX_TX_FEE,
-        gas_price=clx.CLX_TX_GAS_PRICE
-    )
-    logger.log(f"PYCLX :: counter-increment :: deploy-hash={dhash}")
+    # Increment on-chain.
+    (node, deploy_hash) = clx.contracts.counter_define.increment(ctx, account)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(
         account=account,
         ctx=ctx, 
         node=node, 
-        deploy_hash=dhash, 
-        typeof=DeployType.COUNTER_CALL
+        deploy_hash=deploy_hash, 
+        typeof=DeployType.COUNTER_DEFINE
         )
 
     # Update cache.
