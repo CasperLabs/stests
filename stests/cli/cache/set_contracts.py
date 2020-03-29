@@ -1,4 +1,5 @@
 import argparse
+import typing
 
 from stests.core import cache
 from stests.core import clx
@@ -34,32 +35,36 @@ def main(args):
     if network.faucet is None:
         raise ValueError("Unregistered network faucet.")
 
-    # Set contracts.
-    _set_contract(network, ContractType.TRANSFER_U512_STORED, "transfer_to_account")
-    _set_contract(network, ContractType.COUNTER_DEFINE, "counter")
+    # Install contracts.
+    for contract in clx.CONTRACTS:
+        _install_contract(network, contract)
 
     # Inform.
-    logger.log(f"client contracts for network {args.network} were successfully registered")
+    logger.log(f"client contracts for network {args.network} were successfully installed")
 
 
-def _set_contract(network: Network, typeof: ContractType, name: str):
-    """Deploys a client contract to target network.
+def _install_contract(network: Network, contract: typing.Callable):
+    """Installs a smart contract upon target network.
     
     """
+    logger.log(f"{contract.Metadata.TYPE.value} :: installation starts ... please wait")
+
     # Dispatch contract to network & await processing.
-    contract_hash = clx.do_deploy_network_contract(network, typeof, name)
+    contract_hash = contract.install(network)
 
     # Instantiate domain object.
-    contract = factory.create_contract(
+    contract_info = factory.create_contract(
         network,
         network.faucet,
         contract_hash=contract_hash,
-        contract_name=name,
-        contract_type=typeof,
+        contract_name=contract.Metadata.NAME,
+        contract_type=contract.Metadata.TYPE,
         )
 
     # Persist within cache.
-    cache.infra.set_contract(contract)
+    cache.infra.set_contract(contract_info)
+
+    logger.log(f"{contract.Metadata.TYPE.value} :: installed -> contract-hash={contract_hash}")
 
 
 # Entry point.

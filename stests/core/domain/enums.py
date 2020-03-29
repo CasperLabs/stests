@@ -37,6 +37,8 @@ class ContractType(enum.Enum):
     
     """
     COUNTER_DEFINE = "counter_define.wasm"
+    COUNTER_DEFINE_STORED = "counter_define_stored.wasm"
+    TRANSFER_U512 = "transfer_to_account_u512.wasm"
     TRANSFER_U512_STORED = "transfer_to_account_u512_stored.wasm"
 
 
@@ -44,10 +46,12 @@ class DeployStatus(enum.Flag):
     """Flag over set of deploy states.
     
     """
-    NULL = enum.auto()
-    DISPATCHED = enum.auto()
-    FINALIZED = enum.auto()
-    REJECTED = enum.auto()
+    DISPATCHED = 0
+    PENDING = 1
+    PROCESSED = 2
+    FINALIZED = 3
+    DISCARDED = 4
+    REJECTED = 5
 
 
 class DeployType(enum.Flag):
