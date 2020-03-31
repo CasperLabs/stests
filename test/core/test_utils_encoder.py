@@ -101,7 +101,7 @@ def test_11():
 def test_11():
     """Test registration of non core types."""
     encoder.initialise()
-    from stests.generators.meta import GENERATOR_SET
+    from stests.workflows.generators.meta import GENERATOR_SET
     for generator in GENERATOR_SET:
         for i in generator.TYPE_SET:
             assert i in encoder.DCLASS_SET

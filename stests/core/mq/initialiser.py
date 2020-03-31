@@ -22,7 +22,4 @@ def execute():
         broker.add_middleware(mware)
     
     # Inject encoder.
-    encoder.initialise()
     dramatiq.set_encoder(encoder)
-
-    # logger.log("CORE :: broker has been initialised")

@@ -26,9 +26,6 @@ NAME = "transfer_to_account"
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
 IS_SINGLETON = True
 
-# Contract metadata JIT loaded from cache.
-_contract = None
-
 
 def execute(
     ctx: ExecutionContext,
@@ -50,9 +47,9 @@ def execute(
     node, client  = utils.get_client(ctx)
 
     # Set contract.
-    global _contract
-    if _contract is None:
-        _contract = cache.infra.get_contract(ctx, TYPE)    
+    contract = cache.infra.get_contract(ctx, TYPE)    
+    if contract is None:
+        raise ValueError(f"{WASM} has not been installed upon chain.  Execute stests-set-contract {ctx.network}.")
 
     # Set args.
     session_args = ABI.args([
@@ -62,7 +59,7 @@ def execute(
 
     # Dispatch deploy.
     deploy_hash = client.deploy(
-        session_hash=_contract.hash_as_bytes,
+        session_hash=contract.hash_as_bytes,
         session_args=session_args,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,
@@ -71,7 +68,7 @@ def execute(
         gas_price=defaults.CLX_TX_GAS_PRICE,
     )
 
-    logger.log(f"PYCLX :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512_STORED :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key[:8]}")
+    logger.log(f"PYCLX :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512_STORED :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key}")
 
     return (node, deploy_hash)
 

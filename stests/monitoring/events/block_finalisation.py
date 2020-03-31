@@ -14,7 +14,6 @@ from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.domain import TransferStatus
 from stests.core.utils import logger
-from stests.orchestration.actors import on_step_deploy_finalized
 
 
 # Queue to which messages will be dispatched.
@@ -32,7 +31,7 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
     # Get block info.
     block_info = clx.get_block_by_node(node_id, block_hash)
 
-    # Set block.
+    # Set block summary.
     block = factory.create_block_on_finalisation(
         network_id=node_id.network,
         block_hash=block_hash,
@@ -55,7 +54,7 @@ def on_finalized_block(node_id: NodeIdentifier, block_hash: str):
     cache.monitoring.set_block_info(block, MessageToDict(block_info))
 
     # Get deploys & process.
-    for deploy_hash, deploy_info in clx.get_deploys_by_node(node_id, block_hash):
+    for deploy_hash, deploy_info in clx.get_deploys_by_node_and_block(node_id, block_hash):
         _process_deploy(node_id, block, deploy_hash, deploy_info)
         _process_deploy_of_run(node_id, block, deploy_hash)
 
@@ -101,4 +100,5 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
 
     # Signal to orchestrator.
+    from stests.workflows.orchestration.actors import on_step_deploy_finalized
     on_step_deploy_finalized.send(ctx, node_id, block.hash, deploy.hash)

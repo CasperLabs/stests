@@ -222,7 +222,7 @@ def initialise():
     if IS_INITIALISED:
         return
 
-    from stests.generators.meta import GENERATOR_SET
+    from stests.workflows.generators.meta import GENERATOR_SET
     for generator in GENERATOR_SET:
         for i in generator.TYPE_SET:
             register_type(i)

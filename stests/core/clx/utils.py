@@ -1,13 +1,9 @@
-import pathlib
 import typing
 
 import casperlabs_client
 
 from stests.core import cache
-from stests.core.domain import Account
-from stests.core.domain import ContractType
 from stests.core.domain import Network
-from stests.core.domain import ContractType
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
@@ -16,7 +12,7 @@ from stests.core.utils import logger
 
 
 
-def get_client(src: typing.Union[Node, NodeIdentifier, Network, NetworkIdentifier, ExecutionContext]) -> typing.Tuple[Node, casperlabs_client.CasperLabsClient]:
+def get_client(src: typing.Union[ExecutionContext, Network, NetworkIdentifier, Node, NodeIdentifier]) -> typing.Tuple[Node, casperlabs_client.CasperLabsClient]:
     """Factory method to return a configured clabs client and the node with which it is associated.
 
     :param src: The source from which a network node will be derived.
@@ -46,40 +42,3 @@ def get_client(src: typing.Union[Node, NodeIdentifier, Network, NetworkIdentifie
         host=node.host,
         port=node.port,
     )
-
-
-def get_contract_path(
-    contract_type: typing.Union[ContractType, ContractType]
-    ) -> pathlib.Path:
-    """Returns a path to a client side contract.
-
-    :param contract_type: Type of contract to be deployed.
-
-    :returns: Path to a client side contract.
-    
-    """
-    return pathlib.Path(casperlabs_client.__file__).parent / contract_type.value
-
-
-def get_contract_hash(
-    client: casperlabs_client.CasperLabsClient,
-    account: Account,
-    bhash: str,
-    contract_name: str
-    ) -> str:
-    """Returns chain hash of a deployed client side conttract.
-
-    :param client: A python client instance.
-    :param account: Account to be associated with contract.
-    :param bhash: Hash of block which processed deploy.
-    :param contract_name: Name of smart contract (within wasm blob).
-
-    :returns: Deploy client side contract hash.
-    
-    """
-    q = client.queryState(bhash, account.public_key, "", keyType="address")
-    for nk in q.account.named_keys:
-        if nk.name == contract_name:
-            return nk.key.hash.hash.hex()
-
-    raise ValueError(f"{contract_name} contract hash could not be found on-chain")

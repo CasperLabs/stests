@@ -71,8 +71,8 @@ def do_monitor_node(node_id: NodeIdentifier):
         return
 
     # Callback.
-    def _on_block_finalized(_, bhash):
-        on_finalized_block.send(node_id, bhash)
+    def _on_block_finalized(_, block_hash):
+        on_finalized_block.send(node_id, block_hash)
 
     # Stream events and re-queue when actor timeout occurs.
     try:

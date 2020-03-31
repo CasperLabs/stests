@@ -4,6 +4,7 @@ from stests.core.clx import defaults
 from stests.core.clx import utils
 from stests.core.domain import Account
 from stests.core.domain import ContractType
+from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
@@ -19,13 +20,10 @@ WASM = "counter_define.wasm"
 NAME = "counter"
 
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
-IS_SINGLETON = False
+IS_SINGLETON = True
 
 
-def increment(
-    ctx: ExecutionContext,
-    account: Account,
-    ):
+def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str]:
     """Increments counter previously installed under an account.
     
     """
@@ -47,7 +45,7 @@ def increment(
     return (node, deploy_hash)
 
 
-def get_count(node_id: NodeIdentifier, account: Account, block_hash: str):
+def get_count(node_id: NodeIdentifier, account: Account, block_hash: str) -> int:
     """Queries a node for the current value of the counter under the passed account.
     
     """

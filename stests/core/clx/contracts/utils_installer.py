@@ -119,14 +119,11 @@ def _get_contract_hash_from_deploy(
         logger.log_warning(f"{contract.WASM} :: deploy processing failed :: deploy-hash={deploy_hash}")
         raise ValueError(f"Deploy processing failure: {deploy_info}")
 
-    logger.log(f"{contract.WASM} :: deploy processed")
+    block_hash = deploy_info.processing_results[0].block_info.summary.block_hash.hex()
 
-    return _get_contract_hash_from_block(
-        client,
-        account,
-        contract,
-        deploy_info.processing_results[0].block_info.summary.block_hash.hex()
-        )
+    logger.log(f"{contract.WASM} :: deploy processed -> block-hash={block_hash}")
+
+    return _get_contract_hash_from_block(client, account, contract, block_hash)
 
 
 def _get_contract_hash_from_block(

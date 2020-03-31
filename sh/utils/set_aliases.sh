@@ -79,8 +79,10 @@ alias stests-set-node-bonding-key='_exec_cmd $STESTS_PATH_CLI/cache/set_node_bon
 alias stests-set-node-status='_exec_cmd $STESTS_PATH_CLI/cache/set_node_status.py'
 
 # ###############################################################
-# ALIASES: cache - vw
+# ALIASES: chain - view
 # ###############################################################
+
+alias stests-view-balance='_exec_cmd $STESTS_PATH_CLI/chain/view_balance.py'
 
 alias stests-view-block-info='_exec_cmd $STESTS_PATH_CLI/cache/view_block_info.py'
 alias stests-view-deploy-info='_exec_cmd $STESTS_PATH_CLI/cache/view_deploy_info.py'
