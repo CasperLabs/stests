@@ -47,6 +47,6 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
 
-    logger.log(f"PYCLX :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
+    logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
 
     return (node, deploy_hash)

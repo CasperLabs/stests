@@ -114,7 +114,7 @@ def get_node(node_id: NodeIdentifier) -> Node:
     return [
         node_id.network.name,
         COL_NODE,
-        f"N-{str(node_id.index).zfill(4)}"
+        node_id.index_label,
     ]
 
 
@@ -187,7 +187,9 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
     :returns: Collection of registered nodes.
     
     """
-    return [i for i in get_nodes(network) if i.is_operational]
+    nodeset = {i.address: i for i in get_nodes(network) if i.is_operational}
+
+    return list(nodeset.values())
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
@@ -237,7 +239,7 @@ def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     path = [
         node.network,
         COL_NODE,
-        f"N-{str(node.index).zfill(4)}"
+        node.index_label,
     ]
 
     return path, node

@@ -1,5 +1,3 @@
-print(111)
-
 from stests.workflows.orchestration.actors.phase import do_phase
 from stests.workflows.orchestration.actors.phase import on_phase_end
 from stests.workflows.orchestration.actors.phase import on_phase_error

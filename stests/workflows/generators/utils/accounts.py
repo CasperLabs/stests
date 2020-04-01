@@ -88,12 +88,12 @@ def do_fund_account(
     cache.state.set_transfer(transfer)
 
     # Perform deploy verification - with 10 minute delay.
-    do_fund_account_verify_deploy_processing.send_with_options(
-        args=(
-            node, deploy_hash, ctx, cp1_index, cp2_index, amount, use_stored_contract
-        ),
-        delay=int(1e3 * 10)
-    )
+    # do_fund_account_verify_deploy_processing.send_with_options(
+    #     args=(
+    #         node, deploy_hash, ctx, cp1_index, cp2_index, amount, use_stored_contract
+    #     ),
+    #     delay=int(1e3 * 10)
+    # )
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -106,7 +106,7 @@ def do_fund_account_verify_deploy_processing(
     amount: int,
     use_stored_contract: bool
     ):
-    print(f"TODO: perform post deploy verification: {node.address} {deploy_hash}")
+    print(f"TODO: perform post deploy dispatch verification: {node.address} {deploy_hash}")
 
 
 @dramatiq.actor(queue_name=_QUEUE)

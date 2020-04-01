@@ -17,17 +17,19 @@ from stests.core.utils import logger
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "monitoring"
+_QUEUE = "monitoring.events"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_finalized_block(node_id: NodeIdentifier, block_hash: str):   
+def on_block_finalized(node_id: NodeIdentifier, block_hash: str):   
     """Event: raised whenever a block is finalized.
 
-    :param node_id: Identifier of node from which block was streamed.
+    :param node_id: Identifier of node from which event was streamed.
     :param block_hash: Hash of finalized block.
 
     """
+    logger.log(f"MTRNG :: {node_id.label} -> block finalized :: {block_hash}")
+
     # Get block info.
     block_info = clx.get_block_by_node(node_id, block_hash)
 
@@ -80,7 +82,7 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     if not deploy:
         return
     
-    logger.log(f"PYCLX :: deploy finalized :: {deploy.hash} :: block-hash={block.hash}")
+    logger.log(f"WFLOW :: {deploy.run_type} :: {deploy.label_run_index} :: {deploy.label_phase_index} :: {deploy.label_step_index}  :: {deploy.step_label} :: -> deploy finalized :: {deploy.hash} :: block-hash={block.hash}")
 
     # Update deploy.
     deploy.block_hash = block.hash

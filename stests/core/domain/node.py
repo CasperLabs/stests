@@ -43,7 +43,7 @@ class Node:
 
     @property
     def index_label(self):
-        return str(self.index).zfill(3)
+        return f"N-{str(self.index).zfill(4)}"
 
     @property
     def is_operational(self):
@@ -68,20 +68,32 @@ class NodeIdentifier:
      # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
 
+    @property
+    def index_label(self):
+        return f"N-{str(self.index).zfill(4)}"
+
+    @property
+    def label(self):
+        return f"{self.network.name}:{self.index_label}"
+
 
 @dataclasses.dataclass
-class NodeStreamLock:
-    """Execution lock information - stream.
+class NodeMonitorLock:
+    """Node monitoring lock.
     
     """
+    # Numerical index to distinguish between nodees upon the same network.
+    index: int
+
     # Associated network.
     network: str
-
-    # Numerical index to distinguish between nodees upon the same network.
-    node_index: int
 
     # Numerical index to distinguish between multiple locks.
     lock_index: int
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
+
+    @property
+    def index_label(self):
+        return f"N-{str(self.index).zfill(4)}"

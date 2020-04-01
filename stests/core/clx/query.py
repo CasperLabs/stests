@@ -45,7 +45,7 @@ def get_balance_by_address(src: typing.Union[ExecutionContext, NetworkIdentifier
             )
     except Exception as err:
         if "Failed to find base key at path" in err.details:
-            logger.log_warning(f"PYCLX :: get_balance :: account appears not to exist upon chain: address={address}")
+            logger.log_warning(f"CHAIN :: get_balance :: account appears not to exist upon chain: address={address}")
             return 0
         raise err
     else:

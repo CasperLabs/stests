@@ -12,12 +12,12 @@ COL_BLOCK_INFO = "block-info"
 COL_BLOCK_LOCK = "block-lock"
 COL_DEPLOY = "deploy"
 COL_DEPLOY_INFO = "deploy-info"
-COL_STREAM_LOCK = "stream-lock"
+COL_NODE_LOCK = "node-lock"
 
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.DELETE)
-def delete_stream_lock(lock: NodeStreamLock) -> typing.Generator:
+def delete_node_monitor_lock(lock: NodeMonitorLock) -> typing.Generator:
     """Deletes astream lock.
 
     :param ctx: Execution context information.
@@ -27,7 +27,8 @@ def delete_stream_lock(lock: NodeStreamLock) -> typing.Generator:
     """
     return [
         lock.network,
-        COL_STREAM_LOCK,
+        COL_NODE_LOCK,
+        lock.index_label,
         lock.lock_index,
     ]
 
@@ -43,7 +44,7 @@ def flush_stream_locks() -> typing.Generator:
     """
     return [
         "*",
-        COL_STREAM_LOCK,
+        COL_NODE_LOCK,
         "*",
     ]
 
@@ -204,15 +205,16 @@ def set_deploy_info(block: Block, deploy: Deploy, deploy_info: typing.Dict) -> t
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.LOCK)
-def set_stream_lock(lock: NodeStreamLock) -> typing.Tuple[typing.List[str], NodeStreamLock]:
-    """Encaches a lock: NodeStreamLock.
+def set_node_monitor_lock(lock: NodeMonitorLock) -> typing.Tuple[typing.List[str], NodeMonitorLock]:
+    """Encaches a lock: NodeMonitorLock.
 
     :param lock: Information to be locked.
 
     """
     path = [
         lock.network,
-        COL_STREAM_LOCK,
+        COL_NODE_LOCK,
+        lock.index_label,
         lock.lock_index,
     ]
     

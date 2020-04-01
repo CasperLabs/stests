@@ -84,8 +84,6 @@ def on_step_execute_async(ctx: ExecutionContext, step: WorkflowStep):
         group = dramatiq.group(message_factory)
         group.run()
 
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> listening for chain events")
-
 
 def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
     """Performs step execution.

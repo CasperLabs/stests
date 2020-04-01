@@ -100,7 +100,7 @@ def do_increment_counter_1(ctx: ExecutionContext, account_index: int):
         payment_amount=clx.CLX_TX_FEE,
         gas_price=clx.CLX_TX_GAS_PRICE
     )
-    logger.log(f"PYCLX :: counter-increment :: deploy-hash={dhash}")
+    logger.log(f"CHAIN :: counter-increment :: deploy-hash={dhash}")
 
     # Set info. 
     deploy = factory.create_deploy_for_run(

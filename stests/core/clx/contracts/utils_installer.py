@@ -53,7 +53,7 @@ def install_named(
             raise IOError("Node is unreachable therefore contract cannot be deployed.")
         raise err
 
-    logger.log(f"PYCLX :: deploy dispatched -> deploy-hash={deploy_hash} :: {contract.TYPE.name}.install :: account={account.public_key}")
+    logger.log(f"CHAIN :: deploy dispatched -> deploy-hash={deploy_hash} :: {contract.TYPE.name}.install :: account={account.public_key}")
 
     return (node, deploy_hash)
 

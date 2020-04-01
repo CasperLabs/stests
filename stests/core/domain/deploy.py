@@ -92,5 +92,13 @@ class Deploy:
         return f"A-{str(self.account_index).zfill(6)}"
 
     @property
+    def label_phase_index(self):
+        return f"P-{str(self.phase_index).zfill(2)}"
+
+    @property
     def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
+
+    @property
+    def label_step_index(self):
+        return f"S-{str(self.step_index).zfill(2)}"
