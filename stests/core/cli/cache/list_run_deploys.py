@@ -1,4 +1,5 @@
 import argparse
+import statistics
 
 from beautifultable import BeautifulTable
 
@@ -63,6 +64,12 @@ def main(args):
         logger.log("No run deploys found.")
         return
 
+    # Render views.
+    _render_table(args, network_id, data)
+    _render_finalization_stats(data)
+
+
+def _render_table(args, network_id, data):
     # Sort data.
     data = sorted(data, key=lambda i: i.dispatch_ts)
 
@@ -89,7 +96,24 @@ def main(args):
 
     # Render.
     print(t)
-    print(f"{network_id.name} - {args.run_type}  - Run {args.run_index} :: Finalized deploys = {len([i for i in data if i.status == DeployStatus.FINALIZED])} / {len(data)}")
+    print(f"{network_id.name} - {args.run_type}  - Run {args.run_index}")
+
+
+def _render_finalization_stats(data):
+    """Renders finalization stats.
+    
+    """
+    times = [i.finalization_time for i in data if i.finalization_time]
+    if not times:
+        return
+
+    maxima = max(times)
+    minima = min(times)
+    avg = statistics.mean(times)
+    stdev = statistics.stdev(times)
+    variance = statistics.variance(times)
+
+    print(f"Finalized = {len(times)} :: %={int((len(times) / len(data)) * 100)} :: Avg={format(avg, '.3f')}s :: Max={format(maxima, '.3f')}s :: Min={format(minima, '.3f')}s :: Variance={format(variance, '.3f')}s :: Std Dev= {format(stdev, '.3f')}s")
 
 # Entry point.
 if __name__ == '__main__':

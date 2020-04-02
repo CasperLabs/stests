@@ -129,8 +129,9 @@ dmypy.json
 .pyre/
 
 
-# Temp sub-folder
+# Temp / local files
 /tmp
 tmp*.sh
 tmp.py
 TODO.txt
+notes.md

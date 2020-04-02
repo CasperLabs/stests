@@ -7,7 +7,7 @@ from stests.core.domain import NodeIdentifier
 from stests.core.domain import NodeMonitorLock
 from stests.core.utils import factory
 from stests.core.utils import logger
-from stests.monitoring import agent
+from stests.monitoring.events import listener
 
 
 
@@ -55,9 +55,9 @@ def do_monitor_node(node_id: NodeIdentifier):
     if not lock_acquired:
         return
 
-    # Monitor node.
+    # Monitor node by listening to & processing node events.
     try:
-        agent.monitor_node(node_id)
+        listener.bind_to_stream(node_id)
 
     # Exception: actor timeout - by default this occurs every 600 seconds.
     except TimeLimitExceeded:
