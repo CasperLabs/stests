@@ -12,14 +12,14 @@ def execute():
     """Initialises MQ broker & connects dramatiq library.
 
     """
-    # Instantiate a broker.
-    broker = get_broker()
-    dramatiq.set_broker(broker)
-
-    # Inject middleware.
+    # JIT import to avoid circularity - TODO remove.
     from stests.core.mq.middleware import get_middleware
+
+    # Configure broker.
+    broker = get_broker()
     for mware in get_middleware():
         broker.add_middleware(mware)
     
-    # Inject encoder.
+    # Configure dramatiq.
+    dramatiq.set_broker(broker)
     dramatiq.set_encoder(encoder)

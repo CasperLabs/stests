@@ -16,9 +16,9 @@ import stests.workflows.generators.wg_210.meta
 import stests.workflows.orchestration.actors
 
 # Import actors: monitoring.
+import stests.monitoring.control
 import stests.monitoring.events
-import stests.monitoring.manager
 
 # Start monitoring.
-from stests.monitoring.manager import do_start_monitoring
+from stests.monitoring.control import do_start_monitoring
 do_start_monitoring.send()

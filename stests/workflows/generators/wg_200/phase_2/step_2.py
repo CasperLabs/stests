@@ -60,7 +60,7 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     assert count == ctx.args.increments, "counter verification failed"
 
 
-@dramatiq.actor(queue_name=constants.TYPE)
+@dramatiq.actor(queue_name=constants.QUEUE)
 def _increment_counter_0(ctx: ExecutionContext, account_index: int):
     """Dispatches counter increment deploy.
     

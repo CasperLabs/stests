@@ -8,6 +8,9 @@ DESCRIPTION = "Token Transfers"
 # Workload type.
 TYPE = "WG-100"
 
+# Message queue.
+QUEUE = f"workflows.generators.{TYPE}"
+
 # --------------------------------------------------------------------
 # DEFAULTS
 # --------------------------------------------------------------------

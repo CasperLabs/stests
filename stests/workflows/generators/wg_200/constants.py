@@ -8,6 +8,9 @@ DESCRIPTION = "Counter call / define"
 # Workload type.
 TYPE = "WG-200"
 
+# Message queue.
+QUEUE = f"workflows.generators.{TYPE}"
+
 # --------------------------------------------------------------------
 # DEFAULTS
 # --------------------------------------------------------------------

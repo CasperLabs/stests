@@ -13,7 +13,7 @@ from stests.core.utils import factory
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "orchestration.utils"
+_QUEUE = "workflows.generators.accounts"
 
 # Account index: network faucet.
 ACC_NETWORK_FAUCET = 0

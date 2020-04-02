@@ -6,7 +6,7 @@ from stests.core.utils import logger
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "monitoring.events"
+_QUEUE = "monitoring.events.deploy.added"
 
 
 @dramatiq.actor(queue_name=_QUEUE)

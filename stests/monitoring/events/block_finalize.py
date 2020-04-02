@@ -5,6 +5,7 @@ from google.protobuf.json_format import MessageToDict
 
 from stests.core import cache
 from stests.core import clx
+from stests.core.utils import encoder 
 from stests.core.utils import factory
 from stests.core.domain import Block
 from stests.core.domain import BlockLock
@@ -17,7 +18,7 @@ from stests.core.utils import logger
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "monitoring.events"
+_QUEUE = "monitoring.events.block.finalized"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -77,7 +78,7 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     """Performs a deploy dispatched during a run.
     
     """
-    # Set run deploy.
+    # Set deploy - previously dispatched by a generator.
     deploy = cache.state.get_deploy(deploy_hash)
     if not deploy:
         return
@@ -101,6 +102,12 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     # Set execution context.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
 
-    # Signal to orchestrator.
-    from stests.workflows.orchestration.actors import on_step_deploy_finalized
-    on_step_deploy_finalized.send(ctx, node_id, block.hash, deploy.hash)
+    # Signal to workflow orchestrator.
+    broker = dramatiq.get_broker()
+    broker.enqueue(dramatiq.Message(
+        queue_name="workflows.orchestration.step",
+        actor_name="on_step_deploy_finalized",
+        args=([encoder.encode(ctx), encoder.encode(node_id), block.hash, deploy.hash]),
+        kwargs=dict(),
+        options=dict(),
+    ))

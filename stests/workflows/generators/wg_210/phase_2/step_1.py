@@ -73,7 +73,7 @@ def _verify_counter(ctx: ExecutionContext, account_index: int, bhash: str):
     assert state.cl_value.value.i32 == ctx.args.increments
 
 
-@dramatiq.actor(queue_name=constants.TYPE)
+@dramatiq.actor(queue_name=constants.QUEUE)
 def do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     """Dispatches counter increment deploy.
     

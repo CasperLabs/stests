@@ -13,7 +13,7 @@ from stests.workflows.orchestration.actors.step import do_step
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "orchestration"
+_QUEUE = "workflows.orchestration.phase"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
