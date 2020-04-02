@@ -29,7 +29,7 @@ def on_block_finalized(node_id: NodeIdentifier, block_hash: str):
     :param block_hash: Hash of finalized block.
 
     """
-    logger.log(f"MTRNG :: {node_id.label} -> block finalized :: {block_hash}")
+    logger.log(f"MONIT :: {node_id.label} -> block finalized :: {block_hash}")
 
     # Get block info.
     block_info = clx.get_block_by_node(node_id, block_hash)
@@ -83,7 +83,7 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     if not deploy:
         return
     
-    logger.log(f"WFLOW :: {deploy.run_type} :: {deploy.label_run_index} :: {deploy.label_phase_index} :: {deploy.label_step_index}  :: {deploy.step_label} :: -> deploy finalized :: {deploy.hash} :: block-hash={block.hash}")
+    logger.log(f"WFLOW :: {deploy.run_type} :: {deploy.label_run_index} :: {deploy.label_phase_index} :: {deploy.label_step_index}  :: {deploy.step_label} :: -> deploy correlated :: {deploy.hash} :: block={block.hash}")
 
     # Update deploy.
     deploy.block_hash = block.hash
@@ -105,7 +105,7 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     # Signal to workflow orchestrator.
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
-        queue_name="workflows.orchestration.step",
+        queue_name="workflows.orchestration",
         actor_name="on_step_deploy_finalized",
         args=([encoder.encode(ctx), encoder.encode(node_id), block.hash, deploy.hash]),
         kwargs=dict(),

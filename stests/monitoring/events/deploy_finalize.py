@@ -18,4 +18,4 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
     :param deploy_hash: Hash of finalized deploy.
 
     """
-    logger.log(f"MTRNG :: {node_id.label} -> deploy finalized :: {deploy_hash} :: block-hash={block_hash}")
+    logger.log(f"MONIT :: {node_id.label} -> deploy finalized :: {deploy_hash} :: block={block_hash}")

@@ -222,10 +222,18 @@ def initialise():
     if IS_INITIALISED:
         return
 
-    from stests.workflows.generators.meta import GENERATOR_SET
-    for generator in GENERATOR_SET:
-        for i in generator.TYPE_SET:
-            register_type(i)
+    # Register generator args as these are currently 
+    from stests.workflows.generators.wg_100.args import Arguments
+    register_type(Arguments)
+
+    from stests.workflows.generators.wg_110.args import Arguments
+    register_type(Arguments)
+
+    from stests.workflows.generators.wg_200.args import Arguments
+    register_type(Arguments)
+
+    from stests.workflows.generators.wg_210.args import Arguments
+    register_type(Arguments)
 
     IS_INITIALISED = True
 

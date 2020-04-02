@@ -17,4 +17,4 @@ def on_deploy_requeued(node_id: NodeIdentifier, deploy_hash: str):
     :param deploy_hash: Hash of requeued deploy.
 
     """
-    logger.log(f"MTRNG :: {node_id.label} -> deploy requeued :: {deploy_hash}")
+    logger.log(f"MONIT :: {node_id.label} -> deploy requeued :: {deploy_hash}")

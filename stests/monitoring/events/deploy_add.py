@@ -18,4 +18,4 @@ def on_deploy_added(node_id: NodeIdentifier, deploy_hash: str):
     :param deploy_hash: Hash of added deploy.
 
     """
-    logger.log(f"MTRNG :: {node_id.label} -> deploy added :: {deploy_hash}")
+    logger.log(f"MONIT :: {node_id.label} -> deploy added :: {deploy_hash}")

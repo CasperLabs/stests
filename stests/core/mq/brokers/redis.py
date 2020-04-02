@@ -24,5 +24,6 @@ def get_broker() -> RedisBroker:
     return RedisBroker(
         db=EnvVars.DB,
         host=EnvVars.HOST,
-        port=EnvVars.PORT
+        port=EnvVars.PORT,
+        namespace="stests"
         )

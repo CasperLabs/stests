@@ -17,4 +17,4 @@ def on_block_added(node_id: NodeIdentifier, block_hash: str):
     :param block_hash: Hash of added block.
 
     """
-    logger.log(f"MTRNG :: {node_id.label} -> block added :: {block_hash}")
+    logger.log(f"MONIT :: {node_id.label} -> block added :: {block_hash}")

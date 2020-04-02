@@ -17,4 +17,4 @@ def on_deploy_discarded(node_id: NodeIdentifier, deploy_hash: str):
     :param deploy_hash: Hash of discarded deploy.
 
     """
-    logger.log(f"MTRNG :: {node_id.label} -> deploy discarded :: {deploy_hash}")
+    logger.log(f"MONIT :: {node_id.label} -> deploy discarded :: {deploy_hash}")

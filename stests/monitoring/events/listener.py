@@ -18,7 +18,7 @@ def bind_to_stream(node_id: NodeIdentifier):
     :node_id: Identifier of node being monitored.
     
     """
-    logger.log(f"MTRNG :: node :: start :: {node_id.label}")
+    logger.log(f"MONIT :: node :: start :: {node_id.label}")
 
     def _on_block_added(_, event_id, block_hash):
         on_block_added.send(node_id, block_hash)
