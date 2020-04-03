@@ -2,15 +2,15 @@ import typing
 
 import dramatiq
 
-from stests.core.mq.middleware.mware_group_callbacks import get_mware as GroupCallbacksMiddleware
-from stests.core.mq.middleware.mware_logger import LoggingMiddleware
+from stests.core.mq.middleware.actor_logging import get_mware as ActorLoggingMiddleware
+from stests.core.mq.middleware.group_callbacks import get_mware as GroupCallbacksMiddleware
 
 
 
 # Middleware to inject when processing simulation related messages.
 MWARE = (
-    # LoggingMiddleware,
-    GroupCallbacksMiddleware,
+    ActorLoggingMiddleware,
+    GroupCallbacksMiddleware,    
 )
 
 

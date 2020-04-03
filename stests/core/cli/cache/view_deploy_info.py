@@ -52,6 +52,8 @@ def main(args):
         logger.log("No deploy information found.")
         return
 
+    print(deploy_info)
+
     # Pull account under which deploy was dispatched.
     account = None
     if deploy.is_from_run:

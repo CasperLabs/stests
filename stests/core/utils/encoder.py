@@ -238,5 +238,13 @@ def initialise():
     IS_INITIALISED = True
 
 
-# Initialise core types.
-_initialise()
+# Auto-register domain types.
+from stests.core import domain
+for i in domain.TYPE_SET:
+    register_type(i)
+
+# Auto-register orchestration types.
+from stests.core import orchestration
+for i in orchestration.TYPE_SET:
+    register_type(i)
+

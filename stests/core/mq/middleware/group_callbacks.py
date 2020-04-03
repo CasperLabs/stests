@@ -19,9 +19,10 @@ class EnvVars:
 
 
 def get_mware():
-    """Returns a broker middleware designed to support callbacks when processing groups of messages.
+    """Factory method invoked during broker initialisation.
     
     """
+    # GroupCallbacks supports invocation of a callback upon the execution of a large groups of messages.
     return GroupCallbacks(
         RedisBackend(client=redis.Redis(db=EnvVars.DB, host=EnvVars.HOST, port=EnvVars.PORT))
     )
