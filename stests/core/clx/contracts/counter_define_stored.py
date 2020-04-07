@@ -34,7 +34,7 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
     # Set contract.
     contract = cache.infra.get_contract(ctx, TYPE)    
     if contract is None:
-        raise ValueError(f"{WASM} has not been installed upon chain.  Execute stests-set-contract {ctx.network}.")
+        raise ValueError(f"{WASM} has not been installed upon chain.")
 
     # Dispatch deploy.
     deploy_hash = client.deploy(

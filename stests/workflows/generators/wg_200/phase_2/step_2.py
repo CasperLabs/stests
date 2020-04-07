@@ -1,3 +1,4 @@
+import random
 import typing
 
 import dramatiq
@@ -26,14 +27,17 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     :param ctx: Execution context information.
 
     """
-    # raise NotImplementedError("TODO: apply rate limiting")
+    # Set dispatch window.
+    deploy_count = ctx.args.user_accounts
+    deploy_dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
 
-    def get_messages():
-        for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            for _ in range(0, ctx.args.increments):
-                yield _increment_counter_0.message(ctx, account_index)
-
-    return get_messages
+    # Increment counter of contract instance deployed under users account.
+    for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        for _ in range(0, ctx.args.increments):
+            _increment_counter_0.send_with_options(
+                args = (ctx, account_index),
+                delay=random.randint(0, deploy_dispatch_window)
+            )
 
 
 def verify(ctx: ExecutionContext):

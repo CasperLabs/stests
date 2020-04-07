@@ -6,6 +6,7 @@ from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.workflows.generators.utils import verification
+from stests.workflows.generators.utils.contracts import do_set_contract
 from stests.workflows.generators.wg_200 import constants
 
 
@@ -14,7 +15,7 @@ from stests.workflows.generators.wg_200 import constants
 DESCRIPTION = "Dispatches a notification to signal that generator has completed."
 
 # Step label.
-LABEL = "deploy-counter-define-wasm"
+LABEL = "counter-define-wasm"
 
 
 def execute(ctx: ExecutionContext) -> typing.Callable:
@@ -27,7 +28,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
 
     def get_messages():
         for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield utils.do_set_contract.message(ctx, account_index, ContractType.COUNTER_DEFINE)
+            yield do_set_contract.message(ctx, account_index, ContractType.COUNTER_DEFINE)
 
     return get_messages
 

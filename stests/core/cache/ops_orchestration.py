@@ -344,6 +344,26 @@ def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInf
     return path, info
 
 
+def set_info_update(ctx: ExecutionContext, aspect: ExecutionAspect, status: ExecutionStatus) -> ExecutionInfo:
+    """Updates domain object: ExecutionContext.
+    
+    :param ctx: Execution context information.
+
+    :returns: Keypath + domain object instance.
+
+    """
+    # Pull.
+    info = get_info(ctx, aspect)
+
+    # Update.
+    info.end(status, None)
+
+    # Recache.
+    set_info(info)
+
+    return info
+
+
 @cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
 def set_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
     """Encaches domain object: ExecutionState.
@@ -368,26 +388,6 @@ def set_state(state: ExecutionState) -> typing.Tuple[typing.List[str], Execution
         path.append(f"{state.phase_index_label}.{state.step_index_label}")
 
     return path, state
-
-
-def update_info(ctx: ExecutionContext, aspect: ExecutionAspect, status: ExecutionStatus) -> ExecutionInfo:
-    """Updates domain object: ExecutionContext.
-    
-    :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    # Pull.
-    info = get_info(ctx, aspect)
-
-    # Update.
-    info.end(status, None)
-
-    # Recache.
-    set_info(info)
-
-    return info
 
 
 def _get_keypath_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> typing.List[str]:

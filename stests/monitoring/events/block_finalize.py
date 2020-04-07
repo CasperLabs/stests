@@ -53,9 +53,6 @@ def on_block_finalized(node_id: NodeIdentifier, block_hash: str):
     if not encached:
         return
 
-    # Encache block info.    
-    cache.monitoring.set_block_info(block, MessageToDict(block_info))
-
     # Get deploys & process.
     for deploy_hash, deploy_info in clx.get_deploys_by_node_and_block(node_id, block_hash):
         _process_deploy(node_id, block, deploy_hash, deploy_info)
@@ -66,12 +63,8 @@ def _process_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, dep
     """Performs monitored deploy processing.
     
     """
-    # Set deploy summary.
     deploy = factory.create_deploy_on_block_finalisation(node_id, block, deploy_hash)
-
-    # Encache deploy summary + info.
     cache.monitoring.set_deploy(block, deploy)
-    cache.monitoring.set_deploy_info(block, deploy, deploy_info)
 
 
 def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: str):

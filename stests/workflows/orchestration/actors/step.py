@@ -45,7 +45,6 @@ def do_step(ctx: ExecutionContext):
     # Update cache.
     cache.orchestration.set_context(ctx)
     cache.orchestration.set_info(step_info)
-    cache.orchestration.set_state(step_state)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
@@ -120,8 +119,7 @@ def on_step_end(ctx: ExecutionContext):
     step_state = factory.create_state(ExecutionAspect.STEP, ctx, ExecutionStatus.COMPLETE)
 
     # Update cache.
-    cache.orchestration.set_state(step_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
+    cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> end")
@@ -147,8 +145,7 @@ def on_step_error(ctx: ExecutionContext, err: str):
     step_state = factory.create_state(ExecutionAspect.STEP, ctx, ExecutionStatus.ERROR)
 
     # Update cache.
-    cache.orchestration.set_state(step_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
+    cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {ctx.step_label} -> unhandled error: {err}")

@@ -38,7 +38,6 @@ def do_phase(ctx: ExecutionContext):
     # Update cache.
     cache.orchestration.set_context(ctx)
     cache.orchestration.set_info(phase_info)
-    cache.orchestration.set_state(phase_state)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
@@ -61,8 +60,7 @@ def on_phase_end(ctx: ExecutionContext):
     phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, status=ExecutionStatus.COMPLETE)
 
     # Update cache.
-    cache.orchestration.set_state(phase_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
+    cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> ends")
@@ -88,8 +86,7 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, status=ExecutionStatus.ERROR)
 
     # Update cache.
-    cache.orchestration.set_state(phase_state)
-    cache.orchestration.update_info(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
+    cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
 
     # Inform.
     logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> unhandled error")
