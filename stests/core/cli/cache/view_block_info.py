@@ -5,6 +5,7 @@ from beautifultable import BeautifulTable
 
 from stests.core.cli.utils import get_table
 from stests.core import cache
+from stests.core import clx
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -28,12 +29,6 @@ ARGS.add_argument(
     type=str,
     )
 
-# Table columns.
-COLS = [
-    ("Block Property", BeautifulTable.ALIGN_LEFT),
-    ("Value", BeautifulTable.ALIGN_LEFT),
-]
-
 
 def main(args):
     """Entry point.
@@ -41,15 +36,25 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Destructure args.
     network_id = factory.create_network_id(args.network)
+    _render_block(network_id, args.block_hash)
+    _render_block_info(network_id, args.block_hash)
 
-    # Pull monitoring data.
-    block = cache.monitoring.get_block(network_id, args.block_hash)
-    block_info = cache.monitoring.get_block_info(network_id, args.block_hash)
-    if not block or not block_info:
-        logger.log("No block information found.")
+
+def _render_block(network_id, block_hash):
+    """Render block info pulled from cache.
+    
+    """
+    # Pull cached data.
+    block = cache.monitoring.get_block(network_id, block_hash)
+    if block is None:
         return
+
+    # Columns.
+    COLS = [
+        ("Block Property", BeautifulTable.ALIGN_LEFT),
+        ("Value", BeautifulTable.ALIGN_LEFT),
+    ]
 
     # Set cols/rows.
     cols = [i for i, _ in COLS]
@@ -74,10 +79,16 @@ def main(args):
 
     # Render.
     print(t)
-    print(json.dumps(block_info, indent=4))
-    print("-----------------------------------------------------------------------------------------------")
-    print(f"{network_id.name} - {args.block_hash}")    
-    print("-----------------------------------------------------------------------------------------------")
+
+
+def _render_block_info(network_id, block_hash):
+    """Render block info pulled from chain.
+    
+    """
+    block_info = clx.get_block(network_id, block_hash)
+
+    print("")
+    print(block_info)
 
 
 # Entry point.

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from google.protobuf.json_format import MessageToDict
 
+from stests.core.clx import parsers
 from stests.core.clx import utils
 from stests.core.domain import Account
 from stests.core.domain import Block
@@ -50,7 +51,21 @@ def get_balance_by_address(src: typing.Union[ExecutionContext, NetworkIdentifier
         raise err
     else:
         return balance
-    
+
+
+def get_block(network_id: NetworkIdentifier, block_hash: str) -> typing.Dict:
+    """Queries network for information pertaining to a specific block.
+
+    :param network_id: A network identifier.
+    :param block_hash: Hash of a block.
+
+    :returns: 2 member tuple: (block info, block summary).
+
+    """
+    node, client = utils.get_client(network_id)
+
+    return client.showBlock(block_hash_base16=block_hash, full_view=False)
+
 
 def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
     """Queries network for information pertaining to a specific block.
@@ -66,20 +81,19 @@ def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
     return client.showBlock(block_hash_base16=block_hash, full_view=False)
 
 
-def get_deploy_by_node(node_id: NodeIdentifier, deploy_hash: str, wait_for_processed=True) -> typing.List[typing.Union[str, typing.Dict]]:
+def get_deploy(src: typing.Union[NetworkIdentifier, NodeIdentifier], deploy_hash: str, wait_for_processed: bool = True) -> typing.Dict:
     """Queries node for a set of deploys associated with a specific block.
 
-    :param node_id: A node identifier.
+    :param src: The source from which a network node will be derived.
     :param deploy_hash: Hash of a deploy.
 
-    :returns: 2 member tuple: (deploy hash, deploy info).
+    :returns: Deploy info pulled from chain.
 
     """
-    node, client = utils.get_client(node_id)
-
+    node, client = utils.get_client(src)
     deploy_info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
 
-    return deploy_info
+    return parsers.parse_deploy_info(deploy_info)
 
 
 def get_deploys_by_node_and_block(node_id: NodeIdentifier, block_hash: str) -> typing.List[typing.Union[str, typing.Dict]]:

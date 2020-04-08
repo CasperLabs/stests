@@ -5,6 +5,7 @@ from beautifultable import BeautifulTable
 
 from stests.core.cli.utils import get_table
 from stests.core import cache
+from stests.core import clx
 from stests.core.utils import args_validator
 from stests.core.utils import factory
 from stests.core.utils import logger
@@ -42,42 +43,25 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Destructure args.
     network_id = factory.create_network_id(args.network)
+    node = _render_deploy(network_id, args.deploy_hash)
+    _render_deploy_info(node or network_id, args.deploy_hash)
 
-    # Pull monitoring data.
-    deploy = cache.state.get_deploy(args.deploy_hash) or cache.monitoring.get_deploy(network_id, args.deploy_hash)
-    deploy_info = cache.monitoring.get_deploy_info(network_id, args.deploy_hash)
-    if not deploy or not deploy_info:
+
+def _render_deploy(network_id, deploy_hash):
+    """Renders cached deploy information.
+    
+    """
+    # Pull deploy either from run state or monitoring cache.
+    deploy = cache.state.get_deploy(deploy_hash) or \
+             cache.monitoring.get_deploy(network_id, deploy_hash)
+    if not deploy:
         logger.log("No deploy information found.")
         return
 
-    print(deploy_info)
-
-    # Pull account under which deploy was dispatched.
-    account = None
-    if deploy.is_from_run:
-        account_id = factory.create_account_id(
-            deploy.account_index,
-            network_id.name,
-            deploy.run_index,
-            deploy.run_type,
-        )
-        account = cache.state.get_account(account_id)
-        node_id = factory.create_node_id(
-            network_id,
-            deploy.dispatch_node,
-        )
-        node = cache.infra.get_node(node_id)
-
-    # Pull node to which deploy was dispatched.
-    node = None
-    if deploy.is_from_run:
-        node_id = factory.create_node_id(
-            network_id,
-            deploy.dispatch_node,
-        )
-        node = cache.infra.get_node(node_id)
+    # Pull account/node.
+    account = _get_deploy_account(network_id, deploy)
+    node = _get_deploy_node(network_id, deploy)
 
     # Set cols/rows.
     cols = [i for i, _ in COLS]
@@ -87,7 +71,7 @@ def main(args):
     rows.append(("Hash", deploy.hash))
     rows.append(("Status", deploy.status.name))
     rows.append(("Type", "N/A" if not deploy.typeof else deploy.typeof.name))
-    rows.append(("Cost", deploy_info["cost"]))
+    # rows.append(("Cost", deploy_info["cost"]))
     rows.append(("Dispatch Node", node.address if node else "N/A"))
     rows.append(("Dispatch TimeStamp", deploy.dispatch_ts or "N/A"))
     rows.append(("Finalization TimeStamp", deploy.finalization_ts or "N/A"))
@@ -107,11 +91,55 @@ def main(args):
 
     # Render.
     print(t)
-    if deploy_info:
-        print(json.dumps(deploy_info, indent=4))
-    print("-----------------------------------------------------------------------------------------------")
-    print(f"{network_id.name} - {args.deploy_hash}")    
-    print("-----------------------------------------------------------------------------------------------")
+
+    return node
+
+
+def _get_deploy_account(network_id, deploy):
+    """Returns account under which a deploy was dispatched.
+    
+    """
+    if not deploy.is_from_run:
+        return
+
+    if deploy.account_index == 0:
+        network = cache.infra.get_network(network_id)
+        return network.faucet
+
+    account_id = factory.create_account_id(
+        deploy.account_index,
+        network_id.name,
+        deploy.run_index,
+        deploy.run_type,
+    )
+    return cache.state.get_account(account_id)
+
+
+def _get_deploy_node(network_id, deploy):
+    """Returns node to which a deploy was dispatched.
+    
+    """
+    if not deploy.is_from_run:
+        return
+
+    node_id = factory.create_node_id(
+        network_id,
+        deploy.dispatch_node,
+    )
+    return cache.infra.get_node(node_id)
+
+
+def _render_deploy_info(src, deploy_hash):
+    """Renders on-chain deploy information.
+    
+    """
+    deploy_info = clx.get_deploy(src, deploy_hash)
+    if not deploy_info:
+        return
+    
+    print("--------------------------------------------------------------------------------------------")
+    print(json.dumps(deploy_info, indent=4))
+    print("--------------------------------------------------------------------------------------------")
 
 
 # Entry point.
