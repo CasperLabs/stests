@@ -29,7 +29,7 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         dest="deploys_per_second",
         help="Number of deploys to dispatch per second.",
         type=args_validator.validate_deploys_per_second,
-        default=0,
+        default=10,
         )
 
     # execution mode.
