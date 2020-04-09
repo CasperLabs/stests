@@ -87,8 +87,9 @@ def _render_block_info(network_id, block_hash):
     """
     block_info = clx.get_block(network_id, block_hash)
 
-    print("")
-    print(block_info)
+    print("--------------------------------------------------------------------------------------------")
+    print(json.dumps(block_info, indent=4))
+    print("--------------------------------------------------------------------------------------------")
 
 
 # Entry point.

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from google.protobuf.json_format import MessageToDict
 
-from stests.core.clx import parsers
+from stests.core.clx import parser
 from stests.core.clx import utils
 from stests.core.domain import Account
 from stests.core.domain import Block
@@ -63,8 +63,9 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> typing.Dict:
 
     """
     node, client = utils.get_client(network_id)
+    block_info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
-    return client.showBlock(block_hash_base16=block_hash, full_view=False)
+    return parser.parse_block_info(block_info)
 
 
 def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
@@ -93,7 +94,7 @@ def get_deploy(src: typing.Union[NetworkIdentifier, NodeIdentifier], deploy_hash
     node, client = utils.get_client(src)
     deploy_info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
 
-    return parsers.parse_deploy_info(deploy_info)
+    return parser.parse_deploy_info(deploy_info)
 
 
 def get_deploys_by_node_and_block(node_id: NodeIdentifier, block_hash: str) -> typing.List[typing.Union[str, typing.Dict]]:
