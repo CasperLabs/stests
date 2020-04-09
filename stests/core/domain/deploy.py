@@ -22,6 +22,9 @@ class Deploy:
     # Associated block rank. 
     block_rank: typing.Optional[int]
 
+    # Cost of deploy (in motes).
+    cost: typing.Optional[int]
+
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
 

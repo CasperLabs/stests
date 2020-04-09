@@ -32,6 +32,9 @@ class Block:
     # Associated network.
     network: str
 
+    # Index of node queried to pull block info.
+    node_index: str
+
     # Size in bytes of block.
     size_bytes: int
 

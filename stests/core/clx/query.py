@@ -110,7 +110,7 @@ def get_deploys_by_node_and_block(node_id: NodeIdentifier, block_hash: str) -> t
 
     deploys = client.showDeploys(block_hash_base16=block_hash, full_view=False)
 
-    return ((i.deploy.deploy_hash.hex(), MessageToDict(i)) for i in deploys)
+    return ((i.deploy.deploy_hash.hex(), parser.parse_deploy_info(i)) for i in deploys)
 
 
 def get_last_block_hash(client) -> str:

@@ -36,7 +36,7 @@ def on_block_finalized(node_id: NodeIdentifier, block_hash: str):
 
     # Set block summary.
     block = factory.create_block_on_finalisation(
-        network_id=node_id.network,
+        node_id=node_id,
         block_hash=block_hash,
         deploy_cost_total=block_info.status.stats.deploy_cost_total,
         deploy_count=block_info.summary.header.deploy_count, 
@@ -55,19 +55,25 @@ def on_block_finalized(node_id: NodeIdentifier, block_hash: str):
 
     # Get deploys & process.
     for deploy_hash, deploy_info in clx.get_deploys_by_node_and_block(node_id, block_hash):
-        _process_deploy(node_id, block, deploy_hash, deploy_info)
-        _process_deploy_of_run(node_id, block, deploy_hash)
+
+        try:
+            deploy_cost = deploy_info['cost']
+        except:
+            deploy_cost = 0
+
+        _process_deploy(node_id, block, deploy_hash, deploy_cost)
+        _process_deploy_of_run(node_id, block, deploy_hash, deploy_cost)
 
 
-def _process_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_info: dict):
+def _process_deploy(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_cost: int):
     """Performs monitored deploy processing.
     
     """
-    deploy = factory.create_deploy_on_block_finalisation(node_id, block, deploy_hash)
+    deploy = factory.create_deploy_on_block_finalisation(node_id, block, deploy_hash, deploy_cost)
     cache.monitoring.set_deploy(block, deploy)
 
 
-def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: str):
+def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: str, deploy_cost: int):
     """Performs a deploy dispatched during a run.
     
     """
@@ -81,6 +87,7 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     # Update deploy.
     deploy.block_hash = block.hash
     deploy.block_rank = block.m_rank
+    deploy.cost = deploy_cost
     deploy.status = DeployStatus.FINALIZED
     deploy.finalization_ts = block.timestamp
     deploy.finalization_time = block.timestamp.timestamp() - deploy.dispatch_ts.timestamp()    
@@ -95,7 +102,7 @@ def _process_deploy_of_run(node_id: NodeIdentifier, block: Block, deploy_hash: s
     # Set execution context.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
 
-    # Signal to workflow orchestrator.
+    # Signal to workflow orchestrator - note we go down a level in terms of dramtiq usage so as not to import non-monitoring actors.
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
         queue_name="workflows.orchestration",

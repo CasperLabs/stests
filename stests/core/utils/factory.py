@@ -71,7 +71,7 @@ def create_account_id(
 
 
 def create_block_on_finalisation(
-    network_id: NetworkIdentifier,
+    node_id: NodeIdentifier,
     block_hash: str,
     deploy_cost_total: int,
     deploy_count: int, 
@@ -92,7 +92,8 @@ def create_block_on_finalisation(
         deploy_gas_price_avg=deploy_gas_price_avg,
         j_rank=j_rank,
         m_rank=m_rank,
-        network=network_id.name,
+        network=node_id.network.name,
+        node_index=node_id.index,
         size_bytes=size_bytes,
         status=BlockStatus.FINALIZED,
         timestamp=timestamp,
@@ -159,7 +160,8 @@ def create_ctx(
 def create_deploy_on_block_finalisation(
     node_id: NodeIdentifier,
     block: Block,
-    deploy_hash: str
+    deploy_hash: str,
+    deploy_cost: int
     ) -> Deploy:
     """Returns a domain object instance: Deploy.
     
@@ -168,6 +170,7 @@ def create_deploy_on_block_finalisation(
         account_index=None,
         block_hash=block.hash,
         block_rank=block.m_rank,
+        cost=deploy_cost,
         deploy_hash=deploy_hash,
         dispatch_node=None,
         dispatch_ts=None,
@@ -201,6 +204,7 @@ def create_deploy_for_run(
         account_index=account.index,
         block_hash=None,
         block_rank=None,
+        cost=None,
         deploy_hash=deploy_hash,
         dispatch_node=node.index,
         dispatch_ts=datetime.now(),
