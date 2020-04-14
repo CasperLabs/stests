@@ -85,7 +85,7 @@ def _render_block_info(network_id, block_hash):
     """Render block info pulled from chain.
     
     """
-    block_info = clx.get_block(network_id, block_hash)
+    block_info = clx.get_block_info(network_id, block_hash)
 
     print("--------------------------------------------------------------------------------------------")
     print(json.dumps(block_info, indent=4))

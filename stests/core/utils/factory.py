@@ -159,7 +159,7 @@ def create_ctx(
 
 def create_deploy_on_block_finalisation(
     node_id: NodeIdentifier,
-    block: Block,
+    block_hash: str,
     deploy_hash: str,
     deploy_cost: int
     ) -> Deploy:
@@ -168,8 +168,7 @@ def create_deploy_on_block_finalisation(
     """
     return Deploy(
         account_index=None,
-        block_hash=block.hash,
-        block_rank=block.m_rank,
+        block_hash=block_hash,
         cost=deploy_cost,
         deploy_hash=deploy_hash,
         dispatch_node=None,
@@ -203,7 +202,6 @@ def create_deploy_for_run(
     return Deploy(
         account_index=account.index,
         block_hash=None,
-        block_rank=None,
         cost=None,
         deploy_hash=deploy_hash,
         dispatch_node=node.index,

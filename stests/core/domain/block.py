@@ -55,6 +55,10 @@ class Block:
         return self.block_hash
 
     @property
+    def label_j_rank(self):
+        return f"{str(self.j_rank).zfill(7)}"
+
+    @property
     def label_m_rank(self):
         return f"{str(self.m_rank).zfill(7)}"
 

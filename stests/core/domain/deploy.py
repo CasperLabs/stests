@@ -19,9 +19,6 @@ class Deploy:
     # Associated block hash in event of finalization. 
     block_hash: typing.Optional[str]
 
-    # Associated block rank. 
-    block_rank: typing.Optional[int]
-
     # Cost of deploy (in motes).
     cost: typing.Optional[int]
 
@@ -83,7 +80,7 @@ class Deploy:
     @property
     def is_from_run(self):
         return self.run_type is not None
-
+        
     @property
     def label_finalization_time(self):
         if self.finalization_time:

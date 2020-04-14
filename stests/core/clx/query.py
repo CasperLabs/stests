@@ -53,36 +53,23 @@ def get_balance_by_address(src: typing.Union[ExecutionContext, NetworkIdentifier
         return balance
 
 
-def get_block(network_id: NetworkIdentifier, block_hash: str) -> typing.Dict:
+def get_block_info(src: typing.Union[NetworkIdentifier, NodeIdentifier], block_hash: str, parse=True) -> typing.Dict:
     """Queries network for information pertaining to a specific block.
 
-    :param network_id: A network identifier.
+    :param src: The source from which a network node will be derived.
     :param block_hash: Hash of a block.
+    :param parse: Flag indicating whether to parse block info.
 
     :returns: 2 member tuple: (block info, block summary).
 
     """
-    node, client = utils.get_client(network_id)
-    block_info = client.showBlock(block_hash_base16=block_hash, full_view=False)
+    node, client = utils.get_client(src)
+    info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
-    return parser.parse_block_info(block_info)
-
-
-def get_block_by_node(node_id: NodeIdentifier, block_hash: str) -> typing.Dict:
-    """Queries network for information pertaining to a specific block.
-
-    :param node_id: A node identifier.
-    :param block_hash: Hash of a block.
-
-    :returns: 2 member tuple: (block info, block summary).
-
-    """
-    node, client = utils.get_client(node_id)
-
-    return client.showBlock(block_hash_base16=block_hash, full_view=False)
+    return parser.parse_block_info(info) if parse else info
 
 
-def get_deploy(src: typing.Union[NetworkIdentifier, NodeIdentifier], deploy_hash: str, wait_for_processed: bool = True) -> typing.Dict:
+def get_deploy_info(src: typing.Union[NetworkIdentifier, NodeIdentifier], deploy_hash: str, wait_for_processed: bool = True, parse=True) -> typing.Dict:
     """Queries node for a set of deploys associated with a specific block.
 
     :param src: The source from which a network node will be derived.
@@ -92,12 +79,12 @@ def get_deploy(src: typing.Union[NetworkIdentifier, NodeIdentifier], deploy_hash
 
     """
     node, client = utils.get_client(src)
-    deploy_info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
+    info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
 
-    return parser.parse_deploy_info(deploy_info)
+    return parser.parse_deploy_info(info) if parse else info
 
 
-def get_deploys_by_node_and_block(node_id: NodeIdentifier, block_hash: str) -> typing.List[typing.Union[str, typing.Dict]]:
+def get_deploy_info_list_by_node_and_block(node_id: NodeIdentifier, block_hash: str) -> typing.List[typing.Union[str, typing.Dict]]:
     """Queries node for a set of deploys associated with a specific block.
 
     :param node_id: A node identifier.

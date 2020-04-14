@@ -133,7 +133,7 @@ def _render_deploy_info(src, deploy_hash):
     """Renders on-chain deploy information.
     
     """
-    deploy_info = clx.get_deploy(src, deploy_hash)
+    deploy_info = clx.get_deploy_info(src, deploy_hash)
     if not deploy_info:
         return
     

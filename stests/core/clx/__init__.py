@@ -4,10 +4,9 @@ from stests.core.clx.defaults import CLX_TX_GAS_PRICE
 from stests.core.clx.query import get_balance
 from stests.core.clx.query import get_balance_by_address
 
-from stests.core.clx.query import get_block
-from stests.core.clx.query import get_block_by_node
-from stests.core.clx.query import get_deploy
-from stests.core.clx.query import get_deploys_by_node_and_block
+from stests.core.clx.query import get_block_info
+from stests.core.clx.query import get_deploy_info
+from stests.core.clx.query import get_deploy_info_list_by_node_and_block
 
 from stests.core.clx.stream import stream_events
 
