@@ -124,6 +124,25 @@ def create_contract(
     )
 
 
+def create_contract_key(
+    account: Account,
+    contract_type: ContractType,
+    name: str,
+    network: str,
+    hash: str,
+    ) -> NamedKey:
+    """Returns a domain object instance: NamedKey.
+    
+    """
+    return NamedKey(
+        account_index=account.index,
+        contract_type=contract_type,
+        hash=hash,
+        name=name,
+        network=network,
+    )
+
+
 def create_ctx(
     args: typing.Any,
     deploys_per_second: int,

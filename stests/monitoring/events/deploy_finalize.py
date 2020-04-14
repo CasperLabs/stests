@@ -6,6 +6,7 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.utils import encoder
 from stests.core.utils import factory
+from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import NodeIdentifier
 from stests.core.domain import TransferStatus
@@ -41,7 +42,9 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
 
     # Process a dispatched run deploy.
     if monitored:
-        _set_dispatched_deploy(node_id, block_hash, block_timestamp, deploy_hash, deploy_cost)
+        deploy = cache.state.get_deploy(deploy_hash)
+        if deploy:
+            _set_dispatched_deploy(node_id, block_hash, block_timestamp, deploy, deploy_cost)
 
 
 def _set_monitored_deploy(
@@ -70,16 +73,12 @@ def _set_dispatched_deploy(
     node_id: NodeIdentifier,
     block_hash: str,
     block_timestamp: datetime,
-    deploy_hash: str,
+    deploy: Deploy,
     deploy_cost: int
     ):
     """Process a monitored deploy that was previously dispatched during a generator run.
     
     """
-    deploy = cache.state.get_deploy(deploy_hash)
-    if not deploy:
-        return
-
     logger.log(f"WFLOW :: {deploy.run_type} :: {deploy.label_run_index} :: {deploy.label_phase_index} :: {deploy.label_step_index}  :: {deploy.step_label} :: -> deploy correlated :: {deploy.hash} :: block={block_hash}")
 
     # Update deploy.
@@ -96,10 +95,8 @@ def _set_dispatched_deploy(
         transfer.status = TransferStatus.COMPLETE
         cache.state.set_transfer(transfer)
 
-    # Set execution context.
-    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
-
     # Signal to workflow orchestrator - note we go down a level in terms of dramtiq usage so as not to import non-monitoring actors.
+    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
         queue_name="workflows.orchestration",

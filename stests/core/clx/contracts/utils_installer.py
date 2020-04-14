@@ -4,14 +4,18 @@ import typing
 import casperlabs_client
 from casperlabs_client.abi import ABI
 
+from stests.core import cache
 from stests.core.clx import defaults
+from stests.core.clx import query
 from stests.core.clx import utils
 from stests.core.domain import Account
 from stests.core.domain import DeployStatus
+from stests.core.domain import NamedKey
 from stests.core.domain import Network
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
+from stests.core.utils import factory
 from stests.core.utils import logger
 
 
@@ -99,48 +103,45 @@ def install_singleton(
             raise IOError("Node is unreachable therefore contract cannot be deployed.")
         raise err
 
-    logger.log(f"{contract.WASM} :: deploy dispatched -> deploy-hash={deploy_hash}")
+    logger.log(f"{contract.WASM} :: deploy dispatched -> {deploy_hash}")
 
-    return _get_contract_hash_from_deploy(client, account, contract, deploy_hash)
-
-
-def _get_contract_hash_from_deploy(
-    client: casperlabs_client.CasperLabsClient,
-    account: Account,
-    contract: typing.Callable,
-    deploy_hash: str,
-    ) -> str:
-    """Returns contract hash of a successfully deployed contract.
-    
-    """
-    # Query chain.
+    # Await deploy processing.
     deploy_info = client.showDeploy(deploy_hash, wait_for_processed=True)
     if deploy_info.status.state not in (DeployStatus.FINALIZED.value, DeployStatus.PROCESSED.value):        
         logger.log_warning(f"{contract.WASM} :: deploy processing failed :: deploy-hash={deploy_hash}")
         raise ValueError(f"Deploy processing failure: {deploy_info}")
 
+    # Set hash of block in which deploy was processed.
     block_hash = deploy_info.processing_results[0].block_info.summary.block_hash.hex()
+    logger.log(f"{contract.WASM} :: deploy processed -> block={block_hash}")
 
-    logger.log(f"{contract.WASM} :: deploy processed -> block-hash={block_hash}")
+    # Set named keys associated with contract.
+    _set_contract_named_keys(account, contract, node, client, block_hash)
 
-    return _get_contract_hash_from_block(client, account, contract, block_hash)
 
-
-def _get_contract_hash_from_block(
-    client: casperlabs_client.CasperLabsClient,
-    account: Account,
-    contract: typing.Callable,
-    block_hash: str,
-    ) -> str:
-    """Returns contract hash of a successfully deployed contract.
+def _set_contract_named_keys(account, contract, node, client, block_hash):
+    """Stores contract related named keys.
     
     """
-    q = client.queryState(block_hash, account.public_key, "", keyType="address")
-    for nk in q.account.named_keys:
-        if nk.name == contract.NAME:
-            return nk.key.hash.hash.hex()
+    keys = query.get_account_named_keys(client, account, block_hash)
+    keys = [i for i in keys if i.name in contract.NAMED_KEYS]
+    for key in keys:
+        _set_contract_named_key(account, contract, node, client, block_hash, key)
 
-    raise ValueError(f"{contract.NAME} contract hash could not be found on-chain")
+
+def _set_contract_named_key(account, contract, node, client, block_hash, key):
+    """Stores contract related named key.
+    
+    """
+    key = factory.create_contract_key(
+        account,
+        contract.TYPE,
+        key.name,
+        node.network,
+        key.key.hash.hash.hex(),
+    )
+    cache.infra.set_named_key(key)
+    logger.log(f"{contract.WASM} :: named key cached -> {key.name}")
 
 
 def _get_contract_path(contract: typing.Callable) -> pathlib.Path:

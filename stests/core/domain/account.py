@@ -72,3 +72,5 @@ class AccountIdentifier:
     @property
     def label_index(self):
         return f"A-{str(self.index).zfill(6)}"
+
+

@@ -20,7 +20,10 @@ WASM = "counter_define.wasm"
 NAME = "counter"
 
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
-IS_SINGLETON = True
+IS_SINGLETON = False
+
+# Named keys associated with contract.
+NAMED_KEYS = []
 
 
 def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str]:

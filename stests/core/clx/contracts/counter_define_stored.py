@@ -15,13 +15,19 @@ from stests.core.utils import logger
 TYPE = ContractType.COUNTER_DEFINE_STORED
 
 # Wasm file name.
-WASM = "counter_define_stored.wasm"
+WASM = "counter_define.wasm"
 
 # Name of contract - see use when passed as session-name.
 NAME = "counter"
 
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
-IS_SINGLETON = False
+IS_SINGLETON = True
+
+# Named keys associated with contract.
+NAMED_KEYS = [
+    "counter",
+    "counter_inc",
+]
 
 
 def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str]:

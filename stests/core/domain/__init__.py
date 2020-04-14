@@ -3,6 +3,7 @@ from stests.core.domain.contract import *
 from stests.core.domain.block import *
 from stests.core.domain.deploy import *
 from stests.core.domain.enums import *
+from stests.core.domain.named_key import *
 from stests.core.domain.network import *
 from stests.core.domain.node import *
 from stests.core.domain.transfer import *
@@ -15,6 +16,7 @@ DCLASS_SET = {
     Contract,
     Block,
     Deploy,
+    NamedKey,
     Network,
     Node,
     Transfer,

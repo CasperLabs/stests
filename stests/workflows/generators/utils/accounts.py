@@ -129,10 +129,6 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
     else:
         cp2 = cache.state.get_account_by_index(ctx, cp2_index)
 
-    # Set client contract.
-    contract = None if not use_stored_contract else \
-               cache.infra.get_contract(ctx, ContractType.TRANSFER_U512_STORED)
-
     # Set contract.
     transfer = clx.contracts.transfer_U512_stored if use_stored_contract else clx.contracts.transfer_U512
 

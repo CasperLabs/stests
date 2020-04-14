@@ -1,3 +1,4 @@
+import random
 import typing
 
 from stests.core.domain import AccountType
@@ -24,13 +25,16 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     :param ctx: Execution context information.
 
     """
-    # raise NotImplementedError("TODO: apply rate limiting")
+    # Set dispatch window.
+    deploy_count = ctx.args.user_accounts
+    deploy_dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
 
-    def get_messages():
-        for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield do_set_contract.message(ctx, account_index, ContractType.COUNTER_DEFINE)
-
-    return get_messages
+    # Insdtall contract under each user account.
+    for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        do_set_contract.send_with_options(
+            args = (ctx, account_index, ContractType.COUNTER_DEFINE),
+            delay=random.randint(0, deploy_dispatch_window)
+        )
 
 
 def verify(ctx: ExecutionContext):

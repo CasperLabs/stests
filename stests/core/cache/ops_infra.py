@@ -12,41 +12,51 @@ from stests.core.utils import factory
 
 # Cache collections.
 COL_CONTRACT = "client-contract"
+COL_NAMED_KEY = "named-key"
 COL_NETWORK = "network"
 COL_NODE = "node"
 
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
-def get_contract(ctx: ExecutionContext, contract_type: ContractType) -> Contract:
-    """Decaches domain object: Contract.
+@cache_op(StorePartition.INFRA, StoreOperation.GET_ONE)
+def get_named_key(network: typing.Union[NetworkIdentifier, Network, str], contract_type: ContractType, name: str) -> NamedKey:
+    """Decaches domain objects: NamedKey.
 
-    :param ctx: Execution context information.
-    :param contract_type: Type of contract in question.
+    :param network: A pointer to either a network or network identifier.
 
-    :returns: A registered network.
+    :returns: Collection of registered nodes.
     
     """
+    try:
+        network = network.name
+    except AttributeError:
+        pass
+
     return [
-        ctx.network,
-        COL_CONTRACT,
+        network,
+        COL_NAMED_KEY,
         contract_type.name,
+        name
     ]
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
-def get_contracts(network_id: NetworkIdentifier) -> typing.List[Contract]:
-    """Decaches domain object: Contract.
+@cache_op(StorePartition.INFRA, StoreOperation.GET_MANY)
+def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> typing.List[NamedKey]:
+    """Decaches domain objects: NamedKey.
 
-    :param network_id: A network identifier.
+    :param network: A pointer to either a network or network identifier.
 
-    :returns: Collection of registered network contracts.
+    :returns: Collection of registered nodes.
     
     """
+    try:
+        network = network.name
+    except AttributeError:
+        pass
+
     return [
-        network_id.name,
-        COL_CONTRACT,
-        "*",
+        network,
+        COL_NAMED_KEY,
     ]
 
 
@@ -193,21 +203,22 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)
-def set_contract(contract: Contract) -> typing.Tuple[typing.List[str], Network]:
-    """Encaches domain object: Contract.
+def set_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
+    """Encaches domain object: NamedKey.
 
-    :param network: Contract domain object instance to be cached.
+    :param network: NamedKey domain object instance to be cached.
     
     :returns: Keypath + domain object instance.
 
     """
     path = [
-        contract.network,
-        COL_CONTRACT,
-        contract.typeof.name
+        named_key.network,
+        COL_NAMED_KEY,
+        named_key.contract_type.name,
+        named_key.name
     ]
 
-    return path, contract
+    return path, named_key
 
 
 @cache_op(StorePartition.INFRA, StoreOperation.SET)

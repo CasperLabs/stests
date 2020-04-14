@@ -37,7 +37,7 @@ class ContractType(enum.Enum):
     
     """
     COUNTER_DEFINE = "counter_define.wasm"
-    COUNTER_DEFINE_STORED = "counter_define_stored.wasm"
+    COUNTER_DEFINE_STORED = "counter_define.wasm"
     TRANSFER_U512 = "transfer_to_account_u512.wasm"
     TRANSFER_U512_STORED = "transfer_to_account_u512_stored.wasm"
 

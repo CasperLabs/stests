@@ -23,9 +23,9 @@ ARGS.add_argument(
 # Table columns.
 COLS = [
     ("Network", BeautifulTable.ALIGN_LEFT),
-    ("Hash", BeautifulTable.ALIGN_LEFT),
-    ("Name", BeautifulTable.ALIGN_LEFT),
-    ("Type", BeautifulTable.ALIGN_RIGHT),
+    ("Type", BeautifulTable.ALIGN_LEFT),
+    ("Name/Slot", BeautifulTable.ALIGN_LEFT),
+    ("Hash", BeautifulTable.ALIGN_RIGHT),
 ]
 
 
@@ -40,19 +40,22 @@ def main(args):
     if cache.infra.get_network(network_id) is None:
         logger.log_warning(f"Network {args.network} is unregistered.")
         return
-    data = cache.infra.get_contracts(network_id)
+    data = cache.infra.get_named_keys(network_id)
     if not data:
         logger.log_warning(f"Network {args.network} has no registered contracts.")
         return
+
+    # Sort data.
+    data = sorted(data, key=lambda i: f"{i.contract_type}.{i.name}")
 
     # Set table cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         network_id.name,
-        i.hash,      
+        i.contract_type,
         i.name,      
-        i.typeof.name,
-    ], sorted(data, key=lambda i: i.typeof.name))
+        i.hash,      
+    ], data)
 
     # Set table.
     t = get_table(cols, rows)

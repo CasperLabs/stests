@@ -49,26 +49,14 @@ def _install_contract(network: Network, contract: typing.Callable):
     """
     logger.log(f"{contract.TYPE.value} :: installation starts ... please wait")
 
-    # Dispatch contract to network & await processing.
-    contract_hash = clx.contracts.install_singleton(
+    # Dispatch contract to network, await processing, persist named keys.
+    clx.contracts.install_singleton(
         network,
         network.faucet,
         contract,
     )
 
-    # Instantiate domain object.
-    contract_info = factory.create_contract(
-        network,
-        network.faucet,
-        contract_hash=contract_hash,
-        contract_name=contract.NAME,
-        contract_type=contract.TYPE,
-        )
-
-    # Update cache.
-    cache.infra.set_contract(contract_info)
-
-    logger.log(f"{contract.TYPE.value} :: installed -> contract-hash={contract_hash}")
+    logger.log(f"{contract.TYPE.value} :: installed")
 
 
 # Entry point.

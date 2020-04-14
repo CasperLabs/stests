@@ -26,6 +26,11 @@ NAME = "transfer_to_account"
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
 IS_SINGLETON = True
 
+# Named keys associated with contract.
+NAMED_KEYS = [
+    "transfer_to_account",
+]
+
 
 def execute(
     ctx: ExecutionContext,
@@ -46,9 +51,9 @@ def execute(
     # Set client.
     node, client  = utils.get_client(ctx)
 
-    # Set contract.
-    contract = cache.infra.get_contract(ctx, TYPE)    
-    if contract is None:
+    # Get named key associated with contract.
+    named_key = cache.infra.get_named_key(ctx.network, TYPE, "transfer_to_account")
+    if named_key is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")
 
     # Set args.
@@ -59,7 +64,7 @@ def execute(
 
     # Dispatch deploy.
     deploy_hash = client.deploy(
-        session_hash=contract.hash_as_bytes,
+        session_hash=named_key.hash_as_bytes,
         session_args=session_args,
         from_addr=cp1.public_key,
         private_key=cp1.private_key_as_pem_filepath,

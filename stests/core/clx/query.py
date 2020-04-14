@@ -16,6 +16,37 @@ from stests.core.utils import logger
 
 
 
+def get_account(client, account: Account, block_hash: str=None):
+    """Returns on-chain account info.
+
+    :param client: Client instance.
+    :param account: Account whose on-chain representation will be queried.
+    :param block_hash: Hash of block against which query will be made.
+
+    :returns: Account info.
+
+    """
+    block_hash or _get_last_block_hash(client)
+    q = client.queryState(block_hash, account.public_key, "", keyType="address")
+
+    return q.account
+
+
+def get_account_named_keys(client, account: Account, block_hash: str=None):
+    """Returns named keys associated with a chain account.
+
+    :param client: Client instance.
+    :param account: Account whose on-chain representation will be queried.
+    :param block_hash: Hash of block against which query will be made.
+
+    :returns: Account named keys.
+
+    """
+    a = get_account(client, account, block_hash)
+
+    return a.named_keys
+
+
 def get_balance(src: typing.Union[ExecutionContext, NetworkIdentifier, NodeIdentifier], account: Account, block_hash: str = None) -> int:
     """Returns a chain account balance.
 
@@ -42,7 +73,7 @@ def get_balance_by_address(src: typing.Union[ExecutionContext, NetworkIdentifier
     try:
         balance = client.balance(
             address=address,
-            block_hash=block_hash or get_last_block_hash(client)
+            block_hash=block_hash or _get_last_block_hash(client)
             )
     except Exception as err:
         if "Failed to find base key at path" in err.details:
@@ -100,10 +131,11 @@ def get_deploy_info_list_by_node_and_block(node_id: NodeIdentifier, block_hash: 
     return ((i.deploy.deploy_hash.hex(), parser.parse_deploy_info(i)) for i in deploys)
 
 
-def get_last_block_hash(client) -> str:
+def _get_last_block_hash(client) -> str:
     """Returns a chain's last block hash.
     
     """
     last_block_info = next(client.showBlocks(1))
 
     return last_block_info.summary.block_hash.hex()
+

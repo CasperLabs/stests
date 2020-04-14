@@ -25,6 +25,9 @@ NAME = "transfer_to_account"
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
 IS_SINGLETON = False
 
+# Named keys associated with contract.
+NAMED_KEYS = []
+
 
 def execute(
     ctx: ExecutionContext,
