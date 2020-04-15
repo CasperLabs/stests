@@ -34,10 +34,6 @@ class WorkflowStep():
         self.result: typing.Union[None, typing.Callable] = None
 
     @property
-    def description(self) -> str:
-        return self.module.DESCRIPTION
-
-    @property
     def has_verifer(self) -> bool:
         try:
             self.module.verify

@@ -17,9 +17,6 @@ from stests.workflows.generators.wg_210 import constants
 
 
 
-# Step description.
-DESCRIPTION = "Dispatches a notification to signal that generator has completed."
-
 # Step label.
 LABEL = "counter-call"
 

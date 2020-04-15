@@ -57,7 +57,7 @@ def do_step(ctx: ExecutionContext):
         on_step_error.send(ctx, str(step.error))
 
     # Exception if step result != None | func.
-    elif step.result is not None and not inspect.isfunction(step.result):
+    elif step.result is not None and not inspect.isfunction(step.result) and not isinstance(step.result, tuple):
         raise TypeError("Expecting either none or a message factory from a step function.")
 
     # Process result for async ops.
@@ -76,8 +76,7 @@ def on_step_execute_async(ctx: ExecutionContext, step: WorkflowStep):
     :param step: Step related execution information.
     
     """
-    # Message factories will be dispatched as a group, chain monitoring
-    # subsequently signals to orchestrator that next step can be executed.
+    # Message factories will be dispatched as a group - monitoring signals to orchestrator when next step can be executed.
     if inspect.isfunction(step.result):
         message_factory = step.result()
         group = dramatiq.group(message_factory)
@@ -91,14 +90,25 @@ def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
     :param step: Step related execution information.
     
     """
-    # Simply signal step end when unit of work executed.
+    # Step result = None: signal step end when unit of work executed.
     if step.result is None:
         on_step_end.send(ctx)
 
-    # Dispatch message facctory as a group - note the completion callback.
+    # Step result = message factory: dispatch yielded messages.
     elif inspect.isfunction(step.result):
-        message_factory = step.result()
-        group = dramatiq.group(message_factory)
+        group = dramatiq.group(step.result())
+        group.add_completion_callback(on_step_end.message(ctx))
+        group.run()
+
+    # Step result = 3 member tuple (actor, count, parameterizations): dispatch messages as a group.
+    elif isinstance(step.result, tuple) and len(step.result) == 3:
+        actor, count, parameterization_factory = step.result
+
+        def message_factory():
+            for parameterization in parameterization_factory():
+                yield actor.message_with_options(args=parameterization)
+
+        group = dramatiq.group(message_factory())
         group.add_completion_callback(on_step_end.message(ctx))
         group.run()
 

@@ -6,9 +6,6 @@ from stests.workflows.generators.utils.accounts import do_create_account
 from stests.workflows.generators.wg_210 import constants
 
 
-# Step description.
-DESCRIPTION = "Creates run accounts"
-
 # Step label.
 LABEL = "create-accounts"
 

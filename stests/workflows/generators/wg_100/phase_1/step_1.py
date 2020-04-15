@@ -6,9 +6,6 @@ from stests.workflows.generators.utils.accounts import do_create_account
 from stests.workflows.generators.wg_100 import constants
 
 
-# Step description.
-DESCRIPTION = "Creates run accounts"
-
 # Step label.
 LABEL = "create-accounts"
 
@@ -19,13 +16,13 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     :param ctx: Execution context information.
 
     """
-    def get_messages():
-        yield do_create_account.message(ctx, constants.ACC_RUN_FAUCET, AccountType.FAUCET)
-        yield do_create_account.message(ctx, constants.ACC_RUN_CONTRACT, AccountType.CONTRACT)
+    def _yield_parameterizations():
+        yield ctx, constants.ACC_RUN_FAUCET, AccountType.FAUCET
+        yield ctx, constants.ACC_RUN_CONTRACT, AccountType.CONTRACT
         for index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield do_create_account.message(ctx, index, AccountType.USER)
+            yield ctx, index, AccountType.USER
 
-    return get_messages
+    return do_create_account, ctx.args.user_accounts + 2, _yield_parameterizations
 
 
 def verify(ctx):

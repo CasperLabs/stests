@@ -6,9 +6,6 @@ from stests.workflows.generators.wg_100 import constants
 
 
 
-# Step description.
-DESCRIPTION = "Refunds funds previously transferred to a run-faucet account."
-
 # Step label.
 LABEL = "refund-run-faucet"
 

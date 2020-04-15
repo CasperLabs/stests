@@ -6,9 +6,6 @@ from stests.workflows.generators.wg_110 import constants
 
 
 
-# Step description.
-DESCRIPTION = "Fund's a run faucet account."
-
 # Step label.
 LABEL = "fund-run-faucet"
 

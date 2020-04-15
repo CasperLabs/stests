@@ -9,9 +9,6 @@ from stests.workflows.generators.wg_100 import constants
 
 
 
-# Step description.
-DESCRIPTION = "Fund's a set of run user accounts."
-
 # Step label.
 LABEL = "fund-users"
 

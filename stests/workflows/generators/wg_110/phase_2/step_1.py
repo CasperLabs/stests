@@ -8,9 +8,6 @@ from stests.workflows.generators.wg_100 import constants
 
 
 
-# Step description.
-DESCRIPTION = "Refunds funds previously transferred to a contract account."
-
 # Step label.
 LABEL = "refund-contract"
 
