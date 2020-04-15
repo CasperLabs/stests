@@ -36,7 +36,6 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    # Verify count of finialised deploys.
     verification.verify_deploy_count(ctx, 1)    
 
 

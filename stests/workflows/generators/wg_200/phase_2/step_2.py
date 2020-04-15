@@ -1,4 +1,3 @@
-import random
 import typing
 
 import dramatiq
@@ -15,26 +14,28 @@ from stests.workflows.generators.wg_200 import constants
 
 
 # Step label.
-LABEL = "counter-call"
+LABEL = "invoke-increment"
 
 
-def execute(ctx: ExecutionContext) -> typing.Callable:
+
+def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    """
-    # Set dispatch window.
-    deploy_count = ctx.args.user_accounts
-    deploy_dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
+    :returns: 3 member tuple -> actor, message count, message arg factory.
 
-    # Increment counter of contract instance deployed under users account.
+    """
+    return _increment_counter_0, ctx.args.user_accounts, lambda: _yield_parameterizations(ctx)
+
+
+def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
+    """Yields parameterizations to be dispatched to actor via a message queue.
+    
+    """
     for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
         for _ in range(0, ctx.args.increments):
-            _increment_counter_0.send_with_options(
-                args = (ctx, account_index),
-                delay=random.randint(0, deploy_dispatch_window)
-            )
+            yield (ctx, account_index)
 
 
 def verify(ctx: ExecutionContext):

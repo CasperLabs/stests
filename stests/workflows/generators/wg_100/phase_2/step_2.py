@@ -29,10 +29,10 @@ def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
     """Yields parameterizations to be dispatched to actor via a message queue.
     
     """
-    for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+    for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
         yield (
             ctx,
-            acc_index,
+            account_index,
             constants.ACC_RUN_FAUCET,
         )
 
@@ -43,7 +43,6 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    # Verify count of finialised deploys.
     verification.verify_deploy_count(ctx, ctx.args.user_accounts) 
 
 

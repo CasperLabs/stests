@@ -11,7 +11,7 @@ from stests.workflows.generators.wg_100 import constants
 
 
 # Step label.
-LABEL = "refund-run-faucet"
+LABEL = "refund-faucet"
 
 
 def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, tuple]:
@@ -35,7 +35,6 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    # Verify count of finialised deploys.
     verification.verify_deploy_count(ctx, 1)
 
 

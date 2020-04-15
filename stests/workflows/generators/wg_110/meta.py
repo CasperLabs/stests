@@ -1,5 +1,5 @@
-# Note - import wg_100 actors as we are basically running
-# the same workflow but with a different parameterisation.
+# Note - import wg_100 as we are basically running
+# same workflow but with differing parameterisation.
 from stests.workflows.generators.wg_100 import meta as wg_100
 
 

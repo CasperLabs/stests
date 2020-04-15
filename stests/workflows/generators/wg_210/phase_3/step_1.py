@@ -19,10 +19,10 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
 
     """  
     def get_messages():
-        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
             yield do_refund.message(
                 ctx,
-                acc_index,
+                account_index,
                 constants.ACC_RUN_FAUCET,
             )
 

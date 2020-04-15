@@ -1,34 +1,46 @@
 import typing
 
+import dramatiq
+
+from stests.core import cache
 from stests.core.domain import AccountType
 from stests.core.orchestration import ExecutionContext
 from stests.workflows.generators.utils.accounts import do_create_account
 from stests.workflows.generators.wg_200 import constants
 
 
+
 # Step label.
 LABEL = "create-accounts"
 
 
-def execute(ctx: ExecutionContext) -> typing.Callable:
+def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
     """Step entry point.
     
     :param ctx: Execution context information.
 
+    :returns: 3 member tuple -> actor, message count, message arg factory.
+
     """
-    def get_messages():
-        yield do_create_account.message(ctx, constants.ACC_RUN_FAUCET, AccountType.FAUCET)
-        for index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-            yield do_create_account.message(ctx, index, AccountType.USER)
-
-    return get_messages
+    return do_create_account, ctx.args.user_accounts + 2, lambda: _yield_parameterizations(ctx)
 
 
-def verify(ctx):
+def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
+    """Yields parameterizations to be dispatched to actor via a message queue.
+    
+    """
+    yield ctx, constants.ACC_RUN_FAUCET, AccountType.FAUCET
+    for index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        yield ctx, index, AccountType.USER
+
+
+def verify(ctx: ExecutionContext):
     """Step execution verifier.
     
     :param ctx: Execution context information.
 
-    """    
-    # TODO: get count of created accounts and confirm = ctx.args.user_accounts + 1
-    return True
+    """
+    # Verify count of cached accounts.
+    cached = cache.state.get_account_count(ctx)
+    expected = ctx.args.user_accounts + 1
+    assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."
