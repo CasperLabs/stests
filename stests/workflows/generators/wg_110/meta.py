@@ -1,19 +1,23 @@
-from stests.workflows.generators.wg_110.args import Arguments
-from stests.workflows.generators.wg_110.args import ARGS
-from stests.workflows.generators.wg_110.constants import DESCRIPTION
-from stests.workflows.generators.wg_110.constants import TYPE
-from stests.workflows.generators.wg_100 import phase_1
-from stests.workflows.generators.wg_100 import phase_2
+# Note - import wg_100 actors as we are basically running
+# the same workflow but with a different parameterisation.
+from stests.workflows.generators.wg_100 import meta as wg_100
 
 
 
-# Type set to be registered with encoder.
-TYPE_SET = {
-    Arguments,
-}
+# Workload custom args.
+Arguments = wg_100.Arguments
+
+# Workload command line args.
+ARGS = wg_100.ARGS
+
+# Workload description.
+DESCRIPTION = "Token Transfers (stored contract)"
 
 # Set of workflow phases.
-PHASES = (
-    phase_1,
-    phase_2,
-)
+PHASES = wg_100.PHASES
+
+# Workload type.
+TYPE = "WG-110"
+
+# Workload typeset - registered with encoder.
+TYPE_SET = wg_100.TYPE_SET

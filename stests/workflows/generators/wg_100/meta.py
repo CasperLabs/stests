@@ -1,23 +1,32 @@
 from stests.core.orchestration import ExecutionContext
-from stests.workflows.generators.wg_100.args import Arguments
-from stests.workflows.generators.wg_100.args import ARGS
-from stests.workflows.generators.wg_100.constants import DESCRIPTION
-from stests.workflows.generators.wg_100.constants import TYPE
+from stests.workflows.generators.wg_100 import args
+from stests.workflows.generators.wg_100 import constants
 from stests.workflows.generators.wg_100 import phase_1
 from stests.workflows.generators.wg_100 import phase_2
 
 
+# Workload custom args.
+Arguments = args.Arguments
 
-# Type set to be registered with encoder.
-TYPE_SET = {
-    Arguments,
-}
+# Workload command line args.
+ARGS = args.ARGS
+
+# Workload description.
+DESCRIPTION = constants.DESCRIPTION
 
 # Set of workflow phases.
 PHASES = (
     phase_1,
     phase_2,
 )
+
+# Workload type.
+TYPE = constants.TYPE
+
+# Workload typeset - registered with encoder.
+TYPE_SET = {
+    Arguments,
+}
 
 
 def parse_ctx(ctx: ExecutionContext):

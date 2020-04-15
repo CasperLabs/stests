@@ -3,13 +3,10 @@
 # --------------------------------------------------------------------
 
 # Workload description.
-DESCRIPTION = "Token Transfers"
+DESCRIPTION = "Token Transfers (client contract)"
 
 # Workload type.
 TYPE = "WG-100"
-
-# Message queue.
-QUEUE = f"workflows.generators.{TYPE}"
 
 # --------------------------------------------------------------------
 # DEFAULTS
