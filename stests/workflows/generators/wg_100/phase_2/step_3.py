@@ -15,12 +15,12 @@ def execute(ctx: ExecutionContext):
     
     :param ctx: Execution context information.
 
-    """     
-    do_refund.send(
+    """   
+    return do_refund, (
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_NETWORK_FAUCET,
-        False
+        False,
     )
 
 

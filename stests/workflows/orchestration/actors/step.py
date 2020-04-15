@@ -76,11 +76,18 @@ def on_step_execute_async(ctx: ExecutionContext, step: WorkflowStep):
     :param step: Step related execution information.
     
     """
-    # Message factories will be dispatched as a group - monitoring signals to orchestrator when next step can be executed.
+    # Result = message factory: dispatch yielded messages.
     if inspect.isfunction(step.result):
-        message_factory = step.result()
-        group = dramatiq.group(message_factory)
+        group = dramatiq.group(step.result())
         group.run()
+
+    # Result = 2 member tuple (actor, args): dispatch message.
+    elif isinstance(step.result, tuple) and len(step.result) == 2:
+        _enqueue_message(ctx, step)
+
+    # Result = 3 member tuple (actor, count, parameterizations): dispatch messages as a group.
+    elif isinstance(step.result, tuple) and len(step.result) == 3:
+        _enqueue_message_batch(ctx, step)
 
 
 def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
@@ -102,15 +109,12 @@ def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
 
     # Step result = 3 member tuple (actor, count, parameterizations): dispatch messages as a group.
     elif isinstance(step.result, tuple) and len(step.result) == 3:
-        actor, count, parameterization_factory = step.result
+        _enqueue_message_batch(ctx, step)
 
-        def message_factory():
-            for parameterization in parameterization_factory():
-                yield actor.message_with_options(args=parameterization)
 
-        group = dramatiq.group(message_factory())
-        group.add_completion_callback(on_step_end.message(ctx))
-        group.run()
+def _enqueue_message(ctx, step):
+    actor, args = step.result
+    actor.send_with_options(args=args)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -237,3 +241,44 @@ def _can_start(ctx: ExecutionContext) -> bool:
     
     # All tests passed, therefore return true.    
     return True
+
+
+def _enqueue_message_batch(ctx, step):
+    """Enqueues messages emitted during step processing.
+    
+    """
+    # Unpack step result.
+    actor, count, parameterization_factory = step.result
+
+    # Yield args of messages to be enqueued.
+    def message_factory():
+        for parameterization in parameterization_factory():
+            yield actor.message_with_options(args=parameterization)
+
+    # Instantiate a dramatiq group to batch message set.
+    group = dramatiq.group(message_factory())
+
+    # When in sync mode can signal end of step in a completion callback. 
+    if step.is_sync:
+        group.add_completion_callback(on_step_end.message(ctx))
+
+    # Enqueue message batch.
+    group.run()
+
+
+    # # Set dispatch window.
+    # deploy_count = ctx.args.user_accounts
+    # deploy_dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
+
+    # # Transfer: run faucet -> user.
+    # for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+    #     do_fund_account.send_with_options(
+    #         args = (
+    #             ctx,
+    #             constants.ACC_RUN_FAUCET,
+    #             acc_index,
+    #             ctx.args.user_initial_clx_balance,
+    #             False
+    #         ),
+    #         delay=random.randint(0, deploy_dispatch_window)
+    #     )

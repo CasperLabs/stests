@@ -16,13 +16,13 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    do_fund_account.send(
+    return do_fund_account, (
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_RUN_CONTRACT,
         ctx.args.contract_initial_clx_balance,
-        False
-        )
+        False,
+    )
 
 
 def verify(ctx: ExecutionContext):

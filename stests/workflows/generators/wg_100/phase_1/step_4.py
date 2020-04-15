@@ -19,22 +19,18 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     :param ctx: Execution context information.
 
     """
-    # Set dispatch window.
-    deploy_count = ctx.args.user_accounts
-    deploy_dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
-
-    # Transfer: run faucet -> user.
-    for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-        do_fund_account.send_with_options(
-            args = (
+    def _yield_parameterizations():
+        """Yields message enqueue args."""
+        for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+            yield (
                 ctx,
                 constants.ACC_RUN_FAUCET,
                 acc_index,
                 ctx.args.user_initial_clx_balance,
-                False
-            ),
-            delay=random.randint(0, deploy_dispatch_window)
-        )
+                False,                
+            )
+
+    return do_fund_account, ctx.args.user_accounts, _yield_parameterizations
 
 
 def verify(ctx: ExecutionContext):

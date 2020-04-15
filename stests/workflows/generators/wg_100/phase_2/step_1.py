@@ -19,13 +19,12 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
     :param ctx: Execution context information.
 
     """
-    # Refund: contract -> run faucet.
-    do_refund.send(
+    return do_refund, (
         ctx,
         constants.ACC_RUN_CONTRACT,
         constants.ACC_RUN_FAUCET,
-        False
-        )
+        False,
+    )
 
 
 def verify(ctx: ExecutionContext):

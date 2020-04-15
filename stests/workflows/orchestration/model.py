@@ -57,9 +57,13 @@ class WorkflowStep():
     
     @property
     def is_async(self) -> bool:     
-        """Is this effectively an asynchronous step - i.e. relies upon chain events to complete."""   
+        """A flag indicating whether this is an asynchronous step - i.e. relies upon chain events to complete."""   
         return hasattr(self.module, "verify_deploy")   
 
+    @property
+    def is_sync(self) -> bool:     
+        """A flag indicating whether this is a synchronous step."""   
+        return not self.is_async
 
     def execute(self):
         """Performs step execution.

@@ -17,6 +17,7 @@ def execute(ctx: ExecutionContext) -> typing.Callable:
 
     """
     def _yield_parameterizations():
+        """Yields message enqueue args."""
         yield ctx, constants.ACC_RUN_FAUCET, AccountType.FAUCET
         yield ctx, constants.ACC_RUN_CONTRACT, AccountType.CONTRACT
         for index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
