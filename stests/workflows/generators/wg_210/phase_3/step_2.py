@@ -20,7 +20,6 @@ def execute(ctx: ExecutionContext):
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_NETWORK_FAUCET,
-        True
     )
 
 

@@ -21,7 +21,6 @@ def execute(ctx: ExecutionContext):
         constants.ACC_NETWORK_FAUCET,
         constants.ACC_RUN_FAUCET,
         ctx.args.faucet_initial_clx_balance,
-        True
         )
 
 
