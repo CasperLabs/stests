@@ -26,7 +26,6 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, tuple]:
         ctx,
         constants.ACC_RUN_CONTRACT,
         constants.ACC_RUN_FAUCET,
-        False,
     )
 
 

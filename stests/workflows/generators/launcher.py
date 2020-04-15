@@ -62,7 +62,8 @@ def _get_context(
     # Set unique run identifier.
     run_index = cache.orchestration.increment_generator_run_count(network_id.name, meta.TYPE)
 
-    return factory.create_execution_context(
+    # Set run ctx.
+    ctx = factory.create_execution_context(
         args=meta.Arguments.create(args),
         deploys_per_second=args.deploys_per_second,
         execution_mode=args.execution_mode,
@@ -73,3 +74,13 @@ def _get_context(
         run_index=run_index,
         run_type=meta.TYPE
     )
+
+    # Allow generator to mutate ctx.
+    try:
+        meta.parse_ctx
+    except AttributeError:
+        pass
+    else:
+        meta.parse_ctx(ctx)
+
+    return ctx

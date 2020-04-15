@@ -38,7 +38,6 @@ def do_fund_account(
     cp1_index: int,
     cp2_index: int,
     amount: int,
-    use_stored_contract: bool
     ):
     """Funds an account by transfering CLX transfer between 2 counterparties.
 
@@ -46,7 +45,6 @@ def do_fund_account(
     :param cp1_index: Run specific account index of counter-party one.
     :param cp2_index: Run specific account index of counter-party two.
     :param amount: Amount to be transferred.
-    :param use_stored_contract: Flag indicating whether to use stored contract.
     
     """
     # Set counterparties.
@@ -59,8 +57,11 @@ def do_fund_account(
         cp1 = cache.state.get_account_by_index(ctx, cp1_index)
     cp2 = cache.state.get_account_by_index(ctx, cp2_index)
     
-    # Set contract.
-    transfer = clx.contracts.transfer_U512_stored if use_stored_contract else clx.contracts.transfer_U512
+    # Set transfer contract.
+    if ctx.use_client_contract_for_transfers:
+        transfer = clx.contracts.transfer_U512
+    else:
+        transfer = clx.contracts.transfer_U512_stored
 
     # Transfer CLX from cp1 -> cp2.    
     (node, deploy_hash) = transfer.execute(ctx, cp1, cp2, amount)
@@ -90,7 +91,7 @@ def do_fund_account(
     # Perform deploy verification - with 10 minute delay.
     # do_fund_account_verify_deploy_processing.send_with_options(
     #     args=(
-    #         node, deploy_hash, ctx, cp1_index, cp2_index, amount, use_stored_contract
+    #         node, deploy_hash, ctx, cp1_index, cp2_index, amount,
     #     ),
     #     delay=int(1e3 * 10)
     # )
@@ -104,19 +105,17 @@ def do_fund_account_verify_deploy_processing(
     cp1_index: int,
     cp2_index: int,
     amount: int,
-    use_stored_contract: bool
     ):
     print(f"TODO: perform post deploy dispatch verification: {node.address} {deploy_hash}")
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_contract: bool):
+def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
     """Performs a refund ot funds between 2 counterparties.
 
     :param ctx: Execution context information.
     :param cp1_index: Run specific account index of counter-party one.
     :param cp2_index: Run specific account index of counter-party two.
-    :param use_stored_contract: Flag indicating whether to use stored contract.
     
     """
     # Set counterparties.
@@ -129,8 +128,11 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int, use_stored_
     else:
         cp2 = cache.state.get_account_by_index(ctx, cp2_index)
 
-    # Set contract.
-    transfer = clx.contracts.transfer_U512_stored if use_stored_contract else clx.contracts.transfer_U512
+    # Set transfer contract.
+    if ctx.use_client_contract_for_transfers:
+        transfer = clx.contracts.transfer_U512
+    else:
+        transfer = clx.contracts.transfer_U512_stored
 
     # Refund CLX from cp1 -> cp2.
     (node, deploy_hash, amount) = transfer.execute_refund(ctx, cp1, cp2)

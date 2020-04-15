@@ -35,7 +35,6 @@ def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
             constants.ACC_RUN_FAUCET,
             acc_index,
             ctx.args.user_initial_clx_balance,
-            False,                
         )
 
 
