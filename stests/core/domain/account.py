@@ -73,4 +73,7 @@ class AccountIdentifier:
     def label_index(self):
         return f"A-{str(self.index).zfill(6)}"
 
+    @property
+    def label_run_index(self):
+        return f"R-{str(self.run.index).zfill(3)}"
 

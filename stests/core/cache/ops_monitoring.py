@@ -6,6 +6,9 @@ from stests.core.cache.utils import cache_op
 from stests.core.domain import *
 
 
+# Cache partition.
+_PARTITION = StorePartition.MONITORING
+
 # Cache collections.
 COL_BLOCK = "block"
 COL_DEPLOY = "deploy"
@@ -13,7 +16,7 @@ COL_NODE_LOCK = "node-lock"
 
 
 
-@cache_op(StorePartition.MONITORING, StoreOperation.DELETE)
+@cache_op(_PARTITION, StoreOperation.DELETE)
 def delete_node_monitor_lock(lock: NodeMonitorLock) -> typing.Generator:
     """Deletes astream lock.
 
@@ -30,7 +33,7 @@ def delete_node_monitor_lock(lock: NodeMonitorLock) -> typing.Generator:
     ]
 
 
-@cache_op(StorePartition.MONITORING, StoreOperation.GET_ONE)
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_block(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str]:
     """Returns domain object: Block.
     
@@ -46,7 +49,7 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str
     ]
 
 
-@cache_op(StorePartition.MONITORING, StoreOperation.GET_ONE)
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> typing.List[str]:
     """Returns domain object: Deploy.
     
@@ -62,7 +65,7 @@ def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> typing.List[s
     ]
 
 
-@cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
+@cache_op(_PARTITION, StoreOperation.SET_SINGLETON)
 def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     """Encaches domain object: Block.
     
@@ -80,7 +83,7 @@ def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     return path, block
 
 
-@cache_op(StorePartition.MONITORING, StoreOperation.SET_SINGLETON)
+@cache_op(_PARTITION, StoreOperation.SET_SINGLETON)
 def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
@@ -98,7 +101,7 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     return path, deploy
 
 
-@cache_op(StorePartition.MONITORING, StoreOperation.LOCK)
+@cache_op(_PARTITION, StoreOperation.LOCK)
 def set_node_monitor_lock(lock: NodeMonitorLock) -> typing.Tuple[typing.List[str], NodeMonitorLock]:
     """Encaches a lock: NodeMonitorLock.
 

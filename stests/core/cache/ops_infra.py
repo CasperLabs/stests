@@ -10,6 +10,9 @@ from stests.core.utils import factory
 
 
 
+# Cache partition.
+_PARTITION = StorePartition.INFRA
+
 # Cache collections.
 COL_CONTRACT = "client-contract"
 COL_NAMED_KEY = "named-key"
@@ -18,7 +21,7 @@ COL_NODE = "node"
 
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET_ONE)
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_named_key(network: typing.Union[NetworkIdentifier, Network, str], contract_type: ContractType, name: str) -> NamedKey:
     """Decaches domain objects: NamedKey.
 
@@ -40,7 +43,7 @@ def get_named_key(network: typing.Union[NetworkIdentifier, Network, str], contra
     ]
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET_MANY)
+@cache_op(_PARTITION, StoreOperation.GET_MANY)
 def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> typing.List[NamedKey]:
     """Decaches domain objects: NamedKey.
 
@@ -60,7 +63,7 @@ def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> ty
     ]
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.
 
@@ -99,7 +102,7 @@ def get_network_by_name(name: str) -> Network:
     return get_network(factory.create_network_id(name))
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_networks() -> typing.List[Network]:
     """Decaches domain objects: Network.
 
@@ -112,7 +115,7 @@ def get_networks() -> typing.List[Network]:
         ]
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_node(node_id: NodeIdentifier) -> Node:
     """Decaches domain object: Node.
     
@@ -170,7 +173,7 @@ def get_node_by_ctx(ctx: ExecutionContext) -> Node:
         return random.choice(nodeset)
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.List[Node]:
     """Decaches domain objects: Node.
 
@@ -202,7 +205,7 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None
     return list(nodeset.values())
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET)
 def set_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
     """Encaches domain object: NamedKey.
 
@@ -221,7 +224,7 @@ def set_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKe
     return path, named_key
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET)
 def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     """Encaches domain object: Network.
 
@@ -238,7 +241,7 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     return path, network
 
 
-@cache_op(StorePartition.INFRA, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET)
 def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     """Encaches domain object: Node.
     

@@ -9,6 +9,9 @@ from stests.core.orchestration import *
 from stests.core.utils import factory
 
 
+# Cache partition.
+_PARTITION = StorePartition.ORCHESTRATION
+
 # Cache collections.
 COL_CONTEXT = "context"
 COL_DEPLOY_COUNT = "deploy-count"
@@ -18,7 +21,7 @@ COL_LOCK = "lock"
 COL_STATE = "state"
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
+@cache_op(_PARTITION, StoreOperation.FLUSH)
 def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run information.
 
@@ -42,7 +45,7 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
         ]
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.FLUSH)
+@cache_op(_PARTITION, StoreOperation.FLUSH)
 def flush_locks(ctx: ExecutionContext) -> typing.Generator:
     """Flushes previous run locks.
 
@@ -60,7 +63,7 @@ def flush_locks(ctx: ExecutionContext) -> typing.Generator:
     ]
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext:
     """Decaches domain object: ExecutionContext.
     
@@ -81,7 +84,7 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
     ]
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_context_list(network_id: NetworkIdentifier, run_type: str) -> typing.List[ExecutionContext]:
     """Decaches domain object: ExecutionContext.
     
@@ -101,7 +104,7 @@ def get_context_list(network_id: NetworkIdentifier, run_type: str) -> typing.Lis
     return path
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNT)
+@cache_op(_PARTITION, StoreOperation.GET_COUNT)
 def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
     """Returns count of deploys within the scope of an execution aspect.
 
@@ -114,7 +117,7 @@ def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> int:
     return _get_keypath_deploy_count(ctx, aspect)
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET_COUNTS)
+@cache_op(_PARTITION, StoreOperation.GET_COUNTS)
 def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, run_index: int = None) -> typing.List[str]:
     """Returns count of deploys within the scope of an execution aspect.
 
@@ -154,7 +157,7 @@ def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, r
     return path
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
     """Decaches domain object: ExecutionInfo.
     
@@ -180,7 +183,7 @@ def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
     return path
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> typing.List[ExecutionInfo]:
     """Decaches domain object: ExecutionInfo.
     
@@ -217,7 +220,7 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
         ]
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET)
 def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], ExecutionLock]:
     """Decaches domain object: ExecutionLock.
     
@@ -235,7 +238,7 @@ def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], Execut
     ]
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
+@cache_op(_PARTITION, StoreOperation.INCR)
 def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP):
     """Increments (atomically) count of run step deploys.
 
@@ -257,7 +260,7 @@ def increment_deploy_counts(ctx: ExecutionContext):
     increment_deploy_count(ctx, ExecutionAspect.STEP)
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.INCR)
+@cache_op(_PARTITION, StoreOperation.INCR)
 def increment_generator_run_count(network: str, generator_type: str) -> typing.List[str]:
     """Increments (atomically) count of generator runs.
 
@@ -274,7 +277,7 @@ def increment_generator_run_count(network: str, generator_type: str) -> typing.L
     return path
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.LOCK)
+@cache_op(_PARTITION, StoreOperation.LOCK)
 def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typing.List[str], ExecutionLock]:
     """Encaches a lock: ExecutionLock.
 
@@ -299,7 +302,7 @@ def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typin
     return path, lock
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET)
 def set_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], ExecutionContext]:
     """Encaches domain object: ExecutionContext.
     
@@ -318,7 +321,7 @@ def set_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], Executi
     return path, ctx
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET)
 def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInfo]:
     """Encaches domain object: ExecutionInfo.
     
@@ -364,7 +367,7 @@ def set_info_update(ctx: ExecutionContext, aspect: ExecutionAspect, status: Exec
     return info
 
 
-@cache_op(StorePartition.ORCHESTRATION, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET)
 def set_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
     """Encaches domain object: ExecutionState.
     

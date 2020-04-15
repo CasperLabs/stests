@@ -30,39 +30,39 @@ def start_generator(meta: typing.Any):
     node_id = factory.create_node_id(network_id, args.node_index)
 
     # Start generator(s).    
-    for ctx in _get_ctx_list(meta, args, network_id, node_id):
+    for ctx in _get_context_list(meta, args, network_id, node_id):
         do_run.send(ctx)
         logger.log(f"{ctx.run_type} :: run {ctx.run_index} started")
 
 
-def _get_ctx_list(
+def _get_context_list(
     meta: typing.Any,
     args: argparse.Namespace,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier
     ) -> typing.Generator:
-    """Returns execution context 
+    """Returns collection of contextual information passed along chain of execution.
     
     """
     return map(
-        lambda _: _get_ctx(meta, args, network_id, node_id), 
+        lambda _: _get_context(meta, args, network_id, node_id), 
         range(1, args.parallel_count + 1)
         )
 
 
-def _get_ctx(
+def _get_context(
     meta: typing.Any,
     args: argparse.Namespace,
     network_id: NetworkIdentifier,
     node_id: NodeIdentifier
     ) -> ExecutionContext:
-    """Returns generator run execution context.
+    """Returns contextual information passed along chain of execution.
     
     """
     # Set unique run identifier.
     run_index = cache.orchestration.increment_generator_run_count(network_id.name, meta.TYPE)
 
-    return factory.create_ctx(
+    return factory.create_execution_context(
         args=meta.Arguments.create(args),
         deploys_per_second=args.deploys_per_second,
         execution_mode=args.execution_mode,
@@ -73,4 +73,3 @@ def _get_ctx(
         run_index=run_index,
         run_type=meta.TYPE
     )
-

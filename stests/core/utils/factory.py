@@ -66,7 +66,7 @@ def create_account_id(
 
     return AccountIdentifier(
         index=index,
-        run=create_run_id(network_id, run_index, run_type)
+        run=create_execution_id(network_id, run_index, run_type)
     )
 
 
@@ -143,39 +143,6 @@ def create_contract_key(
     )
 
 
-def create_ctx(
-    args: typing.Any,
-    deploys_per_second: int,
-    loop_count: int,
-    loop_interval: int,
-    execution_mode: ExecutionMode,
-    network_id: NetworkIdentifier,
-    node_id: NodeIdentifier,
-    run_index: int,
-    run_type: str
-    ) -> ExecutionContext:
-    """Returns a domain object instance: ExecutionContext.
-    
-    """
-    return ExecutionContext(
-        args=args,
-        deploys_per_second=deploys_per_second,
-        execution_mode=ExecutionMode[execution_mode.upper()],
-        loop_count=loop_count,
-        loop_index=0,
-        loop_interval=loop_interval,
-        network=network_id.name,
-        node_index=node_id.index,
-        run_index=run_index,
-        run_index_parent=None,
-        run_type=run_type,
-        phase_index=0,
-        status=ExecutionStatus.IN_PROGRESS,
-        step_index=0,
-        step_label=None,
-    )
-
-
 def create_deploy_on_block_finalisation(
     node_id: NodeIdentifier,
     block_hash: str,
@@ -239,6 +206,50 @@ def create_deploy_for_run(
         step_label=ctx.step_label,
         typeof=typeof,
     )
+
+
+def create_execution_context(
+    args: typing.Any,
+    deploys_per_second: int,
+    loop_count: int,
+    loop_interval: int,
+    execution_mode: ExecutionMode,
+    network_id: NetworkIdentifier,
+    node_id: NodeIdentifier,
+    run_index: int,
+    run_type: str
+    ) -> ExecutionContext:
+    """Returns a domain object instance: ExecutionContext.
+    
+    """
+    return ExecutionContext(
+        args=args,
+        deploys_per_second=deploys_per_second,
+        execution_mode=ExecutionMode[execution_mode.upper()],
+        loop_count=loop_count,
+        loop_index=0,
+        loop_interval=loop_interval,
+        network=network_id.name,
+        node_index=node_id.index,
+        run_index=run_index,
+        run_index_parent=None,
+        run_type=run_type,
+        phase_index=0,
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=0,
+        step_label=None,
+    )
+    
+
+def create_execution_id(
+    network_id: NetworkIdentifier,
+    run_index: int,
+    run_type: str
+    ) -> ExecutionIdentifier:
+    """Returns a cache identifier: ExecutionIdentifier.
+    
+    """
+    return ExecutionIdentifier(network_id, run_index, run_type)
 
 
 def create_network(name_raw: str) -> Network:
@@ -307,17 +318,6 @@ def create_node_id(
     
     """
     return NodeIdentifier(network_id, index)
-
-
-def create_run_id(
-    network_id: NetworkIdentifier,
-    run_index: int,
-    run_type: str
-    ) -> RunIdentifier:
-    """Returns a cache identifier: RunIdentifier.
-    
-    """
-    return RunIdentifier(network_id, run_index, run_type)
 
 
 def create_transfer(

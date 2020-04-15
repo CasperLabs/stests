@@ -8,7 +8,7 @@ from stests.core.orchestration.enums import ExecutionMode
 
 @dataclasses.dataclass
 class ExecutionContext:
-    """Execution context information - run.
+    """Execution context information - i.e. a run.
     
     """
     # Associated run arguments.

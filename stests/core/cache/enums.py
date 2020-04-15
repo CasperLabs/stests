@@ -18,6 +18,9 @@ class StoreOperation(enum.Enum):
     # Get count of cached item.
     GET_COUNT = enum.auto()
 
+    # Get count of matched cache item.
+    GET_COUNT_MATCHED = enum.auto()
+
     # Get list of counts.
     GET_COUNTS = enum.auto()
 

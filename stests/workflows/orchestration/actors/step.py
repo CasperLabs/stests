@@ -1,4 +1,4 @@
-import inspect
+import random
 
 import dramatiq
 
@@ -56,9 +56,9 @@ def do_step(ctx: ExecutionContext):
     if step.error:
         on_step_error.send(ctx, str(step.error))
 
-    # Exception if step result != None | func.
-    elif step.result is not None and not inspect.isfunction(step.result) and not isinstance(step.result, tuple):
-        raise TypeError("Expecting either none or a message factory from a step function.")
+    # Exception if step result != None | tuple.
+    elif step.result is not None and not isinstance(step.result, tuple):
+        raise TypeError("Expecting either None or a tuple from a step function.")
 
     # Process result for async ops.
     elif step.is_async:
@@ -76,18 +76,16 @@ def on_step_execute_async(ctx: ExecutionContext, step: WorkflowStep):
     :param step: Step related execution information.
     
     """
-    # Result = message factory: dispatch yielded messages.
-    if inspect.isfunction(step.result):
-        group = dramatiq.group(step.result())
-        group.run()
-
-    # Result = 2 member tuple (actor, args): dispatch message.
-    elif isinstance(step.result, tuple) and len(step.result) == 2:
+    # Enqueue message.
+    if isinstance(step.result, tuple) and len(step.result) == 2:
         _enqueue_message(ctx, step)
 
-    # Result = 3 member tuple (actor, count, parameterizations): dispatch messages as a group.
+    # Enqueue message batch.
     elif isinstance(step.result, tuple) and len(step.result) == 3:
         _enqueue_message_batch(ctx, step)
+    
+    else:
+        raise TypeError("Async steps must return either a single message or a batch of messages")
 
 
 def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
@@ -97,24 +95,44 @@ def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
     :param step: Step related execution information.
     
     """
-    # Step result = None: signal step end when unit of work executed.
+    # If unit of work is complete then signal step end.
     if step.result is None:
-        on_step_end.send(ctx)
+        do_step_verification.send(ctx)
 
-    # Step result = message factory: dispatch yielded messages.
-    elif inspect.isfunction(step.result):
-        group = dramatiq.group(step.result())
-        group.add_completion_callback(on_step_end.message(ctx))
-        group.run()
-
-    # Step result = 3 member tuple (actor, count, parameterizations): dispatch messages as a group.
+    # Enqueue message batch (with completion callback).
     elif isinstance(step.result, tuple) and len(step.result) == 3:
         _enqueue_message_batch(ctx, step)
 
+    else:
+        raise TypeError("Sync steps must return None or a batch of messages")
 
-def _enqueue_message(ctx, step):
-    actor, args = step.result
-    actor.send_with_options(args=args)
+
+@dramatiq.actor(queue_name=_QUEUE)
+def do_step_verification(ctx):
+    """Verifies a workflow step prior to signalling end.
+    
+    :param ctx: Execution context information.
+    
+    """
+    # Set step.
+    step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
+    if step is None:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> invalid step")
+
+    # Verify step.
+    if not step.has_verifer:
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verifier undefined")
+    else:
+        try:
+            step.verify()
+        except AssertionError as err:
+            if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
+                return
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verification failed")
+            return
+
+    # Step verification succeeded therefore signal step end.
+    on_step_end.send(ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -124,8 +142,6 @@ def on_step_end(ctx: ExecutionContext):
     :param ctx: Execution context information.
     
     """
-    # TODO: verify step execution before proceeding to next step.
-
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
 
@@ -243,42 +259,39 @@ def _can_start(ctx: ExecutionContext) -> bool:
     return True
 
 
+def _enqueue_message(ctx, step):
+    """Enqueues a single message.
+    
+    """
+    actor, args = step.result
+    actor.send_with_options(args=args)
+
+
 def _enqueue_message_batch(ctx, step):
-    """Enqueues messages emitted during step processing.
+    """Enqueues a message batch.
     
     """
     # Unpack step result.
-    actor, count, parameterization_factory = step.result
+    actor, count, args_factory = step.result
+
+    # Set window of dispatch.
+    dispatch_window = 0 if step.is_sync else ctx.get_dispatch_window_ms(count)
 
     # Yield args of messages to be enqueued.
     def message_factory():
-        for parameterization in parameterization_factory():
-            yield actor.message_with_options(args=parameterization)
+        for args in args_factory():
+            yield actor.message_with_options(
+                args=args,
+                delay=0 if step.is_sync else random.randint(0, dispatch_window)
+                )
 
     # Instantiate a dramatiq group to batch message set.
     group = dramatiq.group(message_factory())
 
     # When in sync mode can signal end of step in a completion callback. 
     if step.is_sync:
-        group.add_completion_callback(on_step_end.message(ctx))
+        group.add_completion_callback(do_step_verification.message(ctx))
 
     # Enqueue message batch.
     group.run()
 
-
-    # # Set dispatch window.
-    # deploy_count = ctx.args.user_accounts
-    # deploy_dispatch_window = ctx.get_dispatch_window_ms(deploy_count)
-
-    # # Transfer: run faucet -> user.
-    # for acc_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-    #     do_fund_account.send_with_options(
-    #         args = (
-    #             ctx,
-    #             constants.ACC_RUN_FAUCET,
-    #             acc_index,
-    #             ctx.args.user_initial_clx_balance,
-    #             False
-    #         ),
-    #         delay=random.randint(0, deploy_dispatch_window)
-    #     )

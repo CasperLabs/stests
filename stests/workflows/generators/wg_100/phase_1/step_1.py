@@ -2,6 +2,7 @@ import typing
 
 import dramatiq
 
+from stests.core import cache
 from stests.core.domain import AccountType
 from stests.core.orchestration import ExecutionContext
 from stests.workflows.generators.utils.accounts import do_create_account
@@ -33,11 +34,13 @@ def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
         yield ctx, index, AccountType.USER
 
 
-def verify(ctx):
+def verify(ctx: ExecutionContext):
     """Step execution verifier.
     
     :param ctx: Execution context information.
 
-    """    
-    # TODO: get count of created accounts and confirm = ctx.args.user_accounts + 2
-    return True
+    """
+    # Verify count of cached accounts.
+    cached = cache.state.get_account_count(ctx)
+    expected = ctx.args.user_accounts + 2
+    assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."
