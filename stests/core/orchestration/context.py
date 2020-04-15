@@ -57,7 +57,7 @@ class ExecutionContext:
     step_label: typing.Optional[str]
 
     # Flag indicating whether to use client side contract when performing balance transfers.
-    use_client_contract_for_transfers: typing.Optional[bool] = True
+    use_client_contract_for_transfers: typing.Optional[bool] = False
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
