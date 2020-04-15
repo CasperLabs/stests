@@ -1,3 +1,7 @@
+import typing
+
+import dramatiq
+
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.workflows.generators.utils import verification
@@ -10,17 +14,19 @@ from stests.workflows.generators.wg_110 import constants
 LABEL = "refund-run-faucet"
 
 
-def execute(ctx: ExecutionContext):
+def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, tuple]:
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    """     
-    do_refund.send(
+    :returns: 2 member tuple -> actor, args.
+
+    """   
+    return do_refund, (
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_NETWORK_FAUCET,
-        True
+        True,
     )
 
 
@@ -30,15 +36,18 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
+    # Verify count of finialised deploys.
     verification.verify_deploy_count(ctx, 1)
 
 
-def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, bhash: str, dhash: str):
+def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
     """Step deploy verifier.
     
     :param ctx: Execution context information.
-    :param dhash: A deploy hash.
+    :param node_id: Identifier of node that emitted finalization event.
+    :param block_hash: Hash of a finalized block.
+    :param deploy_hash: Hash of a finalized deploy.
 
     """
-    verification.verify_deploy(ctx, bhash, dhash)
-    verification.verify_transfer(ctx, bhash, dhash)
+    verification.verify_deploy(ctx, block_hash, deploy_hash)
+    verification.verify_transfer(ctx, block_hash, deploy_hash)
