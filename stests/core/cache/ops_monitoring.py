@@ -3,8 +3,10 @@ import typing
 from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
-from stests.core.types.chain import *
-from stests.core.types.infra import *
+from stests.core.types.chain import Block
+from stests.core.types.chain import Deploy
+from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import NodeMonitoringLock
 
 
 # Cache partition.
@@ -54,9 +56,9 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> typing.List[str
 def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> typing.List[str]:
     """Returns domain object: Deploy.
     
-    :param block_hash: Hash of a cached block.
+    :param deploy_hash: Hash of a cached deploy.
 
-    :returns: Cached block information.
+    :returns: Cached deploy information.
 
     """
     return [
