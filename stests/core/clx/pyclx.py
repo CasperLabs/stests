@@ -3,10 +3,10 @@ import typing
 from casperlabs_client import CasperLabsClient
 
 from stests.core import cache
-from stests.core.domain import Network
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import Node
-from stests.core.domain import NodeIdentifier
+from stests.core.types.infra import Network
+from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import Node
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
 

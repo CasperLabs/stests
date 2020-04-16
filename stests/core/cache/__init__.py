@@ -1,4 +1,4 @@
-from stests.core.domain import NetworkIdentifier
+from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.orchestration import ExecutionContext
 
 import stests.core.cache.ops_infra as infra

@@ -1,8 +1,8 @@
 import typing
 from datetime import datetime
 
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import NodeIdentifier
+from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionIdentifier

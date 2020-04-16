@@ -3,7 +3,8 @@ import typing
 from stests.core.cache.enums import StoreOperation
 from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
-from stests.core.domain import *
+from stests.core.types.chain import *
+from stests.core.types.infra import *
 
 
 # Cache partition.

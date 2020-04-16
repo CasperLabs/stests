@@ -4,7 +4,8 @@ import typing
 import stests.core.cache.ops_infra as infra
 from stests.core.cache.enums import *
 from stests.core.cache.utils import cache_op
-from stests.core.domain import *
+from stests.core.types.chain import *
+from stests.core.types.infra import *
 from stests.core.types.orchestration import *
 from stests.core import factory
 

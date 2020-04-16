@@ -1,7 +1,7 @@
 import argparse
 
 from stests.core import cache
-from stests.core.domain import NetworkStatus
+from stests.core.types.infra import NetworkStatus
 from stests.core.utils import args_validator
 from stests.core.utils import defaults
 from stests.core import factory

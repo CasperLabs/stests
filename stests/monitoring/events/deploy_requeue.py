@@ -1,6 +1,6 @@
 import dramatiq
 
-from stests.core.domain import NodeIdentifier
+from stests.core.types.infra import NodeIdentifier
 from stests.core.utils import logger
 
 

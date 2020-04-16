@@ -5,11 +5,11 @@ from stests.core.clx.contracts import counter_define
 from stests.core.clx.contracts import counter_define_stored
 from stests.core.clx.contracts import transfer_U512
 from stests.core.clx.contracts import transfer_U512_stored
-from stests.core.domain import Account
-from stests.core.domain import ContractType
-from stests.core.domain import Network
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import NodeIdentifier
+from stests.core.types.chain import Account
+from stests.core.types.chain import ContractType
+from stests.core.types.infra import Network
+from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 
 

@@ -3,8 +3,8 @@ from dramatiq.middleware import TimeLimitExceeded
 from dramatiq.middleware import Shutdown
 
 from stests.core import cache
-from stests.core.domain import NodeIdentifier
-from stests.core.domain import NodeMonitoringLock
+from stests.core.types.infra import NodeIdentifier
+from stests.core.types.infra import NodeMonitoringLock
 from stests.core import factory
 from stests.core.utils import logger
 from stests.monitoring.events import listener

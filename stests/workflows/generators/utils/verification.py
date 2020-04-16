@@ -1,13 +1,13 @@
 from stests.core import cache
 from stests.core import clx
-from stests.core.domain import Account
-from stests.core.domain import Deploy
-from stests.core.domain import DeployStatus
-from stests.core.domain import NodeIdentifier
+from stests.core.types.chain import Account
+from stests.core.types.chain import Deploy
+from stests.core.types.chain import DeployStatus
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionAspect
-from stests.core.domain import Transfer
-from stests.core.domain import TransferStatus
+from stests.core.types.chain import Transfer
+from stests.core.types.chain import TransferStatus
 from stests.core.utils.exceptions import IgnoreableAssertionError
 
 

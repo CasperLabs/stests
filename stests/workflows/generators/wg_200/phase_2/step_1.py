@@ -2,9 +2,9 @@ import typing
 
 import dramatiq
 
-from stests.core.domain import AccountType
-from stests.core.domain import ContractType
-from stests.core.domain import NodeIdentifier
+from stests.core.types.chain import AccountType
+from stests.core.types.chain import ContractType
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.workflows.generators.utils import verification

@@ -2,7 +2,7 @@ import typing
 
 from stests.core.clx import pyclx
 from stests.core.clx import parser
-from stests.core.domain import Account
+from stests.core.types.chain import Account
 from stests.core.utils import logger
 
 

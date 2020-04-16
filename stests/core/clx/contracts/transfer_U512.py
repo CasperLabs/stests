@@ -5,9 +5,9 @@ from casperlabs_client.abi import ABI
 from stests.core.clx import pyclx
 from stests.core.clx import defaults
 from stests.core.clx.query import get_account_balance
-from stests.core.domain import Account
-from stests.core.domain import Node
-from stests.core.domain import ContractType
+from stests.core.types.chain import Account
+from stests.core.types.infra import Node
+from stests.core.types.chain import ContractType
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
 

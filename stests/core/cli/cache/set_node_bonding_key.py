@@ -1,8 +1,8 @@
 import argparse
 
 from stests.core import cache
-from stests.core.domain import AccountStatus
-from stests.core.domain import AccountType
+from stests.core.types.chain import AccountStatus
+from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
 from stests.core import factory

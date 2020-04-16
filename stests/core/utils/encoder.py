@@ -219,11 +219,6 @@ def initialise():
     IS_INITIALISED = True
 
 
-# Auto-register domain types.
-from stests.core import domain
-for i in domain.TYPE_SET:
-    register_type(i)
-
 # Auto-register core types.
 from stests.core import types
 for i in types.TYPE_SET:

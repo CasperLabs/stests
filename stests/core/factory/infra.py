@@ -1,11 +1,11 @@
-from stests.core.domain import Network
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import NetworkStatus
-from stests.core.domain import NetworkType
-from stests.core.domain import Node
-from stests.core.domain import NodeIdentifier
-from stests.core.domain import NodeStatus
-from stests.core.domain import NodeType
+from stests.core.types.infra import Network
+from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import NetworkStatus
+from stests.core.types.infra import NetworkType
+from stests.core.types.infra import Node
+from stests.core.types.infra import NodeIdentifier
+from stests.core.types.infra import NodeStatus
+from stests.core.types.infra import NodeType
 
 
 

@@ -93,6 +93,5 @@ ENUM_SET = {
     ContractLocation,
     DeployStatus,
     DeployType,
-    ContractType,
     TransferStatus,
 }

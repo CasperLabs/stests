@@ -2,8 +2,8 @@ import argparse
 import typing
 
 from stests.core import cache
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import NodeIdentifier
+from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import NodeIdentifier
 from stests.core import factory
 from stests.core.utils import logger
 from stests.core.types.orchestration import ExecutionContext

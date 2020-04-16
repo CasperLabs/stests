@@ -4,9 +4,9 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.domain import ContractType
-from stests.core.domain import DeployType
-from stests.core.domain import NodeIdentifier
+from stests.core.types.chain import ContractType
+from stests.core.types.chain import DeployType
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core import factory
 from stests.workflows.generators.utils import constants

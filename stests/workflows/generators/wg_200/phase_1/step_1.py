@@ -3,7 +3,7 @@ import typing
 import dramatiq
 
 from stests.core import cache
-from stests.core.domain import AccountType
+from stests.core.types.chain import AccountType
 from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.generators.utils.accounts import do_create_account
 from stests.workflows.generators.wg_200 import constants

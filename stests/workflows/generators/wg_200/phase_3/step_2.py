@@ -2,7 +2,7 @@ import typing
 
 import dramatiq
 
-from stests.core.domain import NodeIdentifier
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.generators.utils import verification
 from stests.workflows.generators.utils.accounts import do_refund

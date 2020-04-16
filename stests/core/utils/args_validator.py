@@ -1,7 +1,7 @@
 import argparse
 import pathlib
 
-from stests.core.domain import NetworkType
+from stests.core.types.infra import NetworkType
 from stests.core.types.orchestration import ExecutionMode
 
 

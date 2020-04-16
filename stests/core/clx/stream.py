@@ -1,7 +1,7 @@
 import typing
 
 from stests.core.clx import pyclx
-from stests.core.domain import Node
+from stests.core.types.infra import Node
 from stests.core.utils import logger
 
 
