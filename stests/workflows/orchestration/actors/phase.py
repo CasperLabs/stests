@@ -41,7 +41,7 @@ def do_phase(ctx: ExecutionContext):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
 
-    # Run step.
+    # Enqueue step.
     do_step.send(ctx)
 
 

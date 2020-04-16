@@ -3,7 +3,7 @@ import typing
 from stests.core.orchestration import ExecutionContext
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
-from stests.workflows.generators.meta import GENERATOR_MAP as MODULES
+from stests.workflows.generators.meta import GENERATOR_MAP as WORKFLOWS
 
 
 
@@ -11,21 +11,27 @@ class WorkflowStep():
     """A step with a phase of a broader workflow.
     
     """
-    def __init__(self, ctx: ExecutionContext, index: int, module):
+    def __init__(self, index: int, container):
         """Constructor.
         
-        """
-        # Workflow execution context information.
-        self.ctx: ExecutionContext = ctx
+        :param index: Ordinal position within set of steps.
+        :param container: Module containing step related functions.
 
+        """
         # Index within the set of phase steps.
         self.index: int = index
+
+        # A flag indicating whether this is an asynchronous step - i.e. relies upon chain events to complete.
+        self.is_async = hasattr(container, "verify_deploy")
 
         # Flag indicating whether this is the last step within the phase.
         self.is_last: bool = False
 
+        # A flag indicating whether this is a synchronous step.
+        self.is_sync = not self.is_async
+
         # Python module in which the step is declared.
-        self.module = module
+        self.container = container
 
         # Execution error.
         self.error: typing.Union[str, Exception] = None
@@ -36,7 +42,7 @@ class WorkflowStep():
     @property
     def has_verifer(self) -> bool:
         try:
-            self.module.verify
+            self.container.verify
         except AttributeError:
             return False
         else:
@@ -45,7 +51,7 @@ class WorkflowStep():
     @property
     def has_verifer_for_deploy(self) -> bool:
         try:
-            self.module.verify_deploy
+            self.container.verify_deploy
         except AttributeError:
             return False
         else:
@@ -53,49 +59,52 @@ class WorkflowStep():
 
     @property
     def label(self) -> str:
-        return self.module.LABEL
-    
-    @property
-    def is_async(self) -> bool:     
-        """A flag indicating whether this is an asynchronous step - i.e. relies upon chain events to complete."""   
-        return hasattr(self.module, "verify_deploy")   
+        return self.container.LABEL
 
-    @property
-    def is_sync(self) -> bool:     
-        """A flag indicating whether this is a synchronous step."""   
-        return not self.is_async
 
-    def execute(self):
+    def execute(self, ctx):
         """Performs step execution.
         
+        :param ctx: Execution context information.
+
         """
         try:
-            self.result = self.module.execute(self.ctx)
+            self.result = self.container.execute(ctx)
         except Exception as err:
             self.error = err
 
 
-    def verify(self):
+    def verify(self, ctx):
         """Performs step verification.
         
-        """
-        self.module.verify(self.ctx)
-
-
-    def verify_deploy(self, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
-        """Performs step deploy verification.
+        :param ctx: Execution context information.
         
         """
-        self.module.verify_deploy(self.ctx, node_id, block_hash, deploy_hash)
+        self.container.verify(ctx)
+
+
+    def verify_deploy(self, ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
+        """Performs step deploy verification.
+        
+        :param ctx: Execution context information.
+        :param node_id: Identifier of node emitting chain event.
+        :param block_hash: Hash of block in which deploy was batched.
+        :param deploy_hash: Hash of deploy being processed.
+
+        """
+        self.container.verify_deploy(ctx, node_id, block_hash, deploy_hash)
 
 
 class WorkflowPhase():
     """A phase within a broader workflow.
     
     """
-    def __init__(self, ctx: ExecutionContext, index: int, container):
+    def __init__(self, index: int, container):
         """Constructor.
         
+        :param index: Ordinal position within set of phases.
+        :param container: Module or tuple containing phase steps.
+
         """
         # Index within the set of phases.
         self.index: int = index
@@ -105,9 +114,9 @@ class WorkflowPhase():
 
         # Set steps.
         if isinstance(container, tuple):
-            self.steps = [WorkflowStep(ctx, i, s) for i, s in enumerate(container)]
+            self.steps = [WorkflowStep(i, s) for i, s in enumerate(container)]
         else:
-            self.steps = [WorkflowStep(ctx, i, s) for i, s in enumerate(container.STEPS)]
+            self.steps = [WorkflowStep(i, s) for i, s in enumerate(container.STEPS)]
 
         # Set last step flag.
         if self.steps:
@@ -125,7 +134,7 @@ class Workflow():
     """A workflow executed in order to test a scenario.
     
     """
-    def __init__(self, ctx: ExecutionContext, meta):
+    def __init__(self, meta):
         """Constructor.
 
         :param ctx: Execution context information.
@@ -133,7 +142,7 @@ class Workflow():
 
         """
         # Set phases.
-        self.phases = [WorkflowPhase(ctx, i, p) for i, p in enumerate(meta.PHASES)]
+        self.phases = [WorkflowPhase(i, p) for i, p in enumerate(meta.PHASES)]
 
         # Set last phase flag.
         if self.phases:
@@ -166,11 +175,11 @@ class Workflow():
 
         """
         try:
-            MODULES[ctx.run_type]
+            WORKFLOWS[ctx.run_type]
         except KeyError:
             raise ValueError(f"Unsupported workflow type: {ctx.run_type}")
         else:
-            return Workflow(ctx, MODULES[ctx.run_type])
+            return Workflow(WORKFLOWS[ctx.run_type])
 
 
     @staticmethod

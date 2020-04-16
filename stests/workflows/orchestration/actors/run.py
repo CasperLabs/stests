@@ -34,7 +34,7 @@ def do_run(ctx: ExecutionContext):
     if not _can_run(ctx):
         return
     
-    # Enqueue next when in PERIODIC mode.
+    # Enqueue next run (when mode=PERIODIC).
     if ctx.execution_mode == ExecutionMode.PERIODIC:
         _loop(encoder.clone(ctx))
 
@@ -52,7 +52,7 @@ def do_run(ctx: ExecutionContext):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> starts")
 
-    # Run phase.
+    # Enqueue phase.
     do_phase.send(ctx)
 
 
@@ -76,7 +76,7 @@ def on_run_end(ctx: ExecutionContext):
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
 
-    # Enqueue next when in SEQUENTIAL mode.
+    # Enqueue next run (when mode=SEQUENTIAL).
     if ctx.execution_mode == ExecutionMode.SEQUENTIAL:
         _loop(ctx)
 

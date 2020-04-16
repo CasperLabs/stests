@@ -38,7 +38,7 @@ def do_step(ctx: ExecutionContext):
     ctx.step_index += 1
     ctx.step_label = step.label
 
-    # Set info/state.
+    # Set info.
     step_info = factory.create_execution_info(ExecutionAspect.STEP, ctx)
 
     # Update cache.
@@ -49,65 +49,11 @@ def do_step(ctx: ExecutionContext):
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
 
     # Execute.
-    step.execute()
-
-    # Process errors.
-    if step.error:
-        on_step_error.send(ctx, str(step.error))
-
-    # Exception if step result != None | tuple.
-    elif step.result is not None and not isinstance(step.result, tuple):
-        raise TypeError("Expecting either None or a tuple from a step function.")
-
-    # Process result for async ops.
-    elif step.is_async:
-        on_step_execute_async(ctx, step)
-
-    # Process result for sync ops.
-    else:
-        on_step_execute_sync(ctx, step)
-
-
-def on_step_execute_async(ctx: ExecutionContext, step: WorkflowStep):
-    """Performs asynchronous step execution.
-    
-    :param ctx: Execution context information.
-    :param step: Step related execution information.
-    
-    """
-    # Enqueue message.
-    if isinstance(step.result, tuple) and len(step.result) == 2:
-        _enqueue_message(ctx, step)
-
-    # Enqueue message batch.
-    elif isinstance(step.result, tuple) and len(step.result) == 3:
-        _enqueue_message_batch(ctx, step)
-    
-    else:
-        raise TypeError("Async steps must return either a single message or a batch of messages")
-
-
-def on_step_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
-    """Performs step execution.
-    
-    :param ctx: Execution context information.
-    :param step: Step related execution information.
-    
-    """
-    # If unit of work is complete then signal step end.
-    if step.result is None:
-        do_step_verification.send(ctx)
-
-    # Enqueue message batch (with completion callback).
-    elif isinstance(step.result, tuple) and len(step.result) == 3:
-        _enqueue_message_batch(ctx, step)
-
-    else:
-        raise TypeError("Sync steps must return None or a batch of messages")
+    _execute(ctx, step)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_step_verification(ctx):
+def do_step_verification(ctx: ExecutionContext):
     """Verifies a workflow step prior to signalling end.
     
     :param ctx: Execution context information.
@@ -123,14 +69,14 @@ def do_step_verification(ctx):
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verifier undefined")
     else:
         try:
-            step.verify()
+            step.verify(ctx)
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
             logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verification failed")
             return
 
-    # Step verification succeeded therefore signal step end.
+    # Enqueue step end.
     on_step_end.send(ctx)
 
 
@@ -198,7 +144,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
         return       
     else:
         try:
-            step.verify_deploy(node_id, block_hash, deploy_hash)
+            step.verify_deploy(ctx, node_id, block_hash, deploy_hash)
         except AssertionError as err:
             logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed: {err} :: {deploy_hash}")
             return
@@ -208,7 +154,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
         logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verifier undefined")
     else:
         try:
-            step.verify()
+            step.verify(ctx)
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
@@ -252,6 +198,30 @@ def _can_start(ctx: ExecutionContext) -> bool:
     return True
 
 
+def _execute(ctx: ExecutionContext, step: WorkflowStep):
+    """Handles actual step execution.
+    
+    """
+    # Execute.
+    step.execute(ctx)
+
+    # Process errors.
+    if step.error:
+        on_step_error.send(ctx, str(step.error))
+
+    # Exception if step result != None | tuple.
+    elif step.result is not None and not isinstance(step.result, tuple):
+        raise TypeError("Expecting either None or a tuple from a step function.")
+
+    # Process result for async ops.
+    elif step.is_async:
+        _on_execute_async(ctx, step)
+
+    # Process result for sync ops.
+    else:
+        _on_execute_sync(ctx, step)
+
+
 def _enqueue_message(ctx, step):
     """Enqueues a single message.
     
@@ -288,3 +258,34 @@ def _enqueue_message_batch(ctx, step):
     # Enqueue message batch.
     group.run()
 
+
+def _on_execute_async(ctx: ExecutionContext, step: WorkflowStep):
+    """Performs post asynchronous step work.
+        
+    """
+    # Enqueue message.
+    if isinstance(step.result, tuple) and len(step.result) == 2:
+        _enqueue_message(ctx, step)
+
+    # Enqueue message batch.
+    elif isinstance(step.result, tuple) and len(step.result) == 3:
+        _enqueue_message_batch(ctx, step)
+    
+    else:
+        raise TypeError("Async steps must return either a single message or a batch of messages")
+
+
+def _on_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
+    """Performs asynchronous step work.
+        
+    """
+    # If unit of work is complete then signal step end.
+    if step.result is None:
+        do_step_verification.send(ctx)
+
+    # Enqueue message batch (with completion callback).
+    elif isinstance(step.result, tuple) and len(step.result) == 3:
+        _enqueue_message_batch(ctx, step)
+
+    else:
+        raise TypeError("Sync steps must return None or a batch of messages")
