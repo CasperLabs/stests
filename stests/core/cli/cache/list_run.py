@@ -5,7 +5,7 @@ from beautifultable import BeautifulTable
 from stests.core.cli.utils import get_table
 from stests.core import cache
 from stests.core.utils import args_validator
-from stests.core.utils import factory
+from stests.core import factory
 from stests.core.utils import logger
 from stests.core.orchestration import ExecutionAspect
 

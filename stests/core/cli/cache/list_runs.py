@@ -7,7 +7,7 @@ from stests.core import cache
 from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionStatus
 from stests.core.utils import args_validator
-from stests.core.utils import factory
+from stests.core import factory
 from stests.core.utils import logger
 
 

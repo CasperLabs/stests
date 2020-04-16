@@ -5,7 +5,7 @@ from dramatiq.middleware import Shutdown
 from stests.core import cache
 from stests.core.domain import NodeIdentifier
 from stests.core.domain import NodeMonitorLock
-from stests.core.utils import factory
+from stests.core import factory
 from stests.core.utils import logger
 from stests.monitoring.events import listener
 

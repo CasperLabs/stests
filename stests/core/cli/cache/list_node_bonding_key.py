@@ -5,7 +5,7 @@ from stests.core.domain import AccountStatus
 from stests.core.domain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
-from stests.core.utils import factory
+from stests.core import factory
 from stests.core.utils import logger
 
 

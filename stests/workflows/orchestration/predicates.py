@@ -1,7 +1,7 @@
 import typing
 
 from stests.core import cache
-from stests.core.utils import factory
+from stests.core import factory
 from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionLock
 from stests.core.orchestration import ExecutionContext

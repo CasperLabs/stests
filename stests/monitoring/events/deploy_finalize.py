@@ -5,7 +5,7 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core.utils import encoder
-from stests.core.utils import factory
+from stests.core import factory
 from stests.core.domain import Deploy
 from stests.core.domain import DeployStatus
 from stests.core.domain import NodeIdentifier

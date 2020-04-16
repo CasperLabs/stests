@@ -4,7 +4,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.utils import factory
+from stests.core import factory
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
 
