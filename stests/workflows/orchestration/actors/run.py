@@ -1,13 +1,13 @@
 import dramatiq
 
 from stests.core import cache
+from stests.core.utils import factory
 from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionContext
 from stests.core.orchestration import ExecutionMode
 from stests.core.orchestration import ExecutionStatus
 from stests.core.utils import encoder
 from stests.core.utils import logger
-from stests.workflows.orchestration import factory
 from stests.workflows.orchestration import predicates
 from stests.workflows.orchestration.actors.phase import do_phase
 
@@ -41,9 +41,8 @@ def do_run(ctx: ExecutionContext):
     # Update ctx.
     ctx.status = ExecutionStatus.IN_PROGRESS
 
-    # Set info/state.
-    run_info = factory.create_info(ExecutionAspect.RUN, ctx)
-    run_state = factory.create_state(ExecutionAspect.RUN, ctx)
+    # Set info.
+    run_info = factory.create_execution_info(ExecutionAspect.RUN, ctx)
 
     # Update cache.
     cache.flush_by_run(ctx)
@@ -66,9 +65,6 @@ def on_run_end(ctx: ExecutionContext):
     """
     # Update ctx.
     ctx.status = ExecutionStatus.COMPLETE
-
-    # Set info/state.
-    run_state = factory.create_state(ExecutionAspect.RUN, ctx)
 
     # Update cache.
     cache.orchestration.set_context(ctx)
@@ -95,9 +91,6 @@ def on_run_error(ctx: ExecutionContext, err: str):
     """
     # Update ctx.
     ctx.status = ExecutionStatus.ERROR
-
-    # Set info/state.
-    run_state = factory.create_state(ExecutionAspect.RUN, ctx)
 
     # Update cache.
     cache.orchestration.set_context(ctx)

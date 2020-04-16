@@ -89,6 +89,25 @@ def create_account_named_key(
     )
 
 
+def create_account_named_keys(
+    account: Account,
+    contract_type: ContractType,
+    name: str,
+    network: str,
+    hash: str,
+    ) -> NamedKey:
+    """Returns a domain object instance: NamedKey.
+    
+    """
+    return NamedKey(
+        account_index=account.index,
+        contract_type=contract_type,
+        hash=hash,
+        name=name,
+        network=network,
+    )
+
+
 def create_block_on_finalisation(
     node_id: NodeIdentifier,
     block_hash: str,
@@ -227,6 +246,41 @@ def create_execution_id(
     
     """
     return ExecutionIdentifier(network_id, run_index, run_type)
+
+
+def create_execution_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> ExecutionInfo:
+    """Returns a domain object instance: ExecutionInfo.
+
+    :param aspect: Aspect of execution in scope.
+    :param ctx: Execution context information.
+
+    :returns: ExecutionInfo instance configured as per aspect.
+
+    """
+    info = ExecutionInfo(
+        aspect=aspect,
+        network=ctx.network,
+        phase_index=None,
+        run_index=ctx.run_index,
+        run_index_parent=ctx.run_index_parent,
+        run_type=ctx.run_type,
+        status=ExecutionStatus.IN_PROGRESS,
+        step_index=None,
+        step_label=None,
+        tp_duration=None,
+        ts_start=datetime.now(),
+        ts_end=None,
+        _type_key=None,
+    )
+
+    if aspect == ExecutionAspect.PHASE:
+        info.phase_index = ctx.phase_index
+    elif aspect == ExecutionAspect.STEP:
+        info.phase_index = ctx.phase_index
+        info.step_index = ctx.step_index
+        info.step_label = ctx.step_label
+
+    return info
 
 
 def create_network(name_raw: str) -> Network:

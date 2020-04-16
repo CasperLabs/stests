@@ -13,7 +13,6 @@ DCLASS_SET = {
     ExecutionIdentifier,
     ExecutionInfo,
     ExecutionLock,
-    ExecutionState,
 }
 
 # Full domain type set.

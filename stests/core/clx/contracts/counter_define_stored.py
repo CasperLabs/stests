@@ -4,6 +4,7 @@ from casperlabs_client.abi import ABI
 
 from stests.core import cache
 from stests.core.clx import pyclx
+from stests.core.clx import query
 from stests.core.clx import defaults
 from stests.core.domain import Account
 from stests.core.domain import ContractType
@@ -40,7 +41,11 @@ NAMED_KEYS = [
 ]
 
 
-def increment(ctx: ExecutionContext, account_contract: Account, account_user: Account) -> typing.Tuple[Node, str]:
+def increment(
+    ctx: ExecutionContext,
+    account_contract: Account,
+    account_user: Account
+    ) -> typing.Tuple[Node, str]:
     """Increments counter previously installed under an account.
     
     """
@@ -48,12 +53,14 @@ def increment(ctx: ExecutionContext, account_contract: Account, account_user: Ac
     node, client  = pyclx.get_client(ctx)
 
     # Set named keys of stored contract + slot.
-    nk_contract = cache.infra.get_named_key(ctx.network, TYPE, NAMED_KEY_COUNTER)
-    nk_slot = cache.infra.get_named_key(ctx.network, TYPE, NAMED_KEY_COUNTER_INC)
+    named_keys = query.get_account_named_keys(client, account_contract, filter_keys=NAMED_KEYS)
+    named_keys = {i.name: i.key.hash.hash.hex() for i in named_keys}
+
+    nk_contract = named_keys[NAMED_KEY_COUNTER]
+    nk_slot = named_keys[NAMED_KEY_COUNTER_INC]
+
     if nk_contract is None or nk_slot is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")
-
-
 
     # Dispatch deploy.
     deploy_hash = client.deploy(

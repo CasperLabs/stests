@@ -1,12 +1,12 @@
 import dramatiq
 
 from stests.core import cache
+from stests.core.utils import factory
 from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionStatus
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.workflows.orchestration.model import Workflow
-from stests.workflows.orchestration import factory
 from stests.workflows.orchestration import predicates
 from stests.workflows.orchestration.actors.step import do_step
 
@@ -31,9 +31,8 @@ def do_phase(ctx: ExecutionContext):
     ctx.phase_index += 1
     ctx.step_index = 0
 
-    # Set info/state.
-    phase_info = factory.create_info(ExecutionAspect.PHASE, ctx)
-    phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, ExecutionStatus.IN_PROGRESS)
+    # Set info.
+    phase_info = factory.create_execution_info(ExecutionAspect.PHASE, ctx)
 
     # Update cache.
     cache.orchestration.set_context(ctx)
@@ -55,9 +54,6 @@ def on_phase_end(ctx: ExecutionContext):
     """
     # Set phase.
     phase = Workflow.get_phase_(ctx, ctx.phase_index)
-
-    # Set info/state.
-    phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, status=ExecutionStatus.COMPLETE)
 
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
@@ -82,9 +78,6 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     :param err: Execution error information.
     
     """
-    # Set info/state.
-    phase_state = factory.create_state(ExecutionAspect.PHASE, ctx, status=ExecutionStatus.ERROR)
-
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
 

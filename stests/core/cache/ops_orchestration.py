@@ -367,32 +367,6 @@ def set_info_update(ctx: ExecutionContext, aspect: ExecutionAspect, status: Exec
     return info
 
 
-@cache_op(_PARTITION, StoreOperation.SET)
-def set_state(state: ExecutionState) -> typing.Tuple[typing.List[str], ExecutionState]:
-    """Encaches domain object: ExecutionState.
-    
-    :param state: Execution state information.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    path = [
-        state.network,
-        state.run_type,
-        state.run_index_label,
-        COL_STATE,
-    ]
-
-    if state.aspect == ExecutionAspect.RUN:
-        path.append("-")
-    elif state.aspect == ExecutionAspect.PHASE:
-        path.append(state.phase_index_label)
-    elif state.aspect == ExecutionAspect.STEP:
-        path.append(f"{state.phase_index_label}.{state.step_index_label}")
-
-    return path, state
-
-
 def _get_keypath_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> typing.List[str]:
     """Returns keypath used when working with a deploy count.
     

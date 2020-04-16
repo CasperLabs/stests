@@ -3,6 +3,7 @@ import random
 import dramatiq
 
 from stests.core import cache
+from stests.core.utils import factory
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionAspect
 from stests.core.orchestration import ExecutionStatus
@@ -11,7 +12,6 @@ from stests.core.utils import logger
 from stests.core.utils.exceptions import IgnoreableAssertionError
 from stests.workflows.orchestration.model import Workflow
 from stests.workflows.orchestration.model import WorkflowStep
-from stests.workflows.orchestration import factory
 from stests.workflows.orchestration import predicates
 
 
@@ -39,8 +39,7 @@ def do_step(ctx: ExecutionContext):
     ctx.step_label = step.label
 
     # Set info/state.
-    step_info = factory.create_info(ExecutionAspect.STEP, ctx)
-    step_state = factory.create_state(ExecutionAspect.STEP, ctx, ExecutionStatus.IN_PROGRESS)
+    step_info = factory.create_execution_info(ExecutionAspect.STEP, ctx)
 
     # Update cache.
     cache.orchestration.set_context(ctx)
@@ -145,9 +144,6 @@ def on_step_end(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
 
-    # Set info/state.
-    step_state = factory.create_state(ExecutionAspect.STEP, ctx, ExecutionStatus.COMPLETE)
-
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
@@ -171,9 +167,6 @@ def on_step_error(ctx: ExecutionContext, err: str):
     :param err: Execution error information.
     
     """
-    # Set info/state.
-    step_state = factory.create_state(ExecutionAspect.STEP, ctx, ExecutionStatus.ERROR)
-
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
