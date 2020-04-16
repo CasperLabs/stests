@@ -5,7 +5,7 @@ import casperlabs_client
 from casperlabs_client.abi import ABI
 
 from stests.core import cache
-from stests.core.clx import client
+from stests.core.clx import pyclx
 from stests.core.clx import defaults
 from stests.core.clx import query
 from stests.core.domain import Account
@@ -37,7 +37,7 @@ def install_named(
 
     """
     # Set client.
-    node, client = client.get_client(node_id or ctx)
+    node, client = pyclx.get_client(node_id or ctx)
 
     # Set deploy args.
     session = _get_contract_path(contract)
@@ -79,7 +79,7 @@ def install_singleton(
 
     """
     # Set client.
-    node, client = client.get_client(node_id or network_id)
+    node, client = pyclx.get_client(node_id or network_id)
 
     # Set deploy args.
     session = _get_contract_path(contract)

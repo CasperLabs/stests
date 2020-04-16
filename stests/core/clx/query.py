@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.clx import client
+from stests.core.clx import pyclx
 from stests.core.clx import parser
 from stests.core.domain import Account
 from stests.core.utils import logger
@@ -17,7 +17,7 @@ def get_account(src: typing.Any, account: Account, block_hash: str=None):
     :returns: Account info.
 
     """
-    _, client = client.get_client(src)
+    _, client = pyclx.get_client(src)
 
     q = client.queryState(
         block_hash or _get_last_block_hash(client),
@@ -52,7 +52,7 @@ def get_account_balance_by_address(src: typing.Any, address: str, block_hash: st
     :returns: Account balance.
 
     """
-    _, client = client.get_client(src)
+    _, client = pyclx.get_client(src)
     try:
         balance = client.balance(
             address=address,
@@ -92,7 +92,7 @@ def get_block_info(src: typing.Any, block_hash: str, parse=True) -> typing.Dict:
     :returns: Block info pulled from chain.
 
     """
-    _, client = client.get_client(src)
+    _, client = pyclx.get_client(src)
     info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
     return parser.parse_block_info(info) if parse else info
@@ -109,7 +109,7 @@ def get_deploy_info(src: typing.Any, deploy_hash: str, wait_for_processed: bool 
     :returns: Deploy info pulled from chain.
 
     """
-    _, client = client.get_client(src)
+    _, client = pyclx.get_client(src)
     info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
 
     return parser.parse_deploy_info(info) if parse else info

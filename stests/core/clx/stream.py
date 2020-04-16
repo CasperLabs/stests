@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.clx import client
+from stests.core.clx import pyclx
 from stests.core.domain import Node
 from stests.core.utils import logger
 
@@ -77,7 +77,7 @@ def _yield_events(src: typing.Any) -> typing.Union[Node, typing.Any]:
     """Yields events from event source (i.e. a CLX chain).
     
     """
-    node, client = client.get_client(src)
+    node, client = pyclx.get_client(src)
     logger.log(f"CHAIN :: events :: binding to stream :: node={node.address}")
     for event_info in client.stream_events(all=True):
         yield node, event_info

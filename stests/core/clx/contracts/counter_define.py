@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.clx import client
+from stests.core.clx import pyclx
 from stests.core.clx import defaults
 from stests.core.domain import Account
 from stests.core.domain import ContractType
@@ -31,7 +31,7 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
     
     """
     # Set client.
-    node, client  = client.get_client(ctx)
+    node, client  = pyclx.get_client(ctx)
 
     # Dispatch deploy.
     deploy_hash = client.deploy(
@@ -53,7 +53,7 @@ def get_count(node_id: NodeIdentifier, account: Account, block_hash: str) -> int
     
     """
     # Set client.
-    _, client  = client.get_client(node_id)
+    _, client  = pyclx.get_client(node_id)
 
     # Query chain global state.
     state = client.queryState(block_hash, account.public_key, "counter/count", "address")

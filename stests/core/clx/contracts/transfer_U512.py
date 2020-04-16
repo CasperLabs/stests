@@ -2,7 +2,7 @@ import typing
 
 from casperlabs_client.abi import ABI
 
-from stests.core.clx import client
+from stests.core.clx import pyclx
 from stests.core.clx import defaults
 from stests.core.clx.query import get_account_balance
 from stests.core.domain import Account
@@ -46,7 +46,7 @@ def execute(
 
     """
     # Set client.
-    node, client  = client.get_client(ctx)
+    node, client  = pyclx.get_client(ctx)
 
     # Dispatch deploy.
     # TODO - consider using generic deploy method ?

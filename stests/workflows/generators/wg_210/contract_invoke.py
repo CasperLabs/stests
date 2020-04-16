@@ -26,10 +26,12 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     """
     # Set account.
     account = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
+    print(account)    
 
     # Query account's named keys.
 
-    print(account)    
+    named_keys = clx.get_account_named_keys(ctx, account)
+    print(named_keys)    
 
 
 def verify(ctx: ExecutionContext):
