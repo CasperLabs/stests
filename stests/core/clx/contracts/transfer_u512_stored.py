@@ -3,8 +3,8 @@ import typing
 from casperlabs_client.abi import ABI
 
 from stests.core import cache
+from stests.core.clx import client
 from stests.core.clx import defaults
-from stests.core.clx import utils
 from stests.core.clx.query import get_account_balance
 from stests.core.domain import Account
 from stests.core.domain import Node
@@ -49,7 +49,7 @@ def execute(
 
     """
     # Set client.
-    node, client  = utils.get_client(ctx)
+    node, client  = client.get_client(ctx)
 
     # Set named key associated with contract.
     named_key = cache.infra.get_named_key(ctx.network, TYPE, "transfer_to_account")

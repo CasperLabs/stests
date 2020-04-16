@@ -13,11 +13,11 @@ from stests.core.utils import logger
 
 
 def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, NetworkIdentifier, Node, NodeIdentifier]) -> typing.Tuple[Node, CasperLabsClient]:
-    """Factory method to return a configured clabs client and the node with which it is associated.
+    """Factory method to return a configured client plus the node with which it is associated.
 
     :param src: The source from which a network node will be derived.
 
-    :returns: A 2 member tuple: Node, configured clabs client.
+    :returns: A 2 member tuple: (Node, configured clabs client).
     
     """
     # In some cases calling code already has a client instance, but as

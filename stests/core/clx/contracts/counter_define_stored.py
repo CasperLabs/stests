@@ -3,8 +3,8 @@ import typing
 from casperlabs_client.abi import ABI
 
 from stests.core import cache
+from stests.core.clx import client
 from stests.core.clx import defaults
-from stests.core.clx import utils
 from stests.core.domain import Account
 from stests.core.domain import ContractType
 from stests.core.domain import Node
@@ -45,7 +45,7 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
     
     """
     # Set client.
-    node, client  = utils.get_client(ctx)
+    node, client  = client.get_client(ctx)
 
     # Set named keys of stored contract + slot.
     nk_contract = cache.infra.get_named_key(ctx.network, TYPE, NAMED_KEY_COUNTER)
@@ -76,7 +76,7 @@ def get_count(node_id: NodeIdentifier, account: Account, block_hash: str) -> int
     
     """
     # Set client.
-    node, client  = utils.get_client(node_id)
+    _, client  = client.get_client(node_id)
 
     # Query chain global state.
     state = client.queryState(block_hash, account.public_key, "counter/count", "address")

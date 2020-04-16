@@ -5,9 +5,9 @@ import casperlabs_client
 from casperlabs_client.abi import ABI
 
 from stests.core import cache
+from stests.core.clx import client
 from stests.core.clx import defaults
 from stests.core.clx import query
-from stests.core.clx import utils
 from stests.core.domain import Account
 from stests.core.domain import DeployStatus
 from stests.core.domain import NamedKey
@@ -37,7 +37,7 @@ def install_named(
 
     """
     # Set client.
-    node, client = utils.get_client(node_id or ctx)
+    node, client = client.get_client(node_id or ctx)
 
     # Set deploy args.
     session = _get_contract_path(contract)
@@ -79,7 +79,7 @@ def install_singleton(
 
     """
     # Set client.
-    node, client = utils.get_client(node_id or network_id)
+    node, client = client.get_client(node_id or network_id)
 
     # Set deploy args.
     session = _get_contract_path(contract)

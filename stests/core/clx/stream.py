@@ -1,14 +1,13 @@
 import typing
 
-from stests.core.clx import utils
-from stests.core.domain import NetworkIdentifier
-from stests.core.domain import NodeIdentifier
+from stests.core.clx import client
+from stests.core.domain import Node
 from stests.core.utils import logger
 
 
 
 def stream_events(
-    src: typing.Union[NodeIdentifier, NetworkIdentifier],
+    src: typing.Any,
     on_block_added: typing.Callable = None,
     on_block_finalized: typing.Callable = None,
     on_deploy_added: typing.Callable = None,
@@ -20,9 +19,15 @@ def stream_events(
     ):
     """Hooks upto network streaming events.
 
-    :param src: The source from which a network node will be derived.
-    :param on_block_added: Callback to invoke whenever a block is added to chain.
-    :param on_block_finalized: Callback to invoke whenever a block is finalized.
+    :param src: The source from which a node client will be instantiated.
+    :param on_block_added: Callback to invoke whenever a block added event is received.
+    :param on_block_finalized: Callback to invoke whenever a block finalized event is received.
+    :param on_deploy_added: Callback to invoke whenever a deploy added event is received.
+    :param on_deploy_discarded: Callback to invoke whenever a deploy discarded event is received.
+    :param on_deploy_finalized: Callback to invoke whenever a deploy finalized event is received.
+    :param on_deploy_orphaned: Callback to invoke whenever a deploy orphaned event is received.
+    :param on_deploy_processed: Callback to invoke whenever a deploy processed event is received.
+    :param on_deploy_requeued: Callback to invoke whenever a deploy requeued event is received.
 
     """
     for node, event_info in _yield_events(src):
@@ -68,11 +73,11 @@ def stream_events(
             pass
 
 
-def _yield_events(src: typing.Union[NodeIdentifier, NetworkIdentifier]):
+def _yield_events(src: typing.Any) -> typing.Union[Node, typing.Any]:
     """Yields events from event source (i.e. a CLX chain).
     
     """
-    node, client = utils.get_client(src)
+    node, client = client.get_client(src)
     logger.log(f"CHAIN :: events :: binding to stream :: node={node.address}")
     for event_info in client.stream_events(all=True):
         yield node, event_info
