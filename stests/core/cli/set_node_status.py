@@ -3,7 +3,6 @@ import argparse
 from stests.core import cache
 from stests.core.types.infra import NodeStatus
 from stests.core.utils import args_validator
-from stests.core.utils import defaults
 from stests.core import factory
 from stests.core.utils import logger
 

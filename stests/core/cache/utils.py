@@ -10,11 +10,11 @@ from stests.core.utils import encoder
 
 
 
-def cache_op(partition: StorePartition, operation: StoreOperation):
+def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Callable:
     """Decorator to orthoganally process a cache operation.
 
-    :param on_success: Continuation function upon execution success.
-    :param is_substep: Flag indicating whether decorated function is a sub-step or not.
+    :param partition: Cache partition to which operation pertains.
+    :param operation: Cache operation to apply.
 
     :returns: Decorated function.
     

@@ -3,7 +3,6 @@ import argparse
 from stests.core import cache
 from stests.core.types.infra import NodeType
 from stests.core.utils import args_validator
-from stests.core.utils import defaults
 from stests.core import factory
 from stests.core.utils import logger
 
@@ -21,7 +20,7 @@ ARGS.add_argument(
 # Set CLI argument: node host.
 ARGS.add_argument(
     "address",
-    default=defaults.NODE_HOST,
+    default="localhost",
     help="Node public network address: {host}:{port}.",
     type=args_validator.validate_node_address
     )

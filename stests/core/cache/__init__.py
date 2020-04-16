@@ -1,6 +1,4 @@
-from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.orchestration import ExecutionContext
-
 import stests.core.cache.ops_infra as infra
 import stests.core.cache.ops_monitoring as monitoring
 import stests.core.cache.ops_orchestration as orchestration

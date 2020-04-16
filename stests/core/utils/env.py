@@ -11,8 +11,6 @@
 import os
 import typing
 
-from stests.core.utils import defaults
-
 
 
 # Package env var prefix.
@@ -51,7 +49,7 @@ def get_var_name(name: str) -> str:
     return f'{_PREFIX}{name.upper()}'
 
 
-def get_network_id(default=defaults.NETWORK_ID) -> str:
+def get_network_id(default="LOC-01") -> str:
     """Returns identifier of network being tested.
 
     :param default: Network identifier default value.
