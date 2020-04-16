@@ -1,5 +1,4 @@
 import datetime as dt
-import enum
 import os
 import sys
 import typing
@@ -16,17 +15,6 @@ LOG_LEVEL_FATAL = 'FATAL'
 
 # Text to display when passed a null message.
 _NULL_MSG = '-------------------------------------------------------------------------------'
-
-
-class SubSystem(enum.Enum):
-    """Enumeration over set of set of sub-systems to report for logging purposes.
-    
-    """
-    BROKER = enum.auto()
-    CLX = enum.auto()
-    CACHE = enum.auto()
-    GENERATOR = enum.auto()
-    MONITORING = enum.auto()
 
 
 def log(msg: str = None, level: str = LOG_LEVEL_INFO):
