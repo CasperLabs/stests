@@ -30,7 +30,7 @@ IDENTIFIER_SET = {
 # Set of supported identifiers.
 LOCK_SET = {
     BlockLock,
-    NodeMonitorLock,
+    NodeMonitoringLock,
 }
 
 # Full domain type set.

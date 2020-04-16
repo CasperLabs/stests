@@ -7,7 +7,7 @@ from stests.core import clx
 from stests.core.domain import ContractType
 from stests.core.domain import DeployType
 from stests.core.domain import NodeIdentifier
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.core import factory
 from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils import verification

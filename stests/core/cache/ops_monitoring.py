@@ -17,7 +17,7 @@ COL_NODE_LOCK = "node-lock"
 
 
 @cache_op(_PARTITION, StoreOperation.DELETE)
-def delete_node_monitor_lock(lock: NodeMonitorLock) -> typing.Generator:
+def delete_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Generator:
     """Deletes astream lock.
 
     :param ctx: Execution context information.
@@ -102,8 +102,8 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
 
 @cache_op(_PARTITION, StoreOperation.LOCK)
-def set_node_monitor_lock(lock: NodeMonitorLock) -> typing.Tuple[typing.List[str], NodeMonitorLock]:
-    """Encaches a lock: NodeMonitorLock.
+def set_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Tuple[typing.List[str], NodeMonitoringLock]:
+    """Encaches a lock: NodeMonitoringLock.
 
     :param lock: Information to be locked.
 

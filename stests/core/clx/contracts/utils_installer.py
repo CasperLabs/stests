@@ -14,7 +14,7 @@ from stests.core.domain import NamedKey
 from stests.core.domain import Network
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.core import factory
 from stests.core.utils import logger
 

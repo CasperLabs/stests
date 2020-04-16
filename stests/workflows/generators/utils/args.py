@@ -1,7 +1,7 @@
 import argparse
 
 from stests.core.utils import args_validator
-from stests.core.orchestration import ExecutionMode
+from stests.core.types.orchestration import ExecutionMode
 
 
 

@@ -4,7 +4,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core.domain import AccountType
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils.accounts import do_create_account
 

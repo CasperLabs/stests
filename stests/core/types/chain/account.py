@@ -4,7 +4,6 @@ import typing
 from stests.core.types.chain.enums import AccountStatus
 from stests.core.types.chain.enums import AccountType
 from stests.core.types.chain.key_pair import PrivateKey
-from stests.core.types.infra.network import NetworkIdentifier
 
 
 
@@ -67,7 +66,7 @@ class AccountIdentifier:
     _type_key: typing.Optional[str] = None
 
     @property
-    def network_id(self) -> NetworkIdentifier:
+    def network_id(self):
         return this.run.network
 
     @property

@@ -4,7 +4,7 @@ from dramatiq.middleware import Shutdown
 
 from stests.core import cache
 from stests.core.domain import NodeIdentifier
-from stests.core.domain import NodeMonitorLock
+from stests.core.domain import NodeMonitoringLock
 from stests.core import factory
 from stests.core.utils import logger
 from stests.monitoring.events import listener
@@ -42,7 +42,7 @@ def do_monitor_node(node_id: NodeIdentifier):
     # Attempt to obtain a lock.
     locked = False
     for i in range(_MONITORS_PER_NODE):
-        lock = NodeMonitorLock(
+        lock = NodeMonitoringLock(
             network=node_id.network.name,
             index=node_id.index,
             lock_index=i + 1

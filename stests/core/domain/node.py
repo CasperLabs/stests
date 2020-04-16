@@ -78,7 +78,7 @@ class NodeIdentifier:
 
 
 @dataclasses.dataclass
-class NodeMonitorLock:
+class NodeMonitoringLock:
     """Node monitoring lock.
     
     """

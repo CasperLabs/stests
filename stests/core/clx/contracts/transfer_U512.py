@@ -8,7 +8,7 @@ from stests.core.clx.query import get_account_balance
 from stests.core.domain import Account
 from stests.core.domain import Node
 from stests.core.domain import ContractType
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
 
 

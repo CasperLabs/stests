@@ -17,7 +17,7 @@ from stests.core.domain import Transfer
 from stests.core.domain import TransferStatus
 from stests.core.factory.infra import create_network_id
 from stests.core.factory.orchestration import create_execution_id
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import crypto
 
 

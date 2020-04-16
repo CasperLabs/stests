@@ -1,8 +1,8 @@
 import dataclasses
 import typing
 
-from stests.core.orchestration.enums import ExecutionStatus
-from stests.core.orchestration.enums import ExecutionMode
+from stests.core.types.orchestration.enums import ExecutionStatus
+from stests.core.types.orchestration.enums import ExecutionMode
 
 
 

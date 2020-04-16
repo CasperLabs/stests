@@ -200,23 +200,6 @@ def register_type(cls):
         DCLASS_SET = DCLASS_SET | { cls, }
 
 
-def _initialise():
-    """Register set of core types that require encoding/decoding.
-    
-    """
-    from stests.core import domain
-    for i in domain.TYPE_SET:
-        register_type(i)
-
-    from stests.core import orchestration
-    for i in orchestration.TYPE_SET:
-        register_type(i)
-
-    from stests.core import types
-    for i in types.TYPE_SET:
-        register_type(i)
-
-
 def initialise():
     """Register set of non-core types that require encoding/decoding.
     
@@ -241,8 +224,7 @@ from stests.core import domain
 for i in domain.TYPE_SET:
     register_type(i)
 
-# Auto-register orchestration types.
-from stests.core import orchestration
-for i in orchestration.TYPE_SET:
+# Auto-register core types.
+from stests.core import types
+for i in types.TYPE_SET:
     register_type(i)
-

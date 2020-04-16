@@ -3,12 +3,12 @@ from datetime import datetime
 
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import NodeIdentifier
-from stests.core.orchestration import ExecutionAspect
-from stests.core.orchestration import ExecutionContext
-from stests.core.orchestration import ExecutionIdentifier
-from stests.core.orchestration import ExecutionInfo
-from stests.core.orchestration import ExecutionMode
-from stests.core.orchestration import ExecutionStatus
+from stests.core.types.orchestration import ExecutionAspect
+from stests.core.types.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionIdentifier
+from stests.core.types.orchestration import ExecutionInfo
+from stests.core.types.orchestration import ExecutionMode
+from stests.core.types.orchestration import ExecutionStatus
 
 
 

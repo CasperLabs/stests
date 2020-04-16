@@ -9,7 +9,7 @@ from stests.core import clx
 from stests.core.utils import args_validator
 from stests.core import factory
 from stests.core.utils import logger
-from stests.core.orchestration import ExecutionAspect
+from stests.core.types.orchestration import ExecutionAspect
 
 
 

@@ -1,18 +1,17 @@
-from stests.core.types.orchestration.enums import *
-from stests.core.types.orchestration.identifier import *
-from stests.core.types.orchestration.context import *
-from stests.core.types.orchestration.info import *
-from stests.core.types.orchestration.lock import *
+from stests.core.types.orchestration.enums import ExecutionAspect
+from stests.core.types.orchestration.enums import ExecutionMode
+from stests.core.types.orchestration.enums import ExecutionStatus
+from stests.core.types.orchestration.enums import ENUM_SET
+from stests.core.types.orchestration.identifier import ExecutionIdentifier
+from stests.core.types.orchestration.context import ExecutionContext
+from stests.core.types.orchestration.info import ExecutionInfo
+from stests.core.types.orchestration.lock import ExecutionLock
 
 
 
-# Set of supported classes.
-DCLASS_SET = {
+TYPE_SET = {
     ExecutionContext,
     ExecutionIdentifier,
     ExecutionInfo,
     ExecutionLock,
-}
-
-# Full type set.
-TYPE_SET = DCLASS_SET | ENUM_SET
+} | ENUM_SET

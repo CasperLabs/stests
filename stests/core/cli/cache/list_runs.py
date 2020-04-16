@@ -4,8 +4,8 @@ from beautifultable import BeautifulTable
 
 from stests.core.cli.utils import get_table
 from stests.core import cache
-from stests.core.orchestration import ExecutionAspect
-from stests.core.orchestration import ExecutionStatus
+from stests.core.types.orchestration import ExecutionAspect
+from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils import args_validator
 from stests.core import factory
 from stests.core.utils import logger

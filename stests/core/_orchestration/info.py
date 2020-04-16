@@ -2,8 +2,8 @@ import dataclasses
 import typing
 from datetime import datetime
 
-from stests.core.orchestration.enums import ExecutionAspect
-from stests.core.orchestration.enums import ExecutionStatus
+from stests.core.types.orchestration.enums import ExecutionAspect
+from stests.core.types.orchestration.enums import ExecutionStatus
 
 
 

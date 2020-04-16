@@ -1,7 +1,7 @@
 import dataclasses
 import typing
 
-from stests.core.orchestration.enums import ExecutionAspect
+from stests.core.types.orchestration.enums import ExecutionAspect
 
 
 

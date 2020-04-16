@@ -7,7 +7,7 @@ from stests.core.domain import Network
 from stests.core.domain import NetworkIdentifier
 from stests.core.domain import Node
 from stests.core.domain import NodeIdentifier
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
 
 

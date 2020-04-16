@@ -1,4 +1,4 @@
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.generators.wg_200 import args
 from stests.workflows.generators.wg_200 import constants
 from stests.workflows.generators.wg_200 import phase_1

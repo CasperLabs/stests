@@ -1,5 +1,5 @@
 from stests.core.domain import NetworkIdentifier
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 
 import stests.core.cache.ops_infra as infra
 import stests.core.cache.ops_monitoring as monitoring

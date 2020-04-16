@@ -1,6 +1,6 @@
 import typing
 
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.core.domain import NodeIdentifier
 from stests.core.utils import logger
 from stests.workflows.generators.meta import GENERATOR_MAP as WORKFLOWS

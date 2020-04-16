@@ -7,7 +7,7 @@ from stests.core.cache.ops_infra import get_network
 from stests.core.cache.ops_infra import get_nodes
 from stests.core.cache.utils import cache_op
 from stests.core.domain import *
-from stests.core.orchestration import *
+from stests.core.types.orchestration import *
 from stests.core import factory
 
 

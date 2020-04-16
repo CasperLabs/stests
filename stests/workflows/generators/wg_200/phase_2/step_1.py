@@ -5,7 +5,7 @@ import dramatiq
 from stests.core.domain import AccountType
 from stests.core.domain import ContractType
 from stests.core.domain import NodeIdentifier
-from stests.core.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.workflows.generators.utils import verification
 from stests.workflows.generators.utils.contracts import do_install_contract

@@ -2,10 +2,10 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import factory
-from stests.core.orchestration import ExecutionAspect
-from stests.core.orchestration import ExecutionContext
-from stests.core.orchestration import ExecutionMode
-from stests.core.orchestration import ExecutionStatus
+from stests.core.types.orchestration import ExecutionAspect
+from stests.core.types.orchestration import ExecutionContext
+from stests.core.types.orchestration import ExecutionMode
+from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils import encoder
 from stests.core.utils import logger
 from stests.workflows.orchestration import predicates
