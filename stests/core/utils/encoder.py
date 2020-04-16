@@ -212,6 +212,10 @@ def _initialise():
     for i in orchestration.TYPE_SET:
         register_type(i)
 
+    from stests.core import types
+    for i in types.TYPE_SET:
+        register_type(i)
+
 
 def initialise():
     """Register set of non-core types that require encoding/decoding.
