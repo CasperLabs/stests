@@ -13,6 +13,8 @@ from stests.workflows.orchestration.model import Workflow
 def is_valid_wflow(ctx: ExecutionContext) -> typing.Tuple[typing.Optional[Workflow], bool]:
     """Predicate determining whether the workflow to be executed is valid or not.
     
+    :param ctx: Execution context information.
+
     """
     # False if workflow unregistered.
     try:
@@ -46,7 +48,7 @@ def was_lock_acquired(aspect: ExecutionAspect, ctx: ExecutionContext) -> bool:
 
     """
     # Lock factory.
-    def _create_lock(phase_index: int = None, step_index: int = None):
+    def _create_lock(phase_index=None, step_index=None):
         return ExecutionLock(
             aspect=aspect,
             network=ctx.network,
