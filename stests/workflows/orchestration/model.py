@@ -82,35 +82,34 @@ class WorkflowStep():
         self.module.verify(self.ctx)
 
 
-    def verify_deploy(self, node_id: NodeIdentifier, bhash: str, dhash: str):
+    def verify_deploy(self, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
         """Performs step deploy verification.
         
         """
-        self.module.verify_deploy(self.ctx, node_id, bhash, dhash)
+        self.module.verify_deploy(self.ctx, node_id, block_hash, deploy_hash)
 
 
 class WorkflowPhase():
     """A phase within a broader workflow.
     
     """
-    def __init__(self, ctx: ExecutionContext, index: int, module):
+    def __init__(self, ctx: ExecutionContext, index: int, container):
         """Constructor.
         
         """
-        # Workflow execution context information.
-        self.ctx: ExecutionContext = ctx
-
         # Index within the set of phases.
         self.index: int = index
 
         # Flag indicating whether this is the last phase within the workflow.
         self.is_last: bool = False
 
-        # Python module in which the phase is declared.
-        self.module = module
+        # Set steps.
+        if isinstance(container, tuple):
+            self.steps = [WorkflowStep(ctx, i, s) for i, s in enumerate(container)]
+        else:
+            self.steps = [WorkflowStep(ctx, i, s) for i, s in enumerate(container.STEPS)]
 
-        # Associated steps.
-        self.steps = [WorkflowStep(ctx, i, s) for i, s in enumerate(module.STEPS)]
+        # Set last step flag.
         if self.steps:
             self.steps[-1].is_last = True
 
@@ -126,29 +125,19 @@ class Workflow():
     """A workflow executed in order to test a scenario.
     
     """
-    def __init__(self, ctx: ExecutionContext, module):
+    def __init__(self, ctx: ExecutionContext, meta):
         """Constructor.
-        
+
+        :param ctx: Execution context information.
+        :param meta: Workflow metadata module.
+
         """
-        # Workflow execution context information.
-        self.ctx: ExecutionContext = ctx
+        # Set phases.
+        self.phases = [WorkflowPhase(ctx, i, p) for i, p in enumerate(meta.PHASES)]
 
-        # Python module in which the workflow is declared.
-        self.module = module
-
-        # Associated phases.
-        self.phases = [WorkflowPhase(ctx, i, p) for i, p in enumerate(module.PHASES)]
+        # Set last phase flag.
         if self.phases:
             self.phases[-1].is_last = True
-
-
-    @property
-    def description(self):
-        return self.module.DESCRIPTION
-
-    @property
-    def typeof(self):
-        return self.module.TYPE
 
     
     def get_phase(self, phase_index: int) -> WorkflowPhase:

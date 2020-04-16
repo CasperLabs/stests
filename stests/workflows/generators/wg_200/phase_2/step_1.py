@@ -8,7 +8,7 @@ from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import logger
 from stests.workflows.generators.utils import verification
-from stests.workflows.generators.utils.contracts import do_set_contract
+from stests.workflows.generators.utils.contracts import do_install_contract
 from stests.workflows.generators.wg_200 import constants
 
 
@@ -25,7 +25,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     :returns: 3 member tuple -> actor, message count, message arg factory.
 
     """
-    return do_set_contract, ctx.args.user_accounts, lambda: _yield_parameterizations(ctx)
+    return do_install_contract, ctx.args.user_accounts, lambda: _yield_parameterizations(ctx)
 
 
 def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:

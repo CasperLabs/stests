@@ -1,21 +1,33 @@
-from stests.workflows.generators.wg_210.args import Arguments
-from stests.workflows.generators.wg_210.args import ARGS
-from stests.workflows.generators.wg_210.constants import DESCRIPTION
-from stests.workflows.generators.wg_210.constants import TYPE
-from stests.workflows.generators.wg_210 import phase_1
-from stests.workflows.generators.wg_210 import phase_2
-from stests.workflows.generators.wg_210 import phase_3
+# Reuse wg_100 phase 1 & 3.
+from stests.workflows.generators.wg_100 import meta as wg_100
+
+# Reuse wg_200 args + types.
+from stests.workflows.generators.wg_200 import meta as wg_200
+
+from stests.workflows.generators.wg_210 import contract_install
 
 
 
-# Type set to be registered with encoder.
-TYPE_SET = {
-    Arguments,
-}
+# Workload custom args.
+Arguments = wg_200.Arguments
+
+# Workload command line args.
+ARGS = wg_200.ARGS
+
+# Workload description.
+DESCRIPTION = "Counter (stored contract)"
 
 # Set of workflow phases.
 PHASES = (
-    phase_1,
-    phase_2,
-    phase_3,
+    wg_100.phase_1,
+    (
+        contract_install,
+    ),
+    wg_100.phase_2,
 )
+
+# Workload type.
+TYPE = "WG-210"
+
+# Workload typeset - registered with encoder.
+TYPE_SET = wg_200.TYPE_SET

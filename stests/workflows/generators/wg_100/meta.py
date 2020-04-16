@@ -1,6 +1,5 @@
 from stests.core.orchestration import ExecutionContext
 from stests.workflows.generators.wg_100 import args
-from stests.workflows.generators.wg_100 import constants
 from stests.workflows.generators.wg_100 import phase_1
 from stests.workflows.generators.wg_100 import phase_2
 
@@ -12,7 +11,7 @@ Arguments = args.Arguments
 ARGS = args.ARGS
 
 # Workload description.
-DESCRIPTION = constants.DESCRIPTION
+DESCRIPTION = "Token Transfers (off-chain contract)"
 
 # Set of workflow phases.
 PHASES = (
@@ -21,7 +20,7 @@ PHASES = (
 )
 
 # Workload type.
-TYPE = constants.TYPE
+TYPE = "WG-100"
 
 # Workload typeset - registered with encoder.
 TYPE_SET = {

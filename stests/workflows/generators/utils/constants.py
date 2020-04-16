@@ -1,27 +1,17 @@
 # --------------------------------------------------------------------
-# METADATA
-# --------------------------------------------------------------------
-
-# Workload description.
-DESCRIPTION = "Token Transfers (client contract)"
-
-# Workload type.
-TYPE = "WG-100"
-
-# --------------------------------------------------------------------
 # DEFAULTS
 # --------------------------------------------------------------------
 
-# Default contract's initial CLX balance = 1m.
+# Default contract's initial CLX balance.
 CONTRACT_INITIAL_CLX_BALANCE = int(1e8)
 
-# Default faucet's initial CLX balance = 10m.
+# Default faucet's initial CLX balance.
 FAUCET_INITIAL_CLX_BALANCE = int(1e11)
 
 # Default number of user accounts to generate.
 USER_ACCOUNTS = 5
 
-# Default user's CLX balance = 1m.
+# Default user's CLX balance.
 USER_INITIAL_CLX_BALANCE = int(1e8)
 
 # --------------------------------------------------------------------

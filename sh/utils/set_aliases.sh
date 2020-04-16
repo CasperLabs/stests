@@ -37,12 +37,6 @@ alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
 alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 
 # ###############################################################
-# ALIASES: deploys
-# ###############################################################
-
-alias stests-verify-transfer='_exec_cmd $STESTS_PATH_CLI/deploys/verify_transfer.py'
-
-# ###############################################################
 # ALIASES: cache - flush
 # ###############################################################
 
@@ -106,14 +100,14 @@ function _exec_generator()
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
 
-# WG-100: Token transfer - by wasm.
+# WG-100: Token transfer - client contract.
 alias stests-wg-100='_exec_generator 100'
 
-# WG-110: Token transfer - by hash.
+# WG-110: Token transfer - stored contract.
 alias stests-wg-110='_exec_generator 110'
 
-# WG-200: Counter - by wasm.
+# WG-200: Counter - client contract.
 alias stests-wg-200='_exec_generator 200'
 
-# WG-210: Counter - by hash.
-# alias stests-wg-210='_exec_generator 210'
+# WG-210: Counter - stored contract.
+alias stests-wg-210='_exec_generator 210'

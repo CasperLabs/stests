@@ -4,9 +4,9 @@ import dramatiq
 
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
+from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils import verification
 from stests.workflows.generators.utils.accounts import do_refund
-from stests.workflows.generators.wg_100 import constants
 
 
 

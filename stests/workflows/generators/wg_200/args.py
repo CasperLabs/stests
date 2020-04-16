@@ -9,9 +9,12 @@ from stests.workflows.generators.wg_200 import constants
 
 @dataclasses.dataclass
 class Arguments:
-    """WG-200 generator execution arguments.
+    """Custom generator arguments passed along chain of execution.
     
     """
+    # Initial contract account CLX balance.
+    contract_initial_clx_balance: int
+
     # Initial faucet account CLX balance.
     faucet_initial_clx_balance: int
 
@@ -23,6 +26,9 @@ class Arguments:
 
     # Initial user account CLX balance.
     user_initial_clx_balance: int
+    
+    # Flag indicating whether to use client side contract.
+    use_client_contract: typing.Optional[bool] = False
 
     # Type key of associated object used in serialisation scenarios.
     _type_key: typing.Optional[str] = None
@@ -35,6 +41,7 @@ class Arguments:
 
         """
         return cls(
+            contract_initial_clx_balance='contract_initial_clx_balance' in args and args.contract_initial_clx_balance,
             faucet_initial_clx_balance='faucet_initial_clx_balance' in args and args.faucet_initial_clx_balance,
             increments='increments' in args and args.increments,
             user_accounts='user_accounts' in args and args.user_accounts,
@@ -45,13 +52,22 @@ class Arguments:
 # Set command line arguments.
 ARGS = get_argparser(f"Executes {constants.DESCRIPTION} generator.")
 
-# CLI argument: initial CLX balance.
+# CLI argument: initial CLX balance -> faucet.
 ARGS.add_argument(
     "--faucet-initial-clx-balance",
     help=f"Initial CLX balance of faucet account. Default={constants.FAUCET_INITIAL_CLX_BALANCE}",
     dest="faucet_initial_clx_balance",
     type=int,
     default=constants.FAUCET_INITIAL_CLX_BALANCE
+    )
+
+# CLI argument: initial CLX balance -> contract.
+ARGS.add_argument(
+    "--contract-initial-clx-balance",
+    help=f"Initial CLX balance of contract account. Default={constants.CONTRACT_INITIAL_CLX_BALANCE}",
+    dest="contract_initial_clx_balance",
+    type=int,
+    default=constants.CONTRACT_INITIAL_CLX_BALANCE
     )
 
 # CLI argument: increments.
@@ -72,7 +88,7 @@ ARGS.add_argument(
     default=constants.USER_ACCOUNTS
     )
 
-# CLI argument: initial CLX balance.
+# CLI argument: initial CLX balance -> user.
 ARGS.add_argument(
     "--user-initial-clx-balance",
     help=f"Initial CLX balance of user accounts. Default={constants.USER_INITIAL_CLX_BALANCE}",

@@ -51,7 +51,7 @@ def execute(
     # Set client.
     node, client  = utils.get_client(ctx)
 
-    # Get named key associated with contract.
+    # Set named key associated with contract.
     named_key = cache.infra.get_named_key(ctx.network, TYPE, "transfer_to_account")
     if named_key is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")

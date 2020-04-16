@@ -14,7 +14,7 @@ _QUEUE = "workflows.generators.contracts"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_set_contract(
+def do_install_contract(
     ctx: ExecutionContext,
     account_index: int,
     contract_type: ContractType

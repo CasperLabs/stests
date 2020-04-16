@@ -1,13 +1,17 @@
 import typing
 
 import dramatiq
+from casperlabs_client.abi import ABI
 
 from stests.core import cache
 from stests.core import clx
+from stests.core.domain import AccountType
+from stests.core.domain import ContractType
 from stests.core.domain import DeployType
 from stests.core.domain import NodeIdentifier
 from stests.core.orchestration import ExecutionContext
 from stests.core.utils import factory
+from stests.core.utils import logger
 from stests.workflows.generators.utils import verification
 from stests.workflows.generators.wg_200 import constants
 
@@ -15,7 +19,6 @@ from stests.workflows.generators.wg_200 import constants
 
 # Step label.
 LABEL = "invoke-increment"
-
 
 
 def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
@@ -26,7 +29,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     :returns: 3 member tuple -> actor, message count, message arg factory.
 
     """
-    return _do_increment_counter_0, ctx.args.user_accounts * ctx.args.increments, lambda: _yield_parameterizations(ctx)
+    return _do_increment_counter_1, ctx.args.user_accounts * ctx.args.increments, lambda: _yield_parameterizations(ctx)
 
 
 def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
@@ -56,14 +59,17 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     :param deploy_hash: A finalized deploy hash.
 
     """
-    deploy = verification.verify_deploy(ctx, block_hash, deploy_hash)
-    account = cache.state.get_account_by_index(ctx, deploy.account_index)
-    count = clx.contracts.counter_define.get_count(node_id, account, block_hash)
+    verification.verify_deploy(ctx, block_hash, deploy_hash)
+    
+    # Pull account under which contract was installed.
+    network = cache.infra.get_network(node_id.network)
+
+    count = clx.contracts.counter_define_stored.get_count(node_id, network.faucet, block_hash)
     assert count == ctx.args.increments, "counter verification failed"
 
 
 @dramatiq.actor(queue_name="workflows.generators.WG-200")
-def _do_increment_counter_0(ctx: ExecutionContext, account_index: int):
+def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     """Dispatches counter increment deploy.
     
     """
@@ -71,7 +77,7 @@ def _do_increment_counter_0(ctx: ExecutionContext, account_index: int):
     account = cache.state.get_account_by_index(ctx, account_index)
 
     # Increment on-chain.
-    (node, deploy_hash) = clx.contracts.counter_define.increment(ctx, account)
+    (node, deploy_hash) = clx.contracts.counter_define_stored.increment(ctx, account)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(

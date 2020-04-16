@@ -29,6 +29,9 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
     """
     logger.log(f"MONIT :: {node_id.label} -> deploy finalized :: {deploy_hash} :: block={block_hash}")
 
+    # TODO: switch ordering of persisting deploy info and querying chain as this 
+    #       obviates need for unnecessary chain queries.
+
     # Query chain.
     block_info = clx.get_block_info(node_id, block_hash, parse=False)
     deploy_info = clx.get_deploy_info(node_id, deploy_hash, wait_for_processed=False, parse=True)
@@ -37,14 +40,15 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
     block_timestamp = datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0)
     deploy_cost = deploy_info['processingResults'][0]['cost']
 
-    # Process a monitored deploy.
+    # Process a monitored deploy - escape if race condition is lost.
     monitored = _set_monitored_deploy(node_id, block_hash, deploy_hash, deploy_cost)
+    if not monitored:
+        return
 
     # Process a dispatched run deploy.
-    if monitored:
-        deploy = cache.state.get_deploy(deploy_hash)
-        if deploy:
-            _set_dispatched_deploy(node_id, block_hash, block_timestamp, deploy, deploy_cost)
+    deploy = cache.state.get_deploy(deploy_hash)
+    if deploy:
+        _set_dispatched_deploy(node_id, block_hash, block_timestamp, deploy, deploy_cost)
 
 
 def _set_monitored_deploy(

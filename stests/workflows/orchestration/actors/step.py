@@ -182,13 +182,13 @@ def on_step_error(ctx: ExecutionContext, err: str):
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, bhash: str, dhash: str):   
+def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):   
     """Processes a finalized deploy within the context of a step.
     
     :param ctx: Execution context information.
     :param node_id: Identifier of node that emitted block finalization event.
-    :param bhash: Hash of a finalized block.
-    :param dhash: Hash of a finalized deploy.
+    :param block_hash: Hash of a finalized block.
+    :param deploy_hash: Hash of a finalized deploy.
 
     """
     # Increment deploy counts.
@@ -205,9 +205,9 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, bha
         return       
     else:
         try:
-            step.verify_deploy(node_id, bhash, dhash)
+            step.verify_deploy(node_id, block_hash, deploy_hash)
         except AssertionError as err:
-            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed: {err} :: {dhash}")
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed: {err} :: {deploy_hash}")
             return
 
     # Verify step.

@@ -11,7 +11,7 @@ Arguments = wg_100.Arguments
 ARGS = wg_100.ARGS
 
 # Workload description.
-DESCRIPTION = "Token Transfers (stored contract)"
+DESCRIPTION = "Token Transfers (on-chain contract)"
 
 # Set of workflow phases.
 PHASES = wg_100.PHASES

@@ -2,14 +2,14 @@ import argparse
 import dataclasses
 import typing
 
+from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils.args import get_argparser
-from stests.workflows.generators.wg_100 import constants
 
 
 
 @dataclasses.dataclass
 class Arguments:
-    """WG-100 generator execution arguments.
+    """Custom generator arguments passed along chain of execution.
     
     """
     # Initial contract account CLX balance.
@@ -43,7 +43,7 @@ class Arguments:
 
 
 # Set command line arguments.
-ARGS = get_argparser(f"Executes {constants.DESCRIPTION} generator.")
+ARGS = get_argparser(f"Executes token-transfer generator.")
 
 # CLI argument: initial CLX balance.
 ARGS.add_argument(

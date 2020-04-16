@@ -1,5 +1,8 @@
 import typing
 
+from casperlabs_client.abi import ABI
+
+from stests.core import cache
 from stests.core.clx import defaults
 from stests.core.clx import utils
 from stests.core.domain import Account
@@ -23,10 +26,17 @@ NAME = "counter"
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
 IS_SINGLETON = True
 
-# Named keys associated with contract.
+
+# Named key: contract.
+NAMED_KEY_COUNTER = "counter"
+
+# Named key: slot.
+NAMED_KEY_COUNTER_INC = "counter_inc"
+
+# Full set of named keys.
 NAMED_KEYS = [
-    "counter",
-    "counter_inc",
+    NAMED_KEY_COUNTER,
+    NAMED_KEY_COUNTER_INC,
 ]
 
 
@@ -37,15 +47,18 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
     # Set client.
     node, client  = utils.get_client(ctx)
 
-    # Set contract.
-    contract = cache.infra.get_contract(ctx, TYPE)    
-    if contract is None:
+    # Set named keys of stored contract + slot.
+    nk_contract = cache.infra.get_named_key(ctx.network, TYPE, NAMED_KEY_COUNTER)
+    nk_slot = cache.infra.get_named_key(ctx.network, TYPE, NAMED_KEY_COUNTER_INC)
+    if nk_contract is None or nk_slot is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")
 
     # Dispatch deploy.
     deploy_hash = client.deploy(
-        session_hash=counter_inc_address,
-        session_args=[ABI.key_hash("counter_key", contract.hash)],
+        session_hash=nk_contract.hash_as_bytes,
+        session_args=[
+            ABI.key_hash("counter_key", nk_slot.hash_as_bytes),
+            ],
         from_addr=account.public_key,
         private_key=account.private_key_as_pem_filepath,
         # TODO: review how these are being assigned
@@ -56,3 +69,17 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
 
     return (node, deploy_hash)
+
+
+def get_count(node_id: NodeIdentifier, account: Account, block_hash: str) -> int:
+    """Queries a node for the current value of the counter under the passed account.
+    
+    """
+    # Set client.
+    node, client  = utils.get_client(node_id)
+
+    # Query chain global state.
+    state = client.queryState(block_hash, account.public_key, "counter/count", "address")
+
+    # Return scalar.
+    return state.cl_value.value.i32
