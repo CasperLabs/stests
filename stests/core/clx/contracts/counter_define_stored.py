@@ -40,7 +40,7 @@ NAMED_KEYS = [
 ]
 
 
-def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str]:
+def increment(ctx: ExecutionContext, account_contract: Account, account_user: Account) -> typing.Tuple[Node, str]:
     """Increments counter previously installed under an account.
     
     """
@@ -53,20 +53,22 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
     if nk_contract is None or nk_slot is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")
 
+
+
     # Dispatch deploy.
     deploy_hash = client.deploy(
         session_hash=nk_contract.hash_as_bytes,
         session_args=[
             ABI.key_hash("counter_key", nk_slot.hash_as_bytes),
             ],
-        from_addr=account.public_key,
-        private_key=account.private_key_as_pem_filepath,
+        from_addr=account_user.public_key,
+        private_key=account_user.private_key_as_pem_filepath,
         # TODO: review how these are being assigned
         payment_amount=defaults.CLX_TX_FEE,
         gas_price=defaults.CLX_TX_GAS_PRICE
     )
 
-    logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
+    logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account_user.public_key}")
 
     return (node, deploy_hash)
 

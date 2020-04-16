@@ -70,6 +70,25 @@ def create_account_id(
     )
 
 
+def create_account_named_key(
+    account: Account,
+    contract_type: ContractType,
+    name: str,
+    network: str,
+    hash: str,
+    ) -> NamedKey:
+    """Returns a domain object instance: NamedKey.
+    
+    """
+    return NamedKey(
+        account_index=account.index,
+        contract_type=contract_type,
+        hash=hash,
+        name=name,
+        network=network,
+    )
+
+
 def create_block_on_finalisation(
     node_id: NodeIdentifier,
     block_hash: str,
@@ -99,48 +118,6 @@ def create_block_on_finalisation(
         timestamp=timestamp,
         validator_id=validator_id
         )
-
-
-def create_contract(
-    network_id: typing.Union[Network, NetworkIdentifier],
-    account: Account,
-    contract_hash: typing.Optional[str],
-    contract_name: typing.Optional[str],
-    contract_type: ContractType,
-    run_index: typing.Optional[int] = None,
-    run_type: typing.Optional[str] = None,
-    ) -> Contract:
-    """Returns a domain object instance: Contract.
-    
-    """
-    return Contract(
-        account_index=account.index,
-        hash=contract_hash,
-        name=contract_name,
-        network=network_id.name,
-        run_index=run_index,
-        run_type=run_type,
-        typeof=contract_type,
-    )
-
-
-def create_contract_key(
-    account: Account,
-    contract_type: ContractType,
-    name: str,
-    network: str,
-    hash: str,
-    ) -> NamedKey:
-    """Returns a domain object instance: NamedKey.
-    
-    """
-    return NamedKey(
-        account_index=account.index,
-        contract_type=contract_type,
-        hash=hash,
-        name=name,
-        network=network,
-    )
 
 
 def create_deploy_on_block_finalisation(

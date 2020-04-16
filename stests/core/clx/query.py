@@ -67,19 +67,24 @@ def get_account_balance_by_address(src: typing.Any, address: str, block_hash: st
         return balance
 
 
-def get_account_named_keys(src: typing.Any, account: Account, block_hash: str=None):
+def get_account_named_keys(src: typing.Any, account: Account, block_hash: str=None, filter_keys: typing.List[str]=[]):
     """Returns named keys associated with a chain account.
 
     :param src: The source from which a node client will be instantiated.
     :param account: Account whose on-chain representation will be queried.
     :param block_hash: Hash of block against which query will be made.
+    :param filter_keys: Keys of interest.
 
     :returns: Account named keys.
 
     """
     a = get_account(src, account, block_hash)
 
-    return a.named_keys
+    keys = a.named_keys
+    if filter_keys:
+        keys = [i for i in keys if i.name in filter_keys]
+
+    return keys
 
 
 def get_block_info(src: typing.Any, block_hash: str, parse=True) -> typing.Dict:

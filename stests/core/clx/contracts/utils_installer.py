@@ -123,9 +123,7 @@ def _set_contract_named_keys(account, contract, node, client, block_hash):
     """Stores contract related named keys.
     
     """
-    keys = query.get_account_named_keys(client, account, block_hash)
-    keys = [i for i in keys if i.name in contract.NAMED_KEYS]
-    for key in keys:
+    for key in query.get_account_named_keys(client, account, block_hash, contract.NAMED_KEYS):
         _set_contract_named_key(account, contract, node, client, block_hash, key)
 
 
@@ -133,7 +131,7 @@ def _set_contract_named_key(account, contract, node, client, block_hash, key):
     """Stores contract related named key.
     
     """
-    key = factory.create_contract_key(
+    key = factory.create_account_named_key(
         account,
         contract.TYPE,
         key.name,

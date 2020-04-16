@@ -229,26 +229,6 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
 
 
 @cache_op(_PARTITION, StoreOperation.SET)
-def set_contract(contract: Contract) -> typing.Tuple[typing.List[str], Contract]:
-    """Encaches domain object: Contract.
-    
-    :param contract: Contract domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    path = [
-        contract.network,
-        contract.run_type,
-        contract.label_run_index,
-        COL_ACCOUNT_CONTRACT,
-        f"{contract.label_account_index}.{contract.typeof.name}",
-    ]
-
-    return path, contract
-
-
-@cache_op(_PARTITION, StoreOperation.SET)
 def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
