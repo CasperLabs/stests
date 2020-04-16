@@ -9,8 +9,7 @@ export STESTS_PATH_SRC=$STESTS_HOME/stests
 export STESTS_PATH_CLI=$STESTS_HOME/stests/core/cli
 export STESTS_PATH_GENERATORS=$STESTS_HOME/stests/workflows/generators
 export STESTS_PATH_MONITORING=$STESTS_HOME/stests/monitoring
-export STESTS_PATH_RESOURCES=$STESTS_HOME/resources
-export STESTS_PATH_TEMPLATES=$STESTS_HOME/resources/templates
+export STESTS_PATH_TEMPLATES=$STESTS_HOME/templates
 
 # Set python path.
 export PYTHONPATH=$STESTS_HOME:$PYTHONPATH

@@ -214,7 +214,7 @@ function install_evars()
 
 	declare repo_dir="$(get_repo_dir)"
 	mkdir -p $HOME/.casperlabs-stests
-	cp $repo_dir/resources/templates/stests_vars.sh $HOME/.casperlabs-stests/vars
+	cp $repo_dir/resources/stests_vars.sh $HOME/.casperlabs-stests/vars
 }
 
 # Install vars.
@@ -224,7 +224,7 @@ function install_daemon_config()
 
 	declare repo_dir="$(get_repo_dir)"
 	mkdir -p $HOME/.casperlabs-stests/ops/config
-	cp $repo_dir/resources/templates/supervisord.conf $HOME/.casperlabs-stests/ops/config
+	cp $repo_dir/resources/supervisord.conf $HOME/.casperlabs-stests/ops/config
 }
 
 # Install shell activator.
