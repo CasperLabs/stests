@@ -1,6 +1,6 @@
 import typing
 
-import casperlabs_client
+from casperlabs_client import CasperLabsClient
 
 from stests.core import cache
 from stests.core.domain import Network
@@ -12,23 +12,26 @@ from stests.core.utils import logger
 
 
 
-def get_client(src: typing.Union[ExecutionContext, Network, NetworkIdentifier, Node, NodeIdentifier]) -> typing.Tuple[Node, casperlabs_client.CasperLabsClient]:
+def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, NetworkIdentifier, Node, NodeIdentifier]) -> typing.Tuple[Node, CasperLabsClient]:
     """Factory method to return a configured clabs client and the node with which it is associated.
 
     :param src: The source from which a network node will be derived.
 
-    :returns: A configured clabs client ready for use.
+    :returns: A 2 member tuple: Node, configured clabs client.
     
     """
+    # In some cases calling code already has a client instance, but as
+    # method overloading is unsupported in python, code is simplified with a pass through.  
+    if isinstance(src, CasperLabsClient):
+        return src.node, src
+
     # Set node. 
     if isinstance(src, Node):
         node = src
     elif isinstance(src, NodeIdentifier):
         node = cache.infra.get_node(src)
-    elif isinstance(src, Network):
-        node = cache.infra.get_node_by_network_id(src)
-    elif isinstance(src, NetworkIdentifier):
-        node = cache.infra.get_node_by_network_id(src)
+    elif isinstance(src, (Network, NetworkIdentifier)):
+        node = cache.infra.get_node_by_network(src)
     elif isinstance(src, ExecutionContext):
         node = cache.infra.get_node_by_ctx(src)
     else:
@@ -37,8 +40,11 @@ def get_client(src: typing.Union[ExecutionContext, Network, NetworkIdentifier, N
     if not node:
         raise ValueError("Network nodeset is empty, therefore cannot dispatch a deploy.")
 
-    # TODO: get node id / client ssl cert.
-    return node, casperlabs_client.CasperLabsClient(
+    # TODO: get node id / client ssl cert ?
+    client = CasperLabsClient(
         host=node.host,
         port=node.port,
     )
+    client.node = node
+
+    return node, client

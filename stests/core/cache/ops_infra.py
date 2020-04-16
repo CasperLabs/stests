@@ -131,18 +131,18 @@ def get_node(node_id: NodeIdentifier) -> Node:
     ]
 
 
-def get_node_by_network_id(network_id: NetworkIdentifier) -> Node:
+def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> Node:
     """Decaches domain object: Node.
     
-    :param network_id: A network identifier.
+    :param network: A network.
 
     :returns: A registered node selected at random from a network's nodeset.
 
     """
     # Pull operational nodeset.
-    nodeset = get_nodes_operational(network_id) 
+    nodeset = get_nodes_operational(network) 
     if not nodeset:
-        raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
+        raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
     # Select random node.
     return random.choice(nodeset)
@@ -192,7 +192,7 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.
         ]
 
 
-def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.List[Node]:
+def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
     """Decaches domain objects: Node (if operational).
 
     :param network: A pointer to either a network or network identifier.

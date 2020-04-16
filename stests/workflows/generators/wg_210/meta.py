@@ -5,6 +5,7 @@ from stests.workflows.generators.wg_100 import meta as wg_100
 from stests.workflows.generators.wg_200 import meta as wg_200
 
 from stests.workflows.generators.wg_210 import contract_install
+from stests.workflows.generators.wg_210 import contract_invoke
 
 
 
@@ -22,6 +23,7 @@ PHASES = (
     wg_100.phase_1,
     (
         contract_install,
+        contract_invoke,
     ),
     wg_100.phase_2,
 )

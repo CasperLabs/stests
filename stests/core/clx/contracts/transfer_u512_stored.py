@@ -5,7 +5,7 @@ from casperlabs_client.abi import ABI
 from stests.core import cache
 from stests.core.clx import defaults
 from stests.core.clx import utils
-from stests.core.clx.query import get_balance
+from stests.core.clx.query import get_account_balance
 from stests.core.domain import Account
 from stests.core.domain import Node
 from stests.core.domain import ContractType
@@ -96,7 +96,7 @@ def execute_refund(
     """
     # If amount is unspecified, set amount to entire balance.
     if amount is None:
-        balance = get_balance(ctx, cp1) 
+        balance = get_account_balance(ctx, cp1) 
         amount = balance - defaults.CLX_TX_FEE
     
     # Escape if cp1 has insufficient funds.

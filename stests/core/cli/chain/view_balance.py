@@ -33,7 +33,7 @@ def main(args):
     """
     network_id=factory.create_network_id(args.network)
 
-    balance = clx.get_balance_by_address(network_id, args.address)
+    balance = clx.get_account_balance_by_address(network_id, args.address)
 
     logger.log(f"""NETWORK: {network_id.name} -> account balance = {balance}""")
 
