@@ -25,9 +25,6 @@ class NamedKey:
     # Associated network.
     network: str
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @property
     def hash_as_bytes(self):
         return bytes.fromhex(self.hash)    

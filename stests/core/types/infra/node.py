@@ -34,9 +34,6 @@ class Node:
     # Type of node in terms of it's degree of consensus participation.
     typeof: NodeType
     
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @property
     def address(self):
         return f"{self.host}:{self.port}"
@@ -65,9 +62,6 @@ class NodeIdentifier:
     # Node index.
     index: int
  
-     # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @property
     def index_label(self):
         return f"N-{str(self.index).zfill(4)}"
@@ -90,9 +84,6 @@ class NodeMonitoringLock:
 
     # Numerical index to distinguish between multiple locks.
     lock_index: int
-
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
 
     @property
     def index_label(self):

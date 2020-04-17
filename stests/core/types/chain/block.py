@@ -47,9 +47,6 @@ class Block:
     # Validator identifier that proposed block.
     validator_id: str
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @property
     def hash(self):
         return self.block_hash
@@ -76,6 +73,3 @@ class BlockLock:
 
     # Associated network.
     network: str
-
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None

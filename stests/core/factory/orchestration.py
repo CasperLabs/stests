@@ -69,7 +69,6 @@ def create_execution_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> Exe
         tp_duration=None,
         ts_start=datetime.now(),
         ts_end=None,
-        _type_key=None,
     )
 
     if aspect == ExecutionAspect.PHASE:

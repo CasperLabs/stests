@@ -18,6 +18,3 @@ class ExecutionIdentifier:
 
     # Type of generator, e.g. WG-100 ...etc.
     type: str
-
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None

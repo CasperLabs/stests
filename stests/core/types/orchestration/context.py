@@ -59,9 +59,6 @@ class ExecutionContext:
     # Flag indicating whether to use client side contract when performing balance transfers.
     use_client_contract_for_transfers: typing.Optional[bool] = False
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @property
     def next_phase_index(self):
         return self.phase_index + 1

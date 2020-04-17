@@ -29,9 +29,6 @@ class Network:
     # Type of network, e.g. local, lrt, proof-of-concept ...etc.
     typeof: NetworkType
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
 
 @dataclasses.dataclass
 class NetworkIdentifier:
@@ -40,9 +37,6 @@ class NetworkIdentifier:
     """ 
     # Internal name of network, e.g. LRT-01
     name: str   
-
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
 
     @property
     def index(self) -> int:

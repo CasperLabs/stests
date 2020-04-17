@@ -28,9 +28,6 @@ class ExecutionLock:
     # Numerical index to distinguish between multiple steps within a phase.
     step_index: int
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str]
-
     @property
     def phase_index_label(self):
         if self.phase_index:

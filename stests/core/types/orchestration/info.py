@@ -48,9 +48,6 @@ class ExecutionInfo:
     # Timestamp: run end.
     ts_end: typing.Optional[datetime]
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str]
-
 
     @property
     def step_index_label(self):

@@ -118,6 +118,9 @@ def _decode_dclass(obj):
         else:
             obj[field.name] = decode(obj[field.name])
 
+    # Remove type key as it has served it's purpose.
+    del obj['_type_key']
+
     return dcls(**obj)
 
 

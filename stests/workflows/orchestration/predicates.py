@@ -56,7 +56,6 @@ def was_lock_acquired(aspect: ExecutionAspect, ctx: ExecutionContext) -> bool:
             run_type=ctx.run_type,
             phase_index=phase_index,
             step_index=step_index,
-            _type_key=None,
         )
 
     if aspect == ExecutionAspect.RUN:

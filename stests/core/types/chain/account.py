@@ -39,9 +39,6 @@ class Account:
     # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
     typeof: AccountType
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @property
     def private_key_as_pem_filepath(self):
         return PrivateKey(self.private_key).as_pem_filepath
@@ -61,9 +58,6 @@ class AccountIdentifier:
 
     # Associated run identifier.
     run: typing.Any
-
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
 
     @property
     def network_id(self):

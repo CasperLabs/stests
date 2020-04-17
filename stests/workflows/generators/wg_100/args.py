@@ -24,9 +24,6 @@ class Arguments:
     # Initial user account CLX balance.
     user_initial_clx_balance: int
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @classmethod
     def create(cls, args: argparse.Namespace):
         """Simple factory method.

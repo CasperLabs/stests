@@ -70,9 +70,6 @@ class Deploy:
     # Deploy's processing status.
     typeof: DeployType
 
-    # Type key of associated object used in serialisation scenarios.
-    _type_key: typing.Optional[str] = None
-
     @property
     def hash(self):
         return self.deploy_hash
