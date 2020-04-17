@@ -3,6 +3,7 @@ from stests.core.types.chain.account import AccountIdentifier
 from stests.core.types.chain.block import Block
 from stests.core.types.chain.block import BlockLock
 from stests.core.types.chain.deploy import Deploy
+from stests.core.types.chain.deploy import DeploySummary
 from stests.core.types.chain.enums import AccountStatus
 from stests.core.types.chain.enums import AccountType
 from stests.core.types.chain.enums import BlockStatus
@@ -23,6 +24,7 @@ TYPE_SET = {
     Block,
     BlockLock,
     Deploy,
+    DeploySummary,
     NamedKey,
     Transfer,    
 } | ENUM_SET

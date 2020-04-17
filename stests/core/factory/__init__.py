@@ -5,7 +5,7 @@ from stests.core.factory.chain import create_account_named_key
 from stests.core.factory.chain import create_account_named_keys
 from stests.core.factory.chain import create_block_on_finalisation
 from stests.core.factory.chain import create_deploy_for_run
-from stests.core.factory.chain import create_deploy_on_block_finalisation
+from stests.core.factory.chain import create_deploy_summary
 from stests.core.factory.chain import create_transfer
 
 from stests.core.factory.infra import create_network

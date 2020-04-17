@@ -25,12 +25,6 @@ class Transfer:
     # Associated deploy hash.
     deploy_hash: str
 
-    # Associated deploy hash.
-    deploy_hash_refund: typing.Optional[str]
-
-    # Flag indicating whether a refund is required.
-    is_refundable: bool
-
     # Associated network.
     network: str
 

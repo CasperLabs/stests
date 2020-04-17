@@ -5,6 +5,7 @@ from stests.core.cache.enums import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.types.chain import Block
 from stests.core.types.chain import Deploy
+from stests.core.types.chain import DeploySummary
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NodeMonitoringLock
 
@@ -87,21 +88,21 @@ def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_SINGLETON)
-def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
-    """Encaches domain object: Deploy.
+def set_deploy_summary(deploy_summary: DeploySummary) -> typing.Tuple[typing.List[str], DeploySummary]:
+    """Encaches domain object: DeploySummary.
     
-    :param block: Deploy domain object instance to be cached.
+    :param deploy: Deploy domain object instance to be cached.
 
     :returns: Keypath + domain object instance.
 
     """
     path = [
-        deploy.network,
+        deploy_summary.network,
         COL_DEPLOY,
-        f"{deploy.block_hash}.{deploy.deploy_hash}"
+        f"{deploy_summary.block_hash}.{deploy_summary.deploy_hash}"
     ]
     
-    return path, deploy
+    return path, deploy_summary
 
 
 @cache_op(_PARTITION, StoreOperation.LOCK)

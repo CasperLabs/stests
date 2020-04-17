@@ -27,53 +27,50 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
     :param deploy_hash: Hash of finalized deploy.
 
     """
-    logger.log(f"MONIT :: {node_id.label} -> deploy finalized :: {deploy_hash} :: block={block_hash}")
+    # Escape if event has been processed.
+    if _was_event_processed(node_id, block_hash, deploy_hash):
+        return
 
-    # TODO: switch ordering of persisting deploy info and querying chain as this 
-    #       obviates need for unnecessary chain queries.
+    logger.log(f"MONIT :: {node_id.label} -> deploy finalized :: {deploy_hash} :: block={block_hash}")
 
     # Query chain.
     block_info = clx.get_block_info(node_id, block_hash, parse=False)
-    deploy_info = clx.get_deploy_info(node_id, deploy_hash, wait_for_processed=False, parse=True)
-
-    # Set queried fields.
-    block_timestamp = datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0)
-    deploy_cost = deploy_info['processingResults'][0]['cost']
-
-    # Process a monitored deploy - escape if race condition is lost.
-    monitored = _set_monitored_deploy(node_id, block_hash, deploy_hash, deploy_cost)
-    if not monitored:
+    if block_info is None:
+        logger.log_error(f"MONIT :: {node_id.label} -> finalized block query failure :: {block_hash}")
         return
 
-    # Process a dispatched run deploy.
+    deploy_info = clx.get_deploy_info(node_id, deploy_hash, wait_for_processed=False, parse=True)
+    if deploy_info is None:
+        logger.log_error(f"MONIT :: {node_id.label} -> finalized deploy query failure :: {deploy_hash}")
+        return
+
+    # Process previously dispatched deploys.
     deploy = cache.state.get_deploy(deploy_hash)
     if deploy:
-        _set_dispatched_deploy(node_id, block_hash, block_timestamp, deploy, deploy_cost)
+        _process_dispatched_deploy(
+            node_id,
+            block_hash,
+            datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
+            deploy,
+            deploy_info['processingResults'][0]['cost']
+            )
 
 
-def _set_monitored_deploy(
-    node_id: NodeIdentifier,
-    block_hash: str,
-    deploy_hash: str,
-    deploy_cost: int
-    ):
-    """Process a monitored deploy.
+def _was_event_processed(node_id: NodeIdentifier, block_hash: str, deploy_hash: str) -> bool:
+    """Process a monitored deploy & returns a flag indicating whether it was successfully cached.
 
-    :returns: Flag indicating whether deploy had already been monitored.
-    
     """
-    deploy = factory.create_deploy_on_block_finalisation(
+    summary = factory.create_deploy_summary(
         node_id,
         block_hash,
         deploy_hash,
-        deploy_cost
         )
-    _, monitored = cache.monitoring.set_deploy(deploy)
+    _, encached = cache.monitoring.set_deploy_summary(summary)
 
-    return monitored
+    return not encached
 
 
-def _set_dispatched_deploy(
+def _process_dispatched_deploy(
     node_id: NodeIdentifier,
     block_hash: str,
     block_timestamp: datetime,

@@ -67,7 +67,7 @@ class Deploy:
     # Deploy's processing status.
     status: DeployStatus
 
-    # Deploy's processing status.
+    # Deploy's type so as to disambiguate.
     typeof: DeployType
 
     @property
@@ -99,3 +99,27 @@ class Deploy:
     @property
     def label_step_index(self):
         return f"S-{str(self.step_index).zfill(2)}"
+
+
+@dataclasses.dataclass
+class DeploySummary:
+    """Encapsulates summary information pertaining to an monitored deploy.
+    
+    """
+    # Associated block hash in event of finalization. 
+    block_hash: typing.Optional[str]
+
+    # Deploy's payload signature hash (blake). 
+    deploy_hash: str
+
+    # Associated network.
+    network: str
+
+    # Deploy's processing status.
+    status: DeployStatus
+
+    # Node from which deploy was streamed.
+    streaming_node: int
+
+    # Moment in time when deploy was streamed.
+    streaming_ts: datetime

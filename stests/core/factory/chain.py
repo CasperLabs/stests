@@ -9,6 +9,7 @@ from stests.core.types.chain import BlockStatus
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeployStatus
+from stests.core.types.chain import DeploySummary
 from stests.core.types.chain import DeployType
 from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Node
@@ -154,35 +155,21 @@ def create_block_on_finalisation(
         )
 
 
-def create_deploy_on_block_finalisation(
+def create_deploy_summary(
     node_id: NodeIdentifier,
     block_hash: str,
     deploy_hash: str,
-    deploy_cost: int
-    ) -> Deploy:
-    """Returns a domain object instance: Deploy.
+    ) -> DeploySummary:
+    """Returns a domain object instance: DeploySummary.
     
     """
-    return Deploy(
-        account_index=None,
+    return DeploySummary(
         block_hash=block_hash,
-        cost=deploy_cost,
         deploy_hash=deploy_hash,
-        dispatch_node=None,
-        dispatch_ts=None,
-        finalization_node=node_id.index,
-        finalization_time=None,
-        finalization_time_is_acceptable=None,
-        finalization_time_tolerance=None,
-        finalization_ts=datetime.now(),
         network=node_id.network.name,
-        phase_index=None,
-        run_index=None,
-        run_type=None,
         status=DeployStatus.FINALIZED,
-        step_index=None,
-        step_label=None,
-        typeof=DeployType.MONITORED,    
+        streaming_node=node_id.index,
+        streaming_ts=datetime.now(),
     )
 
 
@@ -226,7 +213,6 @@ def create_transfer(
     cp1: Account,
     cp2: Account,
     deploy_hash: str,
-    is_refundable: bool,
     status=TransferStatus.PENDING
     ) -> Transfer:
     """Returns a domain object instance: Transfer.
@@ -238,8 +224,6 @@ def create_transfer(
         cp1_index=cp1.index,
         cp2_index=cp2.index,
         deploy_hash=deploy_hash,
-        deploy_hash_refund=None,
-        is_refundable=is_refundable,
         network=ctx.network,
         node=ctx.node_index,
         phase_index=ctx.phase_index,

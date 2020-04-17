@@ -81,7 +81,6 @@ def do_fund_account(
         cp1=cp1,
         cp2=cp2,
         deploy_hash=deploy_hash,
-        is_refundable=True
         )
 
     # Update cache.
@@ -152,7 +151,6 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
         cp1=cp1,
         cp2=cp2,
         deploy_hash=deploy_hash,
-        is_refundable=True
         )
 
     # Update cache.
