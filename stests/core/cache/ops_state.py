@@ -44,7 +44,7 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
         path = [
             ctx.network,
             ctx.run_type,
-            ctx.run_index_label,
+            ctx.label_run_index,
             collection,
             "*"
         ]
@@ -103,7 +103,7 @@ def get_account_count(ctx: ExecutionContext) -> int:
     path = [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        ctx.label_run_index,
         COL_ACCOUNT,
         "A-*"
     ]
@@ -144,11 +144,11 @@ def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int = N
             "*",
         ]
     elif run_index:
-        run_index_label = f"R-{str(run_index).zfill(3)}"
+        label_run_index = f"R-{str(run_index).zfill(3)}"
         path = [
             network_id.name,
             run_type,
-            run_index_label,
+            label_run_index,
             COL_DEPLOY,
             "*",
         ]
@@ -177,7 +177,7 @@ def get_deploys_by_account(ctx: ExecutionContext, account_index: int) -> typing.
     path = [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        ctx.label_run_index,
         COL_DEPLOY,
         f"*.A-{str(account_index).zfill(6)}"
     ]

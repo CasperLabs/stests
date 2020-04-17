@@ -132,7 +132,7 @@ def get_node(node_id: NodeIdentifier) -> Node:
     return [
         node_id.network.name,
         COL_NODE,
-        node_id.index_label,
+        node_id.label_index,
     ]
 
 
@@ -258,7 +258,7 @@ def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     path = [
         node.network,
         COL_NODE,
-        node.index_label,
+        node.label_index,
     ]
 
     return path, node

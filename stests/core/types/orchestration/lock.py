@@ -29,15 +29,15 @@ class ExecutionLock:
     step_index: int
 
     @property
-    def phase_index_label(self):
+    def label_phase_index(self):
         if self.phase_index:
             return f"P-{str(self.phase_index).zfill(2)}"
 
     @property
-    def run_index_label(self):
+    def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
     @property
-    def step_index_label(self):
+    def label_step_index(self):
         if self.step_index:
             return f"S-{str(self.step_index).zfill(2)}"

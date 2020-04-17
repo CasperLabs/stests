@@ -31,7 +31,7 @@ def delete_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Generator:
     return [
         lock.network,
         COL_NODE_LOCK,
-        lock.index_label,
+        lock.label_index,
         lock.lock_index,
     ]
 
@@ -114,7 +114,7 @@ def set_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Tuple[typing.List[
     path = [
         lock.network,
         COL_NODE_LOCK,
-        lock.index_label,
+        lock.label_index,
         lock.lock_index,
     ]
     

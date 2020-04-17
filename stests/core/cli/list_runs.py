@@ -85,7 +85,7 @@ def main(args):
         i.deploy_count = _get_deploy_count(i, counts)
 
     # Sort data.
-    data = sorted(data, key=lambda i: f"{i.run_type}.{i.index_label}")
+    data = sorted(data, key=lambda i: f"{i.run_type}.{i.label_index}")
 
     # Set cols/rows.
     cols = [i for i, _ in COLS]
@@ -116,7 +116,7 @@ def _get_deploy_count(i, counts):
     """Returns count of deploys dispatched during course of a run.
     
     """
-    key = f"{i.network}:{i.run_type}:{i.run_index_label}:deploy-count:-"
+    key = f"{i.network}:{i.run_type}:{i.label_run_index}:deploy-count:-"
 
     return counts.get(key, "--")
 
@@ -129,12 +129,12 @@ def _get_row(i, counts):
 
     return [
         i.run_type,
-        i.index_label.strip(),
+        i.label_index.strip(),
         i.ts_start.isoformat()[:-3],
         i.ts_end.isoformat()[:-3] if i.ts_end else "--",
-        i.tp_elapsed_label,
+        i.label_tp_elapsed,
         i.deploy_count,
-        i.status_label.strip(),
+        i.label_status.strip(),
         "--".rjust(20) if (i.ctx is None or i.ctx.status == ExecutionStatus.COMPLETE) else f"{i.ctx.step_label.rjust(20)}",
     ]
 

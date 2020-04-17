@@ -39,7 +39,7 @@ class Node:
         return f"{self.host}:{self.port}"
 
     @property
-    def index_label(self):
+    def label_index(self):
         return f"N-{str(self.index).zfill(4)}"
 
     @property
@@ -63,12 +63,12 @@ class NodeIdentifier:
     index: int
  
     @property
-    def index_label(self):
+    def label_index(self):
         return f"N-{str(self.index).zfill(4)}"
 
     @property
     def label(self):
-        return f"{self.network.name}:{self.index_label}"
+        return f"{self.network.name}:{self.label_index}"
 
 
 @dataclasses.dataclass
@@ -86,5 +86,5 @@ class NodeMonitoringLock:
     lock_index: int
 
     @property
-    def index_label(self):
+    def label_index(self):
         return f"N-{str(self.index).zfill(4)}"

@@ -48,7 +48,7 @@ def main(args):
     # Set cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
-        i.index_label,
+        i.label_index,
         f"{i.host}:{i.port}",
         i.typeof.name,
         i.status.name,

@@ -39,7 +39,7 @@ def do_phase(ctx: ExecutionContext):
     cache.orchestration.set_info(phase_info)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> starts")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} -> starts")
 
     # Enqueue step.
     do_step.send(ctx)
@@ -59,7 +59,7 @@ def on_phase_end(ctx: ExecutionContext):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> ends")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} -> ends")
 
     # Enqueue either end of workflow or next phase. 
     if phase.is_last:
@@ -82,7 +82,7 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
 
     # Inform.
-    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> unhandled error")
+    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} -> unhandled error")
     logger.log_error(err)
 
 
@@ -102,12 +102,12 @@ def _can_start(ctx: ExecutionContext) -> bool:
     # False if next phase not found.
     phase = wflow.get_phase(ctx.next_phase_index)
     if phase is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> invalid phase index")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_next_phase_index} -> invalid phase index")
         return False
 
     # False if next phase locked.
     if not predicates.was_lock_acquired(ExecutionAspect.PHASE, ctx):
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.next_phase_index_label} -> unacquired phase lock")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_next_phase_index} -> unacquired phase lock")
         return False
     
     # All tests passed, therefore return true.    

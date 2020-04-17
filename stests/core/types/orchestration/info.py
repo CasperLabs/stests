@@ -50,7 +50,7 @@ class ExecutionInfo:
 
 
     @property
-    def step_index_label(self):
+    def label_step_index(self):
         if self.step_index:
             return f"S-{str(self.step_index).zfill(2)}"
         return "    "
@@ -62,7 +62,7 @@ class ExecutionInfo:
         return datetime.now().timestamp() - self.ts_start.timestamp()
 
     @property
-    def tp_duration_label(self):
+    def label_tp_duration(self):
         """Returns step duration formatted for display purposes.
         
         """
@@ -76,7 +76,7 @@ class ExecutionInfo:
         return f"{minutes}.{seconds}"
 
     @property
-    def tp_elapsed_label(self):
+    def label_tp_elapsed(self):
         """Returns step elapsed formatted for display purposes.
         
         """
@@ -87,33 +87,27 @@ class ExecutionInfo:
         return f"{minutes}.{seconds}"
 
     @property
-    def phase_index_label(self):
+    def label_phase_index(self):
         if self.phase_index:
             return f"P-{str(self.phase_index).zfill(2)}"
         return "    "
 
     @property
-    def run_index_label(self):
+    def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
     @property
-    def run_index_parent_label(self):
-        if self.run_index_parent:
-            return f"R-{str(self.run_index_parent).zfill(3)}"
-        return "--"
-
-    @property
-    def status_label(self):
+    def label_status(self):
         return self.status.name.ljust(10)
 
     @property
-    def index_label(self):
+    def label_index(self):
         if self.aspect == ExecutionAspect.RUN:
-            return self.run_index_label.ljust(15)
+            return self.label_run_index.ljust(15)
         elif self.aspect == ExecutionAspect.PHASE:
-            return f"{self.run_index_label}.{self.phase_index_label.ljust(9)}"
+            return f"{self.label_run_index}.{self.label_phase_index.ljust(9)}"
         elif self.aspect == ExecutionAspect.STEP:
-            return f"{self.run_index_label}.{self.phase_index_label}.{self.step_index_label}"
+            return f"{self.label_run_index}.{self.label_phase_index}.{self.label_step_index}"
 
 
 

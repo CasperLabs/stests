@@ -68,7 +68,7 @@ def main(args):
     counts = dict(zip(keys, counts))
 
     # Sort data.
-    data = sorted(data, key=lambda i: i.index_label)
+    data = sorted(data, key=lambda i: i.label_index)
 
     # Set cols/rows.
     cols = [i for i, _ in COLS]
@@ -91,11 +91,11 @@ def _get_row(i, counts):
     
     """
     return [
-        i.index_label,
+        i.label_index,
         i.ts_start,
         "--" if not i.ts_end else i.ts_end,
-        i.tp_elapsed_label,
-        counts.get(i.index_label.strip(), 0),
+        i.label_tp_elapsed,
+        counts.get(i.label_index.strip(), 0),
         i.step_label if i.step_label else '--',      
         i.status.name,
     ]

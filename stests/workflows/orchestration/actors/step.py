@@ -46,7 +46,7 @@ def do_step(ctx: ExecutionContext):
     cache.orchestration.set_info(step_info)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> starts")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} :: {step.label} -> starts")
 
     # Execute.
     _execute(ctx, step)
@@ -62,18 +62,18 @@ def do_step_verification(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> invalid step")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> invalid step")
 
     # Verify step.
     if not step.has_verifer:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verifier undefined")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> step verifier undefined")
     else:
         try:
             step.verify(ctx)
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
-            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verification failed")
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> step verification failed")
             return
 
     # Enqueue step end.
@@ -94,7 +94,7 @@ def on_step_end(ctx: ExecutionContext):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {step.label} -> end")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} :: {step.label} -> end")
 
     # Enqueue either end of phase or next step. 
     if step.is_last:
@@ -117,7 +117,7 @@ def on_step_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
     # Inform.
-    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} :: {ctx.step_label} -> unhandled error: {err}")
+    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} :: {ctx.step_label} -> unhandled error: {err}")
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -136,29 +136,29 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> invalid step")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> invalid step")
 
     # Verify deploy.
     if not step.has_verifer_for_deploy:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verifier undefined")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> deploy verifier undefined")
         return       
     else:
         try:
             step.verify_deploy(ctx, node_id, block_hash, deploy_hash)
         except AssertionError as err:
-            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> deploy verification failed: {err} :: {deploy_hash}")
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> deploy verification failed: {err} :: {deploy_hash}")
             return
 
     # Verify step.
     if not step.has_verifer:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verifier undefined")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> step verifier undefined")
     else:
         try:
             step.verify(ctx)
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
-            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.step_index_label} -> step verification failed")
+            logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} -> step verification failed")
             return
 
     # Step verification succeeded therefore signal step end.
@@ -181,13 +181,13 @@ def _can_start(ctx: ExecutionContext) -> bool:
     # False if current phase not found.
     phase = wflow.get_phase(ctx.phase_index)
     if phase is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} -> invalid phase index")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} -> invalid phase index")
         return False
     
     # False if next step not found.
     step = phase.get_step(ctx.next_step_index)
     if step is None:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} :: {ctx.phase_index_label} :: {ctx.next_step_index_label} -> invalid step index")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_next_step_index} -> invalid step index")
         return False
 
     # False if next step locked - can happen when processing groups of messages.

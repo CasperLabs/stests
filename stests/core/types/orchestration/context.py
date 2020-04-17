@@ -64,7 +64,7 @@ class ExecutionContext:
         return self.phase_index + 1
 
     @property
-    def next_phase_index_label(self):
+    def label_next_phase_index(self):
         return f"P-{str(self.next_phase_index).zfill(2)}"        
 
     @property
@@ -72,29 +72,24 @@ class ExecutionContext:
         return self.step_index + 1
 
     @property
-    def next_step_index_label(self):
+    def label_next_step_index(self):
         return f"S-{str(self.next_step_index).zfill(2)}"
 
     @property
     def label_step(self):
-        return f"{self.phase_index_label}.{self.step_index_label}"
+        return f"{self.label_phase_index}.{self.label_step_index}"
 
     @property
-    def run_index_label(self):
+    def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
     @property
-    def run_index_parent_label(self):
-        return f"R-{str(self.run_index).zfill(3)}"
-
-    @property
-    def phase_index_label(self):
+    def label_phase_index(self):
         return f"P-{str(self.phase_index).zfill(2)}"        
 
     @property
-    def step_index_label(self):
+    def label_step_index(self):
         return f"S-{str(self.step_index).zfill(2)}"
-
 
 
     def get_dispatch_window_ms(self, deploy_count):

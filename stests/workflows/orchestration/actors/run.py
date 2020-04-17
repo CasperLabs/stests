@@ -50,7 +50,7 @@ def do_run(ctx: ExecutionContext):
     cache.orchestration.set_info(run_info)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> starts")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} -> starts")
 
     # Enqueue phase.
     do_phase.send(ctx)
@@ -74,7 +74,7 @@ def on_run_end(ctx: ExecutionContext):
     cache.orchestration.flush_locks(ctx)    
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> ends")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} -> ends")
 
     # Enqueue next run (when mode=SEQUENTIAL).
     if ctx.execution_mode == ExecutionMode.SEQUENTIAL:
@@ -97,7 +97,7 @@ def on_run_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.RUN, ExecutionStatus.ERROR)
 
     # Inform.
-    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unhandled error")
+    logger.log_error(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} -> unhandled error")
     logger.log_error(err)
 
 
@@ -116,12 +116,12 @@ def _can_run(ctx: ExecutionContext) -> bool:
 
     # False if phase/step are not initialised.
     if ctx.phase_index != 0 or ctx.step_index != 0:
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> invalid context (phase & step must be set to zero)")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} -> invalid context (phase & step must be set to zero)")
         return False
 
     # False if locked.
     if not predicates.was_lock_acquired(ExecutionAspect.RUN, ctx):
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.run_index_label} -> unacquired lock")
+        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} -> unacquired lock")
         return False
 
     # All tests passed, therefore return true.    

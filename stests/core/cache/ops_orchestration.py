@@ -44,7 +44,7 @@ def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
         yield [
             ctx.network,
             ctx.run_type,
-            ctx.run_index_label,
+            ctx.label_run_index,
             collection,
             "*"
         ]
@@ -62,7 +62,7 @@ def flush_locks(ctx: ExecutionContext) -> typing.Generator:
     yield [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        ctx.label_run_index,
         COL_LOCK,
         "*",
     ]
@@ -79,12 +79,12 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
     :returns: Cached run context information.
 
     """
-    run_index_label = f"R-{str(run_index).zfill(3)}"
+    label_run_index = f"R-{str(run_index).zfill(3)}"
 
     return [
         network,
         run_type,
-        run_index_label,
+        label_run_index,
         COL_CONTEXT
     ]
 
@@ -142,11 +142,11 @@ def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, r
             "-"
         ]
     elif run_index:
-        run_index_label = f"R-{str(run_index).zfill(3)}"
+        label_run_index = f"R-{str(run_index).zfill(3)}"
         path = [
             network_id.name,
             run_type,
-            run_index_label,
+            label_run_index,
             COL_DEPLOY_COUNT,
             "*"
         ]
@@ -174,16 +174,16 @@ def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ExecutionInfo:
     path = [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        ctx.label_run_index,
         COL_INFO,
     ]
 
     if aspect == ExecutionAspect.RUN:
         path.append("-")
     elif aspect == ExecutionAspect.PHASE:
-        path.append(ctx.phase_index_label)
+        path.append(ctx.label_phase_index)
     elif aspect == ExecutionAspect.STEP:
-        path.append(f"{ctx.phase_index_label}.{ctx.step_index_label}")
+        path.append(f"{ctx.label_phase_index}.{ctx.label_step_index}")
 
     return path
 
@@ -207,11 +207,11 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
             "*"
         ]
     elif run_index:
-        run_index_label = f"R-{str(run_index).zfill(3)}"
+        label_run_index = f"R-{str(run_index).zfill(3)}"
         return [
             network_id.name,
             run_type,
-            run_index_label,
+            label_run_index,
             COL_INFO,
             "*"
         ]
@@ -237,7 +237,7 @@ def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], Execut
     return [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        ctx.label_run_index,
         COL_LOCK,
         "-"
     ]
@@ -294,16 +294,16 @@ def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> typing.Tuple[typin
     path = [
         lock.network,
         lock.run_type,
-        lock.run_index_label,
+        lock.label_run_index,
         COL_LOCK,
     ]
 
     if aspect == ExecutionAspect.RUN:
         path.append("-")
     elif aspect == ExecutionAspect.PHASE:
-        path.append(lock.phase_index_label)
+        path.append(lock.label_phase_index)
     elif aspect == ExecutionAspect.STEP:
-        path.append(f"{lock.phase_index_label}.{lock.step_index_label}")
+        path.append(f"{lock.label_phase_index}.{lock.label_step_index}")
 
     return path, lock
 
@@ -320,7 +320,7 @@ def set_context(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], Executi
     path = [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        ctx.label_run_index,
         COL_CONTEXT,
     ]
 
@@ -339,14 +339,14 @@ def set_info(info: ExecutionInfo) -> typing.Tuple[typing.List[str], ExecutionInf
     path = [
         info.network,
         info.run_type,
-        info.run_index_label,
+        info.label_run_index,
         COL_INFO,
     ]
 
     if info.phase_index and info.step_index:
-        path.append(f"{info.phase_index_label}.{info.step_index_label}")
+        path.append(f"{info.label_phase_index}.{info.label_step_index}")
     elif info.phase_index:
-        path.append(info.phase_index_label)
+        path.append(info.label_phase_index)
     else:
         path.append("-")
 
@@ -380,15 +380,15 @@ def _get_keypath_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) ->
     path = [
         ctx.network,
         ctx.run_type,
-        ctx.run_index_label,
+        ctx.label_run_index,
         COL_DEPLOY_COUNT,
     ]
 
     if aspect == ExecutionAspect.RUN:
         path.append("-")
     elif aspect == ExecutionAspect.PHASE:
-        path.append(ctx.phase_index_label)
+        path.append(ctx.label_phase_index)
     elif aspect == ExecutionAspect.STEP:
-        path.append(f"{ctx.phase_index_label}.{ctx.step_index_label}")
+        path.append(f"{ctx.label_phase_index}.{ctx.label_step_index}")
 
     return path
