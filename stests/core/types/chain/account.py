@@ -40,8 +40,16 @@ class Account:
     typeof: AccountType
 
     @property
+    def private_key_as_bytes(self):
+        return bytes.fromhex(self.private_key)
+
+    @property
     def private_key_as_pem_filepath(self):
         return PrivateKey(self.private_key).as_pem_filepath
+
+    @property
+    def public_key_as_bytes(self):
+        return bytes.fromhex(self.public_key)
 
     @property
     def label_index(self):

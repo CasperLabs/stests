@@ -3,6 +3,7 @@ import typing
 from casperlabs_client.abi import ABI
 
 from stests.core.clx import pyclx
+from stests.core.clx.contracts import utils
 from stests.core.clx import defaults
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
@@ -26,12 +27,7 @@ NAMED_KEYS = []
 
 
 
-def transfer(
-    ctx: ExecutionContext,
-    cp1: Account,
-    cp2: Account,
-    amount: int,
-    ) -> typing.Tuple[Node, str]:
+def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> typing.Tuple[Node, str]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
     :param ctx: Execution context information.
@@ -42,19 +38,14 @@ def transfer(
     :returns: Hash of dispatched deploy.
 
     """
-    # Set client.
-    node, client  = pyclx.get_client(ctx)
-
-    # Dispatch deploy.
-    # TODO - consider using generic deploy method ?
-    deploy_hash = client.transfer(
-        amount=amount,
-        target_account_hex=cp2.public_key,
-        from_addr=cp1.public_key,
-        private_key=cp1.private_key_as_pem_filepath,
-        # TODO: review how these are being assigned
-        payment_amount=defaults.CLX_TX_FEE,
-        gas_price=defaults.CLX_TX_GAS_PRICE,
+    node, _, deploy_hash = utils.dispatch_deploy(
+        src=ctx,
+        account=cp1,
+        session=utils.get_contract_path(WASM),
+        session_args=ABI.args([
+            ABI.account("account", cp2.public_key_as_bytes),
+            ABI.u512("amount", amount),
+            ]),
     )
 
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512 :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key}")
