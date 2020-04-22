@@ -1,7 +1,6 @@
 import typing
 
 from stests.core.clx import pyclx
-from stests.core.clx import defaults
 from stests.core.clx.contracts import utils
 from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
@@ -37,17 +36,10 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
     """Increments counter by 1.
     
     """
-    # Set client.
-    node, client  = pyclx.get_client(ctx)
-
-    # Dispatch deploy.
-    deploy_hash = client.deploy(
+    node, _, deploy_hash = utils.dispatch_deploy(
+        src=ctx,
+        account=account,
         session_name=_NAMED_KEY_INC,
-        from_addr=account.public_key,
-        private_key=account.private_key_as_pem_filepath,
-        # TODO: review how these are being assigned
-        payment_amount=defaults.CLX_TX_FEE,
-        gas_price=defaults.CLX_TX_GAS_PRICE
     )
 
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")

@@ -14,10 +14,7 @@ CONTRACTS = {
     transfer_U512_by_wasm,
 }
 
-# Map: Contract type -> contract moduel.
-CONTRACTS_BY_TYPE = {i.TYPE: i for i in CONTRACTS}
-
-# Set of supported singleton contracts (i.e. installed once and used from other accounts).
+# Set of contracts to be invoked via hash (i.e. installed once & invoked from other accounts).
 CONTRACTS_BY_HASH = {
     counter_define_by_hash,
     transfer_U512_by_hash,
