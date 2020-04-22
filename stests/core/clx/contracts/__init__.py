@@ -32,7 +32,8 @@ def get_contract(contract_type: ContractType):
     :returns: Pointer to a contract.
 
     """
-    try:
-        return CONTRACTS_BY_TYPE[contract_type]
-    except KeyError:
-        raise ValueError(f"Unsupported contract type: {contract_type}")
+    for contract in CONTRACTS:
+        if contract.TYPE == contract_type or contract.TYPE.name == contract_type:
+            return contract
+
+    raise ValueError(f"Unsupported contract type: {contract_type}")

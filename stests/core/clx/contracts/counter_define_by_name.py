@@ -27,7 +27,7 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
 
-    :returns: 2 member tuple -> (node, deploy_hash).
+    :returns: 3 member tuple -> (node, deploy_hash, named_keys)
 
     """
     return utils.install_contract(src, account, WASM)

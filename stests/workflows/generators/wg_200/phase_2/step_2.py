@@ -76,17 +76,14 @@ def _do_increment_counter_0(ctx: ExecutionContext, account_index: int):
     # Set contract.
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)
 
-    # Increment on-chain.
+    # Dispatch contract execution deploy.
     (node, deploy_hash) = contract.increment(ctx, account)
 
-    # Set info. 
-    deploy = factory.create_deploy_for_run(
+    # Update cache.
+    cache.state.set_deploy(factory.create_deploy_for_run(
         account=account,
         ctx=ctx, 
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.COUNTER_DEFINE
-        )
-
-    # Update cache.
-    cache.state.set_deploy(deploy)
+        ))
