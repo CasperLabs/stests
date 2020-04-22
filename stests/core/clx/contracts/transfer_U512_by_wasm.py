@@ -4,8 +4,6 @@ from casperlabs_client.abi import ABI
 
 from stests.core.clx import pyclx
 from stests.core.clx import defaults
-from stests.core.clx.contracts import utils
-from stests.core.clx.query import get_account_balance
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
 from stests.core.types.chain import ContractType
@@ -33,7 +31,7 @@ def transfer(
     cp1: Account,
     cp2: Account,
     amount: int,
-    ):
+    ) -> typing.Tuple[Node, str]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
     :param ctx: Execution context information.
@@ -62,34 +60,3 @@ def transfer(
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512 :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key}")
 
     return node, deploy_hash
-
-
-def refund(
-    ctx: ExecutionContext,
-    cp1: Account,
-    cp2: Account,
-    amount: int = None,
-    ) -> typing.Tuple[Node, str, int]:
-    """Executes a refund between 2 counter-parties & returns resulting deploy hash.
-
-    :param ctx: Execution context information.
-    :param cp1: Account information of counter party 1.
-    :param cp2: Account information of counter party 2.
-    :param amount: Amount in motes to be refunded.
-
-    :returns: 3 member tuple: dispatch node, deploy hash, refund amount.
-
-    """
-    # If amount is unspecified, set amount to entire balance.
-    if amount is None:
-        balance = get_account_balance(ctx, cp1) 
-        amount = balance - defaults.CLX_TX_FEE
-    
-    # Escape if cp1 has insufficient funds.
-    if amount <= 0:
-        logger.log_warning(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={balance}.")
-        return
-
-    (node, deploy_hash) = transfer(ctx, cp1, cp2, amount)
-
-    return node, deploy_hash, amount
