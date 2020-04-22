@@ -9,6 +9,7 @@ from stests.core.cache.utils import cache_op
 from stests.core.types.chain import Account
 from stests.core.types.chain import AccountIdentifier
 from stests.core.types.chain import Deploy
+from stests.core.types.chain import NamedKey
 from stests.core.types.chain import Transfer
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.orchestration import ExecutionContext
@@ -22,6 +23,7 @@ _PARTITION = StorePartition.STATE
 # Cache collections.
 COL_ACCOUNT = "account"
 COL_ACCOUNT_CONTRACT = "account-contract"
+COL_ACCOUNT_NAMED_KEY = "account-named-key"
 COL_DEPLOY = "deploy"
 COL_TRANSFER = "transfer"
 
@@ -230,6 +232,27 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
     ]
 
     return path, account
+
+
+@cache_op(_PARTITION, StoreOperation.SET)
+def set_account_named_key(ctx: ExecutionContext, named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
+    """Encaches domain object: NamedKey.
+
+    :param network: NamedKey domain object instance to be cached.
+    
+    :returns: Keypath + domain object instance.
+
+    """
+    path = [
+        named_key.network,
+        ctx.run_type,
+        COL_ACCOUNT_NAMED_KEY,
+        named_key.label_account_index,
+        named_key.contract_type.name,
+        named_key.name
+    ]
+
+    return path, named_key
 
 
 @cache_op(_PARTITION, StoreOperation.SET)

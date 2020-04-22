@@ -3,6 +3,7 @@ import typing
 
 from stests.core import cache
 from stests.core import clx
+from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.utils import args_validator
 from stests.core import factory
@@ -35,28 +36,40 @@ def main(args):
     if network.faucet is None:
         raise ValueError("Unregistered network faucet.")
 
+    # Set account.
+    account = network.faucet
+
     # Install contracts.
-    for contract in clx.contracts.CONTRACTS_SINGLETON:
-        _install_contract(network, contract)
+    for contract in clx.contracts.CONTRACTS_BY_HASH:
+        _install_contract(network, account, contract)
 
     # Inform.
     logger.log(f"client contracts for network {args.network} were successfully installed")
 
 
-def _install_contract(network: Network, contract: typing.Callable):
+def _install_contract(network: Network, account: Account, contract: typing.Callable):
     """Installs a smart contract upon target network.
     
     """
-    logger.log(f"{contract.TYPE.value} :: installation starts ... please wait")
+    logger.log(f"{contract.WASM} :: installation starts ... please wait")
 
-    # Dispatch contract to network, await processing, persist named keys.
-    clx.contracts.install_singleton(
-        network,
-        network.faucet,
-        contract,
-    )
+    # Install contract under network faucet account.
+    _, _, keys = contract.install(network, account)
 
-    logger.log(f"{contract.TYPE.value} :: installed")
+    # Persist named keys.
+    for key_name, key_hash in keys:
+        key = factory.create_account_named_key(
+            account,
+            contract.TYPE,
+            key_name,
+            network.name,
+            key_hash,
+        )
+        cache.infra.set_account_named_key(key)
+
+    logger.log(f"{contract.WASM} :: installed")
+    for key_name, key_hash in keys:
+        logger.log(f"{contract.WASM} :: named key -> {key_hash} : {key_name}")
 
 
 # Entry point.

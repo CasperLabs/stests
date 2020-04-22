@@ -86,6 +86,7 @@ def _process_dispatched_deploy(
     deploy.block_hash = block_hash
     deploy.cost = deploy_cost
     deploy.status = DeployStatus.FINALIZED
+    deploy.finalization_node = node_id.index
     deploy.finalization_ts = block_timestamp
     deploy.finalization_time = deploy.finalization_ts.timestamp() - deploy.dispatch_ts.timestamp()    
     cache.state.set_deploy(deploy)
@@ -100,7 +101,7 @@ def _process_dispatched_deploy(
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
-        queue_name="workflows.orchestration",
+        queue_name="workflows.orchestration.step",
         actor_name="on_step_deploy_finalized",
         args=([encoder.encode(ctx), encoder.encode(node_id), block_hash, deploy.hash]),
         kwargs=dict(),

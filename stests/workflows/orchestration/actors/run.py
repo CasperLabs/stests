@@ -14,7 +14,7 @@ from stests.workflows.orchestration.actors.phase import do_phase
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "workflows.orchestration"
+_QUEUE = "workflows.orchestration.run"
 
 # Map: execution mode - > time period (in milliseconds) before next loop is executed.
 _DEFAULT_LOOP_INTERVAL_MS = {

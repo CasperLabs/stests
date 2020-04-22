@@ -2,6 +2,7 @@ import typing
 
 from stests.core.clx import pyclx
 from stests.core.clx import defaults
+from stests.core.clx.contracts import utils
 from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
 from stests.core.types.infra import Node
@@ -16,18 +17,24 @@ TYPE = ContractType.COUNTER_DEFINE
 # Wasm file name.
 WASM = "counter_define.wasm"
 
-# Name of contract - see use when passed as session-name.
-NAME = "counter"
+# Named key: contract method: increment.
+_NAMED_KEY_INC = "counter_inc"
 
-# Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
-IS_SINGLETON = False
 
-# Named keys associated with contract.
-NAMED_KEYS = []
+def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
+    """Installs a smart contract under an account.
+
+    :param src: The source from which a node client will be instantiated.
+    :param account: Account under which contract will be installed.
+
+    :returns: 2 member tuple -> (node, deploy_hash).
+
+    """
+    return utils.install_contract(src, account, WASM)
 
 
 def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str]:
-    """Increments counter previously installed under an account.
+    """Increments counter by 1.
     
     """
     # Set client.
@@ -35,7 +42,7 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
 
     # Dispatch deploy.
     deploy_hash = client.deploy(
-        session_name="counter_inc",
+        session_name=_NAMED_KEY_INC,
         from_addr=account.public_key,
         private_key=account.private_key_as_pem_filepath,
         # TODO: review how these are being assigned
@@ -45,7 +52,7 @@ def increment(ctx: ExecutionContext, account: Account) -> typing.Tuple[Node, str
 
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
 
-    return (node, deploy_hash)
+    return node, deploy_hash
 
 
 def get_count(node_id: NodeIdentifier, account: Account, block_hash: str) -> int:

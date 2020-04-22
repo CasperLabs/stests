@@ -14,25 +14,24 @@ _QUEUE = "workflows.generators.contracts"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_install_contract(
-    ctx: ExecutionContext,
-    account_index: int,
-    contract_type: ContractType
-    ):
-    """Deploys a contract under a known account.
+def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type: ContractType):
+    """Installs a contract for subsequent invocation by hash.
 
     :param ctx: Execution context information.
-    :param account_index: Index of account to which a contract will be deployed.
-    :param contract_type: Type of contract to deploy.
+    :param account_index: Index of account under which contract will be installed.
+    :param contract_type: Type of contract to be installed.
     
     """
     # Set account.
     account = cache.state.get_account_by_index(ctx, account_index)
 
-    # Install contract.
-    (node, deploy_hash) = clx.contracts.install_named(ctx, account, contract_type)
+    # Set contract.
+    contract = clx.contracts.get_contract(contract_type)
 
-    # Update cache.
+    # Install contract.
+    node, deploy_hash, keys = contract.install(ctx, account)
+
+    # Persist deploy.
     deploy = factory.create_deploy_for_run(
         account=account,
         ctx=ctx, 
@@ -41,3 +40,14 @@ def do_install_contract(
         typeof=DeployType.CONTRACT_INSTALL
         )
     cache.state.set_deploy(deploy)
+
+    # Persist named keys.
+    for key_name, key_hash in keys:
+        key = factory.create_account_named_key(
+            account,
+            contract.TYPE,
+            key_name,
+            network.name,
+            key_hash,
+        )
+        cache.state.set_account_named_key(ctx, key)

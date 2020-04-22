@@ -32,3 +32,4 @@ class NamedKey:
     @property
     def label_account_index(self):
         return f"A-{str(self.account_index).zfill(6)}"
+

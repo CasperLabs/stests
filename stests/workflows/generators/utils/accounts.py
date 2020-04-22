@@ -1,7 +1,11 @@
+import typing
+
 import dramatiq
 
 from stests.core import cache
 from stests.core import clx
+from stests.core.clx.defaults import CLX_TX_FEE
+from stests.core.types.chain import Account
 from stests.core.types.chain import AccountType
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import DeployType
@@ -57,55 +61,29 @@ def do_fund_account(
         cp1 = cache.state.get_account_by_index(ctx, cp1_index)
     cp2 = cache.state.get_account_by_index(ctx, cp2_index)
     
-    # Set transfer contract.
-    if ctx.use_client_contract_for_transfers:
-        transfer = clx.contracts.transfer_U512
-    else:
-        transfer = clx.contracts.transfer_U512_stored
+    # Set contract.
+    contract_type = ContractType.TRANSFER_U512 if ctx.use_client_contract_for_transfers else ContractType.TRANSFER_U512_STORED
+    contract = clx.contracts.get_contract(contract_type)
 
     # Transfer CLX from cp1 -> cp2.    
-    (node, deploy_hash) = transfer.execute(ctx, cp1, cp2, amount)
+    node, deploy_hash = contract.transfer(ctx, cp1, cp2, amount)
 
-    # Set info. 
-    deploy = factory.create_deploy_for_run(
+    # Update cache.
+    cache.state.set_deploy(factory.create_deploy_for_run(
         account=cp1,
         ctx=ctx, 
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.TRANSFER
-        )
-    transfer = factory.create_transfer(
+        ))
+    cache.state.set_transfer(factory.create_transfer(
         ctx=ctx,
         amount=amount,
         asset="CLX",
         cp1=cp1,
         cp2=cp2,
         deploy_hash=deploy_hash,
-        )
-
-    # Update cache.
-    cache.state.set_deploy(deploy)
-    cache.state.set_transfer(transfer)
-
-    # Perform deploy verification - with 10 minute delay.
-    # do_fund_account_verify_deploy_processing.send_with_options(
-    #     args=(
-    #         node, deploy_hash, ctx, cp1_index, cp2_index, amount,
-    #     ),
-    #     delay=int(1e3 * 10)
-    # )
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_fund_account_verify_deploy_processing(
-    node: Node,
-    deploy_hash: str,
-    ctx: ExecutionContext,
-    cp1_index: int,
-    cp2_index: int,
-    amount: int,
-    ):
-    print(f"TODO: perform post deploy dispatch verification: {node.address} {deploy_hash}")
+        ))
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -127,32 +105,57 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
     else:
         cp2 = cache.state.get_account_by_index(ctx, cp2_index)
 
-    # Set transfer contract.
-    if ctx.use_client_contract_for_transfers:
-        transfer = clx.contracts.transfer_U512
-    else:
-        transfer = clx.contracts.transfer_U512_stored
+    # Set contract.
+    contract_type = ContractType.TRANSFER_U512 if ctx.use_client_contract_for_transfers else ContractType.TRANSFER_U512_STORED
+    contract = clx.contracts.get_contract(contract_type)
 
     # Refund CLX from cp1 -> cp2.
-    (node, deploy_hash, amount) = transfer.execute_refund(ctx, cp1, cp2)
+    node, deploy_hash, amount = _refund(ctx, cp1, cp2, contract)
 
-    # Set info. 
-    deploy = factory.create_deploy_for_run(
+    # Update cache.
+    cache.state.set_deploy(factory.create_deploy_for_run(
         account=cp1,
         ctx=ctx, 
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.TRANSFER_REFUND
-        )
-    transfer = factory.create_transfer(
+        ))
+    cache.state.set_transfer(factory.create_transfer(
         ctx=ctx,
         amount=amount,
         asset="CLX",
         cp1=cp1,
         cp2=cp2,
         deploy_hash=deploy_hash,
-        )
+        ))
 
-    # Update cache.
-    cache.state.set_deploy(deploy)
-    cache.state.set_transfer(transfer)
+
+def _refund(
+    ctx: ExecutionContext,
+    cp1: Account,
+    cp2: Account,
+    contract: typing.Callable
+    ) -> typing.Tuple[Node, str, int]:
+    """Executes a refund between 2 counter-parties & returns resulting deploy hash.
+
+    :param ctx: Execution context information.
+    :param cp1: Account information of counter party 1.
+    :param cp2: Account information of counter party 2.
+    :param contract: Transfer contract to be invoked.
+
+    :returns: 3 member tuple: dispatch node, deploy hash, refund amount.
+
+    """
+    # If amount is unspecified, set amount to entire balance.
+    balance = clx.get_account_balance(ctx, cp1) 
+    amount = balance - CLX_TX_FEE
+    
+    # Escape if cp1 has insufficient funds.
+    if amount <= 0:
+        logger.log_warning(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={balance}.")
+        return
+
+    # Transfer funds.
+    (node, deploy_hash) = contract.transfer(ctx, cp1, cp2, amount)
+
+    return node, deploy_hash, amount

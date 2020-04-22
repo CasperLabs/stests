@@ -71,7 +71,6 @@ class DeployType(enum.Flag):
     COUNTER_DEFINE = enum.auto()
     TRANSFER = enum.auto()
     TRANSFER_REFUND = enum.auto()
-    MONITORED = enum.auto()
 
 
 class TransferStatus(enum.Flag):

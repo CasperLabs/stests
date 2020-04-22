@@ -4,6 +4,7 @@ from casperlabs_client.abi import ABI
 
 from stests.core.clx import pyclx
 from stests.core.clx import defaults
+from stests.core.clx.contracts import utils
 from stests.core.clx.query import get_account_balance
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
@@ -22,14 +23,12 @@ WASM = "transfer_to_account_u512.wasm"
 # Name of contract - see use when passed as session-name.
 NAME = "transfer_to_account"
 
-# Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
-IS_SINGLETON = False
-
 # Named keys associated with contract.
 NAMED_KEYS = []
 
 
-def execute(
+
+def transfer(
     ctx: ExecutionContext,
     cp1: Account,
     cp2: Account,
@@ -62,10 +61,10 @@ def execute(
 
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512 :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key}")
 
-    return (node, deploy_hash)
+    return node, deploy_hash
 
 
-def execute_refund(
+def refund(
     ctx: ExecutionContext,
     cp1: Account,
     cp2: Account,
@@ -91,6 +90,6 @@ def execute_refund(
         logger.log_warning(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={balance}.")
         return
 
-    (node, deploy_hash) = execute(ctx, cp1, cp2, amount)
+    (node, deploy_hash) = transfer(ctx, cp1, cp2, amount)
 
-    return (node, deploy_hash, amount)
+    return node, deploy_hash, amount

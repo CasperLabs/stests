@@ -5,6 +5,7 @@ from casperlabs_client.abi import ABI
 from stests.core import cache
 from stests.core.clx import pyclx
 from stests.core.clx import defaults
+from stests.core.clx.contracts import utils
 from stests.core.clx.query import get_account_balance
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
@@ -20,19 +21,32 @@ TYPE = ContractType.TRANSFER_U512_STORED
 # Wasm file name.
 WASM = "transfer_to_account_u512_stored.wasm"
 
-# Name of contract - see use when passed as session-name.
-NAME = "transfer_to_account"
 
 # Flag indicating whether this contract can be installed under a single account and invoked by other accounts.
 IS_SINGLETON = True
 
+# Name of contract - see use when passed as session-name.
+_NAMED_KEY = "transfer_to_account"
+
 # Named keys associated with contract.
 NAMED_KEYS = [
-    "transfer_to_account",
+    _NAMED_KEY,
 ]
 
 
-def execute(
+def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str, typing.Dict[str, str]]:
+    """Installs a smart contract under an account.
+
+    :param src: The source from which a node client will be instantiated.
+    :param account: Account under which contract will be installed.
+
+    :returns: 3 member tuple -> (node, deploy_hash, named_keys).
+
+    """
+    return utils.install_contract(src, account, WASM, NAMED_KEYS)
+
+
+def transfer(
     ctx: ExecutionContext,
     cp1: Account,
     cp2: Account,
@@ -52,7 +66,7 @@ def execute(
     node, client  = pyclx.get_client(ctx)
 
     # Set named key associated with contract.
-    named_key = cache.infra.get_named_key(ctx.network, TYPE, "transfer_to_account")
+    named_key = cache.infra.get_account_named_key(ctx.network, TYPE, _NAMED_KEY)
     if named_key is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")
 
@@ -75,10 +89,10 @@ def execute(
 
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512_STORED :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key}")
 
-    return (node, deploy_hash)
+    return node, deploy_hash
 
 
-def execute_refund(
+def refund(
     ctx: ExecutionContext,
     cp1: Account,
     cp2: Account,
@@ -104,6 +118,6 @@ def execute_refund(
         logger.log_warning(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={balance}.")
         return
 
-    (node, deploy_hash) = execute(ctx, cp1, cp2, amount)
+    (node, deploy_hash) = transfer(ctx, cp1, cp2, amount)
 
-    return (node, deploy_hash, amount)
+    return node, deploy_hash, amount

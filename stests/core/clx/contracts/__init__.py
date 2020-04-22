@@ -1,75 +1,38 @@
-import typing
-
-from stests.core.clx.contracts import utils_installer as installer
-from stests.core.clx.contracts import counter_define
-from stests.core.clx.contracts import counter_define_stored
-from stests.core.clx.contracts import transfer_U512
-from stests.core.clx.contracts import transfer_U512_stored
-from stests.core.types.chain import Account
+from stests.core.clx.contracts import counter_define_by_hash
+from stests.core.clx.contracts import counter_define_by_name
+from stests.core.clx.contracts import transfer_U512_by_hash
+from stests.core.clx.contracts import transfer_U512_by_wasm
 from stests.core.types.chain import ContractType
-from stests.core.types.infra import Network
-from stests.core.types.infra import NetworkIdentifier
-from stests.core.types.infra import NodeIdentifier
-from stests.core.types.orchestration import ExecutionContext
 
 
 
 # Set of supported contracts.
 CONTRACTS = {
-    counter_define,
-    counter_define_stored,
-    transfer_U512,
-    transfer_U512_stored,
+    counter_define_by_hash,
+    counter_define_by_name,
+    transfer_U512_by_hash,
+    transfer_U512_by_wasm,
 }
 
 # Map: Contract type -> contract moduel.
-CONTRACTS_BY_TYPE = {i.TYPE.name: i for i in CONTRACTS}
+CONTRACTS_BY_TYPE = {i.TYPE: i for i in CONTRACTS}
 
 # Set of supported singleton contracts (i.e. installed once and used from other accounts).
-CONTRACTS_SINGLETON = set([i for i in CONTRACTS if i.IS_SINGLETON])
+CONTRACTS_BY_HASH = {
+    counter_define_by_hash,
+    transfer_U512_by_hash,
+}
 
 
-def install_named(
-    ctx: ExecutionContext,
-    account,
-    contract_type: ContractType,
-    node_id: NodeIdentifier = None
-    ) -> str:
-    """Installs a singleton contract under an account & returns installed contract's hash.
+def get_contract(contract_type: ContractType):
+    """Returns pointer to a contract for subsequent use.
     
-    :param ctx: Execution context information.
-    :param account: Account under which contract will be installed - defaults to network faucet account.
     :param contract_type: Type of contract to be installed.
-    :param node_id: Identifier of node to which deploy will be dispatched.
 
-    :returns: Contract hash (in hex format).
+    :returns: Pointer to a contract.
 
     """
-    if contract_type not in CONTRACTS_BY_TYPE:
+    try:
+        return CONTRACTS_BY_TYPE[contract_type]
+    except KeyError:
         raise ValueError(f"Unsupported contract type: {contract_type}")
-
-    contract = CONTRACTS_BY_TYPE[contract_type]
-
-    return installer.install_named(ctx, account, contract, node_id)
-
-
-def install_singleton(
-    network_id: typing.Union[Network, NetworkIdentifier],
-    account,
-    contract,
-    node_id: NodeIdentifier = None
-    ) -> str:
-    """Installs a singleton contract under an account & returns installed contract's hash.
-    
-    :param network_id: Network into which contract is being installed.
-    :param account: Account under which contract will be installed - defaults to network faucet account.
-    :param contract: Module of contract to be deployed.
-    :param node_id: Identifier of node to which deploy will be dispatched.
-
-    :returns: Contract hash (in hex format).
-
-    """
-    if contract not in CONTRACTS_SINGLETON:
-        raise ValueError("Unsupported contract.")
-
-    return installer.install_singleton(network_id, account, contract, node_id)

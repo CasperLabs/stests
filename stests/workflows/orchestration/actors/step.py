@@ -17,7 +17,7 @@ from stests.workflows.orchestration import predicates
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "workflows.orchestration"
+_QUEUE = "workflows.orchestration.step"
 
 
 @dramatiq.actor(queue_name=_QUEUE)

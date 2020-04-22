@@ -23,7 +23,7 @@ def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, Ne
     # In some cases calling code already has a client instance, but as
     # method overloading is unsupported in python, code is simplified with a pass through.  
     if isinstance(src, CasperLabsClient):
-        return src.node, src
+        return src._node, src
 
     # Set node. 
     if isinstance(src, Node):
@@ -45,6 +45,6 @@ def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, Ne
         host=node.host,
         port=node.port,
     )
-    client.node = node
+    client._node = node
 
     return node, client

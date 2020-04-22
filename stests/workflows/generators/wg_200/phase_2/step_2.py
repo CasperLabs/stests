@@ -4,6 +4,7 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import clx
+from stests.core.types.chain import ContractType
 from stests.core.types.chain import DeployType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
@@ -58,7 +59,9 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     """
     deploy = verification.verify_deploy(ctx, block_hash, deploy_hash)
     account = cache.state.get_account_by_index(ctx, deploy.account_index)
-    count = clx.contracts.counter_define.get_count(node_id, account, block_hash)
+    contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)
+    count = contract.get_count(node_id, account, block_hash)
+
     assert count == ctx.args.increments, "counter verification failed"
 
 
@@ -70,8 +73,11 @@ def _do_increment_counter_0(ctx: ExecutionContext, account_index: int):
     # Set account.
     account = cache.state.get_account_by_index(ctx, account_index)
 
+    # Set contract.
+    contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)
+
     # Increment on-chain.
-    (node, deploy_hash) = clx.contracts.counter_define.increment(ctx, account)
+    (node, deploy_hash) = contract.increment(ctx, account)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(

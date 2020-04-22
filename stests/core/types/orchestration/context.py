@@ -35,6 +35,9 @@ class ExecutionContext:
     # Associated node index.
     node_index: int
 
+    # Operating system user name.
+    os_user: str
+
     # Numerical index to distinguish between multiple runs.
     run_index: int
 

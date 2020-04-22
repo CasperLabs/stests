@@ -14,9 +14,6 @@ from stests.workflows.generators.utils import verification
 
 
 
-# Target smart contract.
-CONTRACT = clx.contracts.counter_define_stored
-
 # Step label.
 LABEL = "invoke-wasm"
 
@@ -59,11 +56,13 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     account_contract = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
     account_user = cache.state.get_account_by_index(ctx, account_index)
 
+    # Set contract.
+    contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE_STORED)
+
     # Set named keys.
     # Set named keys of stored contract + slot.
-    named_keys = clx.get_account_named_keys(ctx, account_contract, filter_keys=CONTRACT.NAMED_KEYS)
+    named_keys = clx.get_account_named_keys(ctx, account_contract, filter_keys=contract.NAMED_KEYS)
     named_keys = {i.name: i.key.hash.hash.hex() for i in named_keys}
-    
 
 
     # Increment on-chain.
