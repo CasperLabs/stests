@@ -48,3 +48,7 @@ class Transfer:
 
     # Label to disambiguate a step within the context of a phase.
     step_label: typing.Optional[str]
+
+    @property
+    def label_run_index(self):
+        return f"R-{str(self.run_index).zfill(3)}"

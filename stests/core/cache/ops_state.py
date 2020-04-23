@@ -22,35 +22,9 @@ _PARTITION = StorePartition.STATE
 
 # Cache collections.
 COL_ACCOUNT = "account"
-COL_ACCOUNT_CONTRACT = "account-contract"
-COL_ACCOUNT_NAMED_KEY = "account-named-key"
+COL_NAMED_KEY = "named-key"
 COL_DEPLOY = "deploy"
 COL_TRANSFER = "transfer"
-
-
-@cache_op(_PARTITION, StoreOperation.FLUSH)
-def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
-    """Flushes previous run information.
-
-    :param ctx: Execution context information.
-
-    :returns: A generator of keypaths to be flushed.
-    
-    """
-    for collection in [
-        COL_ACCOUNT,
-        COL_ACCOUNT_CONTRACT,
-        COL_DEPLOY,
-        COL_TRANSFER,
-    ]:
-        path = [
-            ctx.network,
-            ctx.run_type,
-            ctx.label_run_index,
-            collection,
-            "*"
-        ]
-        yield path
 
 
 @cache_op(_PARTITION, StoreOperation.GET)
@@ -235,7 +209,7 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
 
 
 @cache_op(_PARTITION, StoreOperation.SET)
-def set_account_named_key(ctx: ExecutionContext, named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
+def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
     """Encaches domain object: NamedKey.
 
     :param network: NamedKey domain object instance to be cached.
@@ -245,11 +219,12 @@ def set_account_named_key(ctx: ExecutionContext, named_key: NamedKey) -> typing.
     """
     path = [
         named_key.network,
-        ctx.run_type,
-        COL_ACCOUNT_NAMED_KEY,
+        named_key.run_type,
+        named_key.label_run_index,
+        COL_NAMED_KEY,
         named_key.label_account_index,
         named_key.contract_type.name,
-        named_key.name
+        named_key.name,
     ]
 
     return path, named_key
@@ -267,7 +242,7 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     path = [
         deploy.network,
         deploy.run_type,
-        f"R-{str(deploy.run_index).zfill(3)}",
+        deploy.label_run_index,
         COL_DEPLOY,
         f"{str(deploy.dispatch_ts.timestamp())}.{deploy.deploy_hash}.{deploy.label_account_index}"
     ]
@@ -287,7 +262,7 @@ def set_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]
     path = [
         transfer.network,
         transfer.run_type,
-        f"R-{str(transfer.run_index).zfill(3)}",
+        transfer.label_run_index,
         COL_TRANSFER,
         transfer.asset.lower(),
         transfer.deploy_hash

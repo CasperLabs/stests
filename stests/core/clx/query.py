@@ -67,7 +67,7 @@ def get_account_balance_by_address(src: typing.Any, address: str, block_hash: st
         return balance
 
 
-def get_account_named_keys(src: typing.Any, account: Account, block_hash: str=None, filter_keys: typing.List[str]=[]):
+def get_named_keys(src: typing.Any, account: Account, block_hash: str=None, filter_keys: typing.List[str]=[]):
     """Returns named keys associated with a chain account.
 
     :param src: The source from which a node client will be instantiated.

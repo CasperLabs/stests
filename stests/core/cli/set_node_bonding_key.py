@@ -48,11 +48,12 @@ def main(args):
 
     # Set bonding account.
     node.account = factory.create_account(
+        network=network_id.name,
+        typeof=AccountType.BOND,
         index=-node_id.index,
         private_key=pvk,
         public_key=pbk,
         status=AccountStatus.ACTIVE,
-        typeof=AccountType.BOND
     )
 
     # Push.

@@ -61,17 +61,16 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
 
     # Set named keys.
     # Set named keys of stored contract + slot.
-    named_keys = clx.get_account_named_keys(ctx, account_contract, filter_keys=contract.NAMED_KEYS)
+    named_keys = clx.get_named_keys(ctx, account_contract, filter_keys=contract.NKEYS)
     named_keys = {i.name: i.key.hash.hash.hex() for i in named_keys}
 
-
     # Increment on-chain.
-    (node, deploy_hash) = CONTRACT.increment(ctx, account_contract, account_user)
+    (node, deploy_hash) = contract.increment(ctx, account_contract, account_user)
 
     # Set info. 
     deploy = factory.create_deploy_for_run(
-        account=account_user,
         ctx=ctx, 
+        account=account_user,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.COUNTER_DEFINE

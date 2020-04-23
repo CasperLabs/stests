@@ -29,24 +29,22 @@ def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type
     contract = clx.contracts.get_contract(contract_type)
 
     # Install contract.
-    node, deploy_hash, keys = contract.install(ctx, account)
+    node, deploy_hash = contract.install(ctx, account)
 
     # Persist deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
-        account=account,
         ctx=ctx, 
+        account=account,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.CONTRACT_INSTALL,
         ))
 
     # Persist named keys.
-    for key_name, key_hash in keys:
-        key = factory.create_account_named_key(
-            account,
-            contract.TYPE,
-            key_name,
-            network.name,
-            key_hash,
-        )
-        cache.state.set_account_named_key(ctx, key)
+    # for key_name, key_hash in keys:
+    #     cache.state.set_named_key(ctx, factory.create_named_key(
+    #         account,
+    #         contract.TYPE,
+    #         key_name,
+    #         key_hash,
+    #     ))

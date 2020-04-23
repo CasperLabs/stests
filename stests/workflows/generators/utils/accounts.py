@@ -70,8 +70,8 @@ def do_fund_account(
 
     # Update cache.
     cache.state.set_deploy(factory.create_deploy_for_run(
-        account=cp1,
         ctx=ctx, 
+        account=cp1,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.TRANSFER
@@ -114,8 +114,8 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
 
     # Update cache.
     cache.state.set_deploy(factory.create_deploy_for_run(
-        account=cp1,
         ctx=ctx, 
+        account=cp1,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.TRANSFER_REFUND

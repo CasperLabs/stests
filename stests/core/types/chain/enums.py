@@ -36,10 +36,10 @@ class ContractType(enum.Enum):
     """Enumeration over set of bundled client contract types.
     
     """
-    COUNTER_DEFINE = "counter_define.wasm"
-    COUNTER_DEFINE_STORED = "counter_define.wasm"
-    TRANSFER_U512 = "transfer_to_account_u512.wasm"
-    TRANSFER_U512_STORED = "transfer_to_account_u512_stored.wasm"
+    COUNTER_DEFINE = enum.auto()
+    COUNTER_DEFINE_STORED = enum.auto()
+    TRANSFER_U512 = enum.auto()
+    TRANSFER_U512_STORED = enum.auto()
 
 
 class ContractLocation(enum.Enum):

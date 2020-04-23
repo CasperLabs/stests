@@ -3,7 +3,7 @@ from stests.core.clx.contracts import counter_define_by_name
 from stests.core.clx.contracts import transfer_U512_by_hash
 from stests.core.clx.contracts import transfer_U512_by_wasm
 from stests.core.types.chain import ContractType
-
+from stests.core.clx.contracts.utils import get_named_keys
 
 
 # Set of supported contracts.
@@ -16,7 +16,6 @@ CONTRACTS = {
 
 # Set of contracts to be invoked via hash (i.e. installed once & invoked from other accounts).
 CONTRACTS_BY_HASH = {
-    counter_define_by_hash,
     transfer_U512_by_hash,
 }
 

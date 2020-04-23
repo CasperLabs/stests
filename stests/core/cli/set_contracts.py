@@ -11,7 +11,6 @@ from stests.core.utils import logger
 
 
 
-
 # CLI argument parser.
 ARGS = argparse.ArgumentParser("Upload a smart contract to stests.")
 
@@ -53,22 +52,25 @@ def _install_contract(network: Network, account: Account, contract: typing.Calla
     """
     logger.log(f"{contract.WASM} :: installation starts ... please wait")
 
-    # Install contract under network faucet account.
-    _, _, keys = contract.install(network, account)
+    # Dispatch deploy.
+    node, deploy_hash = contract.install(network, account)
+    logger.log(f"{contract.WASM} :: deploy dispatched >- {deploy_hash}")
+
+    # Await deploy processing.
+    block_hash = clx.await_deploy_processing(node, deploy_hash)
+    logger.log(f"{contract.WASM} :: deploy processed at block {block_hash}")
+
+    # Get named keys.
+    keys = clx.contracts.get_named_keys(node, account, block_hash, contract.NKEYS)
 
     # Persist named keys.
     for key_name, key_hash in keys:
-        key = factory.create_account_named_key(
+        cache.infra.set_named_key(factory.create_named_key(
             account,
             contract.TYPE,
             key_name,
-            network.name,
             key_hash,
-        )
-        cache.infra.set_account_named_key(key)
-
-    logger.log(f"{contract.WASM} :: installed")
-    for key_name, key_hash in keys:
+        ))
         logger.log(f"{contract.WASM} :: named key -> {key_hash} : {key_name}")
 
 

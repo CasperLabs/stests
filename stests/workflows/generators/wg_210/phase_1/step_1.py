@@ -26,7 +26,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     return do_install_contract, (
         ctx,
         constants.ACC_RUN_CONTRACT,
-        ContractType.COUNTER_DEFINE,
+        ContractType.COUNTER_DEFINE_STORED,
     )
 
 

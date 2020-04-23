@@ -24,6 +24,7 @@ from stests.core.utils import crypto
 
 
 def create_account(
+    network: str,
     typeof: AccountType,
     index: int = 1,
     private_key: str = None, 
@@ -38,7 +39,7 @@ def create_account(
 
     return Account(
         index=index if index is not None else 1,
-        network=None,
+        network=network,
         node=None,
         private_key=private_key,
         public_key=public_key,
@@ -60,8 +61,7 @@ def create_account_for_run(
     """Returns a domain object instance: Account.
     
     """
-    account = create_account(typeof, index, private_key, public_key, status)
-    account.network = ctx.network
+    account = create_account(ctx.network, typeof, index, private_key, public_key, status)
     account.node = ctx.node_index
     account.run_index = ctx.run_index
     account.run_type = ctx.run_type
@@ -86,11 +86,10 @@ def create_account_id(
     )
 
 
-def create_account_named_key(
+def create_named_key(
     account: Account,
     contract_type: ContractType,
     name: str,
-    network: str,
     hash: str,
     ) -> NamedKey:
     """Returns a domain object instance: NamedKey.
@@ -101,26 +100,9 @@ def create_account_named_key(
         contract_type=contract_type,
         hash=hash,
         name=name,
-        network=network,
-    )
-
-
-def create_account_named_keys(
-    account: Account,
-    contract_type: ContractType,
-    name: str,
-    network: str,
-    hash: str,
-    ) -> NamedKey:
-    """Returns a domain object instance: NamedKey.
-    
-    """
-    return NamedKey(
-        account_index=account.index,
-        contract_type=contract_type,
-        hash=hash,
-        name=name,
-        network=network,
+        network=account.network,
+        run_index=account.run_index,
+        run_type=account.run_type,
     )
 
 
@@ -174,8 +156,8 @@ def create_deploy_summary(
 
 
 def create_deploy_for_run(
-    account: Account,
     ctx: ExecutionContext,
+    account: Account,
     node: Node,
     deploy_hash: str,
     typeof: DeployType

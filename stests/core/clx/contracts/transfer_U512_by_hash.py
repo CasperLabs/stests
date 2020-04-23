@@ -19,11 +19,11 @@ TYPE = ContractType.TRANSFER_U512_STORED
 WASM = "transfer_to_account_u512_stored.wasm"
 
 # Name of contract - see use when passed as session-name.
-_NAMED_KEY = "transfer_to_account"
+_NKEY = "transfer_to_account"
 
 # Named keys associated with contract.
-NAMED_KEYS = [
-    _NAMED_KEY,
+NKEYS = [
+    _NKEY,
 ]
 
 
@@ -33,10 +33,10 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str, typing
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
 
-    :returns: 3 member tuple -> (node, deploy_hash, named_keys).
+    :returns: 2 member tuple -> (node, deploy_hash).
 
     """
-    return utils.install_contract(src, account, WASM, NAMED_KEYS)
+    return utils.install_contract_by_hash(src, account, WASM)
 
 
 def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> typing.Tuple[Node, str]:
@@ -47,11 +47,11 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
 
-    :returns: Hash of dispatched deploy.
+    :returns: 2 member tuple -> (node, deploy_hash).
 
     """
     # Set named key associated with contract.
-    named_key = cache.infra.get_account_named_key(ctx.network, TYPE, _NAMED_KEY)
+    named_key = cache.infra.get_named_key(ctx.network, TYPE, _NKEY)
     if named_key is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")
 
@@ -64,7 +64,6 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
             ABI.account("address", cp2.public_key),
             ABI.big_int("amount", amount),
             ]),
-
     )
 
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512_STORED :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key}")

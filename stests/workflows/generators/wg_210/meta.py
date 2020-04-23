@@ -4,8 +4,8 @@ from stests.workflows.generators.wg_100 import meta as wg_100
 # Reuse wg_200 args + types.
 from stests.workflows.generators.wg_200 import meta as wg_200
 
-from stests.workflows.generators.wg_210 import contract_install
-from stests.workflows.generators.wg_210 import contract_invoke
+from stests.workflows.generators.wg_210 import phase_1
+from stests.workflows.generators.wg_210 import phase_2
 
 
 
@@ -21,10 +21,8 @@ DESCRIPTION = "Counter (stored contract)"
 # Set of workflow phases.
 PHASES = (
     wg_100.phase_1,
-    (
-        contract_install,
-        contract_invoke,
-    ),
+    phase_1,
+    # phase_2,
     wg_100.phase_2,
 )
 

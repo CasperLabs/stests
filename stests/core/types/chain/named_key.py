@@ -25,6 +25,12 @@ class NamedKey:
     # Associated network.
     network: str
 
+    # Numerical index to distinguish between multiple runs of the same generator.
+    run_index: typing.Optional[int]
+
+    # Type of generator, e.g. WG-100 ...etc.
+    run_type: typing.Optional[str]    
+
     @property
     def hash_as_bytes(self):
         return bytes.fromhex(self.hash)    
@@ -32,4 +38,8 @@ class NamedKey:
     @property
     def label_account_index(self):
         return f"A-{str(self.account_index).zfill(6)}"
+
+    @property
+    def label_run_index(self):
+        return f"R-{str(self.run_index).zfill(3)}"
 

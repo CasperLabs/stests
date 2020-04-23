@@ -22,15 +22,18 @@ TYPE = ContractType.COUNTER_DEFINE_STORED
 WASM = "counter_define.wasm"
 
 # Named key: contract.
-_NAMED_KEY = "counter"
+_NKEY = "counter"
 
 # Named key: contract method: increment.
-_NAMED_KEY_INC = "counter_inc"
+_NKEY_INC = "counter_inc"
+
+# State query path.
+_QPATH_COUNT = "counter/count"
 
 # Full set of named keys.
-NAMED_KEYS = [
-    _NAMED_KEY,
-    _NAMED_KEY_INC,
+NKEYS = [
+    _NKEY,
+    _NKEY_INC,
 ]
 
 
@@ -40,10 +43,10 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str, typing
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
 
-    :returns: 3 member tuple -> (node, deploy_hash, named_keys).
+    :returns: 2 member tuple -> (node, deploy_hash).
 
     """
-    return utils.install_contract(src, account, WASM, NAMED_KEYS)
+    return utils.install_contract_by_hash(src, account, WASM)
 
 
 def increment(src: typing.Any, contract_account: Account, user_account: Account) -> typing.Tuple[Node, str]:
@@ -53,18 +56,18 @@ def increment(src: typing.Any, contract_account: Account, user_account: Account)
     :param contract_account: Account under which the contract has been installed.
     :param user_account: A user account invoking the installed contract.
 
-    :returns: 2 member tuple -> (node, deploy_hash)
+    :returns: 2 member tuple -> (node, deploy_hash).
 
     """
     # Set client.
     node, client  = pyclx.get_client(ctx)
 
     # Set named keys of stored contract + slot.
-    named_keys = query.get_account_named_keys(client, contract_account, filter_keys=NAMED_KEYS)
+    named_keys = query.get_named_keys(client, contract_account, filter_keys=NKEYS)
     named_keys = {i.name: i.key.hash.hash.hex() for i in named_keys}
 
-    nk_contract = named_keys[_NAMED_KEY]
-    nk_slot = named_keys[_NAMED_KEY_INC]
+    nk_contract = named_keys[_NKEY]
+    nk_slot = named_keys[_NKEY_INC]
 
     if nk_contract is None or nk_slot is None:
         raise ValueError(f"{WASM} has not been installed upon chain.")
@@ -102,14 +105,15 @@ def increment(src: typing.Any, contract_account: Account, user_account: Account)
 def get_count(node_id: NodeIdentifier, account: Account, block_hash: str) -> int:
     """Queries a node for the current value of the counter under the passed account.
     
-    :returns: Current value of counter.
+    :param node_id: Identifier of node to be queried.
+    :param account: Account under which contract was installed.
+    :param block_hash: Hash of block at which query will be issued.
+
+    :returns: Current counter value.
 
     """
-    # Set client.
     _, client  = pyclx.get_client(node_id)
 
-    # Query chain global state.
-    state = client.queryState(block_hash, account.public_key, "counter/count", "address")
+    state = client.queryState(block_hash, account.public_key, _QPATH_COUNT, "address")
 
-    # Return scalar.
     return state.cl_value.value.i32

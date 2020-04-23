@@ -15,28 +15,6 @@ from stests.core.types.chain import Account
 from stests.core.types.chain import DeployStatus
 from stests.core.types.infra import Node
 
-# from_addr: bytes = None,
-# gas_price: int = 10,
-
-# public_key: str = None,
-# private_key: str = None,
-
-# payment: str = None,
-# payment_amount: int = None,
-# payment_hash: bytes = None,
-# payment_name: str = None,
-# payment_uref: bytes = None,
-# payment_args: bytes = None,
-
-# session: str = None,
-# session_hash: bytes = None,
-# session_name: str = None,
-# session_uref: bytes = None,
-# session_args: bytes = None,
-
-# ttl_millis: int = 0,
-# dependencies=None,
-# chain_name: str = None,
 
 
 def await_deploy_processing(src, deploy_hash: str) -> str:
@@ -126,37 +104,47 @@ def get_named_keys(src, account, block_hash, key_filter) -> typing.List[typing.D
     :returns: List of 2 member tuples -> (name, hash)
 
     """
-    keys = query.get_account_named_keys(src, account, block_hash, key_filter)
+    keys = query.get_named_keys(src, account, block_hash, key_filter)
 
     return [(i.name, i.key.hash.hash.hex()) for i in keys]
 
 
-def install_contract(src: typing.Any, account: Account, wasm_filename: str, key_filter: typing.List[str]=[]) -> typing.Tuple[Node, str]:
+def install_contract(src: typing.Any, account: Account, wasm_filename: str) -> typing.Tuple[Node, str]:
     """Install a contract under a hash & returns associated named keys.
         
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
     :param wasm_filename: Name of wasm file to be installed.
-    :param key_filter: Names of keys of interest.
 
-    :returns: 3 member tuple -> (node, deploy_hash, named_keys)
+    :returns: 2 member tuple -> (node, deploy_hash)
     
     """
-    session=get_contract_path(wasm_filename)
-    session_args = None if not key_filter else ABI.args([
-            ABI.string_value("target", "hash")
-        ])
-
     node, client, deploy_hash = dispatch_deploy(
         src,
         account,
-        session=session,
-        session_args=session_args
+        session=get_contract_path(wasm_filename),
     )
-    if not key_filter:
-        return node, deploy_hash, []
 
-    block_hash = await_deploy_processing(client, deploy_hash)
-    named_keys = get_named_keys(client, account, block_hash, key_filter)
+    return node, deploy_hash
 
-    return node, deploy_hash, named_keys
+
+def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: str) -> typing.Tuple[Node, str]:
+    """Install a contract under a hash & returns associated named keys.
+        
+    :param src: The source from which a node client will be instantiated.
+    :param account: Account under which contract will be installed.
+    :param wasm_filename: Name of wasm file to be installed.
+
+    :returns: 2 member tuple -> (node, deploy_hash)
+    
+    """
+    node, client, deploy_hash = dispatch_deploy(
+        src,
+        account,
+        session=get_contract_path(wasm_filename),
+        session_args=ABI.args([
+            ABI.string_value("target", "hash")
+        ])
+    )
+
+    return node, deploy_hash

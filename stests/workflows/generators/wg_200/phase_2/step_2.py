@@ -81,8 +81,8 @@ def _do_increment_counter_0(ctx: ExecutionContext, account_index: int):
 
     # Update cache.
     cache.state.set_deploy(factory.create_deploy_for_run(
-        account=account,
         ctx=ctx, 
+        account=account,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.COUNTER_DEFINE

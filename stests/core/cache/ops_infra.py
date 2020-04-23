@@ -19,14 +19,14 @@ from stests.core import factory
 _PARTITION = StorePartition.INFRA
 
 # Cache collections.
-COL_ACCOUNT_NAMED_KEY = "account-named-key"
+COL_NAMED_KEY = "named-key"
 COL_NETWORK = "network"
 COL_NODE = "node"
 
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_account_named_key(network: typing.Union[NetworkIdentifier, Network, str], contract_type: ContractType, name: str) -> NamedKey:
+def get_named_key(network: typing.Union[NetworkIdentifier, Network, str], contract_type: ContractType, name: str) -> NamedKey:
     """Decaches domain objects: NamedKey.
 
     :param network: A pointer to either a network or network identifier.
@@ -41,7 +41,7 @@ def get_account_named_key(network: typing.Union[NetworkIdentifier, Network, str]
 
     return [
         network,
-        COL_ACCOUNT_NAMED_KEY,
+        COL_NAMED_KEY,
         "A-*",
         contract_type.name,
         name
@@ -49,7 +49,7 @@ def get_account_named_key(network: typing.Union[NetworkIdentifier, Network, str]
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
-def get_account_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> typing.List[NamedKey]:
+def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> typing.List[NamedKey]:
     """Decaches domain objects: NamedKey.
 
     :param network: A pointer to either a network or network identifier.
@@ -64,7 +64,7 @@ def get_account_named_keys(network: typing.Union[NetworkIdentifier, Network, str
 
     return [
         network,
-        COL_ACCOUNT_NAMED_KEY,
+        COL_NAMED_KEY,
     ]
 
 
@@ -211,7 +211,7 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]) -> 
 
 
 @cache_op(_PARTITION, StoreOperation.SET)
-def set_account_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
+def set_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
     """Encaches domain object: NamedKey.
 
     :param network: NamedKey domain object instance to be cached.
@@ -221,7 +221,7 @@ def set_account_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str],
     """
     path = [
         named_key.network,
-        COL_ACCOUNT_NAMED_KEY,
+        COL_NAMED_KEY,
         named_key.label_account_index,
         named_key.contract_type.name,
         named_key.name

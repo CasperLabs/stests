@@ -26,29 +26,6 @@ COL_LOCK = "lock"
 COL_STATE = "state"
 
 
-@cache_op(_PARTITION, StoreOperation.FLUSH)
-def flush_by_run(ctx: ExecutionContext) -> typing.Generator:
-    """Flushes previous run information.
-
-    :param ctx: Execution context information.
-
-    :returns: A generator of keypaths to be flushed.
-    
-    """
-    for collection in [
-        COL_CONTEXT,
-        COL_DEPLOY_COUNT,
-        COL_INFO,
-        COL_STATE,
-    ]:
-        yield [
-            ctx.network,
-            ctx.run_type,
-            ctx.label_run_index,
-            collection,
-            "*"
-        ]
-
 
 @cache_op(_PARTITION, StoreOperation.FLUSH)
 def flush_locks(ctx: ExecutionContext) -> typing.Generator:
