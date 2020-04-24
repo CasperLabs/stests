@@ -2,10 +2,9 @@ import typing
 
 from casperlabs_client.abi import ABI
 
-from stests.core.clx import pyclx
-from stests.core.clx import query
 from stests.core.clx import defaults
-from stests.core.clx.contracts import utils
+from stests.core.clx import query
+from stests.core.clx import utils
 from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import NamedKey

@@ -1,7 +1,7 @@
 import typing
 
 from stests.core import factory
-from stests.core.clx import pyclx
+from stests.core.clx import utils
 from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.utils import logger
@@ -14,7 +14,7 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
     :param event_callback: Callback to invoke whenever an event of relevant type is recieved.
 
     """
-    node, client = pyclx.get_client(node_id)
+    node, client = utils.get_client(node_id)
     logger.log(f"CHAIN :: events :: binding to stream :: node={node.address}")
     for info in client.stream_events(all=True):
         # Set fields according to event type.
@@ -64,7 +64,7 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
 
         # Invoke callback.
         event_callback(node, factory.create_node_event_info(
-                node=node, 
+                node_id=node_id, 
                 event_id=info.event_id, 
                 event_type=event_type,
                 block_hash=block_hash,

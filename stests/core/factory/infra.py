@@ -91,7 +91,7 @@ def create_node_monitoring_lock(node_id: NodeIdentifier, lock_index: int) -> Nod
 
 
 def create_node_event_info(
-    node: Node,
+    node_id: NodeIdentifier,
     event_id: int,
     event_type: NodeEventType,
     block_hash: str = None,
@@ -106,6 +106,6 @@ def create_node_event_info(
         event_id=event_id,
         event_ts=datetime.now(),
         event_type=event_type,
-        network=node.network,
-        node=node.index,
+        network=node_id.network.name,
+        node=node_id.index,
         )

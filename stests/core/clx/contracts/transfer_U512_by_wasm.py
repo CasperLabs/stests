@@ -2,7 +2,7 @@ import typing
 
 from casperlabs_client.abi import ABI
 
-from stests.core.clx.contracts import utils
+from stests.core.clx import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventType
