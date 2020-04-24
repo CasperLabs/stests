@@ -2,7 +2,7 @@ import argparse
 
 from beautifultable import BeautifulTable
 
-from stests.core.cli.utils import get_table
+from stests.core.utils.cli import get_table
 from stests.core import cache
 from stests.core.utils import args_validator
 from stests.core import factory

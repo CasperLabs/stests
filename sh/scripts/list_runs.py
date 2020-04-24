@@ -2,7 +2,7 @@ import argparse
 
 from beautifultable import BeautifulTable
 
-from stests.core.cli.utils import get_table
+from stests.core.utils.cli import get_table
 from stests.core import cache
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionStatus

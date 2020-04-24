@@ -3,7 +3,7 @@ import json
 
 from beautifultable import BeautifulTable
 
-from stests.core.cli.utils import get_table
+from stests.core.utils.cli import get_table
 from stests.core import cache
 from stests.core import clx
 from stests.core.utils import args_validator

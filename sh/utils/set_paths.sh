@@ -5,8 +5,8 @@ export STESTS_PATH_OPS=$STESTS_PATH_ROOT/ops
 
 # Repo internal paths.
 export STESTS_PATH_SH=$STESTS_HOME/sh
+export STESTS_PATH_SH_SCRIPTS=$STESTS_HOME/sh/scripts
 export STESTS_PATH_SRC=$STESTS_HOME/stests
-export STESTS_PATH_CLI=$STESTS_HOME/stests/core/cli
 export STESTS_PATH_GENERATORS=$STESTS_HOME/stests/workflows/generators
 export STESTS_PATH_MONITORING=$STESTS_HOME/stests/monitoring
 export STESTS_PATH_TEMPLATES=$STESTS_HOME/templates
