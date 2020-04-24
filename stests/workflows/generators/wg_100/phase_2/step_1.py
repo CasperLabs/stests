@@ -48,4 +48,4 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
 
     """
     verification.verify_deploy(ctx, block_hash, deploy_hash)
-    verification.verify_transfer(ctx, block_hash, deploy_hash)
+    verification.verify_transfer(ctx, node_id, block_hash, deploy_hash)

@@ -57,5 +57,5 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
 
     """
     verification.verify_deploy(ctx, block_hash, deploy_hash)
-    transfer = verification.verify_transfer(ctx, block_hash, deploy_hash)
-    verification.verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index, ctx.args.user_initial_clx_balance)
+    verification.verify_transfer(ctx, node_id, block_hash, deploy_hash)
+    

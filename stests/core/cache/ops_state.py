@@ -83,6 +83,24 @@ def get_account(account_id: AccountIdentifier) -> Account:
     ]
 
 
+@cache_op(_PARTITION, StoreOperation.GET_COUNT)
+def get_account_balance(account: Account) -> int:
+    """Returns balance of a test account.
+
+    :param account: An account.
+
+    :returns: Cached account balance.
+
+    """
+    return [
+        account.network,
+        account.run_type,
+        account.label_run_index,
+        COL_ACCOUNT_BALANCE,
+        account.label_index,
+    ]
+
+
 def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
     """Decaches domain object: Account.
     
