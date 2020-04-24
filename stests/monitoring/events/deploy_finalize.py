@@ -27,10 +27,6 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
     :param deploy_hash: Hash of finalized deploy.
 
     """
-    # Escape if event has been processed.
-    if _was_event_processed(node_id, block_hash, deploy_hash):
-        return
-
     logger.log(f"MONIT :: {node_id.label} -> deploy finalized :: {deploy_hash} :: block={block_hash}")
 
     # Query chain.
@@ -44,10 +40,10 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
         logger.log_error(f"MONIT :: {node_id.label} -> finalized deploy query failure :: {deploy_hash}")
         return
 
-    # Process previously dispatched deploys.
+    # Process deploys dispatched by a generator.
     deploy = cache.state.get_deploy(deploy_hash)
     if deploy:
-        _process_dispatched_deploy(
+        _process_deploy_dispatched_by_a_generator(
             node_id,
             block_hash,
             datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
@@ -56,21 +52,7 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
             )
 
 
-def _was_event_processed(node_id: NodeIdentifier, block_hash: str, deploy_hash: str) -> bool:
-    """Process a monitored deploy & returns a flag indicating whether it was successfully cached.
-
-    """
-    summary = factory.create_deploy_summary(
-        node_id,
-        block_hash,
-        deploy_hash,
-        )
-    _, encached = cache.monitoring.set_deploy_summary(summary)
-
-    return not encached
-
-
-def _process_dispatched_deploy(
+def _process_deploy_dispatched_by_a_generator(
     node_id: NodeIdentifier,
     block_hash: str,
     block_timestamp: datetime,

@@ -1,9 +1,14 @@
+from datetime import datetime
+
 from stests.core.types.infra import Network
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NetworkStatus
 from stests.core.types.infra import NetworkType
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
+from stests.core.types.infra import NodeEventLock
+from stests.core.types.infra import NodeEventType
+from stests.core.types.infra import NodeMonitoringLock
 from stests.core.types.infra import NodeStatus
 from stests.core.types.infra import NodeType
 
@@ -72,3 +77,35 @@ def create_node_id(network_id: NetworkIdentifier, index: int) -> NodeIdentifier:
     
     """
     return NodeIdentifier(network_id, index)
+
+
+def create_node_monitoring_lock(node_id: NodeIdentifier, lock_index: int) -> NodeMonitoringLock:
+    """Returns a domain object instance: NodeMonitoringLock.
+    
+    """
+    return NodeMonitoringLock(
+        network=node_id.network.name,
+        index=node_id.index,
+        lock_index=lock_index,
+        )
+
+
+def create_node_event_lock(
+    node_id: NodeIdentifier,
+    event_id: int,
+    event_type: NodeEventType,
+    block_hash: str = None,
+    deploy_hash: str = None,
+    ) -> NodeEventLock:
+    """Returns a domain object instance: NodeMonitoringLock.
+    
+    """
+    return NodeEventLock(
+        block_hash=block_hash,
+        deploy_hash=deploy_hash,
+        event_id=event_id,
+        event_ts=datetime.now(),
+        event_type=event_type,
+        network=node_id.network.name,
+        node=node_id.index,
+        )

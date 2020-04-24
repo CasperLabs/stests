@@ -122,8 +122,12 @@ class DeploySummary:
     # Deploy's processing status.
     status: DeployStatus
 
-    # Node from which deploy was streamed.
+    # Node from which deploy event was streamed.
     streaming_node: int
 
     # Moment in time when deploy was streamed.
     streaming_ts: datetime
+
+    @property
+    def label_node_index(self):
+        return f"N-{str(self.streaming_node).zfill(4)}"

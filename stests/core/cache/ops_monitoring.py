@@ -7,6 +7,7 @@ from stests.core.types.chain import Block
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeploySummary
 from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import NodeEventLock
 from stests.core.types.infra import NodeMonitoringLock
 
 
@@ -17,6 +18,7 @@ _PARTITION = StorePartition.MONITORING
 COL_BLOCK = "block"
 COL_DEPLOY = "deploy"
 COL_NODE_LOCK = "node-lock"
+COL_EVENT_LOCK = "event-lock"
 
 
 
@@ -85,22 +87,6 @@ def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     ], block
 
 
-@cache_op(_PARTITION, StoreOperation.SET_SINGLETON)
-def set_deploy_summary(deploy_summary: DeploySummary) -> typing.Tuple[typing.List[str], DeploySummary]:
-    """Encaches domain object: DeploySummary.
-    
-    :param deploy: Deploy domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return [
-        deploy_summary.network,
-        COL_DEPLOY,
-        f"{deploy_summary.block_hash}.{deploy_summary.deploy_hash}"
-    ], deploy_summary
-
-
 @cache_op(_PARTITION, StoreOperation.LOCK)
 def set_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Tuple[typing.List[str], NodeMonitoringLock]:
     """Encaches a lock: NodeMonitoringLock.
@@ -113,4 +99,19 @@ def set_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Tuple[typing.List[
         COL_NODE_LOCK,
         lock.label_index,
         lock.lock_index,
+    ], lock
+
+
+@cache_op(_PARTITION, StoreOperation.LOCK)
+def set_node_event_lock(lock: NodeEventLock) -> typing.Tuple[typing.List[str], NodeEventLock]:
+    """Encaches a lock: NodeMonitoringLock.
+
+    :param lock: Information to be locked.
+
+    """
+    return [
+        lock.network,
+        COL_EVENT_LOCK,
+        lock.label_node_index,
+        f"{lock.label_event_id}.{lock.label_event_type},"
     ], lock

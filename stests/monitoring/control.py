@@ -3,6 +3,7 @@ from dramatiq.middleware import TimeLimitExceeded
 from dramatiq.middleware import Shutdown
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.infra import NodeMonitoringLock
 from stests.core import factory
@@ -16,7 +17,7 @@ _QUEUE = "monitoring.control"
 
 # Number of monitors to launch per node.
 # TODO: use algo: processes * threads / nodes 
-_MONITORS_PER_NODE = 1
+_MONITORS_PER_NODE = 3
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -42,11 +43,7 @@ def do_monitor_node(node_id: NodeIdentifier):
     # Attempt to obtain a lock.
     locked = False
     for i in range(_MONITORS_PER_NODE):
-        lock = NodeMonitoringLock(
-            network=node_id.network.name,
-            index=node_id.index,
-            lock_index=i + 1
-            )
+        lock = factory.create_node_monitoring_lock(node_id, i + 1)
         _, lock_acquired = cache.monitoring.set_node_monitor_lock(lock)
         if lock_acquired:
             break

@@ -29,6 +29,20 @@ class NetworkType(enum.Enum):
     MAIN = enum.auto()
 
 
+class NodeEventType(enum.Flag):
+    """Flag over set of node events.
+    
+    """
+    BLOCK_ADD = enum.auto()
+    BLOCK_FINALIZE = enum.auto()
+    DEPLOY_ADD = enum.auto()
+    DEPLOY_DISCARD = enum.auto()
+    DEPLOY_FINALIZE = enum.auto()
+    DEPLOY_ORPHAN = enum.auto()
+    DEPLOY_PROCESSED = enum.auto()
+    DEPLOY_REQUEUE = enum.auto()
+
+
 class NodeStatus(enum.Flag):
     """Flag over set of node states.
     
@@ -54,6 +68,7 @@ class NodeType(enum.Enum):
 ENUM_SET = {
     NetworkStatus,
     NetworkType,
+    NodeEventType,
     NodeStatus,
     NodeType,
 }

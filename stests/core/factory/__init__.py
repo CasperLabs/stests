@@ -11,6 +11,8 @@ from stests.core.factory.infra import create_network
 from stests.core.factory.infra import create_network_id
 from stests.core.factory.infra import create_node
 from stests.core.factory.infra import create_node_id
+from stests.core.factory.infra import create_node_event_lock
+from stests.core.factory.infra import create_node_monitoring_lock
 
 from stests.core.factory.orchestration import create_execution_context
 from stests.core.factory.orchestration import create_execution_id

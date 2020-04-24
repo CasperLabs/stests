@@ -131,24 +131,6 @@ def create_block_on_finalisation(
         )
 
 
-def create_deploy_summary(
-    node_id: NodeIdentifier,
-    block_hash: str,
-    deploy_hash: str,
-    ) -> DeploySummary:
-    """Returns a domain object instance: DeploySummary.
-    
-    """
-    return DeploySummary(
-        block_hash=block_hash,
-        deploy_hash=deploy_hash,
-        network=node_id.network.name,
-        status=DeployStatus.FINALIZED,
-        streaming_node=node_id.index,
-        streaming_ts=datetime.now(),
-    )
-
-
 def create_deploy_for_run(
     ctx: ExecutionContext,
     account: Account,
