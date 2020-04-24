@@ -8,6 +8,7 @@ from stests.core.clx import defaults
 from stests.core.clx.contracts import utils
 from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
+from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
@@ -49,52 +50,31 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str, typing
     return utils.install_contract_by_hash(src, account, WASM)
 
 
-def increment(src: typing.Any, contract_account: Account, user_account: Account) -> typing.Tuple[Node, str]:
+def increment(
+    src: typing.Any,
+    contract_account: Account,
+    contract_keys: typing.List[NamedKey],
+    user_account: Account,
+    ) -> typing.Tuple[Node, str]:
     """Increments counter by 1.
     
     :param src: The source from which a node client will be instantiated.
-    :param contract_account: Account under which the contract has been installed.
+    :param contract_account: A user account invoking the installed contract.
+    :param contract_keys: Named keys associated with installed contract. 
     :param user_account: A user account invoking the installed contract.
 
     :returns: 2 member tuple -> (node, deploy_hash).
 
     """
-    # Set client.
-    node, client  = pyclx.get_client(ctx)
+    nk_contract = [i for i in contract_keys if i.name == _NKEY][0]
+    nk_inc = [i for i in contract_keys if i.name == _NKEY_INC][0]
 
-    # Set named keys of stored contract + slot.
-    named_keys = query.get_named_keys(client, contract_account, filter_keys=NKEYS)
-    named_keys = {i.name: i.key.hash.hash.hex() for i in named_keys}
-
-    nk_contract = named_keys[_NKEY]
-    nk_slot = named_keys[_NKEY_INC]
-
-    if nk_contract is None or nk_slot is None:
-        raise ValueError(f"{WASM} has not been installed upon chain.")
-
-    # Dispatch deploy.
-    deploy_hash = client.deploy(
-        session_hash=nk_contract.hash_as_bytes,
-        session_args=[
-            ABI.key_hash("counter_key", nk_slot.hash_as_bytes),
-            ],
-        from_addr=user_account.public_key,
-        private_key=user_account.private_key_as_pem_filepath,
-        # TODO: review how these are being assigned
-        payment_amount=defaults.CLX_TX_FEE,
-        gas_price=defaults.CLX_TX_GAS_PRICE
-    )
-
-    # Set client.
-    _, client  = pyclx.get_client(ctx)
-
-    _, _, deploy_hash = utils.dispatch_deploy(
-        client,
+    node, _, deploy_hash = utils.dispatch_deploy(
+        src,
         user_account,
-        session_hash=nk_contract.hash_as_bytes,
-        session_args=[
-                ABI.key_hash("counter_key", nk_slot.hash_as_bytes),
-            ],
+        from_addr=user_account.public_key,
+        session_hash=nk_inc.hash_as_bytes,
+        session_args=[ABI.key_hash("counter_key", nk_contract.hash_as_bytes)],
         ) 
 
     logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={user_account.public_key}")
@@ -102,18 +82,16 @@ def increment(src: typing.Any, contract_account: Account, user_account: Account)
     return node, deploy_hash
 
 
-def get_count(node_id: NodeIdentifier, account: Account, block_hash: str) -> int:
+def get_count(src: typing.Any, account: Account, block_hash: str=None) -> int:
     """Queries a node for the current value of the counter under the passed account.
     
-    :param node_id: Identifier of node to be queried.
+    :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract was installed.
     :param block_hash: Hash of block at which query will be issued.
 
     :returns: Current counter value.
 
     """
-    _, client  = pyclx.get_client(node_id)
-
-    state = client.queryState(block_hash, account.public_key, _QPATH_COUNT, "address")
+    state = query.get_state(src, block_hash, account.public_key, "address", _QPATH_COUNT)
 
     return state.cl_value.value.i32

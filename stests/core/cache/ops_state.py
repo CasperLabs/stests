@@ -8,6 +8,7 @@ from stests.core.cache.ops_infra import get_nodes
 from stests.core.cache.utils import cache_op
 from stests.core.types.chain import Account
 from stests.core.types.chain import AccountIdentifier
+from stests.core.types.chain import ContractType
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import NamedKey
 from stests.core.types.chain import Transfer
@@ -228,6 +229,27 @@ def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> typing.Tuple[ty
     ]
 
     return path, named_key
+
+
+@cache_op(_PARTITION, StoreOperation.GET_MANY)
+def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: ContractType) -> typing.List[NamedKey]:
+    """Decaches domain objects: NamedKey.
+
+    :param network: A pointer to either a network or network identifier.
+
+    :returns: Collection of registered nodes.
+    
+    """
+    path = [
+        ctx.network,
+        ctx.run_type,
+        ctx.label_run_index,
+        COL_NAMED_KEY,
+        account.label_index,
+        contract_type.name    
+    ]
+
+    return path
 
 
 @cache_op(_PARTITION, StoreOperation.SET)

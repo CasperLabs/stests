@@ -71,7 +71,7 @@ def get_pbk_pem_from_bytes(pbk_bytes):
     """Returns public key (pem) from bytes.
     
     """
-    return Ed25519PublicKey.from_public_bytes(pbk_bytes).public_bytes(
+    return ed25519.Ed25519PublicKey.from_public_bytes(pbk_bytes).public_bytes(
             encoding=serialization.Encoding.PEM,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         )

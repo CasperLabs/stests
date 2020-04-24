@@ -127,3 +127,25 @@ def _get_last_block_hash(client) -> str:
     last_block_info = next(client.showBlocks(1))
 
     return last_block_info.summary.block_hash.hex()
+
+
+def get_state(src: typing.Any, block_hash: str, key: str, key_type: str, path: str):
+    """Queries node for a item within global state.
+
+    :param src: The source from which a node client will be instantiated.
+    :param block_hash: Hash of block for which query will be made.
+    :param key: Name of key against which to issue a query.
+    :param key_type: Type of key.
+    :param path: Path within global state data.
+
+    :returns: Global state info pulled from chain.
+
+    """    
+    _, client = pyclx.get_client(src)
+
+    return client.queryState(
+        block_hash or _get_last_block_hash(client),
+        key,
+        path,
+        key_type,
+        )

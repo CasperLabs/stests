@@ -44,6 +44,10 @@ def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: s
         logger.log_error(f"MONIT :: {node_id.label} -> finalized deploy query failure :: {deploy_hash}")
         return
 
+    # TODO: process deploy_info error states
+    # import json
+    # print(json.dumps(deploy_info, indent=4))
+
     # Process previously dispatched deploys.
     deploy = cache.state.get_deploy(deploy_hash)
     if deploy:

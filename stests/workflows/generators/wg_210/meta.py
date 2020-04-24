@@ -22,7 +22,7 @@ DESCRIPTION = "Counter (stored contract)"
 PHASES = (
     wg_100.phase_1,
     phase_1,
-    # phase_2,
+    phase_2,
     wg_100.phase_2,
 )
 

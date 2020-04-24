@@ -44,7 +44,25 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    print(222)
+    verification.verify_deploy_count(ctx, ctx.args.user_accounts * ctx.args.increments)    
+
+    contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)
+    contract_account = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
+    count = contract.get_count(ctx, contract_account)
+    print(f"sss :: {count}")
+    assert count == ctx.args.user_accounts * ctx.args.increments, "counter verification failed"
+
+
+def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
+    """Step deploy verifier.
+    
+    :param ctx: Execution context information.
+    :param node_id: Identifier of node which emitted block finalisation event.
+    :param block_hash: A finalized block hash.
+    :param deploy_hash: A finalized deploy hash.
+
+    """
+    verification.verify_deploy(ctx, block_hash, deploy_hash)
 
 
 @dramatiq.actor(queue_name="workflows.generators.WG-210")
@@ -52,29 +70,22 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     """Dispatches counter increment deploy.
     
     """
-    # Set accounts.
-    account_contract = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
-    account_user = cache.state.get_account_by_index(ctx, account_index)
-
-    # Set contract.
+    # Set contract info.
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE_STORED)
+    contract_account = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
+    contract_keys = cache.state.get_named_keys(ctx, contract_account, ContractType.COUNTER_DEFINE_STORED)
 
-    # Set named keys.
-    # Set named keys of stored contract + slot.
-    named_keys = clx.get_named_keys(ctx, account_contract, filter_keys=contract.NKEYS)
-    named_keys = {i.name: i.key.hash.hash.hex() for i in named_keys}
+    # Set user account.
+    user_account = cache.state.get_account_by_index(ctx, account_index)
 
-    # Increment on-chain.
-    (node, deploy_hash) = contract.increment(ctx, account_contract, account_user)
+    # Increment on-chain counter.
+    (node, deploy_hash) = contract.increment(ctx, contract_account, contract_keys, user_account)
 
-    # Set info. 
-    deploy = factory.create_deploy_for_run(
+    # Update cache.
+    cache.state.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
-        account=account_user,
+        account=user_account,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.COUNTER_DEFINE
-        )
-
-    # Update cache.
-    cache.state.set_deploy(deploy)
+        ))

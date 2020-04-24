@@ -26,16 +26,12 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     :returns: 3 member tuple -> actor, message count, message arg factory.
 
     """
-    # Set contract account.
+    # Set named keys.
     account = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
-
-    # Set contract.
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE_STORED)
-
-    # Set contract keys.
     keys = clx.contracts.get_named_keys(ctx, account, None, contract.NKEYS)
 
-    # Persist keys.
+    # Persist named keys.
     for key_name, key_hash in keys:
         cache.state.set_named_key(ctx, factory.create_named_key(
             account,

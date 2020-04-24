@@ -38,6 +38,7 @@ def await_deploy_processing(src, deploy_hash: str) -> str:
 def dispatch_deploy(
     src,
     account: Account,
+    from_addr: str = None,
     session: str = None,
     session_args = None,
     session_hash: str = None,
@@ -48,6 +49,8 @@ def dispatch_deploy(
     
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which deploy will be dispatched.
+    :param from_addr: Purse address that will be used to pay for the deployment.
+
     :param session: Path to session wasm file.
     :param session_args: Arguments used during deploy processing.
     :param session_hash: Hash of a named key associated with account.
@@ -66,7 +69,8 @@ def dispatch_deploy(
             session_name=session_name,
             session_uref=session_uref,
 
-            from_addr=account.public_key,
+            from_addr=from_addr or account.public_key,
+            public_key=account.public_key_as_pem_filepath,
             private_key=account.private_key_as_pem_filepath,
 
             # TODO: review how these are being assigned
@@ -74,6 +78,7 @@ def dispatch_deploy(
             gas_price=CLX_TX_GAS_PRICE
         )
     except casperlabs_client.casperlabs_client.InternalError as err:
+        print(err)
         if err.details.index("UNAVAILABLE") >= 0:
             raise IOError("Deploy dispatch error: unreachable node")
         raise err

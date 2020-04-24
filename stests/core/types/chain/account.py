@@ -4,6 +4,7 @@ import typing
 from stests.core.types.chain.enums import AccountStatus
 from stests.core.types.chain.enums import AccountType
 from stests.core.types.chain.key_pair import PrivateKey
+from stests.core.types.chain.key_pair import PublicKey
 
 
 
@@ -50,6 +51,10 @@ class Account:
     @property
     def public_key_as_bytes(self):
         return bytes.fromhex(self.public_key)
+
+    @property
+    def public_key_as_pem_filepath(self):
+        return PublicKey(self.public_key).as_pem_filepath
 
     @property
     def label_index(self):

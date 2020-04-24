@@ -19,7 +19,7 @@ CONTRACT_INITIAL_CLX_BALANCE = int(1e8)
 FAUCET_INITIAL_CLX_BALANCE = int(1e11)
 
 # Default number of times counters will be incremented.
-INCREMENTS = 3
+INCREMENTS = 1
 
 # Default number of user accounts to generate.
 USER_ACCOUNTS = 5
