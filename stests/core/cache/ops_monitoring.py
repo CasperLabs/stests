@@ -7,7 +7,7 @@ from stests.core.types.chain import Block
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeploySummary
 from stests.core.types.infra import NetworkIdentifier
-from stests.core.types.infra import NodeEventLock
+from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeMonitoringLock
 
 
@@ -103,10 +103,12 @@ def set_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Tuple[typing.List[
 
 
 @cache_op(_PARTITION, StoreOperation.LOCK)
-def set_node_event_lock(lock: NodeEventLock) -> typing.Tuple[typing.List[str], NodeEventLock]:
-    """Encaches a lock: NodeMonitoringLock.
+def set_node_event_info(lock: NodeEventInfo) -> typing.Tuple[typing.List[str], NodeEventInfo]:
+    """Encaches domain object: NodeEventInfo.
+    
+    :param block: Node event information to be cached.
 
-    :param lock: Information to be locked.
+    :returns: Keypath + domain object instance.
 
     """
     return [

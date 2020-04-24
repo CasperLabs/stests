@@ -39,7 +39,7 @@ def do_phase(ctx: ExecutionContext):
     cache.orchestration.set_info(phase_info)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} -> starts")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} -> start")
 
     # Enqueue step.
     do_step.send(ctx)

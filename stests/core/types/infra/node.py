@@ -55,8 +55,8 @@ class Node:
 
 
 @dataclasses.dataclass
-class NodeEventLock:
-    """Encpasulates information used to lock processing a node event.
+class NodeEventInfo:
+    """Encpasulates information pertaining to a node event.
     
     """
     # Hash of block associated with event.
@@ -91,6 +91,17 @@ class NodeEventLock:
     @property
     def label_node_index(self):
         return f"N-{str(self.node).zfill(4)}"
+
+    @property
+    def log_suffix(self):
+        if self.block_hash and self.deploy_hash:
+            return f"{self.deploy_hash} :: block={self.block_hash}"
+        elif self.block_hash:
+            return self.block_hash
+        elif self.deploy_hash:
+            return self.deploy_hash
+        
+
 
 
 @dataclasses.dataclass

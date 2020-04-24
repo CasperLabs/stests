@@ -6,7 +6,7 @@ from stests.core.types.infra import NetworkStatus
 from stests.core.types.infra import NetworkType
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
-from stests.core.types.infra import NodeEventLock
+from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeMonitoringLock
 from stests.core.types.infra import NodeStatus
@@ -90,22 +90,22 @@ def create_node_monitoring_lock(node_id: NodeIdentifier, lock_index: int) -> Nod
         )
 
 
-def create_node_event_lock(
-    node_id: NodeIdentifier,
+def create_node_event_info(
+    node: Node,
     event_id: int,
     event_type: NodeEventType,
     block_hash: str = None,
     deploy_hash: str = None,
-    ) -> NodeEventLock:
+    ) -> NodeEventInfo:
     """Returns a domain object instance: NodeMonitoringLock.
     
     """
-    return NodeEventLock(
+    return NodeEventInfo(
         block_hash=block_hash,
         deploy_hash=deploy_hash,
         event_id=event_id,
         event_ts=datetime.now(),
         event_type=event_type,
-        network=node_id.network.name,
-        node=node_id.index,
+        network=node.network,
+        node=node.index,
         )

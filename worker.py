@@ -22,4 +22,3 @@ import stests.monitoring.events
 # Start monitoring.
 from stests.monitoring.control import do_start_monitoring
 do_start_monitoring.send()
-

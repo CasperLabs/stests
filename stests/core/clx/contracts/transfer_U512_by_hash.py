@@ -66,6 +66,6 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
             ]),
     )
 
-    logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: TRANSFER_U512_STORED :: {amount} CLX :: {cp1.public_key[:8]} -> {cp2.public_key}")
+    logger.log(f"CHAIN :: {node.address} :: deploy :: {deploy_hash} :: TRANSFER_U512_STORED {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}")
 
     return node, deploy_hash

@@ -77,7 +77,7 @@ def increment(
         session_args=[ABI.key_hash("counter_key", nk_contract.hash_as_bytes)],
         ) 
 
-    logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={user_account.public_key}")
+    logger.log(f"CHAIN :: deploy :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={user_account.public_key}")
 
     return node, deploy_hash
 

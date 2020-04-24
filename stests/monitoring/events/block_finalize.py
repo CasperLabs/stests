@@ -5,6 +5,7 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core import factory
+from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
 from stests.core.utils import logger
 
@@ -14,14 +15,14 @@ _QUEUE = "monitoring.events.block.finalized"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_block_finalized(node_id: NodeIdentifier, block_hash: str):   
+def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):   
     """Event: raised whenever a block is finalized.
 
     :param node_id: Identifier of node from which event was streamed.
-    :param block_hash: Hash of finalized block.
+    :param event_info: Node event information.
 
     """
-    logger.log(f"MONIT :: {node_id.label} -> block finalized :: {block_hash}")
+    block_hash = event_info.block_hash
 
     # Query: on-chain block info.
     block_info = clx.get_block_info(node_id, block_hash, parse=False)

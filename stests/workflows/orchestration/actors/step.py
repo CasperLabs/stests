@@ -46,7 +46,7 @@ def do_step(ctx: ExecutionContext):
     cache.orchestration.set_info(step_info)
 
     # Inform.
-    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} :: {step.label} -> starts")
+    logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_phase_index} :: {ctx.label_step_index} :: {step.label} -> start")
 
     # Execute.
     _execute(ctx, step)

@@ -47,7 +47,7 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
         session_name=_NKEY_INC,
     )
 
-    logger.log(f"CHAIN :: deploy dispatched :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
+    logger.log(f"CHAIN :: deploy :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
 
     return node, deploy_hash
 

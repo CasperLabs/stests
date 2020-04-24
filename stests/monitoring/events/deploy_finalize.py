@@ -8,6 +8,7 @@ from stests.core.utils import encoder
 from stests.core import factory
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeployStatus
+from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.chain import TransferStatus
 from stests.core.utils import logger
@@ -19,15 +20,16 @@ _QUEUE = "monitoring.events.deploy.finalized"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_deploy_finalized(node_id: NodeIdentifier, block_hash: str, deploy_hash: str):   
+def on_deploy_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):   
     """Event: raised whenever a deploy is finalized.
 
     :param node_id: Identifier of node from which event was streamed.
-    :param block_hash: Hash of finalized block.
-    :param deploy_hash: Hash of finalized deploy.
+    :param event_info: Node event information.
 
     """
-    logger.log(f"MONIT :: {node_id.label} -> deploy finalized :: {deploy_hash} :: block={block_hash}")
+    # Unpack event info.
+    block_hash = event_info.block_hash
+    deploy_hash = event_info.deploy_hash
 
     # Query chain.
     block_info = clx.get_block_info(node_id, block_hash, parse=False)

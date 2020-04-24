@@ -7,7 +7,7 @@ from stests.core.types.infra.enums import ENUM_SET
 from stests.core.types.infra.network import Network
 from stests.core.types.infra.network import NetworkIdentifier
 from stests.core.types.infra.node import Node
-from stests.core.types.infra.node import NodeEventLock
+from stests.core.types.infra.node import NodeEventInfo
 from stests.core.types.infra.node import NodeIdentifier
 from stests.core.types.infra.node import NodeMonitoringLock
 
@@ -18,7 +18,7 @@ TYPE_SET = {
     NodeEventType,
     NetworkIdentifier,
     Node,
-    NodeEventLock,
+    NodeEventInfo,
     NodeIdentifier,
     NodeMonitoringLock,
 } | ENUM_SET
