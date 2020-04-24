@@ -66,7 +66,7 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Exception: chain exception, e.g. node down, comms channel issue ...etc.
     except Exception as err:
-        logger.log_warning(f"MONIT :: stream :: error :: {err}")
+        logger.log_warning(f"CHAIN :: stream :: error :: {err}")
         do_monitor_node.send(node_id)
 
     # Release lock.

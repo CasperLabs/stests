@@ -5,6 +5,7 @@ from casperlabs_client.abi import ABI
 from stests.core.clx.contracts import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
+from stests.core.types.infra import NodeEventType
 from stests.core.types.chain import ContractType
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
@@ -39,6 +40,6 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
             ]),
     )
 
-    logger.log(f"CHAIN :: {node.address} :: deploy :: {deploy_hash} :: TRANSFER_U512 {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}")
+    logger.log(f"CHAIN :: {node.label_index} :: event :: 0000 :: {NodeEventType.DEPLOY_DISPATCHED.name} :: {deploy_hash} :: TRANSFER_U512 {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}")
 
     return node, deploy_hash

@@ -24,27 +24,27 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
             deploy_hash=None
 
         elif info.HasField("new_finalized_block"):
-            event_type=NodeEventType.BLOCK_FINALIZE
+            event_type=NodeEventType.BLOCK_FINALIZED
             block_hash=info.new_finalized_block.block_hash.hex()
             deploy_hash=None
 
         elif info.HasField("deploy_added"):
-            event_type=NodeEventType.DEPLOY_ADD
+            event_type=NodeEventType.DEPLOY_ADDED
             block_hash=None
             deploy_hash=info.deploy_added.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_discarded"):
-            event_type=NodeEventType.DEPLOY_DISCARD
+            event_type=NodeEventType.DEPLOY_DISCARDED
             block_hash=None
             deploy_hash=info.deploy_discarded.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_finalized"):
-            event_type=NodeEventType.DEPLOY_FINALIZE
+            event_type=NodeEventType.DEPLOY_FINALIZED
             block_hash=info.deploy_finalized.block_hash.hex()
             deploy_hash=info.deploy_finalized.processed_deploy.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_orphaned"):
-            event_type=NodeEventType.DEPLOY_ORPHAN
+            event_type=NodeEventType.DEPLOY_ORPHANED
             block_hash=None
             deploy_hash=info.deploy_orphaned.deploy.deploy_hash.hex()
 
@@ -54,7 +54,7 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
             deploy_hash=info.deploy_processed.processed_deploy.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_requeued"):
-            event_type=NodeEventType.DEPLOY_REQUEUE
+            event_type=NodeEventType.DEPLOY_REQUEUED
             block_hash=None
             deploy_hash=info.deploy_requeued.deploy.deploy_hash.hex()
 

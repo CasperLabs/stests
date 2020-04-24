@@ -26,7 +26,5 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
 
     # Query: on-chain block info.
     block_info = clx.get_block_info(node_id, block_hash, parse=False)
-
-    # Assert query returned block info - if not then this is an error scenario.
     if block_info is None:
-        logger.log_error(f"MONIT :: {node_id.label} -> finalized block query failure :: {block_hash}")
+        logger.log_error(f"CHAIN :: {node_id.label} -> finalized block query failure :: {block_hash}")

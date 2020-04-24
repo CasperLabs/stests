@@ -6,6 +6,7 @@ from stests.core.clx.contracts import utils
 from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
 from stests.core.types.infra import Node
+from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.utils import logger
 
@@ -47,7 +48,7 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
         session_name=_NKEY_INC,
     )
 
-    logger.log(f"CHAIN :: deploy :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}")
+    logger.log(f"CHAIN :: {node.label_index} :: event :: 0000 :: {NodeEventType.DEPLOY_DISPATCHED.name} :: COUNTER_DEFINE.increment :: address={account.public_key}")
 
     return node, deploy_hash
 

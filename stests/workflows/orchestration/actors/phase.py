@@ -107,7 +107,6 @@ def _can_start(ctx: ExecutionContext) -> bool:
 
     # False if next phase locked.
     if not predicates.was_lock_acquired(ExecutionAspect.PHASE, ctx):
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} :: {ctx.label_next_phase_index} -> unacquired phase lock")
         return False
     
     # All tests passed, therefore return true.    

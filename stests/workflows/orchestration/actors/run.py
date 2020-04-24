@@ -31,7 +31,7 @@ def do_run(ctx: ExecutionContext):
     
     """
     # Escape if unexecutable.
-    if not _can_run(ctx):
+    if not _can_start(ctx):
         return
     
     # Enqueue next run (when mode=PERIODIC).
@@ -100,7 +100,7 @@ def on_run_error(ctx: ExecutionContext, err: str):
     logger.log_error(err)
 
 
-def _can_run(ctx: ExecutionContext) -> bool:
+def _can_start(ctx: ExecutionContext) -> bool:
     """Returns flag indicating whether a run increment is valid.
     
     :param ctx: Execution context information.
@@ -120,7 +120,6 @@ def _can_run(ctx: ExecutionContext) -> bool:
 
     # False if locked.
     if not predicates.was_lock_acquired(ExecutionAspect.RUN, ctx):
-        logger.log_warning(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} -> unacquired lock")
         return False
 
     # All tests passed, therefore return true.    

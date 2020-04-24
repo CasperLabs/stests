@@ -10,6 +10,7 @@ from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Node
+from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.utils import logger
@@ -77,7 +78,7 @@ def increment(
         session_args=[ABI.key_hash("counter_key", nk_contract.hash_as_bytes)],
         ) 
 
-    logger.log(f"CHAIN :: deploy :: {deploy_hash} :: COUNTER_DEFINE.increment :: address={user_account.public_key}")
+    logger.log(f"CHAIN :: {node.label_index} :: event :: 0000 :: {NodeEventType.DEPLOY_DISPATCHED.name} :: COUNTER_DEFINE.increment :: address={user_account.public_key}")
 
     return node, deploy_hash
 

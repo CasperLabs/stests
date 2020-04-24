@@ -12,6 +12,7 @@ from stests.core.types.chain import DeploySummary
 from stests.core.types.chain import DeployType
 from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Node
+from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.chain import Transfer
 from stests.core.types.chain import TransferStatus
@@ -80,26 +81,6 @@ def create_account_id(
     )
 
 
-def create_named_key(
-    account: Account,
-    contract_type: ContractType,
-    name: str,
-    hash: str,
-    ) -> NamedKey:
-    """Returns a domain object instance: NamedKey.
-    
-    """
-    return NamedKey(
-        account_index=account.index,
-        contract_type=contract_type,
-        hash=hash,
-        name=name,
-        network=account.network,
-        run_index=account.run_index,
-        run_type=account.run_type,
-    )
-
-
 def create_block_on_finalisation(
     node_id: NodeIdentifier,
     block_hash: str,
@@ -161,6 +142,40 @@ def create_deploy_for_run(
         step_index=ctx.step_index,
         step_label=ctx.step_label,
         typeof=typeof,
+    )
+
+
+def create_deploy_summary_on_finalisation(node_id: NodeIdentifier, info: NodeEventInfo) -> DeploySummary:
+    """Returns a domain object instance: DeploySummary.
+    
+    """
+    return DeploySummary(
+        block_hash=info.block_hash,
+        deploy_hash=info.deploy_hash,
+        network=node_id.network.name,
+        status=DeployStatus.FINALIZED,
+        streaming_node=node_id.index,
+        streaming_ts=datetime.now(),
+    )
+
+
+def create_named_key(
+    account: Account,
+    contract_type: ContractType,
+    name: str,
+    hash: str,
+    ) -> NamedKey:
+    """Returns a domain object instance: NamedKey.
+    
+    """
+    return NamedKey(
+        account_index=account.index,
+        contract_type=contract_type,
+        hash=hash,
+        name=name,
+        network=account.network,
+        run_index=account.run_index,
+        run_type=account.run_type,
     )
 
 

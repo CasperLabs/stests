@@ -19,13 +19,13 @@ from stests.monitoring.events.deploy_requeue import on_deploy_requeued
 # Map: event type -> handler.
 HANDLERS = {
     NodeEventType.BLOCK_ADD: on_block_added,
-    NodeEventType.BLOCK_FINALIZE: on_block_finalized,
-    NodeEventType.DEPLOY_ADD: on_deploy_added,
-    NodeEventType.DEPLOY_DISCARD: on_deploy_discarded,
-    NodeEventType.DEPLOY_FINALIZE: on_deploy_finalized,
-    NodeEventType.DEPLOY_ORPHAN: on_deploy_orphaned,
+    NodeEventType.BLOCK_FINALIZED: on_block_finalized,
+    NodeEventType.DEPLOY_ADDED: on_deploy_added,
+    NodeEventType.DEPLOY_DISCARDED: on_deploy_discarded,
+    NodeEventType.DEPLOY_FINALIZED: on_deploy_finalized,
+    NodeEventType.DEPLOY_ORPHANED: on_deploy_orphaned,
     NodeEventType.DEPLOY_PROCESSED: on_deploy_processed,
-    NodeEventType.DEPLOY_REQUEUE: on_deploy_requeued,
+    NodeEventType.DEPLOY_REQUEUED: on_deploy_requeued,
 }
 
 
@@ -48,7 +48,7 @@ def bind_to_stream(node_id: NodeIdentifier):
             return
 
         # Dispatch message to actor for further processing.
-        logger.log(f"CHAIN :: {node.address} :: event :: {event_info.event_id} :: {event_info.event_type.name} :: {event_info.log_suffix}")
+        logger.log(f"CHAIN :: {node.label_index} :: event :: {event_info.event_id} :: {event_info.event_type.name} :: {event_info.log_suffix}")
         handler.send(node_id, event_info)
 
     # Bind to a node's stream-events endpoint & dispatch a message to relevant actor.
