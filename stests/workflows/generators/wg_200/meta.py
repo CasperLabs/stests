@@ -1,9 +1,9 @@
+# Reuse wg_100 phase 1 & 3.
+from stests.workflows.generators.wg_100 import meta as wg_100
+
 from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.generators.wg_200 import args
-from stests.workflows.generators.wg_200 import constants
-from stests.workflows.generators.wg_200 import phase_1
 from stests.workflows.generators.wg_200 import phase_2
-from stests.workflows.generators.wg_200 import phase_3
 
 
 
@@ -14,17 +14,17 @@ Arguments = args.Arguments
 ARGS = args.ARGS
 
 # Workload description.
-DESCRIPTION = constants.DESCRIPTION
+DESCRIPTION = "Counter (client contract)"
 
 # Set of workflow phases.
 PHASES = (
-    phase_1,
+    wg_100.phase_1,
     phase_2,
-    phase_3,
+    wg_100.phase_2,
 )
 
 # Workload type.
-TYPE = constants.TYPE
+TYPE = "WG-200"
 
 # Workload typeset - registered with encoder.
 TYPE_SET = {

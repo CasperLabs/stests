@@ -9,8 +9,8 @@ from stests.core.types.chain import DeployType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core import factory
+from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils import verification
-from stests.workflows.generators.wg_200 import constants
 
 
 

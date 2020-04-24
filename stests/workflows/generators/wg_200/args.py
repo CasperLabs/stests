@@ -2,9 +2,12 @@ import argparse
 import dataclasses
 import typing
 
+from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils.args import get_argparser
-from stests.workflows.generators.wg_200 import constants
 
+
+# Default number of times counters will be incremented.
+INCREMENTS = 3
 
 
 @dataclasses.dataclass
@@ -47,7 +50,7 @@ class Arguments:
 
 
 # Set command line arguments.
-ARGS = get_argparser(f"Executes {constants.DESCRIPTION} generator.")
+ARGS = get_argparser(f"Executes counter-call generator.")
 
 # CLI argument: initial CLX balance -> faucet.
 ARGS.add_argument(
@@ -70,10 +73,10 @@ ARGS.add_argument(
 # CLI argument: increments.
 ARGS.add_argument(
     "--increments",
-    help=f"Number of times counters will be incremented. Default={constants.INCREMENTS}",
+    help=f"Number of times counters will be incremented. Default={INCREMENTS}",
     dest="increments",
     type=int,
-    default=constants.INCREMENTS
+    default=INCREMENTS
     )
 
 # CLI argument: user accounts.
