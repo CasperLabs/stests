@@ -61,6 +61,44 @@ def do_fund_account(
         cp1 = cache.state.get_account_by_index(ctx, cp1_index)
     cp2 = cache.state.get_account_by_index(ctx, cp2_index)
     
+    # Transfer CLX from cp1 -> cp2.
+    _transfer(ctx, cp1, cp2, amount)
+    
+
+@dramatiq.actor(queue_name=_QUEUE)
+def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
+    """Performs a refund ot funds between 2 counterparties.
+
+    :param ctx: Execution context information.
+    :param cp1_index: Run specific account index of counter-party one.
+    :param cp2_index: Run specific account index of counter-party two.
+    
+    """
+    # Set counterparties.
+    cp1 = cache.state.get_account_by_index(ctx, cp1_index)
+    if cp2_index == ACC_NETWORK_FAUCET:
+        network = cache.infra.get_network_by_ctx(ctx)
+        if not network.faucet:
+            raise ValueError("Network faucet account does not exist.")
+        cp2 = network.faucet
+    else:
+        cp2 = cache.state.get_account_by_index(ctx, cp2_index)
+
+    # Set amount.
+    cp1_balance = clx.get_account_balance(ctx, cp1)
+    amount = cp1_balance - CLX_TX_FEE
+    if amount <= 0:
+        logger.log_warning(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={cp1_balance}.")
+        return
+
+    # Transfer CLX from cp1 -> cp2.
+    _transfer(ctx, cp1, cp2, amount)
+
+
+def _transfer(ctx, cp1, cp2, amount):
+    """Executes transfer between 2 counterparties.
+    
+    """
     # Set contract.
     contract_type = ContractType.TRANSFER_U512 if ctx.use_client_contract_for_transfers else ContractType.TRANSFER_U512_STORED
     contract = clx.contracts.get_contract(contract_type)
@@ -84,78 +122,7 @@ def do_fund_account(
         cp2=cp2,
         deploy_hash=deploy_hash,
         ))
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
-    """Performs a refund ot funds between 2 counterparties.
-
-    :param ctx: Execution context information.
-    :param cp1_index: Run specific account index of counter-party one.
-    :param cp2_index: Run specific account index of counter-party two.
-    
-    """
-    # Set counterparties.
-    cp1 = cache.state.get_account_by_index(ctx, cp1_index)
-    if cp2_index == ACC_NETWORK_FAUCET:
-        network = cache.infra.get_network_by_ctx(ctx)
-        if not network.faucet:
-            raise ValueError("Network faucet account does not exist.")
-        cp2 = network.faucet
-    else:
-        cp2 = cache.state.get_account_by_index(ctx, cp2_index)
-
-    # Set contract.
-    contract_type = ContractType.TRANSFER_U512 if ctx.use_client_contract_for_transfers else ContractType.TRANSFER_U512_STORED
-    contract = clx.contracts.get_contract(contract_type)
-
-    # Refund CLX from cp1 -> cp2.
-    node, deploy_hash, amount = _refund(ctx, cp1, cp2, contract)
-
-    # Update cache.
-    cache.state.set_deploy(factory.create_deploy_for_run(
-        ctx=ctx, 
-        account=cp1,
-        node=node, 
-        deploy_hash=deploy_hash, 
-        typeof=DeployType.TRANSFER_REFUND
-        ))
-    cache.state.set_transfer(factory.create_transfer(
-        ctx=ctx,
-        amount=amount,
-        asset="CLX",
-        cp1=cp1,
-        cp2=cp2,
-        deploy_hash=deploy_hash,
-        ))
-
-
-def _refund(
-    ctx: ExecutionContext,
-    cp1: Account,
-    cp2: Account,
-    contract: typing.Callable
-    ) -> typing.Tuple[Node, str, int]:
-    """Executes a refund between 2 counter-parties & returns resulting deploy hash.
-
-    :param ctx: Execution context information.
-    :param cp1: Account information of counter party 1.
-    :param cp2: Account information of counter party 2.
-    :param contract: Transfer contract to be invoked.
-
-    :returns: 3 member tuple: dispatch node, deploy hash, refund amount.
-
-    """
-    # If amount is unspecified, set amount to entire balance.
-    balance = clx.get_account_balance(ctx, cp1) 
-    amount = balance - CLX_TX_FEE
-    
-    # Escape if cp1 has insufficient funds.
-    if amount <= 0:
-        logger.log_warning(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={balance}.")
-        return
-
-    # Transfer funds.
-    (node, deploy_hash) = contract.transfer(ctx, cp1, cp2, amount)
-
-    return node, deploy_hash, amount
+    if cp1.is_run_account:
+        cache.state.decrement_account_balance(cp1, amount)
+    if cp2.is_run_account:
+        cache.state.increment_account_balance(cp2, amount)

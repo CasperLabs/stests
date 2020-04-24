@@ -2,16 +2,6 @@ import enum
 
 
 
-class AccountStatus(enum.Flag):
-    """Flag over set of account states.
-    
-    """
-    NEW = enum.auto()
-    FUNDING = enum.auto()
-    FUNDED = enum.auto()
-    ACTIVE = enum.auto()
-
-
 class AccountType(enum.Enum):
     """Enumeration over set of account types.
     
@@ -85,7 +75,6 @@ class TransferStatus(enum.Flag):
 
 # Full set of enums.
 ENUM_SET = {
-    AccountStatus,
     AccountType,    
     BlockStatus,
     ContractType,

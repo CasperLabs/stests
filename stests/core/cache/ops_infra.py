@@ -219,15 +219,13 @@ def set_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKe
     :returns: Keypath + domain object instance.
 
     """
-    path = [
+    return [
         named_key.network,
         COL_NAMED_KEY,
         named_key.label_account_index,
         named_key.contract_type.name,
         named_key.name
-    ]
-
-    return path, named_key
+    ], named_key
 
 
 @cache_op(_PARTITION, StoreOperation.SET)
@@ -239,12 +237,10 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     :returns: Keypath + domain object instance.
 
     """
-    path = [
+    return [
         network.name,
         COL_NETWORK,
-    ]
-
-    return path, network
+    ], network
 
 
 @cache_op(_PARTITION, StoreOperation.SET)
@@ -256,10 +252,8 @@ def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     :returns: Keypath + domain object instance.
 
     """
-    path = [
+    return [
         node.network,
         COL_NODE,
         node.label_index,
-    ]
-
-    return path, node
+    ], node

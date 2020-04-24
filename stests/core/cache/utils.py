@@ -29,7 +29,12 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
 
             with stores.get_store(partition) as store:
 
-                if operation == StoreOperation.DELETE:
+                if operation == StoreOperation.DECR:
+                    keypath, amount = func(*args, **kwargs)
+                    key = ":".join([str(i) for i in keypath])
+                    return store.decrby(key, amount)
+
+                elif operation == StoreOperation.DELETE:
                     keypath = func(*args, **kwargs)
                     key = ":".join([str(i) for i in keypath])
                     _delete(store, key)
@@ -78,9 +83,9 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
                     return _get_all(store, key)
 
                 elif operation == StoreOperation.INCR:
-                    keypath = func(*args, **kwargs)
+                    keypath, amount = func(*args, **kwargs)
                     key = ":".join([str(i) for i in keypath])
-                    return store.incrby(key, 1)
+                    return store.incrby(key, amount)
 
                 elif operation == StoreOperation.LOCK:
                     keypath, data = func(*args, **kwargs)

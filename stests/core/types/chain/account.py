@@ -1,7 +1,6 @@
 import dataclasses
 import typing
 
-from stests.core.types.chain.enums import AccountStatus
 from stests.core.types.chain.enums import AccountType
 from stests.core.types.chain.key_pair import PrivateKey
 from stests.core.types.chain.key_pair import PublicKey
@@ -19,9 +18,6 @@ class Account:
     # Associated network.
     network: typing.Optional[str]
 
-    # Associated node index.
-    node: typing.Optional[int]
-
     # Hexadecimal representation of private key used primarily in signing scenarios.
     private_key: str
 
@@ -34,11 +30,12 @@ class Account:
     # Type of generator, e.g. WG-100 ...etc.
     run_type: typing.Optional[str]
 
-    # Current account status.
-    status: AccountStatus
-
     # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
     typeof: AccountType
+
+    @property
+    def is_run_account(self):
+        return self.run_index is not None
 
     @property
     def private_key_as_bytes(self):
@@ -59,6 +56,10 @@ class Account:
     @property
     def label_index(self):
         return f"A-{str(self.index).zfill(6)}"
+
+    @property
+    def label_run_index(self):
+        return f"R-{str(self.run_index).zfill(3)}"
 
 
 @dataclasses.dataclass

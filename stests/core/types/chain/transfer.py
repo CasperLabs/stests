@@ -1,4 +1,5 @@
 import dataclasses
+import datetime
 import typing
 
 from stests.core.types.chain.enums import TransferStatus
@@ -24,6 +25,9 @@ class Transfer:
 
     # Associated deploy hash.
     deploy_hash: str
+
+    # Moment in time when deploy dispatched to CLX network.
+    dispatch_ts: typing.Optional[datetime.datetime]
 
     # Associated network.
     network: str

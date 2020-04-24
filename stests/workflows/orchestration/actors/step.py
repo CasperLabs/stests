@@ -131,7 +131,9 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
 
     """
     # Increment deploy counts.
-    cache.orchestration.increment_deploy_counts(ctx)
+    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.RUN)
+    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.PHASE)
+    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.STEP)
 
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)

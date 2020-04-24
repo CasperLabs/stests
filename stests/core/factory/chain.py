@@ -2,7 +2,6 @@ from datetime import datetime
 
 from stests.core.types.chain import Account
 from stests.core.types.chain import AccountIdentifier
-from stests.core.types.chain import AccountStatus
 from stests.core.types.chain import AccountType
 from stests.core.types.chain import Block
 from stests.core.types.chain import BlockStatus
@@ -29,7 +28,6 @@ def create_account(
     index: int = 1,
     private_key: str = None, 
     public_key: str = None,
-    status: AccountStatus = AccountStatus.NEW
     ) -> Account:
     """Returns a domain object instance: Account.
     
@@ -40,12 +38,10 @@ def create_account(
     return Account(
         index=index if index is not None else 1,
         network=network,
-        node=None,
         private_key=private_key,
         public_key=public_key,
         run_index=None,
         run_type=None,
-        status=status or AccountStatus.NEW,
         typeof=typeof
         )
 
@@ -56,13 +52,11 @@ def create_account_for_run(
     index: int = 1,
     private_key: str = None, 
     public_key: str = None,
-    status: AccountStatus = AccountStatus.NEW
     ) -> Account:
     """Returns a domain object instance: Account.
     
     """
-    account = create_account(ctx.network, typeof, index, private_key, public_key, status)
-    account.node = ctx.node_index
+    account = create_account(ctx.network, typeof, index, private_key, public_key)
     account.run_index = ctx.run_index
     account.run_type = ctx.run_type
 
@@ -206,6 +200,7 @@ def create_transfer(
         cp1_index=cp1.index,
         cp2_index=cp2.index,
         deploy_hash=deploy_hash,
+        dispatch_ts=datetime.now(),
         network=ctx.network,
         node=ctx.node_index,
         phase_index=ctx.phase_index,

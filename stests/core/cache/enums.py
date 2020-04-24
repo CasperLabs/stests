@@ -6,6 +6,9 @@ class StoreOperation(enum.Enum):
     """Enumeration over types of cache operation.
     
     """
+    # Atomically decrement a counter.
+    DECR = enum.auto()
+
     # Delete a key.
     DELETE = enum.auto()
 

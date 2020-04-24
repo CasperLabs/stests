@@ -78,13 +78,11 @@ def set_block(block: Block) -> typing.Tuple[typing.List[str], Block]:
     :returns: Keypath + domain object instance.
 
     """
-    path = [
+    return [
         block.network,
         COL_BLOCK,
         f"{block.label_j_rank}.{block.block_hash}"
-    ]
-    
-    return path, block
+    ], block
 
 
 @cache_op(_PARTITION, StoreOperation.SET_SINGLETON)
@@ -96,13 +94,11 @@ def set_deploy_summary(deploy_summary: DeploySummary) -> typing.Tuple[typing.Lis
     :returns: Keypath + domain object instance.
 
     """
-    path = [
+    return [
         deploy_summary.network,
         COL_DEPLOY,
         f"{deploy_summary.block_hash}.{deploy_summary.deploy_hash}"
-    ]
-    
-    return path, deploy_summary
+    ], deploy_summary
 
 
 @cache_op(_PARTITION, StoreOperation.LOCK)
@@ -112,11 +108,9 @@ def set_node_monitor_lock(lock: NodeMonitoringLock) -> typing.Tuple[typing.List[
     :param lock: Information to be locked.
 
     """
-    path = [
+    return [
         lock.network,
         COL_NODE_LOCK,
         lock.label_index,
         lock.lock_index,
-    ]
-    
-    return path, lock
+    ], lock

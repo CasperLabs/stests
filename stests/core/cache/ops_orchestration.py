@@ -56,12 +56,10 @@ def get_context(network: str, run_index: int, run_type: str) -> ExecutionContext
     :returns: Cached run context information.
 
     """
-    label_run_index = f"R-{str(run_index).zfill(3)}"
-
     return [
         network,
         run_type,
-        label_run_index,
+        f"R-{str(run_index).zfill(3)}",
         COL_CONTEXT
     ]
 
@@ -76,14 +74,12 @@ def get_context_list(network_id: NetworkIdentifier, run_type: str) -> typing.Lis
     :returns: Cached run context information.
 
     """
-    path = [
+    return [
         network_id.name,
         "WG-*" if run_type is None else run_type,
         "R-*",
         COL_CONTEXT,
     ]
-
-    return path
 
 
 @cache_op(_PARTITION, StoreOperation.GET_COUNT)
@@ -202,24 +198,6 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
         ]
 
 
-@cache_op(_PARTITION, StoreOperation.GET)
-def get_lock_run(ctx: ExecutionContext) -> typing.Tuple[typing.List[str], ExecutionLock]:
-    """Decaches domain object: ExecutionLock.
-    
-    :param ctx: Execution context information.
-
-    :returns: Cached run step information.
-
-    """
-    return [
-        ctx.network,
-        ctx.run_type,
-        ctx.label_run_index,
-        COL_LOCK,
-        "-"
-    ]
-
-
 @cache_op(_PARTITION, StoreOperation.INCR)
 def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP):
     """Increments (atomically) count of run step deploys.
@@ -228,19 +206,7 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
     :param aspect: Aspect of execution in scope.
 
     """
-    return _get_keypath_deploy_count(ctx, aspect)
-
-
-def increment_deploy_counts(ctx: ExecutionContext):
-    """Increments (atomically) count of deploys.
-
-    :param ctx: Execution context information.
-
-    """
-    # TODO: batch.
-    increment_deploy_count(ctx, ExecutionAspect.RUN)
-    increment_deploy_count(ctx, ExecutionAspect.PHASE)
-    increment_deploy_count(ctx, ExecutionAspect.STEP)
+    return _get_keypath_deploy_count(ctx, aspect), 1
 
 
 @cache_op(_PARTITION, StoreOperation.INCR)
@@ -251,13 +217,11 @@ def increment_generator_run_count(network: str, generator_type: str) -> typing.L
     :param aspect: Aspect of execution in scope.
 
     """
-    path = [
+    return [
         network,
         generator_type,
         COL_GENERATOR_RUN_COUNT
-        ]
-
-    return path
+        ], 1
 
 
 @cache_op(_PARTITION, StoreOperation.LOCK)

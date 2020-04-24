@@ -79,6 +79,10 @@ class Deploy:
         return self.run_type is not None
         
     @property
+    def is_from_network_fauct(self):
+        return self.account_index == 0
+
+    @property
     def label_finalization_time(self):
         if self.finalization_time:
             return format(self.finalization_time, '.4f')
