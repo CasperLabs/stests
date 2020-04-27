@@ -53,7 +53,8 @@ def do_fund_account(
     """
     # Set counterparties.
     if cp1_index == ACC_NETWORK_FAUCET:
-        network = cache.infra.get_network_by_ctx(ctx)
+        network_id = factory.create_network_id(ctx.network)
+        network = cache.infra.get_network(network_id)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp1 = network.faucet
@@ -77,7 +78,8 @@ def do_refund(ctx: ExecutionContext, cp1_index: int, cp2_index: int):
     # Set counterparties.
     cp1 = cache.state.get_account_by_index(ctx, cp1_index)
     if cp2_index == ACC_NETWORK_FAUCET:
-        network = cache.infra.get_network_by_ctx(ctx)
+        network_id = factory.create_network_id(ctx.network)
+        network = cache.infra.get_network(network_id)
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         cp2 = network.faucet
@@ -100,7 +102,7 @@ def _transfer(ctx, cp1, cp2, amount):
     
     """
     # Set contract.
-    contract_type = ContractType.TRANSFER_U512 if ctx.use_client_contract_for_transfers else ContractType.TRANSFER_U512_STORED
+    contract_type = ContractType.TRANSFER_U512 if ctx.run_type == "WG-100" else ContractType.TRANSFER_U512_STORED
     contract = clx.contracts.get_contract(contract_type)
 
     # Transfer CLX from cp1 -> cp2.    

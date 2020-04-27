@@ -29,9 +29,25 @@ class ExecutionStatus(enum.Flag):
     ERROR = enum.auto()
     
 
+class ExecutionEventType(enum.Flag):
+    """Flag over set of typical execution events.
+    
+    """
+    RUN_START = enum.auto()
+    RUN_END = enum.auto()
+    RUN_ERROR = enum.auto()
+    PHASE_START = enum.auto()
+    PHASE_END = enum.auto()
+    PHASE_ERROR = enum.auto()
+    STEP_START = enum.auto()
+    STEP_END = enum.auto()
+    STEP_ERROR = enum.auto()
+
+
 # Full set of enums.
 ENUM_SET = {
     ExecutionAspect,
+    ExecutionEventType,
     ExecutionMode,
     ExecutionStatus,
 }

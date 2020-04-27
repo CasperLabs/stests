@@ -1,5 +1,34 @@
 import enum
+import json
+import typing
 
+from stests.core.utils import encoder
+
+
+
+class CacheItemKey():
+    def __init__(self, paths: typing.List[str], names: typing.List[str]):
+        self.path = ":".join(paths)
+        self.name = ".".join(names)
+    
+    @property
+    def key(self) -> str:
+        return f"{self.path}:{self.name}"
+
+
+class CacheItem():
+    def __init__(self, item_key: CacheItemKey, data: typing.Any):
+        self.key = item_key.key
+        self.data = data
+
+    @property
+    def data_as_json(self):
+        return json.dumps(encoder.encode(self.data), indent=4)
+
+
+class CacheSearchKey():
+    def __init__(self, paths: typing.List[str]):
+        self.key = f"{':'.join(paths)}*"
 
 
 class StoreOperation(enum.Enum):

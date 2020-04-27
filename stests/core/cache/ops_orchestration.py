@@ -2,8 +2,8 @@ import random
 import typing
 
 import stests.core.cache.ops_infra as infra
-from stests.core.cache.enums import StoreOperation
-from stests.core.cache.enums import StorePartition
+from stests.core.cache.model import StoreOperation
+from stests.core.cache.model import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.orchestration import ExecutionAspect

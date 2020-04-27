@@ -75,12 +75,4 @@ def _get_context(
         run_type=meta.TYPE
     )
 
-    # Allow generator to mutate ctx.
-    try:
-        meta.parse_ctx
-    except AttributeError:
-        pass
-    else:
-        meta.parse_ctx(ctx)
-
     return ctx

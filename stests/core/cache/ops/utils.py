@@ -5,6 +5,9 @@ import functools
 
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
+from stests.core.cache.model import CacheItem
+from stests.core.cache.model import CacheItemKey
+from stests.core.cache.model import CacheSearchKey
 from stests.core.cache import stores
 from stests.core.utils import encoder
 
@@ -68,19 +71,10 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
                     return _get_count_matched(store, key)
 
                 elif operation == StoreOperation.GET_ONE:
-                    keypath = func(*args, **kwargs)
-                    key = ":".join([str(i) for i in keypath])
-                    if key.find("*") >= 0:
-                        all = _get_all(store, key)
-                        return all[0] if all else []
-                    else:
-                        return _get(store, key)
+                    return _get_one(store, func(*args, **kwargs))
 
                 elif operation == StoreOperation.GET_MANY:
-                    keypath = func(*args, **kwargs)
-                    keypath.append("*")
-                    key = ":".join([str(i) for i in keypath])
-                    return _get_all(store, key)
+                    return _get_many(store, func(*args, **kwargs))
 
                 elif operation == StoreOperation.INCR:
                     keypath, amount = func(*args, **kwargs)
@@ -93,10 +87,7 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
                     return key, _setnx(store, key, data)
 
                 elif operation == StoreOperation.SET:
-                    keypath, data = func(*args, **kwargs)
-                    key = ":".join([str(i) for i in keypath])
-                    _set(store, key, data)
-                    return key
+                    return _set_one(store, func(*args, **kwargs))
 
                 elif operation == StoreOperation.SET_SINGLETON:
                     keypath, data = func(*args, **kwargs)
@@ -116,7 +107,8 @@ def _decode_item(as_json: str) -> typing.Any:
     """Returns a decoded encached domain object(s).
 
     """
-    return encoder.decode(json.loads(as_json))
+    if as_json is not None:
+        return encoder.decode(json.loads(as_json))
     
 
 def _delete(store: typing.Callable, key: str):
@@ -145,6 +137,23 @@ def _get(store: typing.Callable, key: str) -> typing.Any:
     obj = store.get(key)
     if obj is not None:
         return _decode_item(obj)
+
+
+def _get_one(store: typing.Callable, ik: CacheItemKey) -> typing.Any:
+    """Wraps redis.get command.
+    
+    """
+    return _decode_item(store.get(ik.key))
+
+
+def _get_many(store: typing.Callable, sk: CacheSearchKey) -> typing.List[typing.Any]:
+    """Wraps redis.mget command.
+    
+    """
+    CHUNK_SIZE = 5000
+    _, keys = store.scan(match=sk.key, count=CHUNK_SIZE)
+
+    return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
 
 def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]:
@@ -176,6 +185,15 @@ def _get_count_matched(store: typing.Callable, search_key: str) -> typing.List[t
     _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
 
     return len(keys)
+
+
+def _set_one(store: typing.Callable, item: CacheItem) -> str:
+    """Wraps redis.set command.
+    
+    """
+    store.set(item.key, item.data_as_json)
+
+    return item.key
 
 
 def _set(store: typing.Callable, key: str, data: typing.Any) -> str:

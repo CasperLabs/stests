@@ -1,4 +1,5 @@
 from stests.core.types.orchestration.enums import ExecutionAspect
+from stests.core.types.orchestration.enums import ExecutionEventType
 from stests.core.types.orchestration.enums import ExecutionMode
 from stests.core.types.orchestration.enums import ExecutionStatus
 from stests.core.types.orchestration.enums import ENUM_SET
@@ -11,6 +12,7 @@ from stests.core.types.orchestration.lock import ExecutionLock
 
 TYPE_SET = {
     ExecutionContext,
+    ExecutionEventType,
     ExecutionIdentifier,
     ExecutionInfo,
     ExecutionLock,

@@ -2,10 +2,10 @@ import argparse
 import pathlib
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
-from stests.core import factory
 from stests.core.utils import logger
 
 
@@ -35,7 +35,8 @@ def main(args):
 
     """    
     # Pull.
-    network = cache.infra.get_network_by_name(args.network)
+    network_id = factory.create_network_id(args.network)
+    network = cache.infra.get_network(network_id)
     if network is None:
         raise ValueError("Unregistered network.")
 

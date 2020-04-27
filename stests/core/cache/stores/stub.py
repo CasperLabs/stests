@@ -1,6 +1,6 @@
 import fakeredis
 
-from stests.core.cache.enums import StorePartition
+from stests.core.cache.model import StorePartition
 
 
 # Factory simply instantiates an instance.

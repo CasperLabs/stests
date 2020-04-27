@@ -27,11 +27,3 @@ TYPE_SET = {
     Arguments,
 }
 
-
-def parse_ctx(ctx: ExecutionContext):
-    """Parse execution context prior to launching a run.
-    
-    """
-    # Normally transfers are performed using an on-chain contract.
-    # This generator overrides this default behaviour.
-    ctx.use_client_contract_for_transfers = True

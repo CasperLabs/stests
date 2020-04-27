@@ -59,9 +59,6 @@ class ExecutionContext:
     # Label to disambiguate a step within the context of a phase.
     step_label: typing.Optional[str]
 
-    # Flag indicating whether to use client side contract when performing balance transfers.
-    use_client_contract_for_transfers: typing.Optional[bool] = False
-
     @property
     def next_phase_index(self):
         return self.phase_index + 1

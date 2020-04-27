@@ -1,7 +1,7 @@
 import typing
 
-from stests.core.cache.enums import StoreOperation
-from stests.core.cache.enums import StorePartition
+from stests.core.cache.model import StoreOperation
+from stests.core.cache.model import StorePartition
 from stests.core.cache.utils import cache_op
 from stests.core.types.chain import Block
 from stests.core.types.chain import Deploy

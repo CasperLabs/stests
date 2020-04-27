@@ -1,6 +1,7 @@
 import argparse
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.infra import NetworkStatus
 from stests.core.utils import args_validator
 from stests.core import factory
@@ -33,7 +34,8 @@ def main(args):
 
     """
     # Pull.
-    network = cache.infra.get_network_by_name(args.network)
+    network_id = factory.create_network_id(args.network)
+    network = cache.infra.get_network(network_id)
     if network is None:
         raise ValueError("Unregistered network.")
 

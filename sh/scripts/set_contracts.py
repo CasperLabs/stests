@@ -29,7 +29,8 @@ def main(args):
 
     """
     # Pull.
-    network = cache.infra.get_network_by_name(args.network)
+    network_id = factory.create_network_id(args.network)
+    network = cache.infra.get_network(network_id)
     if network is None:
         raise ValueError("Unregistered network.")
     if network.faucet is None:

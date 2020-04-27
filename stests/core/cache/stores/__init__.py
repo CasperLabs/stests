@@ -1,4 +1,4 @@
-from stests.core.cache.enums import StorePartition
+from stests.core.cache.model import StorePartition
 from stests.core.cache.stores import redis
 from stests.core.cache.stores import stub
 from stests.core.utils import env

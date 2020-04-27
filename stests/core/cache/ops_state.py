@@ -1,8 +1,8 @@
 import random
 import typing
 
-from stests.core.cache.enums import StoreOperation
-from stests.core.cache.enums import StorePartition
+from stests.core.cache.model import StoreOperation
+from stests.core.cache.model import StorePartition
 from stests.core.cache.ops_infra import get_network
 from stests.core.cache.ops_infra import get_nodes
 from stests.core.cache.utils import cache_op

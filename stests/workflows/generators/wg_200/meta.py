@@ -31,9 +31,3 @@ TYPE_SET = {
     Arguments,
 }
 
-def parse_ctx(ctx: ExecutionContext):
-    """Parse execution context prior to launching a run.
-    
-    """
-    # Override default contract location.
-    ctx.args.use_client_contract = True

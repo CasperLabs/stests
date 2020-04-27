@@ -1,9 +1,13 @@
 import random
 import typing
 
+from stests.core import factory
+from stests.core.cache.model import CacheItem
+from stests.core.cache.model import CacheItemKey
+from stests.core.cache.model import CacheSearchKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
-from stests.core.cache.utils import cache_op
+from stests.core.cache.ops.utils import cache_op
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Network
@@ -11,7 +15,6 @@ from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
-from stests.core import factory
 
 
 
@@ -22,7 +25,6 @@ _PARTITION = StorePartition.INFRA
 COL_NAMED_KEY = "named-key"
 COL_NETWORK = "network"
 COL_NODE = "node"
-
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
@@ -39,13 +41,17 @@ def get_named_key(network: typing.Union[NetworkIdentifier, Network, str], contra
     except AttributeError:
         pass
 
-    return [
-        network,
-        COL_NAMED_KEY,
-        "A-*",
-        contract_type.name,
-        name
-    ]
+    return CacheItemKey(
+        paths=[
+            network,
+            COL_NAMED_KEY,
+            "A-*",
+            contract_type.name,
+        ],
+        names=[
+            name,
+        ]
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
@@ -62,13 +68,15 @@ def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> ty
     except AttributeError:
         pass
 
-    return [
-        network,
-        COL_NAMED_KEY,
-    ]
+    return CacheSearchKey(
+        paths=[
+            network,
+            COL_NAMED_KEY,            
+        ]
+    )
 
 
-@cache_op(_PARTITION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_network(network_id: NetworkIdentifier) -> Network:
     """Decaches domain object: Network.
 
@@ -77,50 +85,32 @@ def get_network(network_id: NetworkIdentifier) -> Network:
     :returns: A registered network.
     
     """
-    return [
-        network_id.name,
-        COL_NETWORK,
-    ]
+    return CacheItemKey(
+        paths=[
+            network_id.name,
+        ],
+        names=[
+            COL_NETWORK,
+        ]
+    )
 
 
-def get_network_by_ctx(ctx: ExecutionContext) -> Network:
-    """Decaches domain object: Network.
-    
-    :param ctx: Execution context information.
-
-    :returns: A registered network.
-
-    """
-    network_id = factory.create_network_id(ctx.network)
-
-    return get_network(network_id)
-
-
-def get_network_by_name(name: str) -> Network:
-    """Decaches domain object: Network.
-    
-    :param name: Name of a registered network.
-
-    :returns: A registered network.
-
-    """
-    return get_network(factory.create_network_id(name))
-
-
-@cache_op(_PARTITION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET_MANY)
 def get_networks() -> typing.List[Network]:
     """Decaches domain objects: Network.
 
     :returns: List of registered networks.
     
     """
-    return [
-        "*",
-        COL_NETWORK,
+    return CacheSearchKey(
+        paths=[
+            "*",
+            COL_NETWORK,
         ]
+    )
 
 
-@cache_op(_PARTITION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_node(node_id: NodeIdentifier) -> Node:
     """Decaches domain object: Node.
     
@@ -129,11 +119,15 @@ def get_node(node_id: NodeIdentifier) -> Node:
     :returns: A registered node.
 
     """
-    return [
-        node_id.network.name,
-        COL_NODE,
-        node_id.label_index,
-    ]
+    return CacheItemKey(
+        paths=[
+            node_id.network.name,
+            COL_NODE,
+        ],
+        names=[
+            node_id.label_index,
+        ]
+    )
 
 
 def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> Node:
@@ -178,7 +172,7 @@ def get_node_by_ctx(ctx: ExecutionContext) -> Node:
         return random.choice(nodeset)
 
 
-@cache_op(_PARTITION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET_MANY)
 def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.List[Node]:
     """Decaches domain objects: Node.
 
@@ -188,13 +182,19 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> typing.
     
     """
     if network is None:
-        return ["*", COL_NODE, "*"]
+        return CacheSearchKey(
+            paths=[
+                "*",
+                COL_NODE,
+            ]
+        )        
     else:
-        return [
-            network.name,
-            COL_NODE,
-            "N-*"
-        ]
+        return CacheSearchKey(
+            paths=[
+                network.name,
+                COL_NODE,
+            ]
+        )
 
 
 def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
@@ -219,13 +219,20 @@ def set_named_key(named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKe
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        named_key.network,
-        COL_NAMED_KEY,
-        named_key.label_account_index,
-        named_key.contract_type.name,
-        named_key.name
-    ], named_key
+    return CacheItem(
+        item_key=CacheItemKey(
+            paths=[
+                named_key.network,
+                COL_NAMED_KEY,
+                named_key.label_account_index,
+                named_key.contract_type.name,
+            ],
+            names=[
+                named_key.name
+            ]
+        ),
+        data=named_key
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.SET)
@@ -237,10 +244,17 @@ def set_network(network: Network) -> typing.Tuple[typing.List[str], Network]:
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        network.name,
-        COL_NETWORK,
-    ], network
+    return CacheItem(
+        item_key=CacheItemKey(
+            paths=[
+                network.name,
+            ],
+            names=[
+                COL_NETWORK,
+            ]
+        ),
+        data=network,
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.SET)
@@ -252,8 +266,15 @@ def set_node(node: Node) -> typing.Tuple[typing.List[str], Node]:
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        node.network,
-        COL_NODE,
-        node.label_index,
-    ], node
+    return CacheItem(
+        item_key=CacheItemKey(
+            paths=[
+                node.network,
+                COL_NODE,
+            ],
+            names=[
+                node.label_index,
+            ]
+        ),
+        data=node,
+    )

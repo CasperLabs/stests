@@ -37,7 +37,7 @@ def main(args):
 
     """
     network_id = factory.create_network_id(args.network)
-    _render_block(network_id, args.block_hash)
+    # _render_block(network_id, args.block_hash)
     _render_block_info(network_id, args.block_hash)
 
 
