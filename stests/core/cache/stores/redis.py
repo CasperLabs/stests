@@ -36,7 +36,7 @@ def get_store(partition_type: StorePartition) -> redis.Redis:
     db = EnvVars.DB
     db += PARTITION_OFFSETS[partition_type]
 
-    # TODO: 1. cluster connections
+    # TODO: cluster connections
     return redis.Redis(
         db=db,
         host=EnvVars.HOST,

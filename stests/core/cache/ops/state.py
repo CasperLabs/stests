@@ -2,11 +2,11 @@ import random
 import typing
 
 from stests.core import factory
-from stests.core.cache.model import CacheDecrementKey
-from stests.core.cache.model import CacheIncrementKey
-from stests.core.cache.model import CacheItem
-from stests.core.cache.model import CacheItemKey
-from stests.core.cache.model import CacheSearchKey
+from stests.core.cache.model import CountDecrementKey
+from stests.core.cache.model import CountIncrementKey
+from stests.core.cache.model import Item
+from stests.core.cache.model import ItemKey
+from stests.core.cache.model import SearchKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
 from stests.core.cache.ops.infra import get_network
@@ -19,6 +19,7 @@ from stests.core.types.chain import Deploy
 from stests.core.types.chain import NamedKey
 from stests.core.types.chain import Transfer
 from stests.core.types.infra import NetworkIdentifier
+from stests.core.types.infra import NodeEventInfo
 from stests.core.types.orchestration import ExecutionContext
 
 
@@ -34,15 +35,15 @@ COL_DEPLOY = "deploy"
 COL_TRANSFER = "transfer"
 
 
-@cache_op(_PARTITION, StoreOperation.DECR)
-def decrement_account_balance(account: Account, amount: int) -> CacheDecrementKey:
+@cache_op(_PARTITION, StoreOperation.COUNTER_DECR)
+def decrement_account_balance(account: Account, amount: int) -> CountDecrementKey:
     """Updates (atomically) an account's (theoretical) balance.
 
     :param account: An account whose balance is being updated.
     :param amount: Balance delta to apply.
 
     """
-    return CacheDecrementKey(
+    return CountDecrementKey(
         paths=[
             account.network,
             account.run_type,
@@ -56,14 +57,14 @@ def decrement_account_balance(account: Account, amount: int) -> CacheDecrementKe
     )
 
 
-@cache_op(_PARTITION, StoreOperation.DECR)
-def decrement_account_balance_on_deploy_finalisation(deploy: Deploy) -> CacheDecrementKey:
+@cache_op(_PARTITION, StoreOperation.COUNTER_DECR)
+def decrement_account_balance_on_deploy_finalisation(deploy: Deploy) -> CountDecrementKey:
     """Updates (atomically) an account's (theoretical) balance.
 
     :param deploy: A finalised deploy.
 
     """
-    return CacheDecrementKey(
+    return CountDecrementKey(
         paths=[
             deploy.network,
             deploy.run_type,
@@ -78,7 +79,7 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy) -> CacheDec
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_account(account_id: AccountIdentifier) -> Account:
+def get_account(account_id: AccountIdentifier) -> ItemKey:
     """Decaches domain object: Account.
 
     :param account_id: An account identifier.
@@ -86,7 +87,7 @@ def get_account(account_id: AccountIdentifier) -> Account:
     :returns: A cached account.
 
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             account_id.run.network.name,
             account_id.run.type,
@@ -99,8 +100,8 @@ def get_account(account_id: AccountIdentifier) -> Account:
     )
 
 
-@cache_op(_PARTITION, StoreOperation.GET_COUNT)
-def get_account_balance(account: Account) -> int:
+@cache_op(_PARTITION, StoreOperation.GET_COUNTER_ONE)
+def get_account_balance(account: Account) -> ItemKey:
     """Returns balance of a test account.
 
     :param account: An account.
@@ -108,13 +109,17 @@ def get_account_balance(account: Account) -> int:
     :returns: Cached account balance.
 
     """
-    return [
-        account.network,
-        account.run_type,
-        account.label_run_index,
-        COL_ACCOUNT_BALANCE,
-        account.label_index,
-    ]
+    return ItemKey(
+        paths=[
+            account.network,
+            account.run_type,
+            account.label_run_index,
+            COL_ACCOUNT_BALANCE,
+        ],
+        names=[
+            account.label_index,
+        ],
+    )
 
 
 def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
@@ -134,8 +139,8 @@ def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
         ))
 
 
-@cache_op(_PARTITION, StoreOperation.GET_COUNT_MATCHED)
-def get_account_count(ctx: ExecutionContext) -> int:
+@cache_op(_PARTITION, StoreOperation.GET_COUNT)
+def get_account_count(ctx: ExecutionContext) -> SearchKey:
     """Returns count of accounts within the scope of an execution aspect.
 
     :param ctx: Execution context information.
@@ -144,17 +149,19 @@ def get_account_count(ctx: ExecutionContext) -> int:
     :returns: Count of accounts.
 
     """
-    return [
-        ctx.network,
-        ctx.run_type,
-        ctx.label_run_index,
-        COL_ACCOUNT,
-        "A-*"
-    ]
+    return SearchKey(
+        paths=[
+            ctx.network,
+            ctx.run_type,
+            ctx.label_run_index,
+            COL_ACCOUNT,
+            "A-",
+        ],
+    )
 
 
-@cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_deploy(deploy_hash: str) -> Deploy:
+@cache_op(_PARTITION, StoreOperation.GET_ONE_FROM_MANY)
+def get_deploy(ctx: ExecutionContext, deploy_hash: str) -> ItemKey:
     """Decaches domain object: Deploy.
     
     :param deploy_hash: A deploy hash.
@@ -162,11 +169,47 @@ def get_deploy(deploy_hash: str) -> Deploy:
     :returns: A run deploy.
 
     """
-    return [f"*{COL_DEPLOY}*{deploy_hash}*"]
+    return ItemKey(
+        paths=[
+            ctx.network,
+            ctx.run_type,
+            ctx.label_run_index,
+            COL_DEPLOY,
+        ],
+        names=[
+            "*.*",
+            deploy_hash,
+            "A-*"
+        ],
+    )
 
 
-@cache_op(_PARTITION, StoreOperation.GET)
-def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> typing.List[Deploy]:
+@cache_op(_PARTITION, StoreOperation.GET_ONE_FROM_MANY)
+def get_deploy_by_node_event_info(info: NodeEventInfo) -> ItemKey:
+    """Decaches domain object: Deploy.
+    
+    :param deploy_hash: A deploy hash.
+
+    :returns: A run deploy.
+
+    """
+    return ItemKey(
+        paths=[
+            info.network,
+            "WG-*",
+            "R-*",
+            COL_DEPLOY,
+        ],
+        names=[
+            "*.*",
+            info.deploy_hash,
+            "A-*"
+        ],
+    )
+
+
+@cache_op(_PARTITION, StoreOperation.GET_MANY)
+def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int) -> SearchKey:
     """Decaches domain object: Deploy.
     
     :param ctx: Execution context information.
@@ -176,55 +219,18 @@ def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int = N
     :returns: Keypath to domain object instance.
 
     """
-    if not run_type:
-        path = [
-            network_id.name,
-            "*",
-            COL_DEPLOY,
-            "*",
-        ]
-    elif run_index:
-        label_run_index = f"R-{str(run_index).zfill(3)}"
-        path = [
+    return SearchKey(
+        paths=[
             network_id.name,
             run_type,
-            label_run_index,
+            f"R-{str(run_index).zfill(3)}",
             COL_DEPLOY,
-            "*",
         ]
-    else:
-        path = [
-            network_id.name,
-            run_type,
-            "*",
-            COL_DEPLOY,
-            "*",
-        ]
-
-    return path
-
-
-@cache_op(_PARTITION, StoreOperation.GET)
-def get_deploys_by_account(ctx: ExecutionContext, account_index: int) -> typing.List[Deploy]:
-    """Decaches domain object: Deploy.
-    
-    :param ctx: Execution context information.
-    :param account_index: Index of an account.
-
-    :returns: Keypath to domain object instance.
-
-    """
-    return [
-        ctx.network,
-        ctx.run_type,
-        ctx.label_run_index,
-        COL_DEPLOY,
-        f"*.A-{str(account_index).zfill(6)}"
-    ]
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
-def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: ContractType) -> typing.List[NamedKey]:
+def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: ContractType) -> SearchKey:
     """Decaches domain objects: NamedKey.
 
     :param network: A pointer to either a network or network identifier.
@@ -232,18 +238,20 @@ def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: Contr
     :returns: Collection of registered nodes.
     
     """
-    return [
-        ctx.network,
-        ctx.run_type,
-        ctx.label_run_index,
-        COL_NAMED_KEY,
-        account.label_index,
-        contract_type.name    
-    ]
+    return SearchKey(
+        paths=[
+            ctx.network,
+            ctx.run_type,
+            ctx.label_run_index,
+            COL_NAMED_KEY,
+            account.label_index,
+            contract_type.name,            
+        ]
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> Transfer:
+def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> ItemKey:
     """Decaches domain object: Transfer.
     
     :param deploy_hash: A deploy hash.
@@ -251,7 +259,7 @@ def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> Transfer:
     :returns: A run deploy.
 
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             deploy.network,
             deploy.run_type,
@@ -266,7 +274,7 @@ def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> Transfer:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX") -> Transfer:
+def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX") -> ItemKey:
     """Decaches domain object: Transfer.
     
     :param deploy_hash: A deploy hash.
@@ -274,7 +282,7 @@ def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX
     :returns: A run deploy.
 
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             ctx.network,
             ctx.run_type,
@@ -288,15 +296,15 @@ def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX
     )    
 
 
-@cache_op(_PARTITION, StoreOperation.INCR)
-def increment_account_balance(account: Account, amount: int):
+@cache_op(_PARTITION, StoreOperation.COUNTER_INCR)
+def increment_account_balance(account: Account, amount: int) -> CountIncrementKey:
     """Updates (atomically) an account's (theoretical) balance.
 
     :param account: An account whose balance is being updated.
     :param amount: Balance delta to apply.
 
     """
-    return CacheIncrementKey(
+    return CountIncrementKey(
         paths=[
             account.network,
             account.run_type,
@@ -311,7 +319,7 @@ def increment_account_balance(account: Account, amount: int):
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
+def set_account(account: Account) -> Item:
     """Encaches domain object: Account.
     
     :param account: Account domain object instance to be cached.
@@ -319,9 +327,9 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
+    return Item(
         data=account,
-        item_key=CacheItemKey(
+        item_key=ItemKey(
             paths=[
                 account.network,
                 account.run_type,
@@ -336,7 +344,7 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
+def set_deploy(deploy: Deploy) -> Item:
     """Encaches domain object: Deploy.
     
     :param deploy: Deploy domain object instance to be cached.
@@ -344,9 +352,9 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
+    return Item(
         data=deploy,
-        item_key=CacheItemKey(
+        item_key=ItemKey(
             paths=[
                 deploy.network,
                 deploy.run_type,
@@ -363,7 +371,7 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> CacheItem:
+def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> Item:
     """Encaches domain object: NamedKey.
 
     :param network: NamedKey domain object instance to be cached.
@@ -371,9 +379,9 @@ def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> CacheItem:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
+    return Item(
         data=named_key,
-        item_key=CacheItemKey(
+        item_key=ItemKey(
             paths=[
                 named_key.network,
                 named_key.run_type,
@@ -390,7 +398,7 @@ def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> CacheItem:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_transfer(transfer: Transfer) -> CacheItem:
+def set_transfer(transfer: Transfer) -> Item:
     """Encaches domain object: Transfer.
     
     :param transfer: Transfer domain object instance to be cached.
@@ -398,9 +406,9 @@ def set_transfer(transfer: Transfer) -> CacheItem:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
-        data=transfer   ,
-        item_key=CacheItemKey(
+    return Item(
+        data=transfer,
+        item_key=ItemKey(
             paths=[
                 transfer.network,
                 transfer.run_type,

@@ -69,8 +69,8 @@ def on_run_end(ctx: ExecutionContext):
     cache.orchestration.set_context(ctx)
     cache.orchestration.set_info_update(ctx, ExecutionAspect.RUN, ExecutionStatus.COMPLETE)
 
-    # Locks can now be flushed.
-    cache.orchestration.flush_locks(ctx)    
+    # Locks can now be deleted.
+    cache.orchestration.delete_locks(ctx)    
 
     # Inform.
     logger.log(f"WFLOW :: {ctx.run_type} :: {ctx.label_run_index} -> ends")

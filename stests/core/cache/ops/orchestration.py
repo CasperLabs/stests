@@ -2,10 +2,10 @@ import random
 import typing
 
 from stests.core import factory
-from stests.core.cache.model import CacheIncrementKey
-from stests.core.cache.model import CacheItem
-from stests.core.cache.model import CacheItemKey
-from stests.core.cache.model import CacheSearchKey
+from stests.core.cache.model import CountIncrementKey
+from stests.core.cache.model import Item
+from stests.core.cache.model import ItemKey
+from stests.core.cache.model import SearchKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
 from stests.core.cache.ops.utils import cache_op
@@ -31,8 +31,8 @@ COL_LOCK = "lock"
 COL_STATE = "state"
 
 
-@cache_op(_PARTITION, StoreOperation.FLUSH_MANY)
-def flush_locks(ctx: ExecutionContext) -> CacheSearchKey:
+@cache_op(_PARTITION, StoreOperation.DELETE_MANY)
+def delete_locks(ctx: ExecutionContext) -> SearchKey:
     """Flushes previous run locks.
 
     :param ctx: Execution context information.
@@ -40,7 +40,7 @@ def flush_locks(ctx: ExecutionContext) -> CacheSearchKey:
     :returns: A generator of keypaths to be flushed.
     
     """
-    return CacheSearchKey(
+    return SearchKey(
         paths=[
             ctx.network,
             ctx.run_type,
@@ -51,7 +51,7 @@ def flush_locks(ctx: ExecutionContext) -> CacheSearchKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_context(network: str, run_index: int, run_type: str) -> CacheItemKey:
+def get_context(network: str, run_index: int, run_type: str) -> ItemKey:
     """Decaches domain object: ExecutionContext.
     
     :param network: Name of network being tested.
@@ -61,7 +61,7 @@ def get_context(network: str, run_index: int, run_type: str) -> CacheItemKey:
     :returns: Cached run context information.
 
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             network,
             run_type,
@@ -74,7 +74,7 @@ def get_context(network: str, run_index: int, run_type: str) -> CacheItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
-def get_context_list(network_id: NetworkIdentifier, run_type: str) -> CacheSearchKey:
+def get_context_list(network_id: NetworkIdentifier, run_type: str) -> SearchKey:
     """Decaches domain object: ExecutionContext.
     
     :param network_id: Identifier of network being tested.
@@ -83,7 +83,7 @@ def get_context_list(network_id: NetworkIdentifier, run_type: str) -> CacheSearc
     :returns: Cached run context information.
 
     """
-    return CacheSearchKey(
+    return SearchKey(
         paths=[
             network_id.name,
             "WG-*" if run_type is None else run_type,
@@ -93,8 +93,8 @@ def get_context_list(network_id: NetworkIdentifier, run_type: str) -> CacheSearc
     )
 
 
-@cache_op(_PARTITION, StoreOperation.GET_COUNT_ONE)
-def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> CacheItemKey:
+@cache_op(_PARTITION, StoreOperation.GET_COUNTER_ONE)
+def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> ItemKey:
     """Returns count of deploys within the scope of an execution aspect.
 
     :param ctx: Execution context information.
@@ -110,7 +110,7 @@ def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> CacheIte
     elif aspect == ExecutionAspect.STEP:
         names = [ctx.label_phase_index, ctx.label_step_index]
 
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             ctx.network,
             ctx.run_type,
@@ -121,7 +121,7 @@ def get_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect) -> CacheIte
     )
 
 
-@cache_op(_PARTITION, StoreOperation.GET_COUNT_MANY)
+@cache_op(_PARTITION, StoreOperation.GET_COUNTER_MANY)
 def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, run_index: int = None) -> typing.List[str]:
     """Returns count of deploys within the scope of an execution aspect.
 
@@ -133,7 +133,7 @@ def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, r
 
     """
     if run_type is None:
-        return CacheSearchKey(
+        return SearchKey(
             paths=[
                 network_id.name,
                 "*",
@@ -144,7 +144,7 @@ def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, r
         )
 
     elif run_index:
-        return CacheSearchKey(
+        return SearchKey(
             paths=[
                 network_id.name,
                 run_type,
@@ -154,7 +154,7 @@ def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, r
         )
 
     else:
-        return CacheSearchKey(
+        return SearchKey(
             paths=[
                 network_id.name,
                 run_type,
@@ -165,7 +165,7 @@ def get_deploy_count_list(network_id: NetworkIdentifier, run_type: str = None, r
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> CacheItemKey:
+def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> ItemKey:
     """Decaches domain object: ExecutionInfo.
     
     :param ctx: Execution information.
@@ -180,7 +180,7 @@ def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> CacheItemKey:
     elif aspect == ExecutionAspect.STEP:
         names = [ctx.label_phase_index, ctx.label_step_index]
 
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             ctx.network,
             ctx.run_type,
@@ -192,7 +192,7 @@ def get_info(ctx: ExecutionContext, aspect: ExecutionAspect) -> CacheItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
-def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> CacheSearchKey:
+def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int = None) -> SearchKey:
     """Decaches domain object: ExecutionInfo.
     
     :param network_id: Identifier of network being tested.
@@ -203,7 +203,7 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
 
     """
     if not run_type:
-        return CacheSearchKey(
+        return SearchKey(
             paths=[
                 network_id.name,
                 "*",
@@ -211,7 +211,7 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
             ]
         )
     elif run_index:
-        return CacheSearchKey(
+        return SearchKey(
             paths=[
                 network_id.name,
                 run_type,
@@ -220,7 +220,7 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
             ]
         )
     else:
-        return CacheSearchKey(
+        return SearchKey(
             paths=[
                 network_id.name,
                 run_type,
@@ -230,8 +230,8 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
         )
 
 
-@cache_op(_PARTITION, StoreOperation.INCR)
-def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP) -> CacheIncrementKey:
+@cache_op(_PARTITION, StoreOperation.COUNTER_INCR)
+def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP) -> CountIncrementKey:
     """Increments (atomically) count of run step deploys.
 
     :param ctx: Execution context information.
@@ -245,7 +245,7 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
     elif aspect == ExecutionAspect.STEP:
         names = [ctx.label_phase_index, ctx.label_step_index]
 
-    return CacheIncrementKey(
+    return CountIncrementKey(
         paths=[
             ctx.network,
             ctx.run_type,
@@ -257,15 +257,15 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
     )
 
 
-@cache_op(_PARTITION, StoreOperation.INCR)
-def increment_generator_run_count(network: str, generator_type: str) -> CacheIncrementKey:
+@cache_op(_PARTITION, StoreOperation.COUNTER_INCR)
+def increment_generator_run_count(network: str, generator_type: str) -> CountIncrementKey:
     """Increments (atomically) count of generator runs.
 
     :param ctx: Execution context information.
     :param aspect: Aspect of execution in scope.
 
     """
-    return CacheIncrementKey(
+    return CountIncrementKey(
         paths=[
             network,
             generator_type,
@@ -277,8 +277,8 @@ def increment_generator_run_count(network: str, generator_type: str) -> CacheInc
     )
 
 
-@cache_op(_PARTITION, StoreOperation.LOCK_ONE)
-def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> CacheItem:
+@cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
+def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> Item:
     """Encaches a lock: ExecutionLock.
 
     :param aspect: Aspect of execution to be locked.
@@ -292,9 +292,9 @@ def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> CacheItem:
     elif aspect == ExecutionAspect.STEP:
         names = [lock.label_phase_index, lock.label_step_index]
 
-    return CacheItem(
+    return Item(
         data=lock,
-        item_key=CacheItemKey(
+        item_key=ItemKey(
             paths=[
                 lock.network,
                 lock.run_type,
@@ -307,7 +307,7 @@ def set_lock(aspect: ExecutionAspect, lock: ExecutionLock) -> CacheItem:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_context(ctx: ExecutionContext) -> CacheItem:
+def set_context(ctx: ExecutionContext) -> Item:
     """Encaches domain object: ExecutionContext.
     
     :param ctx: Execution context information.
@@ -315,9 +315,9 @@ def set_context(ctx: ExecutionContext) -> CacheItem:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
+    return Item(
         data=ctx,
-        item_key=CacheItemKey(
+        item_key=ItemKey(
             paths=[
                 ctx.network,
                 ctx.run_type,
@@ -330,8 +330,8 @@ def set_context(ctx: ExecutionContext) -> CacheItem:
     )
 
 
-@cache_op(_PARTITION, StoreOperation.SET)
-def set_info(info: ExecutionInfo) -> CacheItem:
+@cache_op(_PARTITION, StoreOperation.SET_ONE)
+def set_info(info: ExecutionInfo) -> Item:
     """Encaches domain object: ExecutionInfo.
     
     :param info: ExecutionInfo domain object instance to be cached.
@@ -346,9 +346,9 @@ def set_info(info: ExecutionInfo) -> CacheItem:
     else:
         names = ["-"]
 
-    return CacheItem(
+    return Item(
         data=info,
-        item_key=CacheItemKey(
+        item_key=ItemKey(
             paths=[
                 info.network,
                 info.run_type,

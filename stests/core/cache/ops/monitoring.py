@@ -1,8 +1,8 @@
 import typing
 
-from stests.core.cache.model import CacheItem
-from stests.core.cache.model import CacheItemKey
-from stests.core.cache.model import CacheSearchKey
+from stests.core.cache.model import Item
+from stests.core.cache.model import ItemKey
+from stests.core.cache.model import SearchKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
 from stests.core.cache.ops.utils import cache_op
@@ -25,15 +25,15 @@ COL_EVENT = "event"
 
 
 @cache_op(_PARTITION, StoreOperation.DELETE_ONE)
-def delete_node_monitor_lock(lock: NodeMonitoringLock) -> CacheItemKey:
-    """Deletes astream lock.
+def delete_node_monitor_lock(lock: NodeMonitoringLock) -> ItemKey:
+    """Deletes a lock over a node monitor.
 
-    :param ctx: Execution context information.
+    :param lock: Lock information.
 
-    :returns: A keypath to be deleted.
+    :returns: Key of locked item.
     
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             lock.network,
             COL_NODE_LOCK,
@@ -46,15 +46,16 @@ def delete_node_monitor_lock(lock: NodeMonitoringLock) -> CacheItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_block(network_id: NetworkIdentifier, block_hash: str) -> CacheItemKey:
-    """Returns domain object: Block.
+def get_block(network_id: NetworkIdentifier, block_hash: str) -> ItemKey:
+    """Returns a cached item: Block.
     
+    :param network_id: Identifier of network.
     :param block_hash: Hash of a cached block.
 
-    :returns: Cached block information.
+    :returns: Key of cached item.
 
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             network_id.name,
             COL_BLOCK,
@@ -67,15 +68,16 @@ def get_block(network_id: NetworkIdentifier, block_hash: str) -> CacheItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> CacheItemKey:
-    """Returns domain object: Deploy.
+def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> ItemKey:
+    """Returns a cached item: Deploy.
     
+    :param network_id: Identifier of network.
     :param deploy_hash: Hash of a cached deploy.
 
-    :returns: Cached deploy information.
+    :returns: Key of cached item.
 
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             network_id.name,
             COL_DEPLOY,
@@ -88,16 +90,16 @@ def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> CacheItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
-def set_block(block: Block) -> CacheItem:
-    """Encaches domain object: Block.
+def set_block(block: Block) -> Item:
+    """Encaches an item.
     
-    :param block: Block domain object instance to be cached.
+    :param block: Block instance to be cached.
 
-    :returns: Keypath + domain object instance.
+    :returns: Item to be cached.
 
     """
-    return CacheItem(
-        item_key=CacheItemKey(
+    return Item(
+        item_key=ItemKey(
             paths=[
                 block.network,
                 COL_BLOCK,
@@ -112,15 +114,16 @@ def set_block(block: Block) -> CacheItem:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
-def set_deploy_summary(summary: DeploySummary) -> CacheItem:
-    """Encaches domain object: DeploySummary.
+def set_deploy_summary(summary: DeploySummary) -> Item:
+    """Encaches an item.
     
-    :param summary: Deploy summary domain object instance to be cached.
-    :returns: Keypath + domain object instance.
+    :param summary: Deploy summary instance to be cached.
+
+    :returns: Item to be cached.
 
     """
-    return CacheItem(
-        item_key=CacheItemKey(
+    return Item(
+        item_key=ItemKey(
             paths=[
                 summary.network,
                 COL_DEPLOY,
@@ -134,15 +137,17 @@ def set_deploy_summary(summary: DeploySummary) -> CacheItem:
     )
 
 
-@cache_op(_PARTITION, StoreOperation.LOCK_ONE)
-def set_node_monitor_lock(lock: NodeMonitoringLock) -> CacheItem:
-    """Encaches a lock: NodeMonitoringLock.
+@cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
+def set_node_monitor_lock(lock: NodeMonitoringLock) -> Item:
+    """Encaches an item.
+    
+    :param lock: Lock instance to be cached.
 
-    :param lock: Information to be locked.
+    :returns: Item to be cached.
 
     """
-    return CacheItem(
-        item_key=CacheItemKey(
+    return Item(
+        item_key=ItemKey(
             paths=[
                 lock.network,
                 COL_NODE_LOCK,
@@ -156,17 +161,17 @@ def set_node_monitor_lock(lock: NodeMonitoringLock) -> CacheItem:
     )
 
 
-@cache_op(_PARTITION, StoreOperation.LOCK_ONE)
-def set_node_event_info(lock: NodeEventInfo) -> CacheItem:
-    """Encaches domain object: NodeEventInfo.
+@cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
+def set_node_event_info(lock: NodeEventInfo) -> Item:
+    """Encaches an item.
     
-    :param block: Node event information to be cached.
+    :param lock: Lock instance to be cached.
 
-    :returns: Keypath + domain object instance.
+    :returns: Item to be cached.
 
     """
-    return CacheItem(
-        item_key=CacheItemKey(
+    return Item(
+        item_key=ItemKey(
             paths=[
                 lock.network,
                 COL_EVENT,

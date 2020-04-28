@@ -41,6 +41,6 @@ def verify(ctx: ExecutionContext):
 
     """
     # Verify count of cached accounts.
-    cached = cache.state.get_account_count(ctx)
+    cached = cache.state1.get_account_count(ctx)
     expected = ctx.args.user_accounts + 2
     assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."

@@ -52,6 +52,7 @@ def _render_deploy(network_id, deploy_hash):
     """Renders cached deploy information.
     
     """
+    raise NotImplementedError("TODO: remove")
     # Pull deploy either from run state or monitoring cache.
     deploy = cache.state.get_deploy(deploy_hash) or \
              cache.monitoring.get_deploy(network_id, deploy_hash)

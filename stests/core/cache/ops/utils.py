@@ -5,11 +5,11 @@ import functools
 
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
-from stests.core.cache.model import CacheDecrementKey
-from stests.core.cache.model import CacheIncrementKey
-from stests.core.cache.model import CacheItem
-from stests.core.cache.model import CacheItemKey
-from stests.core.cache.model import CacheSearchKey
+from stests.core.cache.model import CountDecrementKey
+from stests.core.cache.model import CountIncrementKey
+from stests.core.cache.model import Item
+from stests.core.cache.model import ItemKey
+from stests.core.cache.model import SearchKey
 from stests.core.cache import stores
 from stests.core.utils import encoder
 
@@ -21,96 +21,101 @@ def _decode_item(as_json: str) -> typing.Any:
     """
     if as_json is not None:
         return encoder.decode(json.loads(as_json))
-    
 
-def _delete_one(store: typing.Callable, ik: CacheItemKey):
-    """Wraps redis.delete command.
+
+def _decr(store: typing.Callable, decrement: CountDecrementKey):
+    """Decrements count under exactly matched key.
     
     """
-    store.delete(ik.key)
+    store.decrby(decrement.key, decrement.amount)
 
 
-def _flush_many(store: typing.Callable, sk: CacheSearchKey):
-    """Flushes data from cache.
+def _delete_one(store: typing.Callable, item_key: ItemKey):
+    """Deletes item under exactly matched key.
+    
+    """
+    store.delete(item_key.key)
+
+
+def _flush_many(store: typing.Callable, search_key: SearchKey):
+    """Deletes items under matching keys.
 
     """
-    CHUNK_SIZE = 1000
+    chunk_size = 1000
     cursor = '0'
     while cursor != 0:
-        cursor, keys = store.scan(cursor=cursor, match=sk.key, count=CHUNK_SIZE)
+        cursor, keys = store.scan(cursor=cursor, match=search_key.key, count=chunk_size)
         if keys:
             store.delete(*keys)
 
 
-def _get(store: typing.Callable, key: str) -> typing.Any:
-    """Wraps redis.get command.
+def _get_counter_one(store: typing.Callable, item_key: ItemKey) -> int:
+    """Returns count under exactly matched key.
     
     """
-    obj = store.get(key)
-    if obj is not None:
-        return _decode_item(obj)
+    return int(store.get(item_key.key))
 
 
-def _get_one(store: typing.Callable, ik: CacheItemKey) -> typing.Any:
-    """Wraps redis.get command.
+def _get_counter_many(store: typing.Callable, search_key: SearchKey) -> typing.Tuple[typing.List[str], typing.List[int]]:
+    """Returns counts under matched keys.
     
     """
-    return _decode_item(store.get(ik.key))
+    chunk_size = 5000
+    _, keys = store.scan(match=search_key.key, count=chunk_size)
+
+    return \
+        [i.decode('utf8') for i in keys], \
+        [int(i) for i in store.mget(keys)]
 
 
-def _get_one_from_many(store: typing.Callable, ik: CacheItemKey) -> typing.Any:
-    """Wraps redis.get command.
+def _get_count(store: typing.Callable, search_key: SearchKey) -> int:
+    """Returns length of collection under matched keys.
     
     """
-    many = _get_many(store, ik)
+    chunk_size = 2000
+    _, keys = store.scan(match=search_key.key, count=chunk_size)
 
-    return many[0] if many else None
+    return len(keys)
 
 
-def _get_count_one(store: typing.Callable, ik: CacheItemKey) -> int:
-    """Wraps redis.get command.
+def _get_one(store: typing.Callable, item_key: ItemKey) -> typing.Any:
+    """Returns item under exactly matched key.
     
     """
-    return int(store.get(ik.key))
+    return _decode_item(store.get(item_key.key))
 
 
-def _get_count_many(store: typing.Callable, sk: CacheSearchKey) -> typing.List[typing.Any]:
-    """Wraps redis.mget command.
+def _get_one_from_many(store: typing.Callable, item_key: ItemKey) -> typing.Any:
+    """Returns item under first matched key.
     
     """
-    CHUNK_SIZE = 5000
-    _, keys = store.scan(match=sk.key, count=CHUNK_SIZE)
-    counts = [int(i) for i in store.mget(keys)]
+    chunk_size = 10
+    cursor = '0'
+    while cursor != 0:
+        cursor, keys = store.scan(cursor=cursor, match=item_key.key, count=chunk_size)
+        if keys:
+            return _decode_item(store.get(keys[0]))
 
-    return [i.decode('utf8') for i in keys], counts
 
-
-def _get_many(store: typing.Callable, sk: CacheSearchKey) -> typing.List[typing.Any]:
-    """Wraps redis.mget command.
+def _get_many(store: typing.Callable, search_key: SearchKey) -> typing.List[typing.Any]:
+    """Returns collection cached under all matched keys.
     
     """
-    CHUNK_SIZE = 5000
-    _, keys = store.scan(match=sk.key, count=CHUNK_SIZE)
+    chunk_size = 5000
+    _, keys = store.scan(match=search_key.key, count=chunk_size)
 
     return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
 
-def _decr(store: typing.Callable, dk: CacheDecrementKey) -> typing.Any:
-    """Wraps redis.decrby command.
+def _incr(store: typing.Callable, item_key: CountIncrementKey) -> typing.Any:
+    """Increments count under exactly matched key.
     
     """
-    return store.decrby(dk.key, dk.amount)
+    return store.incrby(item_key.key, item_key.amount)
 
 
-def _incr(store: typing.Callable, ik: CacheIncrementKey) -> typing.Any:
-    """Wraps redis.incrby command.
-    
-    """
-    return store.incrby(ik.key, ik.amount)
-
-
-def _set_one(store: typing.Callable, item: CacheItem) -> str:
-    """Wraps redis.set command.
+def _set_one(store: typing.Callable, item: Item) -> str:
+    """Set item under a key.
     
     """
     store.set(item.key, item.data_as_json)
@@ -118,49 +123,28 @@ def _set_one(store: typing.Callable, item: CacheItem) -> str:
     return item.key
 
 
-def _set_one_singleton(store: typing.Callable, item: CacheItem) -> typing.Tuple[str, bool]:
-    """Wraps redis.setnx command.
+def _set_one_singleton(store: typing.Callable, item: Item) -> typing.Tuple[str, bool]:
+    """Sets item under a key if not already cached.
     
     """
-    was_cached = bool(store.setnx(item.key, item.data_as_json))
-
-    return item.key, was_cached
+    return item.key, bool(store.setnx(item.key, item.data_as_json))
 
 
-def _get_all(store: typing.Callable, search_key: str) -> typing.List[typing.Any]:
-    """Wraps redis.mget command.
-    
-    """
-    CHUNK_SIZE = 5000
-    _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
-
-    return [_decode_item(i) for i in store.mget(keys)] if keys else []
-
-
-def _get_count_matched(store: typing.Callable, search_key: str) -> typing.List[typing.Any]:
-    """Wraps redis.mget command.
-    
-    """
-    CHUNK_SIZE = 5000
-    _, keys = store.scan(match=search_key, count=CHUNK_SIZE)
-
-    return len(keys)
-
-
-def _set(store: typing.Callable, key: str, data: typing.Any) -> str:
-    """Wraps redis.set command.
-    
-    """
-    store.set(key, json.dumps(encoder.encode(data), indent=4))
-
-    return key
-
-
-def _setnx(store: typing.Callable, key: str, data: typing.Any) -> typing.Tuple[str, bool]:
-    """Wraps redis.setnx command.
-    
-    """
-    return bool(store.setnx(key, json.dumps(encoder.encode(data), indent=4)))
+# Map: operation -> redis command wrapper.
+_HANDLERS = {
+    StoreOperation.COUNTER_DECR: _decr,
+    StoreOperation.DELETE_ONE: _delete_one,
+    StoreOperation.DELETE_MANY: _flush_many,
+    StoreOperation.GET_COUNT: _get_count,
+    StoreOperation.GET_COUNTER_ONE: _get_counter_one,
+    StoreOperation.GET_COUNTER_MANY: _get_counter_many,
+    StoreOperation.GET_ONE: _get_one,
+    StoreOperation.GET_ONE_FROM_MANY: _get_one_from_many,
+    StoreOperation.GET_MANY: _get_many,
+    StoreOperation.COUNTER_INCR: _incr,
+    StoreOperation.SET_ONE: _set_one,
+    StoreOperation.SET_ONE_SINGLETON: _set_one_singleton,
+}
 
 
 def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Callable:
@@ -173,62 +157,14 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
     
     """
     def decorator(func):
-
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-
-            # JIT iniitalise encoder to ensure all types are registered.
+            # JIT initialise encoder so as to ensure that all types are registered.
             encoder.initialise()
-
+            # Set store - use context manager to auto close connection.
             with stores.get_store(partition) as store:
-
-                if operation == StoreOperation.DECR:
-                    _decr(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.DELETE_ONE:
-                    _delete_one(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.FLUSH_MANY:
-                    _flush_many(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.GET_COUNT_ONE:
-                    return _get_count_one(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.GET_COUNT_MANY:
-                    return _get_count_many(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.GET_COUNT_MATCHED:
-                    keypath = func(*args, **kwargs)
-                    key = ":".join([str(i) for i in keypath])
-                    return _get_count_matched(store, key)
-
-                elif operation == StoreOperation.GET_ONE:
-                    return _get_one(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.GET_ONE_FROM_MANY:
-                    return _get_one_from_many(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.GET_MANY:
-                    return _get_many(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.INCR:
-                    return _incr(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.LOCK_ONE:
-                    return _set_one_singleton(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.SET:
-                    return _set_one(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.SET_ONE:
-                    return _set_one(store, func(*args, **kwargs))
-
-                elif operation == StoreOperation.SET_ONE_SINGLETON:
-                    return _set_one_singleton(store, func(*args, **kwargs))
-
-                else:
-                    raise NotImplementedError("Cache operation is unsupported")
+                # Invoke handler.
+                return _HANDLERS[operation](store, func(*args, **kwargs))
 
         return wrapper
-
     return decorator

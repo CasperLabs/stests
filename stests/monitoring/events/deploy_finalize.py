@@ -45,7 +45,7 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
         return
 
     # Process deploys dispatched by a generator.
-    deploy = cache.state.get_deploy(info.deploy_hash)
+    deploy = cache.state1.get_deploy_by_node_event_info(info)
     if deploy:
         _process_deploy_dispatched_by_a_generator(
             node_id,

@@ -30,7 +30,7 @@ def do_create_account(ctx: ExecutionContext, index: int, typeof: AccountType):
 
     """
     account = factory.create_account_for_run(ctx, index=index, typeof=typeof)
-    cache.state.set_account(account)
+    cache.state1.set_account(account)
 
 
 @dramatiq.actor(queue_name=_QUEUE)

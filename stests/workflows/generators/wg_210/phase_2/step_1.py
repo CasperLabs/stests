@@ -73,7 +73,7 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     # Set contract info.
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE_STORED)
     contract_account = cache.state1.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
-    contract_keys = cache.state.get_named_keys(ctx, contract_account, ContractType.COUNTER_DEFINE_STORED)
+    contract_keys = cache.state1.get_named_keys(ctx, contract_account, ContractType.COUNTER_DEFINE_STORED)
 
     # Set user account.
     user_account = cache.state1.get_account_by_index(ctx, account_index)

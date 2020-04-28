@@ -2,9 +2,9 @@ import random
 import typing
 
 from stests.core import factory
-from stests.core.cache.model import CacheItem
-from stests.core.cache.model import CacheItemKey
-from stests.core.cache.model import CacheSearchKey
+from stests.core.cache.model import Item
+from stests.core.cache.model import ItemKey
+from stests.core.cache.model import SearchKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
 from stests.core.cache.ops.utils import cache_op
@@ -28,7 +28,7 @@ COL_NODE = "node"
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE_FROM_MANY)
-def get_named_key(network: str, contract_type: ContractType, name: str) -> CacheItemKey:
+def get_named_key(network: str, contract_type: ContractType, name: str) -> ItemKey:
     """Decaches domain objects: NamedKey.
 
     :param network: A pointer to either a network or network identifier.
@@ -36,7 +36,7 @@ def get_named_key(network: str, contract_type: ContractType, name: str) -> Cache
     :returns: Collection of registered nodes.
     
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             network,
             COL_NAMED_KEY,
@@ -50,7 +50,7 @@ def get_named_key(network: str, contract_type: ContractType, name: str) -> Cache
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
-def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> CacheSearchKey:
+def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> SearchKey:
     """Decaches domain objects: NamedKey.
 
     :param network: A pointer to either a network or network identifier.
@@ -63,7 +63,7 @@ def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> Ca
     except AttributeError:
         pass
 
-    return CacheSearchKey(
+    return SearchKey(
         paths=[
             network,
             COL_NAMED_KEY,            
@@ -72,7 +72,7 @@ def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> Ca
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_network(network_id: NetworkIdentifier) -> CacheItemKey:
+def get_network(network_id: NetworkIdentifier) -> ItemKey:
     """Decaches domain object: Network.
 
     :param network_id: A network identifier.
@@ -80,7 +80,7 @@ def get_network(network_id: NetworkIdentifier) -> CacheItemKey:
     :returns: A registered network.
     
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             network_id.name,
         ],
@@ -91,13 +91,13 @@ def get_network(network_id: NetworkIdentifier) -> CacheItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
-def get_networks() -> CacheSearchKey:
+def get_networks() -> SearchKey:
     """Decaches domain objects: Network.
 
     :returns: List of registered networks.
     
     """
-    return CacheSearchKey(
+    return SearchKey(
         paths=[
             "*",
             COL_NETWORK,
@@ -106,7 +106,7 @@ def get_networks() -> CacheSearchKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_node(node_id: NodeIdentifier) -> CacheItemKey:
+def get_node(node_id: NodeIdentifier) -> ItemKey:
     """Decaches domain object: Node.
     
     :param node_id: A node identifier.
@@ -114,7 +114,7 @@ def get_node(node_id: NodeIdentifier) -> CacheItemKey:
     :returns: A registered node.
 
     """
-    return CacheItemKey(
+    return ItemKey(
         paths=[
             node_id.network.name,
             COL_NODE,
@@ -168,7 +168,7 @@ def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int) 
 
 
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
-def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> CacheSearchKey:
+def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> SearchKey:
     """Decaches domain objects: Node.
 
     :param network: A pointer to either a network or network identifier.
@@ -176,7 +176,7 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> CacheSe
     :returns: Collection of registered nodes.
     
     """
-    return CacheSearchKey(
+    return SearchKey(
         paths=[
             "*" if network is None else network.name,
             COL_NODE,
@@ -198,7 +198,7 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]) -> 
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_named_key(named_key: NamedKey) -> CacheItem:
+def set_named_key(named_key: NamedKey) -> Item:
     """Encaches domain object: NamedKey.
 
     :param network: NamedKey domain object instance to be cached.
@@ -206,8 +206,8 @@ def set_named_key(named_key: NamedKey) -> CacheItem:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
-        item_key=CacheItemKey(
+    return Item(
+        item_key=ItemKey(
             paths=[
                 named_key.network,
                 COL_NAMED_KEY,
@@ -223,7 +223,7 @@ def set_named_key(named_key: NamedKey) -> CacheItem:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_network(network: Network) -> CacheItem:
+def set_network(network: Network) -> Item:
     """Encaches domain object: Network.
 
     :param network: Network domain object instance to be cached.
@@ -231,8 +231,8 @@ def set_network(network: Network) -> CacheItem:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
-        item_key=CacheItemKey(
+    return Item(
+        item_key=ItemKey(
             paths=[
                 network.name,
             ],
@@ -245,7 +245,7 @@ def set_network(network: Network) -> CacheItem:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_node(node: Node) -> CacheItem:
+def set_node(node: Node) -> Item:
     """Encaches domain object: Node.
     
     :param node: Node domain object instance to be cached.
@@ -253,8 +253,8 @@ def set_node(node: Node) -> CacheItem:
     :returns: Keypath + domain object instance.
 
     """
-    return CacheItem(
-        item_key=CacheItemKey(
+    return Item(
+        item_key=ItemKey(
             paths=[
                 node.network,
                 COL_NODE,

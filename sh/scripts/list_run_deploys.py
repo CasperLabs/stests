@@ -59,7 +59,7 @@ def main(args):
     """
     # Pull data.
     network_id = factory.create_network_id(args.network)
-    data = cache.state.get_deploys(network_id, args.run_type, args.run_index)
+    data = cache.state1.get_deploys(network_id, args.run_type, args.run_index)
     if not data:
         logger.log("No run deploys found.")
         return
