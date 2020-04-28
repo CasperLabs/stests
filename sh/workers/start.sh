@@ -5,8 +5,10 @@ source $STESTS_PATH_SH/utils.sh
 
 # Main entry point.
 function main()
-{	
+{
+	source $STESTS_PATH_SH/cache/flush.sh
 	source $STESTS_PATH_SH/workers/reset_logs.sh
+
 	pushd $STESTS_HOME
 	pipenv run supervisord -c $STESTS_PATH_OPS/config/supervisord.conf
 	popd -1

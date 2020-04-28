@@ -17,8 +17,8 @@ def verify_deploy(ctx: ExecutionContext, block_hash: str, deploy_hash: str) -> D
     
     """
     deploy = cache.state.get_deploy(deploy_hash)
-    assert deploy, f"deploy could not be retrieved: {deploy_hash}"
-    assert deploy.status == DeployStatus.FINALIZED, f"deploy is not FINALIZED : {deploy_hash}"
+    assert deploy, "deploy could not be retrieved"
+    assert deploy.status == DeployStatus.FINALIZED, "deploy is not FINALIZED"
     assert deploy.block_hash == block_hash, f"finalized deploy block hash mismatch : block-hash={block_hash}"
 
     return deploy
@@ -36,9 +36,9 @@ def verify_transfer(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: 
     """Verifies that a transfer between counter-parties completed.
     
     """
-    transfer = cache.state.get_transfer(deploy_hash)
-    assert transfer, f"transfer could not be retrieved: {deploy_hash}"
-    assert transfer.status == TransferStatus.COMPLETE, f"transfer is not COMPLETE : {deploy_hash}"
+    transfer = cache.state.get_transfer_by_ctx(ctx, deploy_hash)
+    assert transfer, "transfer could not be retrieved"
+    assert transfer.status == TransferStatus.COMPLETE, "transfer is not COMPLETE"
 
     verify_account_balance(ctx, node_id, block_hash, transfer.cp1_index)
     verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index)

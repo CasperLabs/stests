@@ -3,8 +3,8 @@ import typing
 
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
-from stests.core.cache.ops_infra import get_network
-from stests.core.cache.ops_infra import get_nodes
+from stests.core.cache.ops.infra import get_network
+from stests.core.cache.ops.infra import get_nodes
 from stests.core.cache.utils import cache_op
 from stests.core.types.chain import Account
 from stests.core.types.chain import AccountIdentifier
@@ -227,7 +227,7 @@ def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: Contr
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_transfer(deploy_hash: str) -> Transfer:
+def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> Transfer:
     """Decaches domain object: Transfer.
     
     :param deploy_hash: A deploy hash.
@@ -236,9 +236,30 @@ def get_transfer(deploy_hash: str) -> Transfer:
 
     """
     return [
-        "*",
+        deploy.network,
+        deploy.run_type,
+        deploy.label_run_index,
         COL_TRANSFER,
-        "*",
+        asset.lower(),
+        deploy.hash,
+    ]
+
+
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
+def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX") -> Transfer:
+    """Decaches domain object: Transfer.
+    
+    :param deploy_hash: A deploy hash.
+
+    :returns: A run deploy.
+
+    """
+    return [
+        ctx.network,
+        ctx.run_type,
+        ctx.label_run_index,
+        COL_TRANSFER,
+        asset.lower(),
         deploy_hash,
     ]
 

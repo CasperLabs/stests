@@ -17,7 +17,10 @@ _QUEUE = "monitoring.control"
 
 # Number of monitors to launch per node.
 # TODO: use algo: processes * threads / nodes 
-_MONITORS_PER_NODE = 3
+_MONITORS_PER_NODE = 1
+
+# Time limit for node monitoring actor.
+_24_HOURS_IN_MS = 86400000
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -33,7 +36,7 @@ def do_start_monitoring():
             do_monitor_node.send(node_id)
 
 
-@dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True)
+@dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True, time_limit=_24_HOURS_IN_MS)
 def do_monitor_node(node_id: NodeIdentifier):   
     """Launches node monitoring.
     

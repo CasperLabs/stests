@@ -6,7 +6,7 @@ from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils import verification
-from stests.workflows.generators.utils.accounts import do_fund_account
+from stests.workflows.generators.utils.accounts import do_transfer
 
 
 
@@ -22,7 +22,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     :returns: 3 member tuple -> actor, message count, message arg factory.
 
     """
-    return do_fund_account, ctx.args.user_accounts, lambda: _yield_parameterizations(ctx)
+    return do_transfer, ctx.args.user_accounts, lambda: _yield_parameterizations(ctx)
 
 
 def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:

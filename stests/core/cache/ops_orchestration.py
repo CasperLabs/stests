@@ -1,7 +1,7 @@
 import random
 import typing
 
-import stests.core.cache.ops_infra as infra
+import stests.core.cache.ops.infra as infra
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
 from stests.core.cache.utils import cache_op

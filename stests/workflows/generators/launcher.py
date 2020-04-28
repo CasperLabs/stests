@@ -59,11 +59,11 @@ def _get_context(
     """Returns contextual information passed along chain of execution.
     
     """
-    # Set unique run identifier.
+    # Set run identifier (unique to each run type).
     run_index = cache.orchestration.increment_generator_run_count(network_id.name, meta.TYPE)
 
     # Set run ctx.
-    ctx = factory.create_execution_context(
+    return factory.create_execution_context(
         args=meta.Arguments.create(args),
         deploys_per_second=args.deploys_per_second,
         execution_mode=args.execution_mode,
@@ -74,5 +74,3 @@ def _get_context(
         run_index=run_index,
         run_type=meta.TYPE
     )
-
-    return ctx

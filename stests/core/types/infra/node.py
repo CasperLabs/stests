@@ -142,5 +142,7 @@ class NodeMonitoringLock:
     def label_index(self):
         return f"N-{str(self.index).zfill(4)}"
 
-
+    @property
+    def label_node_index(self):
+        return f"N-{str(self.index).zfill(4)}"
 

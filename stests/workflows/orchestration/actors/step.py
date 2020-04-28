@@ -253,7 +253,8 @@ def _enqueue_message_batch(ctx, step):
     # Instantiate a dramatiq group to batch message set.
     group = dramatiq.group(message_factory())
 
-    # When in sync mode can signal end of step in a completion callback. 
+    # When in sync mode we can signal end of step in a completion callback. 
+    # In async mode the step end signal is determined post deploy finalisation event.
     if step.is_sync:
         group.add_completion_callback(do_step_verification.message(ctx))
 

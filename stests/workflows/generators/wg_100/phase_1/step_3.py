@@ -6,7 +6,7 @@ from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils import verification
-from stests.workflows.generators.utils.accounts import do_fund_account
+from stests.workflows.generators.utils.accounts import do_transfer
 
 
 
@@ -22,7 +22,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, tuple]:
     :returns: 2 member tuple -> actor, args.
 
     """
-    return do_fund_account, (
+    return do_transfer, (
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_RUN_CONTRACT,

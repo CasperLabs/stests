@@ -1,4 +1,5 @@
 import pathlib
+import time
 import typing
 
 import casperlabs_client
@@ -6,6 +7,7 @@ from casperlabs_client import CasperLabsClient
 from casperlabs_client.abi import ABI
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.clx import query
 from stests.core.clx.defaults import CLX_TX_FEE
 from stests.core.clx.defaults import CLX_TX_GAS_PRICE
@@ -17,6 +19,9 @@ from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 
+
+# Max. number of times a deploy will be dispatched.
+_MAX_DEPLOY_DISPATCH_ATTEMPTS = 3
 
 
 def await_deploy_processing(src: typing.Any, deploy_hash: str) -> str:
@@ -47,7 +52,7 @@ def dispatch_deploy(
     session_name: str = None,
     session_uref: str = None,
     ) -> typing.Tuple[Node, CasperLabsClient, str]:
-    """Dispatches a deploy to target network.
+    """Dispatches a deploy to target network.  Performs retries upon dispatch failure. 
     
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which deploy will be dispatched.
@@ -63,27 +68,31 @@ def dispatch_deploy(
 
     """
     node, client = get_client(src)
-    try:
-        deploy_hash = client.deploy(
-            session=session,
-            session_args=session_args,
-            session_hash=session_hash,
-            session_name=session_name,
-            session_uref=session_uref,
+    attempts = 0
+    while attempts < _MAX_DEPLOY_DISPATCH_ATTEMPTS:
+        try:
+            deploy_hash = client.deploy(
+                session=session,
+                session_args=session_args,
+                session_hash=session_hash,
+                session_name=session_name,
+                session_uref=session_uref,
 
-            from_addr=from_addr or account.public_key,
-            # public_key=account.public_key_as_pem_filepath,
-            private_key=account.private_key_as_pem_filepath,
+                from_addr=from_addr or account.public_key,
+                # public_key=account.public_key_as_pem_filepath,
+                private_key=account.private_key_as_pem_filepath,
 
-            # TODO: review how these are being assigned
-            payment_amount=CLX_TX_FEE,
-            gas_price=CLX_TX_GAS_PRICE
-        )
-    except casperlabs_client.casperlabs_client.InternalError as err:
-        print(err)
-        if err.details.index("UNAVAILABLE") >= 0:
-            raise IOError("Deploy dispatch error: unreachable node")
-        raise err
+                # TODO: review how these are being assigned
+                payment_amount=CLX_TX_FEE,
+                gas_price=CLX_TX_GAS_PRICE
+            )
+        except Exception as err:
+            attempts += 1
+            if attempts == _MAX_DEPLOY_DISPATCH_ATTEMPTS:
+                raise err
+            time.sleep(float(1))
+        else:
+            break
 
     return node, client, deploy_hash
 
@@ -109,7 +118,10 @@ def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, Ne
     elif isinstance(src, (Network, NetworkIdentifier)):
         node = cache.infra.get_node_by_network(src)
     elif isinstance(src, ExecutionContext):
-        node = cache.infra.get_node_by_ctx(src)
+        node = cache.infra.get_node_by_network_nodeset(
+            factory.create_network_id(src.network),
+            src.node_index
+            )
     else:
         raise ValueError("Cannot derive node from input source.")
 
