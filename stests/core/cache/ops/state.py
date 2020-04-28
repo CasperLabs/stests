@@ -310,7 +310,7 @@ def increment_account_balance(account: Account, amount: int):
     )
 
 
-@cache_op(_PARTITION, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET_ONE)
 def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
     """Encaches domain object: Account.
     
@@ -319,16 +319,23 @@ def set_account(account: Account) -> typing.Tuple[typing.List[str], Account]:
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        account.network,
-        account.run_type,
-        f"R-{str(account.run_index).zfill(3)}",
-        COL_ACCOUNT,
-        account.label_index,
-    ], account
+    return CacheItem(
+        data=account,
+        item_key=CacheItemKey(
+            paths=[
+                account.network,
+                account.run_type,
+                f"R-{str(account.run_index).zfill(3)}",
+                COL_ACCOUNT,
+            ],
+            names=[
+                account.label_index,
+            ]
+        )
+    )
 
 
-@cache_op(_PARTITION, StoreOperation.SET)
+@cache_op(_PARTITION, StoreOperation.SET_ONE)
 def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     """Encaches domain object: Deploy.
     
@@ -337,17 +344,26 @@ def set_deploy(deploy: Deploy) -> typing.Tuple[typing.List[str], Deploy]:
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        deploy.network,
-        deploy.run_type,
-        deploy.label_run_index,
-        COL_DEPLOY,
-        f"{str(deploy.dispatch_ts.timestamp())}.{deploy.deploy_hash}.{deploy.label_account_index}"
-    ], deploy
+    return CacheItem(
+        data=deploy,
+        item_key=CacheItemKey(
+            paths=[
+                deploy.network,
+                deploy.run_type,
+                deploy.label_run_index,
+                COL_DEPLOY,
+            ],
+            names=[
+                str(deploy.dispatch_ts.timestamp()),
+                deploy.deploy_hash,
+                deploy.label_account_index,
+            ]
+        )
+    )
 
 
-@cache_op(_PARTITION, StoreOperation.SET)
-def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> typing.Tuple[typing.List[str], NamedKey]:
+@cache_op(_PARTITION, StoreOperation.SET_ONE)
+def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> CacheItem:
     """Encaches domain object: NamedKey.
 
     :param network: NamedKey domain object instance to be cached.
@@ -355,19 +371,26 @@ def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> typing.Tuple[ty
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        named_key.network,
-        named_key.run_type,
-        named_key.label_run_index,
-        COL_NAMED_KEY,
-        named_key.label_account_index,
-        named_key.contract_type.name,
-        named_key.name,
-    ], named_key
+    return CacheItem(
+        data=named_key,
+        item_key=CacheItemKey(
+            paths=[
+                named_key.network,
+                named_key.run_type,
+                named_key.label_run_index,
+                COL_NAMED_KEY,
+                named_key.label_account_index,
+                named_key.contract_type.name,
+            ],
+            names=[
+                named_key.name,
+            ]
+        )
+    )
 
 
-@cache_op(_PARTITION, StoreOperation.SET)
-def set_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
+@cache_op(_PARTITION, StoreOperation.SET_ONE)
+def set_transfer(transfer: Transfer) -> CacheItem:
     """Encaches domain object: Transfer.
     
     :param transfer: Transfer domain object instance to be cached.
@@ -375,12 +398,18 @@ def set_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]
     :returns: Keypath + domain object instance.
 
     """
-    return [
-        transfer.network,
-        transfer.run_type,
-        transfer.label_run_index,
-        COL_TRANSFER,
-        transfer.asset.lower(),
-        transfer.deploy_hash
-    ], transfer
-
+    return CacheItem(
+        data=transfer   ,
+        item_key=CacheItemKey(
+            paths=[
+                transfer.network,
+                transfer.run_type,
+                transfer.label_run_index,
+                COL_TRANSFER,
+                transfer.asset.lower(),
+            ],
+            names=[
+                transfer.deploy_hash,
+            ]
+        )
+    )

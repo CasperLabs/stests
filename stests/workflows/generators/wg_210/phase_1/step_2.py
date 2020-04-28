@@ -33,7 +33,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
 
     # Persist named keys.
     for key_name, key_hash in keys:
-        cache.state.set_named_key(ctx, factory.create_named_key(
+        cache.state1.set_named_key(ctx, factory.create_named_key(
             account,
             contract.TYPE,
             key_name,

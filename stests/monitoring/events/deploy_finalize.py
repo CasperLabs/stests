@@ -85,7 +85,7 @@ def _process_deploy_dispatched_by_a_generator(
     deploy.finalization_node = node_id.index
     deploy.finalization_ts = block_timestamp
     deploy.finalization_time = deploy.finalization_ts.timestamp() - deploy.dispatch_ts.timestamp()    
-    cache.state.set_deploy(deploy)
+    cache.state1.set_deploy(deploy)
 
     # Update account balance for non-network faucet accounts.
     if not deploy.is_from_network_fauct:
@@ -95,7 +95,7 @@ def _process_deploy_dispatched_by_a_generator(
     transfer = cache.state1.get_transfer_by_deploy(deploy)
     if transfer:
         transfer.status = TransferStatus.COMPLETE
-        cache.state.set_transfer(transfer)
+        cache.state1.set_transfer(transfer)
 
     # Signal to workflow orchestrator - note we go down a level in terms of dramtiq usage so as not to import non-monitoring actors.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)

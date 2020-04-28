@@ -60,14 +60,14 @@ def do_transfer(
     node, deploy_hash = contract.transfer(ctx, cp1, cp2, amount)
 
     # Update cache.
-    cache.state.set_deploy(factory.create_deploy_for_run(
+    cache.state1.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
         account=cp1,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.TRANSFER_REFUND if is_refund else DeployType.TRANSFER
         ))
-    cache.state.set_transfer(factory.create_transfer(
+    cache.state1.set_transfer(factory.create_transfer(
         ctx=ctx,
         amount=amount,
         asset="CLX",

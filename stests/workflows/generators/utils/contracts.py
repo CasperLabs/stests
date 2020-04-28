@@ -32,7 +32,7 @@ def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type
     node, deploy_hash = contract.install(ctx, account)
 
     # Persist deploy.
-    cache.state.set_deploy(factory.create_deploy_for_run(
+    cache.state1.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
         account=account,
         node=node, 
@@ -42,7 +42,7 @@ def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type
 
     # Persist named keys.
     # for key_name, key_hash in keys:
-    #     cache.state.set_named_key(ctx, factory.create_named_key(
+    #     cache.state1.set_named_key(ctx, factory.create_named_key(
     #         account,
     #         contract.TYPE,
     #         key_name,

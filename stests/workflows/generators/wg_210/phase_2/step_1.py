@@ -82,7 +82,7 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     (node, deploy_hash) = contract.increment(ctx, contract_account, contract_keys, user_account)
 
     # Update cache.
-    cache.state.set_deploy(factory.create_deploy_for_run(
+    cache.state1.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
         account=user_account,
         node=node, 
