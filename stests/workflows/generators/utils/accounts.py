@@ -76,9 +76,9 @@ def do_transfer(
         deploy_hash=deploy_hash,
         ))
     if cp1.is_run_account:
-        cache.state.decrement_account_balance(cp1, amount)
+        cache.state1.decrement_account_balance(cp1, amount)
     if cp2.is_run_account:
-        cache.state.increment_account_balance(cp2, amount)
+        cache.state1.increment_account_balance(cp2, amount)
 
 
 def _get_account(ctx: ExecutionContext, account_index) -> Account:

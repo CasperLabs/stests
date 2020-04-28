@@ -5,6 +5,7 @@ import functools
 
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
+from stests.core.cache.model import CacheDecrementKey
 from stests.core.cache.model import CacheIncrementKey
 from stests.core.cache.model import CacheItem
 from stests.core.cache.model import CacheItemKey
@@ -94,7 +95,14 @@ def _get_many(store: typing.Callable, sk: CacheSearchKey) -> typing.List[typing.
     return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
 
-def _incr_one(store: typing.Callable, ik: CacheIncrementKey) -> typing.Any:
+def _decr(store: typing.Callable, dk: CacheDecrementKey) -> typing.Any:
+    """Wraps redis.decrby command.
+    
+    """
+    return store.decrby(dk.key, dk.amount)
+
+
+def _incr(store: typing.Callable, ik: CacheIncrementKey) -> typing.Any:
     """Wraps redis.incrby command.
     
     """
@@ -174,10 +182,8 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
 
             with stores.get_store(partition) as store:
 
-                if operation == StoreOperation.DECR_ONE:
-                    keypath, amount = func(*args, **kwargs)
-                    key = ":".join([str(i) for i in keypath])
-                    return store.decrby(key, amount)
+                if operation == StoreOperation.DECR:
+                    _decr(store, func(*args, **kwargs))
 
                 elif operation == StoreOperation.DELETE_ONE:
                     _delete_one(store, func(*args, **kwargs))
@@ -205,8 +211,8 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
                 elif operation == StoreOperation.GET_MANY:
                     return _get_many(store, func(*args, **kwargs))
 
-                elif operation == StoreOperation.INCR_ONE:
-                    return _incr_one(store, func(*args, **kwargs))
+                elif operation == StoreOperation.INCR:
+                    return _incr(store, func(*args, **kwargs))
 
                 elif operation == StoreOperation.LOCK_ONE:
                     return _set_one_singleton(store, func(*args, **kwargs))

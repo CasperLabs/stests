@@ -89,13 +89,13 @@ def _process_deploy_dispatched_by_a_generator(
 
     # Update account balance for non-network faucet accounts.
     if not deploy.is_from_network_fauct:
-        cache.state.decrement_account_balance_on_deploy_finalisation(deploy)
+        cache.state1.decrement_account_balance_on_deploy_finalisation(deploy)
 
     # Update transfer.
     transfer = cache.state.get_transfer_by_deploy(deploy)
     if transfer:
         transfer.status = TransferStatus.COMPLETE
-        cache.state.update_transfer(transfer)
+        cache.state.set_transfer(transfer)
 
     # Signal to workflow orchestrator - note we go down a level in terms of dramtiq usage so as not to import non-monitoring actors.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)

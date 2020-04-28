@@ -31,6 +31,12 @@ class CacheSearchKey():
         self.key = f"{':'.join([str(i) for i in paths])}{wildcard}"
 
 
+class CacheDecrementKey(CacheItemKey):
+    def __init__(self, paths: typing.List[str], names: typing.List[str], amount: int):
+        super().__init__(paths, names)
+        self.amount = amount
+
+
 class CacheIncrementKey(CacheItemKey):
     def __init__(self, paths: typing.List[str], names: typing.List[str], amount: int):
         super().__init__(paths, names)
@@ -88,9 +94,6 @@ class StoreOperation(enum.Enum):
 
     # Atomically increment a counter.
     INCR = enum.auto()
-
-    # Atomically increment a counter.
-    INCR_ONE = enum.auto()
 
     # Atomically set a lock.
     LOCK = enum.auto()

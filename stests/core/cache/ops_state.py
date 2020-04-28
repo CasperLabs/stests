@@ -45,7 +45,7 @@ def decrement_account_balance(account: Account, amount: int):
         COL_ACCOUNT_BALANCE,
         account.label_index,
     ], amount
-    
+
 
 @cache_op(_PARTITION, StoreOperation.DECR)
 def decrement_account_balance_on_deploy_finalisation(deploy: Deploy):
@@ -356,13 +356,3 @@ def set_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]
         transfer.deploy_hash
     ], transfer
 
-
-def update_transfer(transfer: Transfer) -> typing.Tuple[typing.List[str], Transfer]:
-    """Updates domain object: Transfer.
-    
-    :param transfer: Transfer domain object instance to be cached.
-
-    :returns: Keypath + domain object instance.
-
-    """
-    return set_transfer(transfer)

@@ -1,24 +1,21 @@
 import random
 import typing
 
-import stests.core.cache.ops.infra as infra
-
+from stests.core import factory
 from stests.core.cache.model import CacheIncrementKey
 from stests.core.cache.model import CacheItem
 from stests.core.cache.model import CacheItemKey
 from stests.core.cache.model import CacheSearchKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
-
 from stests.core.cache.ops.utils import cache_op
-
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionInfo
 from stests.core.types.orchestration import ExecutionLock
 from stests.core.types.orchestration import ExecutionStatus
-from stests.core import factory
+import stests.core.cache.ops.infra as infra
 
 
 
@@ -233,7 +230,7 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
         )
 
 
-@cache_op(_PARTITION, StoreOperation.INCR_ONE)
+@cache_op(_PARTITION, StoreOperation.INCR)
 def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP) -> CacheIncrementKey:
     """Increments (atomically) count of run step deploys.
 
@@ -260,7 +257,7 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
     )
 
 
-@cache_op(_PARTITION, StoreOperation.INCR_ONE)
+@cache_op(_PARTITION, StoreOperation.INCR)
 def increment_generator_run_count(network: str, generator_type: str) -> CacheIncrementKey:
     """Increments (atomically) count of generator runs.
 
