@@ -76,7 +76,7 @@ def _process_deploy_dispatched_by_a_generator(
     """Process a monitored deploy that was previously dispatched during a generator run.
     
     """
-    logger.log(f"CHAIN :: {node_id.label_index} :: event :: {info.event_id} :: {NodeEventType.DEPLOY_CORRELATED.name} :: {info.deploy_hash}")
+    logger.log(f"CHAIN :: {node_id.label_index} :: {NodeEventType.DEPLOY_CORRELATED.name} :: {info.deploy_hash} :: event={info.event_id}")
 
     # Update deploy.
     deploy.block_hash = info.block_hash

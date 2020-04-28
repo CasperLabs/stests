@@ -48,7 +48,7 @@ def bind_to_stream(node_id: NodeIdentifier):
             return
 
         # Dispatch message to actor for further processing.
-        logger.log(f"CHAIN :: {node.label_index} :: event :: {event_info.event_id} :: {event_info.event_type.name} :: {event_info.log_suffix}")
+        logger.log(f"CHAIN :: {node.label_index} :: {event_info.event_type.name.ljust(17)} :: {event_info.log_suffix}")
         handler.send(node_id, event_info)
 
     # Bind to a node's stream-events endpoint & dispatch a message to relevant actor.

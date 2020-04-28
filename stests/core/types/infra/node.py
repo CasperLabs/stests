@@ -95,13 +95,11 @@ class NodeEventInfo:
     @property
     def log_suffix(self):
         if self.block_hash and self.deploy_hash:
-            return f"{self.deploy_hash} :: block={self.block_hash}"
+            return f"{self.deploy_hash} :: block={self.block_hash} :: event={self.event_id}"
         elif self.block_hash:
-            return self.block_hash
+            return f"{self.block_hash} :: event={self.event_id}"
         elif self.deploy_hash:
-            return self.deploy_hash
-        
-
+            return f"{self.deploy_hash} :: event={self.event_id}"
 
 
 @dataclasses.dataclass
