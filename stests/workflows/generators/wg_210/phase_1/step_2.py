@@ -27,7 +27,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
 
     """
     # Set named keys.
-    account = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
+    account = cache.state1.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE_STORED)
     keys = clx.contracts.get_named_keys(ctx, account, None, contract.NKEYS)
 

@@ -36,7 +36,7 @@ def verify_transfer(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: 
     """Verifies that a transfer between counter-parties completed.
     
     """
-    transfer = cache.state.get_transfer_by_ctx(ctx, deploy_hash)
+    transfer = cache.state1.get_transfer_by_ctx(ctx, deploy_hash)
     assert transfer, "transfer could not be retrieved"
     assert transfer.status == TransferStatus.COMPLETE, "transfer is not COMPLETE"
 
@@ -52,7 +52,7 @@ def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block
     if verify_user_accounts_only and account_index < ACC_RUN_USERS:
         return
     
-    account = cache.state.get_account_by_index(ctx, account_index)
+    account = cache.state1.get_account_by_index(ctx, account_index)
     assert account, f"account {account_index} could not be retrieved"
 
     expected = cache.state.get_account_balance(account)

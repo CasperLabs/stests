@@ -112,7 +112,7 @@ def _get_deploy_account(network_id, deploy):
         deploy.run_index,
         deploy.run_type,
     )
-    return cache.state.get_account(account_id)
+    return cache.state1.get_account(account_id)
 
 
 def _get_deploy_node(network_id, deploy):

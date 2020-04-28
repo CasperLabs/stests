@@ -58,7 +58,7 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
 
     """
     deploy = verification.verify_deploy(ctx, block_hash, deploy_hash)
-    account = cache.state.get_account_by_index(ctx, deploy.account_index)
+    account = cache.state1.get_account_by_index(ctx, deploy.account_index)
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)
     count = contract.get_count(node_id, account, block_hash)
 
@@ -71,7 +71,7 @@ def _do_increment_counter_0(ctx: ExecutionContext, account_index: int):
     
     """
     # Set account.
-    account = cache.state.get_account_by_index(ctx, account_index)
+    account = cache.state1.get_account_by_index(ctx, account_index)
 
     # Set contract.
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)

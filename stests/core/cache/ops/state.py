@@ -77,7 +77,7 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy) -> CacheDec
     )
 
 
-@cache_op(_PARTITION, StoreOperation.GET)
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_account(account_id: AccountIdentifier) -> Account:
     """Decaches domain object: Account.
 
@@ -86,13 +86,17 @@ def get_account(account_id: AccountIdentifier) -> Account:
     :returns: A cached account.
 
     """
-    return [
-        account_id.run.network.name,
-        account_id.run.type,
-        f"R-{str(account_id.run.index).zfill(3)}",
-        COL_ACCOUNT,
-        account_id.label_index
-    ]
+    return CacheItemKey(
+        paths=[
+            account_id.run.network.name,
+            account_id.run.type,
+            f"R-{str(account_id.run.index).zfill(3)}",
+            COL_ACCOUNT,
+        ],
+        names=[
+            account_id.label_index,
+        ]
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.GET_COUNT)
@@ -247,14 +251,18 @@ def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> Transfer:
     :returns: A run deploy.
 
     """
-    return [
-        deploy.network,
-        deploy.run_type,
-        deploy.label_run_index,
-        COL_TRANSFER,
-        asset.lower(),
-        deploy.hash,
-    ]
+    return CacheItemKey(
+        paths=[
+            deploy.network,
+            deploy.run_type,
+            deploy.label_run_index,
+            COL_TRANSFER,
+            asset.lower(),
+        ],
+        names=[
+            deploy.hash,
+        ],
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
@@ -266,14 +274,18 @@ def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX
     :returns: A run deploy.
 
     """
-    return [
-        ctx.network,
-        ctx.run_type,
-        ctx.label_run_index,
-        COL_TRANSFER,
-        asset.lower(),
-        deploy_hash,
-    ]
+    return CacheItemKey(
+        paths=[
+            ctx.network,
+            ctx.run_type,
+            ctx.label_run_index,
+            COL_TRANSFER,
+            asset.lower(),
+        ],
+        names=[
+            deploy_hash,
+        ],
+    )    
 
 
 @cache_op(_PARTITION, StoreOperation.INCR)

@@ -92,4 +92,4 @@ def _get_account(ctx: ExecutionContext, account_index) -> Account:
             raise ValueError("Network faucet account does not exist.")
         return network.faucet
     else:
-        return cache.state.get_account_by_index(ctx, account_index)           
+        return cache.state1.get_account_by_index(ctx, account_index)           

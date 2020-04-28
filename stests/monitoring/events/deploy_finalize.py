@@ -92,7 +92,7 @@ def _process_deploy_dispatched_by_a_generator(
         cache.state1.decrement_account_balance_on_deploy_finalisation(deploy)
 
     # Update transfer.
-    transfer = cache.state.get_transfer_by_deploy(deploy)
+    transfer = cache.state1.get_transfer_by_deploy(deploy)
     if transfer:
         transfer.status = TransferStatus.COMPLETE
         cache.state.set_transfer(transfer)

@@ -23,7 +23,7 @@ def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type
     
     """
     # Set account.
-    account = cache.state.get_account_by_index(ctx, account_index)
+    account = cache.state1.get_account_by_index(ctx, account_index)
 
     # Set contract.
     contract = clx.contracts.get_contract(contract_type)

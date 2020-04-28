@@ -47,7 +47,7 @@ def verify(ctx: ExecutionContext):
     verification.verify_deploy_count(ctx, ctx.args.user_accounts * ctx.args.increments)    
 
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)
-    contract_account = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
+    contract_account = cache.state1.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
     count = contract.get_count(ctx, contract_account)
     print(f"sss :: {count}")
     assert count == ctx.args.user_accounts * ctx.args.increments, "counter verification failed"
@@ -72,11 +72,11 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     """
     # Set contract info.
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE_STORED)
-    contract_account = cache.state.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
+    contract_account = cache.state1.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
     contract_keys = cache.state.get_named_keys(ctx, contract_account, ContractType.COUNTER_DEFINE_STORED)
 
     # Set user account.
-    user_account = cache.state.get_account_by_index(ctx, account_index)
+    user_account = cache.state1.get_account_by_index(ctx, account_index)
 
     # Increment on-chain counter.
     (node, deploy_hash) = contract.increment(ctx, contract_account, contract_keys, user_account)
