@@ -1,5 +1,6 @@
 from stests.core import cache
 from stests.core import clx
+from stests.core.logging import log_event
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeEventInfo
@@ -47,8 +48,10 @@ def bind_to_stream(node_id: NodeIdentifier):
         if not was_lock_acquired:
             return
 
+        # Inform.
+        log_event(event_info.event_type, node_id, event_id=event_info.event_id, block_hash=event_info.block_hash, deploy_hash=event_info.deploy_hash)
+
         # Dispatch message to actor for further processing.
-        logger.log(f"CHAIN :: {node.label_index} :: {event_info.event_type.name.ljust(17)} :: {event_info.log_suffix}")
         handler.send(node_id, event_info)
 
     # Bind to a node's stream-events endpoint & dispatch a message to relevant actor.

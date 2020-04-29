@@ -52,6 +52,9 @@ class Node:
     def label(self):
         return f"{self.network}:{self.index}"
 
+    @property
+    def network_name(self):
+        return self.network
 
 
 @dataclasses.dataclass
@@ -101,6 +104,10 @@ class NodeEventInfo:
         elif self.deploy_hash:
             return f"{self.deploy_hash} :: event={self.event_id}"
 
+    @property
+    def network_name(self):
+        return self.network.name
+
 
 @dataclasses.dataclass
 class NodeIdentifier:
@@ -120,6 +127,10 @@ class NodeIdentifier:
     @property
     def label(self):
         return f"{self.network.name}:{self.label_index}"
+
+    @property
+    def network_name(self):
+        return self.network
 
 
 @dataclasses.dataclass
@@ -144,3 +155,6 @@ class NodeMonitoringLock:
     def label_node_index(self):
         return f"N-{str(self.index).zfill(4)}"
 
+    @property
+    def network_name(self):
+        return self.network

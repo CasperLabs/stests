@@ -12,6 +12,7 @@ from stests.core.logging.types import WorkflowLogInfo
 from stests.core.logging.types import Level
 from stests.core.logging.types import SubSystem
 from stests.core.types.infra import NodeEventType
+from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionEventType
@@ -20,7 +21,7 @@ from stests.core.types.orchestration import ExecutionEventType
 
 def get_monitoring_event_info(
     event_type: NodeEventType,
-    node_id: NodeIdentifier,
+    node: typing.Union[Node, NodeIdentifier],
     message: str = None,
     event_id: str = None,
     block_hash: str = None,
@@ -39,13 +40,14 @@ def get_monitoring_event_info(
         NodeEventType.BLOCK_NOT_FOUND,
         NodeEventType.DEPLOY_REQUEUED,
         )
+    message=f"{event_type.name} :: {str(message)}" if message else event_type.name
     level = Level.ERROR if is_error else Level.WARN if is_warning else Level.INFO
     priority=9 if is_error else 7 if is_warning else 5
 
     return MonitoringLogInfo(
-        message=f"{event_type.name} :: {str(message)}" if message else event_type.name,
-        network=node_id.network.name,
-        node_index=node_id.label_index,
+        message=message,
+        network=node.network_name,
+        node_index=node.label_index,
         block_hash=block_hash,
         deploy_hash=deploy_hash,
         context=_get_context_info(
@@ -53,7 +55,7 @@ def get_monitoring_event_info(
             event_type=event_type.name,
             level=level,
             priority=priority,
-            sub_system=SubSystem.CHAIN,
+            sub_system=SubSystem.MONITORING,
         )
     )
 
@@ -78,11 +80,12 @@ def get_workflow_event_info(
         ExecutionEventType.STEP_ABORT,
         ExecutionEventType.STEP_FAILURE,
         )
+    message=f"{event_type.name} :: {str(message)}" if message else event_type.name
     level = Level.ERROR if is_error else Level.WARN if is_warning else Level.INFO
     priority=9 if is_error else 7 if is_warning else 5
 
     return WorkflowLogInfo(
-        message=f"{event_type.name} :: {str(message)}" if message else event_type.name,
+        message=message,
         network=ctx.network,
         phase_index=ctx.phase_index,
         run_index=ctx.run_index,
@@ -94,7 +97,7 @@ def get_workflow_event_info(
             event_type=event_type.name,
             level=level,
             priority=priority,
-            sub_system=SubSystem.WFLOW,
+            sub_system=SubSystem.WORKFLOW,
         )
     )
 

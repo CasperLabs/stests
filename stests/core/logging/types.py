@@ -21,8 +21,8 @@ class SubSystem(enum.Enum):
     """Flag over set of sub-systems to be logged.
     
     """
-    CHAIN = enum.auto()
-    WFLOW = enum.auto()
+    MONITORING = enum.auto()
+    WORKFLOW = enum.auto()
 
 
 @dataclasses.dataclass

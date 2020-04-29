@@ -24,4 +24,4 @@ def log_event(event_type: typing.Union[NodeEventType, ExecutionEventType], *args
     info_factory = _FACTORIES[type(event_type)]
     info = info_factory(event_type, *args, **kwargs)
     # TODO - use structlog | logstash ?
-    print(f"{info.context.timestamp}Z {info.context.level} {info.context.priority} {info.context.host_name} {info.context.process_id} {info.context.system}.{info.context.sub_system} payload={dataclasses.asdict(info)}")
+    print(f"{info.context.timestamp}Z {info.context.level} {info.context.priority} {info.context.host_name} {info.context.process_id} {info.context.system}:{info.context.sub_system}.{info.context.event_type} payload={dataclasses.asdict(info)}")
