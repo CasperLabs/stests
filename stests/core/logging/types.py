@@ -72,11 +72,8 @@ class MonitoringLogInfo:
     """Monitoring event log information.
     
     """
-    # Hash of a block.
-    block_hash: typing.Optional[str]
-
-    # Hash of a deploy.
-    deploy_hash: typing.Optional[str]
+    # Event message.
+    message: typing.Optional[str]
 
     # Associated network.
     network: str
@@ -84,8 +81,11 @@ class MonitoringLogInfo:
     # Node in respect of which the event was emitted.
     node_index: int
 
-    # Event message.
-    message: typing.Optional[str]
+    # Hash of a block.
+    block_hash: typing.Optional[str]
+
+    # Hash of a deploy.
+    deploy_hash: typing.Optional[str]
 
     # Contextual meta info.
     context: ContextualLogInfo

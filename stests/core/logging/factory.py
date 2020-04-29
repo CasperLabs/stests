@@ -12,29 +12,42 @@ from stests.core.logging.types import WorkflowLogInfo
 from stests.core.logging.types import Level
 from stests.core.logging.types import SubSystem
 from stests.core.types.infra import NodeEventType
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionEventType
 
 
 
-def get_monitoring_log_event(
-    event_id: str,
+def get_monitoring_event_info(
     event_type: NodeEventType,
-    node_index: int,
+    node_id: NodeIdentifier,
+    message: str = None,
+    event_id: str = None,
     block_hash: str = None,
     deploy_hash: str = None,
-    level: Level = Level.INFO,
-    message: str = None,
-    priority: int = 5,
     ) -> MonitoringLogInfo:
-    """Returns chain related log event information.
+    """Returns monitoring related log event information.
     
     """
+    event_id=event_id or event_type.value
+    is_error = event_type in (
+        NodeEventType.DEPLOY_DISCARDED,
+        NodeEventType.DEPLOY_ORPHANED,
+        NodeEventType.API_ERROR,
+        )
+    is_warning = event_type in (
+        NodeEventType.BLOCK_NOT_FOUND,
+        NodeEventType.DEPLOY_REQUEUED,
+        )
+    level = Level.ERROR if is_error else Level.WARN if is_warning else Level.INFO
+    priority=9 if is_error else 7 if is_warning else 5
+
     return MonitoringLogInfo(
+        message=f"{event_type.name} :: {str(message)}" if message else event_type.name,
+        network=node_id.network.name,
+        node_index=node_id.label_index,
         block_hash=block_hash,
         deploy_hash=deploy_hash,
-        node_index=node_index,
-        message=message,
         context=_get_context_info(
             event_id=event_id,
             event_type=event_type.name,
@@ -45,24 +58,25 @@ def get_monitoring_log_event(
     )
 
 
-def get_workflow_log_event(
-    ctx: ExecutionContext,
+def get_workflow_event_info(
     event_type: ExecutionEventType,
+    ctx: ExecutionContext,
     message: typing.Union[BaseException, str] = None,
     ) -> WorkflowLogInfo:
     """Returns workflow related log event information.
     
     """
+    event_id=event_type.value
     is_error = event_type in (
         ExecutionEventType.RUN_ERROR,
         ExecutionEventType.PHASE_ERROR,
         ExecutionEventType.STEP_ERROR,
         )
     is_warning = event_type in (
-        ExecutionEventType.RUN_START_ABORT,
-        ExecutionEventType.PHASE_START_ABORT,
-        ExecutionEventType.STEP_START_ABORT,
-        ExecutionEventType.STEP_VERIFICATION_FAILURE,
+        ExecutionEventType.RUN_ABORT,
+        ExecutionEventType.PHASE_ABORT,
+        ExecutionEventType.STEP_ABORT,
+        ExecutionEventType.STEP_FAILURE,
         )
     level = Level.ERROR if is_error else Level.WARN if is_warning else Level.INFO
     priority=9 if is_error else 7 if is_warning else 5
@@ -76,7 +90,7 @@ def get_workflow_log_event(
         step_index=ctx.step_index,
         step_label=ctx.step_label,        
         context=_get_context_info(
-            event_id=event_type.value,
+            event_id=event_id,
             event_type=event_type.name,
             level=level,
             priority=priority,

@@ -38,13 +38,6 @@ def log_debug(msg: str):
     log(msg, LOG_LEVEL_DEBUG)
 
 
-def log_event(info):
-    """Outputs a message to log.
-
-    """
-    print(f"{info.context.timestamp}Z {info.context.level} {info.context.priority} {info.context.host_name} {info.context.process_id} {info.context.system}.{info.context.sub_system} payload={dataclasses.asdict(info)}")
-
-
 def log_error(err: typing.Union[str, Exception]):
     """Logs a runtime error.
 

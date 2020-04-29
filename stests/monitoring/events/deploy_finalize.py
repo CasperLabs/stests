@@ -6,13 +6,13 @@ from stests.core import cache
 from stests.core import clx
 from stests.core.utils import encoder
 from stests.core import factory
+from stests.core.logging import log_event
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeployStatus
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.chain import TransferStatus
-from stests.core.utils import logger
 
 
 
@@ -31,29 +31,33 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
     # Query: on-chain block info.
     block_info = clx.get_block_info(node_id, info.block_hash, parse=False)
     if block_info is None:
-        logger.log_error(f"CHAIN :: {node_id.label} -> finalized block query failure :: {info.block_hash}")
+        log_event(NodeEventType.BLOCK_NOT_FOUND, node_id, block_hash=info.block_hash)
         return
 
     # Query: on-chain deploy info.
     deploy_info = clx.get_deploy_info(node_id, info.deploy_hash, wait_for_processed=False, parse=True)
     if deploy_info is None:
-        logger.log_error(f"CHAIN :: {node_id.label} -> finalized deploy query failure :: {info.deploy_hash}")
+        log_event(NodeEventType.DEPLOY_NOT_FOUND, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
         return
 
-    # Escape if event was already recieved from another node.
+    # Escape if deploy event was already recieved from another node.
     if _was_already_processed(node_id, info):
         return
 
-    # Process deploys dispatched by a generator.
+    # Escape if deploy was not dispatched by a generator.
     deploy = cache.state1.get_deploy_by_node_event_info(info)
-    if deploy:
-        _process_deploy_dispatched_by_a_generator(
-            node_id,
-            info,
-            datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
-            deploy,
-            deploy_info['processingResults'][0]['cost']
-            )
+    if not deploy:
+        return
+
+    # Process deploys dispatched by a generator.
+    log_event(NodeEventType.DEPLOY_CORRELATED, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
+    _process_deploy_dispatched_by_a_generator(
+        node_id,
+        info,
+        datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
+        deploy,
+        deploy_info['processingResults'][0]['cost']
+        )
 
 
 def _was_already_processed(node_id: NodeIdentifier, info: NodeEventInfo) -> bool:
@@ -76,8 +80,6 @@ def _process_deploy_dispatched_by_a_generator(
     """Process a monitored deploy that was previously dispatched during a generator run.
     
     """
-    logger.log(f"CHAIN :: {node_id.label_index} :: {NodeEventType.DEPLOY_CORRELATED.name} :: {info.deploy_hash} :: event={info.event_id}")
-
     # Update deploy.
     deploy.block_hash = info.block_hash
     deploy.cost = deploy_cost

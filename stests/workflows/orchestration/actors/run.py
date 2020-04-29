@@ -2,14 +2,13 @@ import dramatiq
 
 from stests.core import cache
 from stests.core import factory
-from stests.core.logging import get_workflow_log_event as get_log_event
+from stests.core.logging import log_event
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionEventType
 from stests.core.types.orchestration import ExecutionMode
 from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils import encoder
-from stests.core.utils import logger
 from stests.workflows.orchestration import predicates
 from stests.workflows.orchestration.actors.phase import do_phase
 
@@ -51,7 +50,7 @@ def do_run(ctx: ExecutionContext):
     cache.orchestration.set_info(run_info)
 
     # Inform.
-    logger.log_event(get_log_event(ctx, ExecutionEventType.RUN_START))
+    log_event(ExecutionEventType.RUN_START, ctx)
 
     # Enqueue phase.
     do_phase.send(ctx)
@@ -75,7 +74,7 @@ def on_run_end(ctx: ExecutionContext):
     cache.orchestration.delete_locks(ctx)    
 
     # Inform.
-    logger.log_event(get_log_event(ctx, ExecutionEventType.RUN_END))
+    log_event(ExecutionEventType.RUN_END, ctx)
 
     # Enqueue next run (when mode=SEQUENTIAL).
     if ctx.execution_mode == ExecutionMode.SEQUENTIAL:
@@ -98,7 +97,7 @@ def on_run_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.RUN, ExecutionStatus.ERROR)
 
     # Inform.
-    logger.log_event(get_log_event(ctx, ExecutionEventType.RUN_ERROR, err))
+    log_event(ExecutionEventType.RUN_ERROR, ctx, err)
 
 
 def _can_start(ctx: ExecutionContext) -> bool:
@@ -116,7 +115,7 @@ def _can_start(ctx: ExecutionContext) -> bool:
 
     # False if phase/step are not initialised.
     if ctx.phase_index != 0 or ctx.step_index != 0:
-        logger.log_event(get_log_event(ctx, ExecutionEventType.RUN_START_ABORT))
+        log_event(ExecutionEventType.RUN_ABORT, ctx)
         return False
 
     # False if locked.

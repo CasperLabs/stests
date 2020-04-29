@@ -5,9 +5,10 @@ import dramatiq
 from stests.core import cache
 from stests.core import clx
 from stests.core import factory
+from stests.core.logging import log_event
+from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
-from stests.core.utils import logger
 
 
 # Queue to which messages will be dispatched.
@@ -27,4 +28,4 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
     # Query: on-chain block info.
     block_info = clx.get_block_info(node_id, block_hash, parse=False)
     if block_info is None:
-        logger.log_error(f"CHAIN :: {node_id.label} -> finalized block query failure :: {block_hash}")
+        log_event(NodeEventType.BLOCK_NOT_FOUND, node_id, block_hash=block_hash)
