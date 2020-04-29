@@ -60,8 +60,6 @@ def create_deploy() -> Deploy:
         dispatch_node=1,
         dispatch_ts=None,
         finalization_time=None,
-        finalization_time_is_acceptable=None,
-        finalization_time_tolerance=None,
         finalization_ts=None,
         network="lrt1",
         run_index=1,

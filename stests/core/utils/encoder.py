@@ -226,3 +226,9 @@ def initialise():
 from stests.core import types
 for i in types.TYPE_SET:
     register_type(i)
+
+
+# Auto-register logging types.
+from stests.core import logging
+for i in logging.TYPE_SET:
+    register_type(i)

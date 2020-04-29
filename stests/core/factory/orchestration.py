@@ -37,7 +37,7 @@ def create_execution_context(
         loop_interval=loop_interval,
         network=network_id.name,
         node_index=node_id.index,
-        os_user=pwd.getpwuid(os.getuid())[ 0 ],
+        os_user=pwd.getpwuid(os.getuid())[0],
         run_index=run_index,
         run_index_parent=None,
         run_type=run_type,

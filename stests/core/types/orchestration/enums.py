@@ -2,7 +2,7 @@ import enum
 
 
 
-class ExecutionAspect(enum.Flag):
+class ExecutionAspect(enum.Enum):
     """Flag over set of aspects of execution.
     
     """
@@ -11,7 +11,7 @@ class ExecutionAspect(enum.Flag):
     STEP = enum.auto()
 
 
-class ExecutionMode(enum.Flag):
+class ExecutionMode(enum.Enum):
     """Flag over set of execution modes.
     
     """
@@ -29,19 +29,27 @@ class ExecutionStatus(enum.Flag):
     ERROR = enum.auto()
     
 
-class ExecutionEventType(enum.Flag):
+class ExecutionEventType(enum.Enum):
     """Flag over set of typical execution events.
     
     """
-    RUN_START = enum.auto()
     RUN_END = enum.auto()
     RUN_ERROR = enum.auto()
-    PHASE_START = enum.auto()
+    RUN_START = enum.auto()
+    RUN_START_ABORT = enum.auto()
+    
     PHASE_END = enum.auto()
     PHASE_ERROR = enum.auto()
-    STEP_START = enum.auto()
+    PHASE_START = enum.auto()
+    PHASE_START_ABORT = enum.auto()
+    
     STEP_END = enum.auto()
     STEP_ERROR = enum.auto()
+    STEP_START = enum.auto()
+    STEP_START_ABORT = enum.auto()
+    STEP_VERIFICATION_FAILURE = enum.auto()
+
+    WORKFLOW_INVALID = enum.auto()
 
 
 # Full set of enums.

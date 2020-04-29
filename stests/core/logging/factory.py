@@ -1,13 +1,18 @@
 import datetime
+import os
+import platform
+import pwd
+import socket
+import typing
 import uuid
 
-from stests.core.logs.types import LogLevel
-from stests.core.logs.types import LogInfoMetadata
-from stests.core.logs.types import MonitoringEventLogInfo
-from stests.core.logs.types import SubSystem
-from stests.core.logs.types import WorkflowEventLogInfo
-
+from stests.core.logging.types import ContextualLogInfo
+from stests.core.logging.types import MonitoringLogInfo
+from stests.core.logging.types import WorkflowLogInfo
+from stests.core.logging.types import Level
+from stests.core.logging.types import SubSystem
 from stests.core.types.infra import NodeEventType
+from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionEventType
 
 
@@ -18,22 +23,22 @@ def get_monitoring_log_event(
     node_index: int,
     block_hash: str = None,
     deploy_hash: str = None,
+    level: Level = Level.INFO,
     message: str = None,
-    log_level: LogLevel = LogLevel.INFO,
     priority: int = 5,
-    ) -> MonitoringEventLogInfo:
+    ) -> MonitoringLogInfo:
     """Returns chain related log event information.
     
     """
-    return MonitoringEventLogInfo(
+    return MonitoringLogInfo(
         block_hash=block_hash,
         deploy_hash=deploy_hash,
         node_index=node_index,
         message=message,
-        meta=_get_metadata(
+        context=_get_context_info(
             event_id=event_id,
             event_type=event_type.name,
-            log_level=log_level,
+            level=level,
             priority=priority,
             sub_system=SubSystem.CHAIN,
         )
@@ -41,50 +46,66 @@ def get_monitoring_log_event(
 
 
 def get_workflow_log_event(
-    event_id: str,
+    ctx: ExecutionContext,
     event_type: ExecutionEventType,
-    node_index: int,
-    message: str = None,
-    log_level: LogLevel = LogLevel.INFO,
-    priority: int = 5,
-    ) -> WorkflowEventLogInfo:
+    message: typing.Union[BaseException, str] = None,
+    ) -> WorkflowLogInfo:
     """Returns workflow related log event information.
     
     """
-    return MonitoringEventLogInfo(
-        node_index=node_index,
-        message=message,
-        meta=_get_metadata(
-            event_id=event_id,
+    is_error = event_type in (
+        ExecutionEventType.RUN_ERROR,
+        ExecutionEventType.PHASE_ERROR,
+        ExecutionEventType.STEP_ERROR,
+        )
+    is_warning = event_type in (
+        ExecutionEventType.RUN_START_ABORT,
+        ExecutionEventType.PHASE_START_ABORT,
+        ExecutionEventType.STEP_START_ABORT,
+        ExecutionEventType.STEP_VERIFICATION_FAILURE,
+        )
+    level = Level.ERROR if is_error else Level.WARN if is_warning else Level.INFO
+    priority=9 if is_error else 7 if is_warning else 5
+
+    return WorkflowLogInfo(
+        message=f"{event_type.name} :: {str(message)}" if message else event_type.name,
+        network=ctx.network,
+        phase_index=ctx.phase_index,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
+        step_index=ctx.step_index,
+        step_label=ctx.step_label,        
+        context=_get_context_info(
+            event_id=event_type.value,
             event_type=event_type.name,
-            log_level=log_level,
+            level=level,
             priority=priority,
             sub_system=SubSystem.WFLOW,
         )
     )
 
 
-def _get_metadata(
+def _get_context_info(
     event_id: int,
     event_type: str,
-    log_level: LogEventLevel,
+    level: Level,
     priority: int,
-    sub_system: LogEventSubSystem,
-    ) -> LogInfoMetadata:
+    sub_system: SubSystem,
+    ) -> ContextualLogInfo:
     """Returns log event metadata.
     
     """
-    return LogInfoMetadata(
+    return ContextualLogInfo(
         event_id=event_id,
         event_type=event_type,
         event_uid=str(uuid.uuid4()),
-        host_name="get-machine",
-        log_level=log_level,
+        host_name=socket.gethostname(),
+        level=level.name,
+        net_name=platform.node(),
+        os_user=pwd.getpwuid(os.getuid())[0],
         priority=priority,
-        process_id="get-process-id",
-        process_name="get-process-name",
+        process_id=str(os.getpid()).zfill(5),
         system="STESTS",
         sub_system=sub_system.name,
-        thread_id="get-thread-id",
-        timestamp=datetime.datetime.now(),
+        timestamp=datetime.datetime.utcnow().isoformat(),
     )

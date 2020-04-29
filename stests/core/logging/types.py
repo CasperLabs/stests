@@ -5,7 +5,7 @@ import typing
 
 
 
-class LogLevel(enum.Enum):
+class Level(enum.Enum):
     """Flag over set of log levels.
     
     """
@@ -26,13 +26,10 @@ class SubSystem(enum.Enum):
 
 
 @dataclasses.dataclass
-class LogInfoMetadata():
-    """A log event base class.
+class ContextualLogInfo():
+    """Contextual log information.
     
     """
-    # Machine upon which system is running.
-    host_name: str
-
     # Event id for disambiguation purpose.
     event_id: str
 
@@ -42,8 +39,14 @@ class LogInfoMetadata():
     # Unique identifier.
     event_uid: str
 
+    # Machine upon which system is running.
+    host_name: str
+
     # Event level.
-    log_level: LogLevel
+    level: Level
+
+    # Network of which machine is a member.
+    net_name: str
 
     # OS user running system.
     os_user: str
@@ -54,48 +57,42 @@ class LogInfoMetadata():
     # Process ID.
     process_id: str
 
-    # Process ID.
-    process_name: str
-
     # System emitting event, i.e. STESTS.
     system: str
 
     # Sub-system emitting event, e.g. CHAIN
     sub_system: str
 
-    # Thread ID. d
-    thread_id: str
-
     # ISO UTC Timestamp.
     timestamp: datetime.datetime
 
 
 @dataclasses.dataclass
-class MonnitoringEventLogInfo:
+class MonitoringLogInfo:
     """Monitoring event log information.
     
     """
-    # Associated network.
-    network: str
-
-    # Node in respect of which the event was emitted.
-    node_index: int
-
     # Hash of a block.
     block_hash: typing.Optional[str]
 
     # Hash of a deploy.
     deploy_hash: typing.Optional[str]
 
+    # Associated network.
+    network: str
+
+    # Node in respect of which the event was emitted.
+    node_index: int
+
     # Event message.
     message: typing.Optional[str]
 
-    # Event metadata.
-    meta: LogInfoMetadata
+    # Contextual meta info.
+    context: ContextualLogInfo
 
 
 @dataclasses.dataclass
-class WorkflowEventLogInfo:
+class WorkflowLogInfo:
     """Workflow event log information.
     
     """
@@ -105,14 +102,14 @@ class WorkflowEventLogInfo:
     # Associated network.
     network: str
 
-    # Numerical index to distinguish between multiple phase within a generator.
-    phase_index: typing.Optional[int]
+    # Type of generator, e.g. WG-100 ...etc.
+    run_type: str    
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: int
 
-    # Type of generator, e.g. WG-100 ...etc.
-    run_type: str    
+    # Numerical index to distinguish between multiple phase within a generator.
+    phase_index: typing.Optional[int]
 
     # Numerical index to distinguish between multiple steps within a generator.
     step_index: typing.Optional[int]
@@ -120,6 +117,15 @@ class WorkflowEventLogInfo:
     # Label to disambiguate a step within the context of a phase.
     step_label: typing.Optional[str]
 
-    # Event metadata.
-    meta: LogInfoMetadata
+    # Contextual meta info.
+    context: ContextualLogInfo
 
+
+# Full type set.
+TYPE_SET = {
+    Level,
+    SubSystem,
+    ContextualLogInfo,
+    MonitoringLogInfo,
+    WorkflowLogInfo,
+}

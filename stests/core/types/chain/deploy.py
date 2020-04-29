@@ -36,12 +36,6 @@ class Deploy:
 
     # Time between dispatch & deploy finality.
     finalization_time: typing.Optional[float]
-
-    # Flag indicating whether time to finalization was acceptable.
-    finalization_time_is_acceptable: typing.Optional[bool]
-
-    # Tolerance of time between dispatch & deploy finality.
-    finalization_time_tolerance: typing.Optional[float]
     
     # Moment in time when deploy was finalized by CLX network.
     finalization_ts: typing.Optional[datetime]

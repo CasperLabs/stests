@@ -131,8 +131,6 @@ def create_deploy_for_run(
         dispatch_ts=datetime.now(),
         finalization_node=None,
         finalization_time=None,
-        finalization_time_is_acceptable=None,
-        finalization_time_tolerance=None,
         finalization_ts=None,
         network=ctx.network,
         phase_index=ctx.phase_index,
