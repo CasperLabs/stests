@@ -4,7 +4,6 @@ from stests.core.clx import utils
 from stests.core.clx import parser
 from stests.core.logging import log_event
 from stests.core.types.chain import Account
-from stests.core.utils import logger
 from stests.events import EventType
 
 

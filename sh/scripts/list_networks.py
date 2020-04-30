@@ -2,11 +2,10 @@ import argparse
 
 from beautifultable import BeautifulTable
 
-from stests.core.utils.cli import get_table
 from stests.core import cache
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
@@ -39,7 +38,7 @@ def main(args):
     ], sorted(data, key=lambda i: i.index))
 
     # Set table.
-    t = get_table(cols, rows)
+    t = utils.get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:

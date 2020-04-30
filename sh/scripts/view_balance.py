@@ -2,9 +2,9 @@ import argparse
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
@@ -35,7 +35,7 @@ def main(args):
 
     balance = clx.get_account_balance(network_id, args.address)
 
-    logger.log(f"""NETWORK: {network_id.name} -> account balance = {balance}""")
+    utils.log(f"""NETWORK: {network_id.name} -> account balance = {balance}""")
 
 
 # Entry point.

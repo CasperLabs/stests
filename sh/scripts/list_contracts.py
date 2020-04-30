@@ -2,11 +2,10 @@ import argparse
 
 from beautifultable import BeautifulTable
 
-from stests.core.utils.cli import get_table
 from stests.core import cache
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import cli as utils
+from stests.core.utils import args_validator
 
 
 # CLI argument parser.
@@ -38,11 +37,11 @@ def main(args):
     # Pull data.
     network_id=factory.create_network_id(args.network)
     if cache.infra.get_network(network_id) is None:
-        logger.log_warning(f"Network {args.network} is unregistered.")
+        utils.log_warning(f"Network {args.network} is unregistered.")
         return
     data = cache.infra.get_named_keys(network_id)
     if not data:
-        logger.log_warning(f"Network {args.network} has no registered contracts.")
+        utils.log_warning(f"Network {args.network} has no registered contracts.")
         return
 
     # Sort data.
@@ -58,7 +57,7 @@ def main(args):
     ], data)
 
     # Set table.
-    t = get_table(cols, rows)
+    t = utils.get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:

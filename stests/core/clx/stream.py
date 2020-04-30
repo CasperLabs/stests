@@ -2,8 +2,8 @@ import typing
 
 from stests.core import factory
 from stests.core.clx import utils
+from stests.core.logging import log_event
 from stests.core.types.infra import NodeIdentifier
-from stests.core.utils import logger
 from stests.events import EventType
 
 
@@ -16,8 +16,11 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
 
     """
     node, client = utils.get_client(node_id)
-    logger.log(f"CHAIN :: events :: binding to stream :: node={node.address}")
+    log_event(EventType.MONITORING_STREAM_OPENING, node.address, node)
+
     for info in client.stream_events(all=True):
+        log_event(EventType.MONITORING_STREAM_EVENT_TYPE_UNKNOWN, f"event skipped as type is unsupported :: node={node.address} :: event-id={info.event_id}", node)
+
         # Set fields according to event type.
         if info.HasField("block_added"):
             event_type=EventType.MONITORING_BLOCK_ADD
@@ -60,7 +63,7 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
             deploy_hash=info.deploy_requeued.deploy.deploy_hash.hex()
 
         else:
-            logger.log_warning(f"CHAIN :: events :: event skipped as type is unsupported :: node={node.address} :: event-id={info.event_id}")
+            log_event(EventType.MONITORING_STREAM_EVENT_TYPE_UNKNOWN, f"event skipped as type is unsupported :: node={node.address} :: event-id={info.event_id}", node)
             continue
 
         # Invoke callback.

@@ -2,9 +2,10 @@ import enum
 
 import dramatiq
 
+from stests.core.logging import log_event
 from stests.core.mq.brokers import get_broker
 from stests.core.mq import encoder
-from stests.core.utils import logger
+from stests.events import EventType
 
 
 
@@ -23,3 +24,5 @@ def execute():
     # Configure dramatiq.
     dramatiq.set_broker(broker)
     dramatiq.set_encoder(encoder)
+
+    log_event(EventType.CORE_BROKER_CONNECTION_ESTABLISHED, None)

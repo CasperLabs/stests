@@ -1,10 +1,11 @@
 import argparse
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.infra import NodeStatus
 from stests.core.utils import args_validator
-from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import cli as utils
+
 
 
 # CLI argument parser.
@@ -48,7 +49,7 @@ def main(args):
     cache.infra.set_node(node)
 
     # Notify.
-    logger.log(f"Node {args.node} status was updated --> {node.status}")
+    utils.log(f"Node {args.node} status was updated --> {node.status}")
 
 
 # Entry point.

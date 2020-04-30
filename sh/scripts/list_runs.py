@@ -2,13 +2,12 @@ import argparse
 
 from beautifultable import BeautifulTable
 
-from stests.core.utils.cli import get_table
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils import args_validator
-from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import cli as utils
 
 
 
@@ -63,7 +62,7 @@ def main(args):
     data = cache.orchestration.get_info_list(network_id, args.run_type)
     data = [i for i in data if i.aspect == ExecutionAspect.RUN]
     if not data:
-        logger.log("No run information found.")
+        utils.log("No run information found.")
         return    
 
     # Filter by status.
@@ -92,7 +91,7 @@ def main(args):
     rows = map(lambda i: _get_row(i, counts), data)
 
     # Set table.
-    t = get_table(cols, rows)
+    t = utils.get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:

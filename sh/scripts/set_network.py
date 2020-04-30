@@ -1,9 +1,10 @@
 import argparse
 
 from stests.core import cache
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
+
 
 
 # CLI argument parser.
@@ -30,7 +31,7 @@ def main(args):
     cache.infra.set_network(network)
 
     # Inform.
-    logger.log(f"Network {args.network} was successfully registered")
+    utils.log(f"Network {args.network} was successfully registered")
 
 
 # Entry point.

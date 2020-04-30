@@ -1,6 +1,7 @@
 import dramatiq
 
-from stests.core.utils import logger as _logger
+from stests.core.logging import log_event
+from stests.events import EventType
 
 
 
@@ -16,8 +17,7 @@ class LoggingMiddleware(dramatiq.Middleware):
 
         """
         if exception is not None:
-            msg = f"ACTOR :: {_get_actor_name(message)} :: ERROR :: err={exception}"
-            _logger.log_error(msg)
+            log_event(EventType.CORE_ACTOR_ERROR, f"{_get_actor_name(message)} :: err={exception}")
 
 
 def _get_actor_name(message):

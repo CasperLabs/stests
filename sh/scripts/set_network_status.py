@@ -4,8 +4,7 @@ from stests.core import cache
 from stests.core import factory
 from stests.core.types.infra import NetworkStatus
 from stests.core.utils import args_validator
-from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
@@ -46,7 +45,7 @@ def main(args):
     cache.infra.set_network(network)
 
     # Notify.
-    logger.log(f"Network {args.network} status was updated --> {network.status}")
+    utils.log(f"Network {args.network} status was updated --> {network.status}")
 
 
 # Entry point.

@@ -12,8 +12,8 @@ class EventType(enum.Enum):
     """
     # Core sub-system.
     CORE_BROKER_CONNECTION_ESTABLISHED = enum.auto()
-    CORE_ENCODING_ERROR = enum.auto()
-    CORE_ACTOR_ERROR = enum.auto()
+    CORE_ENCODING_FAILURE = enum.auto()
+    CORE_ACTOR_ERROR = enum.auto()    
 
     # Monitoring sub-system.
     MONITORING_API_ERROR = enum.auto()
@@ -30,7 +30,9 @@ class EventType(enum.Enum):
     MONITORING_DEPLOY_ORPHANED = enum.auto()
     MONITORING_DEPLOY_PROCESSED = enum.auto()
     MONITORING_DEPLOY_REQUEUED = enum.auto()    
-    
+    MONITORING_STREAM_OPENING = enum.auto()
+    MONITORING_STREAM_EVENT_TYPE_UNKNOWN = enum.auto()
+
     # Workflow sub-system.
     WORKFLOW_RUN_ABORT = enum.auto()
     WORKFLOW_RUN_END = enum.auto()
@@ -46,6 +48,7 @@ class EventType(enum.Enum):
     WORKFLOW_STEP_FAILURE = enum.auto()
     WORKFLOW_STEP_START = enum.auto()
     WORKFLOW_INVALID = enum.auto()
+    WORKFLOW_GENERATOR_LAUNCHED = enum.auto()
 
 
 # Set of error events.
@@ -62,10 +65,11 @@ EVENTS_ERROR = (
 
 # Set of warning events.
 EVENTS_WARN = (
-    EventType.CORE_ENCODING_ERROR,
+    EventType.CORE_ENCODING_FAILURE,
     EventType.MONITORING_ACCOUNT_NOT_FOUND,
     EventType.MONITORING_BLOCK_NOT_FOUND,
     EventType.MONITORING_DEPLOY_REQUEUED,
+    EventType.MONITORING_STREAM_EVENT_TYPE_UNKNOWN,
     EventType.WORKFLOW_RUN_ABORT,
     EventType.WORKFLOW_PHASE_ABORT,
     EventType.WORKFLOW_STEP_ABORT,

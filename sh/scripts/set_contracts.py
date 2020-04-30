@@ -3,11 +3,11 @@ import typing
 
 from stests.core import cache
 from stests.core import clx
+from stests.core import factory
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.utils import args_validator
-from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import cli as utils
 
 
 
@@ -44,22 +44,22 @@ def main(args):
         _install_contract(network, account, contract)
 
     # Inform.
-    logger.log(f"client contracts for network {args.network} were successfully installed")
+    utils.log(f"client contracts for network {args.network} were successfully installed")
 
 
 def _install_contract(network: Network, account: Account, contract: typing.Callable):
     """Installs a smart contract upon target network.
     
     """
-    logger.log(f"{contract.WASM} :: installation starts ... please wait")
+    utils.log(f"{contract.WASM} :: installation starts ... please wait")
 
     # Dispatch deploy.
     node, deploy_hash = contract.install(network, account)
-    logger.log(f"{contract.WASM} :: deploy dispatched >- {deploy_hash}")
+    utils.log(f"{contract.WASM} :: deploy dispatched >- {deploy_hash}")
 
     # Await deploy processing.
     block_hash = clx.await_deploy_processing(node, deploy_hash)
-    logger.log(f"{contract.WASM} :: deploy processed at block {block_hash}")
+    utils.log(f"{contract.WASM} :: deploy processed at block {block_hash}")
 
     # Get named keys.
     keys = clx.contracts.get_named_keys(node, account, block_hash, contract.NKEYS)
@@ -72,7 +72,7 @@ def _install_contract(network: Network, account: Account, contract: typing.Calla
             key_name,
             key_hash,
         ))
-        logger.log(f"{contract.WASM} :: named key -> {key_hash} : {key_name}")
+        utils.log(f"{contract.WASM} :: named key -> {key_hash} : {key_name}")
 
 
 # Entry point.

@@ -2,11 +2,13 @@ import argparse
 import typing
 
 from stests.core import cache
+from stests.core import factory
+from stests.core.logging import log_event
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NodeIdentifier
-from stests.core import factory
-from stests.core.utils import logger
 from stests.core.types.orchestration import ExecutionContext
+from stests.events import EventType
+
 
 
 def start_generator(meta: typing.Any):
@@ -31,7 +33,7 @@ def start_generator(meta: typing.Any):
     # Start generator(s).    
     for ctx in _get_context_list(meta, args, network_id, node_id):
         do_run.send(ctx)
-        logger.log(f"{ctx.run_type} :: run {ctx.run_index} started")
+        log_event(EventType.WORKFLOW_GENERATOR_LAUNCHED, f"{ctx.run_type} :: run {ctx.run_index}", ctx)
 
 
 def _import_actors():

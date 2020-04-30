@@ -1,9 +1,9 @@
 import argparse
 
 from stests.core import cache
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
@@ -26,11 +26,11 @@ def main(args):
     network_id=factory.create_network_id(args.network)
     network = cache.infra.get_network(network_id)
     if network is None:
-        logger.log_warning(f"Network {args.network} is unregistered.")
+        utils.log_warning(f"Network {args.network} is unregistered.")
         return
 
-    logger.log(f"""NETWORK: {network.name} -> faucet pvk {network.faucet.private_key}""")
-    logger.log(f"""NETWORK: {network.name} -> faucet pbk {network.faucet.public_key}""")
+    utils.log(f"""NETWORK: {network.name} -> faucet pvk {network.faucet.private_key}""")
+    utils.log(f"""NETWORK: {network.name} -> faucet pbk {network.faucet.public_key}""")
 
 # Entry point.
 if __name__ == '__main__':

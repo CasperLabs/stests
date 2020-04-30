@@ -3,12 +3,11 @@ import json
 
 from beautifultable import BeautifulTable
 
-from stests.core.utils.cli import get_table
 from stests.core import cache
 from stests.core import clx
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 from stests.core.types.orchestration import ExecutionAspect
 
 
@@ -57,7 +56,7 @@ def _render_deploy(network_id, deploy_hash):
     deploy = cache.state.get_deploy(deploy_hash) or \
              cache.monitoring.get_deploy(network_id, deploy_hash)
     if not deploy:
-        logger.log("No deploy information found.")
+        utils.log("No deploy information found.")
         return
 
     # Pull account/node.
@@ -84,7 +83,7 @@ def _render_deploy(network_id, deploy_hash):
         rows.append(("Run Account Key", account.public_key))
 
     # Set table.
-    t = get_table(cols, rows)
+    t = utils.get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:

@@ -4,7 +4,6 @@ from stests.core.logging import log_event
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
-from stests.core.utils import logger
 from stests.monitoring.callbacks.block_add import on_block_added
 from stests.monitoring.callbacks.block_finalize import on_block_finalized
 from stests.monitoring.callbacks.deploy_add import on_deploy_added

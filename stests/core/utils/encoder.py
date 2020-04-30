@@ -6,7 +6,8 @@ import json
 import typing
 import typing_inspect
 
-from stests.core.utils import logger
+from stests.core.logging import log_event
+from stests.events import EventType
 
 
 
@@ -162,7 +163,7 @@ def encode(data: typing.Any, requires_decoding=True) -> typing.Any:
     if type(data) in ENUM_TYPE_SET:
         return data.name
 
-    logger.log_warning(f"CORE :: Encoding an unrecognized data type: {data}")
+    log_event(EventType.CORE_ENCODING_FAILURE, f"unrecognized data type: {data}")
 
     return data
 

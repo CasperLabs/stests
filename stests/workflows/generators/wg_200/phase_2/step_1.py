@@ -6,7 +6,6 @@ from stests.core.types.chain import AccountType
 from stests.core.types.chain import ContractType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
-from stests.core.utils import logger
 from stests.workflows.generators.utils import constants
 from stests.workflows.generators.utils import verification
 from stests.workflows.generators.utils.contracts import do_install_contract

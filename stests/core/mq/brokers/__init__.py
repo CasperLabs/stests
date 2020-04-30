@@ -1,7 +1,5 @@
 from dramatiq.broker import Broker
 
-from stests.events import EventType
-from stests.core.logging import log_event
 from stests.core.mq.brokers import rabbitmq
 from stests.core.mq.brokers import redis
 from stests.core.mq.brokers import stub
@@ -35,7 +33,4 @@ def get_broker() -> Broker:
     except KeyError:
         raise InvalidEnvironmentVariable("BROKER_TYPE", EnvVars.TYPE, FACTORIES)
 
-    broker = factory.get_broker()
-    log_event(EventType.CORE_BROKER_CONNECTION_ESTABLISHED, None)
-
-    return broker
+    return factory.get_broker()

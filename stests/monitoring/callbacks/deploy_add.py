@@ -2,7 +2,6 @@ import dramatiq
 
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
-from stests.core.utils import logger
 
 
 

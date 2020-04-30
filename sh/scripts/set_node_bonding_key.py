@@ -1,11 +1,11 @@
 import argparse
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import crypto
-from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import cli as utils
 
 
 
@@ -58,7 +58,7 @@ def main(args):
     cache.infra.set_node(node)
 
     # Inform.
-    logger.log(f"Node {args.node} bonding key was successfully registered")
+    utils.log(f"Node {args.node} bonding key was successfully registered")
 
 
 # Entry point.

@@ -1,11 +1,11 @@
 import argparse
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 from stests.core.utils import crypto
-from stests.core import factory
-from stests.core.utils import logger
 
 
 
@@ -33,15 +33,15 @@ def main(args):
     # Pull.
     node = cache.infra.get_node(node_id)
     if node is None:
-        logger.log_warning("Unregistered node.")
+        utils.log_warning("Unregistered node.")
         return
     if node.account is None:
-        logger.log_warning("Unregistered node bonding key.")
+        utils.log_warning("Unregistered node bonding key.")
         return
 
     # Inform.
-    logger.log(f"""NODE: {node.label} -> bonding pvk {node.account.private_key}""")
-    logger.log(f"""NODE: {node.label} -> bonding pbk {node.account.public_key}""")
+    utils.log(f"""NODE: {node.label} -> bonding pvk {node.account.private_key}""")
+    utils.log(f"""NODE: {node.label} -> bonding pbk {node.account.public_key}""")
 
 # Entry point.
 if __name__ == '__main__':

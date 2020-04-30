@@ -1,12 +1,13 @@
 import typing
 
+
 from stests.core.clx import utils
 from stests.core.clx.contracts import counter_define_by_hash
+from stests.core.logging import log_event
 from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
-from stests.core.utils import logger
 from stests.events import EventType
 
 
@@ -47,7 +48,7 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
         session_name=_NKEY_INC,
     )
 
-    logger.log(f"CHAIN :: {node.label_index} :: {EventType.MONITORING_DEPLOY_DISPATCHED.name} :: COUNTER_DEFINE.increment :: address={account.public_key}")
+    log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"COUNTER_DEFINE.increment :: address={account.public_key}", node)
 
     return node, deploy_hash
 

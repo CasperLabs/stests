@@ -5,8 +5,8 @@ from stests.core import cache
 from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 from stests.core.utils import crypto
-from stests.core.utils import logger
 
 
 
@@ -56,7 +56,7 @@ def main(args):
     cache.infra.set_network(network)
 
     # Inform.
-    logger.log(f"Network {args.network} faucet key was successfully registered")
+    utils.log(f"Network {args.network} faucet key was successfully registered")
 
 
 # Entry point.

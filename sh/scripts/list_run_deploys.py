@@ -3,13 +3,12 @@ import statistics
 
 from beautifultable import BeautifulTable
 
-from stests.core.utils.cli import get_table
 from stests.core import cache
-from stests.core.types.chain import DeployStatus
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.types.chain import DeployStatus
 from stests.core.types.orchestration import ExecutionAspect
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 
 
 
@@ -61,7 +60,7 @@ def main(args):
     network_id = factory.create_network_id(args.network)
     data = cache.state1.get_deploys(network_id, args.run_type, args.run_index)
     if not data:
-        logger.log("No run deploys found.")
+        utils.log("No run deploys found.")
         return
 
     # Render views.
@@ -88,7 +87,7 @@ def _render_table(args, network_id, data):
     ], data)
 
     # Set table.
-    t = get_table(cols, rows)
+    t = utils.get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:

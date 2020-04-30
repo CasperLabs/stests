@@ -5,13 +5,13 @@ from casperlabs_client.abi import ABI
 from stests.core.clx import defaults
 from stests.core.clx import query
 from stests.core.clx import utils
+from stests.core.logging import log_event
 from stests.core.types.chain import Account
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
-from stests.core.utils import logger
 from stests.events import EventType
 
 
@@ -77,7 +77,7 @@ def increment(
         session_args=[ABI.key_hash("counter_key", nk_contract.hash_as_bytes)],
         ) 
 
-    logger.log(f"CHAIN :: {node.label_index} :: {EventType.MONITORING_DEPLOY_DISPATCHED.name} :: COUNTER_DEFINE.increment :: address={user_account.public_key}")
+    log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"COUNTER_DEFINE.increment :: address={user_account.public_key}", node)
 
     return node, deploy_hash
 

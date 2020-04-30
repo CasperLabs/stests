@@ -2,9 +2,10 @@ import argparse
 
 from stests.core import cache
 from stests.core import clx
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
+
 
 
 # CLI argument parser.
@@ -27,12 +28,12 @@ def main(args):
     network_id=factory.create_network_id(args.network)
     network = cache.infra.get_network(network_id)
     if network is None:
-        logger.log_warning(f"Network {args.network} is unregistered.")
+        utils.log_warning(f"Network {args.network} is unregistered.")
         return
 
-    balance = clx.get_account_balance(network_id, network.faucet)
+    balance = clx.get_account_balance(network_id, network.faucet.public_key)
 
-    logger.log(f"""NETWORK: {network.name} -> faucet balance = {balance}""")
+    utils.log(f"""NETWORK: {network.name} -> faucet balance = {balance}""")
 
 
 # Entry point.

@@ -1,10 +1,10 @@
 import argparse
 
 from stests.core import cache
+from stests.core import factory
 from stests.core.types.infra import NodeType
 from stests.core.utils import args_validator
-from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
@@ -60,7 +60,7 @@ def main(args):
     cache.infra.set_node(node)
 
     # Notify.
-    logger.log(f"Node {args.node} was successfully registered")
+    utils.log(f"Node {args.node} was successfully registered")
 
 
 # Entry point.

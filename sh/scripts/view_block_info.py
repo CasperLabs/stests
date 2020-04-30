@@ -3,12 +3,11 @@ import json
 
 from beautifultable import BeautifulTable
 
-from stests.core.utils.cli import get_table
 from stests.core import cache
 from stests.core import clx
-from stests.core.utils import args_validator
 from stests.core import factory
-from stests.core.utils import logger
+from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 
 
 
@@ -71,7 +70,7 @@ def _render_block(network_id, block_hash):
     rows.append(("Timestamp", block.timestamp))
 
     # Set table.
-    t = get_table(cols, rows)
+    t = utils.get_table(cols, rows)
 
     # Set table alignments.
     for key, aligmnent in COLS:
