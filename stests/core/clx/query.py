@@ -2,6 +2,8 @@ import typing
 
 from stests.core.clx import utils
 from stests.core.clx import parser
+from stests.core.logging import log_event
+from stests.core.logging import MonitoringEventType
 from stests.core.types.chain import Account
 from stests.core.utils import logger
 
@@ -29,20 +31,7 @@ def get_account(src: typing.Any, account: Account, block_hash: str=None):
     return q.account
 
 
-def get_account_balance(src: typing.Any, account: Account, block_hash: str = None) -> int:
-    """Returns a chain account balance.
-
-    :param src: The source from which a node client will be instantiated.
-    :param account: Account whose balance will be queried.
-    :param block_hash: Hash of block against which query will be made.
-
-    :returns: Account balance.
-
-    """
-    return get_account_balance_by_address(src, account.public_key, block_hash)
-
-
-def get_account_balance_by_address(src: typing.Any, address: str, block_hash: str = None) -> int:
+def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -> int:
     """Queries account balance at a chain address.
 
     :param src: The source from which a node client will be instantiated.
@@ -52,7 +41,7 @@ def get_account_balance_by_address(src: typing.Any, address: str, block_hash: st
     :returns: Account balance.
 
     """
-    _, client = utils.get_client(src)
+    node, client = utils.get_client(src)
     try:
         balance = client.balance(
             address=address,
@@ -60,7 +49,7 @@ def get_account_balance_by_address(src: typing.Any, address: str, block_hash: st
             )
     except Exception as err:
         if "Failed to find base key at path" in err.details:
-            logger.log_warning(f"CHAIN :: get_account_balance :: account appears not to exist upon chain: address={address}")
+            log_event(MonitoringEventType.ACCOUNT_NOT_FOUND, node, f"address={address}")
             return 0
         raise err
     else:

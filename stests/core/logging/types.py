@@ -3,129 +3,93 @@ import datetime
 import enum
 import typing
 
+from stests.core.logging.enums import Level
+from stests.core.logging.enums import SubSystem
+from stests.core.logging.enums import ENUM_SET
 
-
-class Level(enum.Enum):
-    """Flag over set of log levels.
-    
-    """
-    DEBUG = enum.auto()
-    INFO = enum.auto()
-    WARN = enum.auto()
-    ERROR = enum.auto()
-    CRITICAL = enum.auto()
-    FATAL = enum.auto()
-
-
-class SubSystem(enum.Enum):
-    """Flag over set of sub-systems to be logged.
-    
-    """
-    MONITORING = enum.auto()
-    WORKFLOW = enum.auto()
 
 
 @dataclasses.dataclass
-class ContextualLogInfo():
-    """Contextual log information.
+class ApplicationInfo():
+    """Encapsulates information pertaining to the application.
+    
+    """
+    # System emitting event, i.e. STESTS.
+    system: str
+
+    # Sub-system emitting event, e.g. CORE
+    sub_system: str
+
+
+@dataclasses.dataclass
+class EventInfo():
+    """Encapsulates information pertaining to the application.
     
     """
     # Event id for disambiguation purpose.
-    event_id: str
-
-    # Event type for disambiguation purpose.
-    event_type: str
-
-    # Unique identifier.
-    event_uid: str
-
-    # Machine upon which system is running.
-    host_name: str
+    id: str
 
     # Event level.
     level: Level
 
-    # Network of which machine is a member.
-    net_name: str
-
-    # OS user running system.
-    os_user: str
-
     # Event priority.
     priority: int
-
-    # Process ID.
-    process_id: str
-
-    # System emitting event, i.e. STESTS.
-    system: str
-
-    # Sub-system emitting event, e.g. CHAIN
-    sub_system: str
 
     # ISO UTC Timestamp.
     timestamp: datetime.datetime
 
+    # Event type for disambiguation purpose.
+    type: str
 
-@dataclasses.dataclass
-class MonitoringLogInfo:
-    """Monitoring event log information.
-    
-    """
-    # Event message.
-    message: typing.Optional[str]
-
-    # Associated network.
-    network: str
-
-    # Node in respect of which the event was emitted.
-    node_index: int
-
-    # Hash of a block.
-    block_hash: typing.Optional[str]
-
-    # Hash of a deploy.
-    deploy_hash: typing.Optional[str]
-
-    # Contextual meta info.
-    context: ContextualLogInfo
+    # Unique identifier.
+    uid: str
 
 
 @dataclasses.dataclass
-class WorkflowLogInfo:
-    """Workflow event log information.
+class ProcessInfo():
+    """Encapsulates information pertaining to the running process.
     
     """
-    # Event message.
+    # Machine upon which system is running.
+    host: str
+
+    # Network of which machine is a member.
+    net: str
+
+    # OS user running system.
+    os_user: str
+
+    # Process ID.
+    pid: str
+
+
+@dataclasses.dataclass
+class LogMessage:
+    """Simple event log information for basic scenario.
+    
+    """
+    # Application information.
+    app: ApplicationInfo
+
+    # Event information.
+    event: EventInfo
+
+    # Process information.
+    process: ProcessInfo
+    
+    # Plain text message.
     message: typing.Optional[str]
 
-    # Associated network.
-    network: str
-
-    # Type of generator, e.g. WG-100 ...etc.
-    run_type: str    
-
-    # Numerical index to distinguish between multiple runs of the same generator.
-    run_index: int
-
-    # Numerical index to distinguish between multiple phase within a generator.
-    phase_index: typing.Optional[int]
-
-    # Numerical index to distinguish between multiple steps within a generator.
-    step_index: typing.Optional[int]
-
-    # Label to disambiguate a step within the context of a phase.
-    step_label: typing.Optional[str]
-
-    # Contextual meta info.
-    context: ContextualLogInfo
+    # Message data.
+    data: typing.Dict[str, typing.Any]
 
 
 # Full type set.
 TYPE_SET = {
+    ApplicationInfo,
+    EventInfo,
     Level,
+    LogMessage,
     SubSystem,
-    ContextualLogInfo,
-    MonitoringLogInfo,
-    WorkflowLogInfo,
-}
+    ProcessInfo,
+} | ENUM_SET

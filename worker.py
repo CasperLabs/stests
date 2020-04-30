@@ -2,6 +2,8 @@
 from stests.core import mq
 mq.initialise()
 
+print(888)
+
 # Initialise encoder.
 from stests.core.mq import encoder
 encoder.initialise()

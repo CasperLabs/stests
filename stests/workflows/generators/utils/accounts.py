@@ -47,7 +47,7 @@ def do_transfer(
     # Set amount for refunds.
     is_refund = amount is None
     if is_refund:
-        cp1_balance = clx.get_account_balance(ctx, cp1)
+        cp1_balance = clx.get_account_balance(ctx, cp1.public_key)
         amount = cp1_balance - clx.CLX_TX_FEE
         if amount <= 0:
             raise ValueError(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={cp1_balance}.")

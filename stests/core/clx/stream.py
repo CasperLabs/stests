@@ -2,7 +2,7 @@ import typing
 
 from stests.core import factory
 from stests.core.clx import utils
-from stests.core.types.infra import NodeEventType
+from stests.core.logging import MonitoringEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.utils import logger
 
@@ -19,42 +19,42 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
     for info in client.stream_events(all=True):
         # Set fields according to event type.
         if info.HasField("block_added"):
-            event_type=NodeEventType.BLOCK_ADD
+            event_type=MonitoringEventType.BLOCK_ADD
             block_hash=info.block_added.block.summary.block_hash.hex()
             deploy_hash=None
 
         elif info.HasField("new_finalized_block"):
-            event_type=NodeEventType.BLOCK_FINALIZED
+            event_type=MonitoringEventType.BLOCK_FINALIZED
             block_hash=info.new_finalized_block.block_hash.hex()
             deploy_hash=None
 
         elif info.HasField("deploy_added"):
-            event_type=NodeEventType.DEPLOY_ADDED
+            event_type=MonitoringEventType.DEPLOY_ADDED
             block_hash=None
             deploy_hash=info.deploy_added.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_discarded"):
-            event_type=NodeEventType.DEPLOY_DISCARDED
+            event_type=MonitoringEventType.DEPLOY_DISCARDED
             block_hash=None
             deploy_hash=info.deploy_discarded.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_finalized"):
-            event_type=NodeEventType.DEPLOY_FINALIZED
+            event_type=MonitoringEventType.DEPLOY_FINALIZED
             block_hash=info.deploy_finalized.block_hash.hex()
             deploy_hash=info.deploy_finalized.processed_deploy.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_orphaned"):
-            event_type=NodeEventType.DEPLOY_ORPHANED
+            event_type=MonitoringEventType.DEPLOY_ORPHANED
             block_hash=None
             deploy_hash=info.deploy_orphaned.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_processed"):
-            event_type=NodeEventType.DEPLOY_PROCESSED
+            event_type=MonitoringEventType.DEPLOY_PROCESSED
             block_hash=info.deploy_processed.block_hash.hex()
             deploy_hash=info.deploy_processed.processed_deploy.deploy.deploy_hash.hex()
 
         elif info.HasField("deploy_requeued"):
-            event_type=NodeEventType.DEPLOY_REQUEUED
+            event_type=MonitoringEventType.DEPLOY_REQUEUED
             block_hash=None
             deploy_hash=info.deploy_requeued.deploy.deploy_hash.hex()
 

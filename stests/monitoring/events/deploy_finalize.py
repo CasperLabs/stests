@@ -7,10 +7,10 @@ from stests.core import clx
 from stests.core.utils import encoder
 from stests.core import factory
 from stests.core.logging import log_event
+from stests.core.logging import MonitoringEventType
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeployStatus
 from stests.core.types.infra import NodeEventInfo
-from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.chain import TransferStatus
 
@@ -31,13 +31,13 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
     # Query: on-chain block info.
     block_info = clx.get_block_info(node_id, info.block_hash, parse=False)
     if block_info is None:
-        log_event(NodeEventType.BLOCK_NOT_FOUND, node_id, block_hash=info.block_hash)
+        log_event(MonitoringEventType.BLOCK_NOT_FOUND, node_id, block_hash=info.block_hash)
         return
 
     # Query: on-chain deploy info.
     deploy_info = clx.get_deploy_info(node_id, info.deploy_hash, wait_for_processed=False, parse=True)
     if deploy_info is None:
-        log_event(NodeEventType.DEPLOY_NOT_FOUND, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
+        log_event(MonitoringEventType.DEPLOY_NOT_FOUND, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
         return
 
     # Escape if deploy event was already recieved from another node.
@@ -50,7 +50,7 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
         return
 
     # Process deploys dispatched by a generator.
-    log_event(NodeEventType.DEPLOY_CORRELATED, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
+    log_event(MonitoringEventType.DEPLOY_CORRELATED, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
     _process_deploy_dispatched_by_a_generator(
         node_id,
         info,

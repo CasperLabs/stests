@@ -5,7 +5,7 @@ from dramatiq.middleware import Shutdown
 from stests.core import cache
 from stests.core import factory
 from stests.core.logging import log_event
-from stests.core.types.infra import NodeEventType
+from stests.core.logging import MonitoringEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.infra import NodeMonitoringLock
 from stests.monitoring.events import listener
@@ -69,7 +69,7 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Exception: chain exception, e.g. node down, comms channel issue ...etc.
     except Exception as err:
-        log_event(NodeEventType.API_ERROR, node_id, err)
+        log_event(MonitoringEventType.API_ERROR, node_id, err)
         do_monitor_node.send(node_id)
 
     # Release lock.

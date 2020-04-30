@@ -2,8 +2,8 @@ import dataclasses
 import typing
 from datetime import datetime
 
+from stests.monitoring import MonitoringEventType
 from stests.core.types.chain.account import Account
-from stests.core.types.infra.enums import NodeEventType
 from stests.core.types.infra.enums import NodeStatus
 from stests.core.types.infra.enums import NodeType
 from stests.core.types.infra.network import NetworkIdentifier
@@ -74,8 +74,8 @@ class NodeEventInfo:
     # Moment in time when event was streamed.
     event_ts: datetime
 
-    # Node event type.
-    event_type: NodeEventType
+    # Type of event.
+    event_type: MonitoringEventType
 
     # Associated network.
     network: str
@@ -130,7 +130,7 @@ class NodeIdentifier:
 
     @property
     def network_name(self):
-        return self.network
+        return self.network.name
 
 
 @dataclasses.dataclass

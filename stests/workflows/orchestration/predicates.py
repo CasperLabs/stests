@@ -3,8 +3,8 @@ import typing
 from stests.core import cache
 from stests.core import factory
 from stests.core.logging import log_event
+from stests.core.logging import WorkflowEventType
 from stests.core.types.orchestration import ExecutionAspect
-from stests.core.types.orchestration import ExecutionEventType
 from stests.core.types.orchestration import ExecutionLock
 from stests.core.types.orchestration import ExecutionContext
 from stests.workflows.orchestration.model import Workflow
@@ -21,18 +21,18 @@ def is_valid_wflow(ctx: ExecutionContext) -> typing.Tuple[typing.Optional[Workfl
     try:
         wflow = Workflow.create(ctx)
     except ValueError:
-        log_event(ExecutionEventType.WORKFLOW_INVALID, ctx, "unregistered")
+        log_event(WorkflowEventType.WORKFLOW_INVALID, ctx, "unregistered")
         return None, False
 
     # False if workflow has no phases.
     if not wflow.phases:
-        log_event(ExecutionEventType.WORKFLOW_INVALID, ctx, "has no associated phases")
+        log_event(WorkflowEventType.WORKFLOW_INVALID, ctx, "has no associated phases")
         return None, False
 
     # False if a phase has no steps.
     for phase in wflow.phases:
         if not phase.steps:
-            log_event(ExecutionEventType.WORKFLOW_INVALID, ctx, "a phase has no associated steps")
+            log_event(WorkflowEventType.WORKFLOW_INVALID, ctx, "a phase has no associated steps")
             return None, False
 
     # All tests passed, therefore return true.   

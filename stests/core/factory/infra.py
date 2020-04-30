@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from stests.core.logging import MonitoringEventType
 from stests.core.types.infra import Network
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NetworkStatus
@@ -7,7 +8,6 @@ from stests.core.types.infra import NetworkType
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.infra import NodeEventInfo
-from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeMonitoringLock
 from stests.core.types.infra import NodeStatus
 from stests.core.types.infra import NodeType
@@ -93,7 +93,7 @@ def create_node_monitoring_lock(node_id: NodeIdentifier, lock_index: int) -> Nod
 def create_node_event_info(
     node_id: NodeIdentifier,
     event_id: int,
-    event_type: NodeEventType,
+    event_type: MonitoringEventType,
     block_hash: str = None,
     deploy_hash: str = None,
     ) -> NodeEventInfo:

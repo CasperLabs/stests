@@ -1,8 +1,8 @@
 from stests.core import cache
 from stests.core import clx
 from stests.core.logging import log_event
+from stests.core.logging import MonitoringEventType
 from stests.core.types.infra import Node
-from stests.core.types.infra import NodeEventType
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
 from stests.core.utils import logger
@@ -19,14 +19,14 @@ from stests.monitoring.events.deploy_requeue import on_deploy_requeued
 
 # Map: event type -> handler.
 HANDLERS = {
-    NodeEventType.BLOCK_ADD: on_block_added,
-    NodeEventType.BLOCK_FINALIZED: on_block_finalized,
-    NodeEventType.DEPLOY_ADDED: on_deploy_added,
-    NodeEventType.DEPLOY_DISCARDED: on_deploy_discarded,
-    NodeEventType.DEPLOY_FINALIZED: on_deploy_finalized,
-    NodeEventType.DEPLOY_ORPHANED: on_deploy_orphaned,
-    NodeEventType.DEPLOY_PROCESSED: on_deploy_processed,
-    NodeEventType.DEPLOY_REQUEUED: on_deploy_requeued,
+    MonitoringEventType.BLOCK_ADD: on_block_added,
+    MonitoringEventType.BLOCK_FINALIZED: on_block_finalized,
+    MonitoringEventType.DEPLOY_ADDED: on_deploy_added,
+    MonitoringEventType.DEPLOY_DISCARDED: on_deploy_discarded,
+    MonitoringEventType.DEPLOY_FINALIZED: on_deploy_finalized,
+    MonitoringEventType.DEPLOY_ORPHANED: on_deploy_orphaned,
+    MonitoringEventType.DEPLOY_PROCESSED: on_deploy_processed,
+    MonitoringEventType.DEPLOY_REQUEUED: on_deploy_requeued,
 }
 
 

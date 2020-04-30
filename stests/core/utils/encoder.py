@@ -137,7 +137,7 @@ def _get_field_type(field):
         return field.type
 
 
-def encode(data: typing.Any) -> typing.Any:
+def encode(data: typing.Any, requires_decoding=True) -> typing.Any:
     """Encodes input data in readiness for downstream processing.
     
     """
@@ -148,16 +148,16 @@ def encode(data: typing.Any) -> typing.Any:
         return data.timestamp()
 
     if isinstance(data, dict):
-        return {k: encode(v) for k, v in data.items()}
+        return {k: encode(v, requires_decoding) for k, v in data.items()}
 
     if isinstance(data, tuple):
-        return tuple(map(encode, data))
+        return tuple(map(lambda i: encode(i, requires_decoding), data))
 
     if isinstance(data, list):
-        return list(map(encode, data))
+        return list(map(lambda i: encode(i, requires_decoding), data))
 
     if type(data) in DCLASS_SET:
-        return _encode_dclass(data, dataclasses.asdict(data))
+        return _encode_dclass(data, dataclasses.asdict(data), requires_decoding)
 
     if type(data) in ENUM_TYPE_SET:
         return data.name
@@ -167,12 +167,13 @@ def encode(data: typing.Any) -> typing.Any:
     return data
 
 
-def _encode_dclass(data, obj):
+def _encode_dclass(data, obj, requires_decoding):
     """Encodes a data class that has been previously registered with the encoder.
     
     """
     # Inject typekey for subsequent roundtrip.
-    obj['_type_key'] = f"{data.__module__}.{data.__class__.__name__}"
+    if requires_decoding:
+        obj['_type_key'] = f"{data.__module__}.{data.__class__.__name__}"
 
     # Set fields to be encoded.
     fields = [i for i in dir(data) if i in obj and not i.startswith('_')]
@@ -180,11 +181,11 @@ def _encode_dclass(data, obj):
     # Recurse through properties that are also registered data classes.
     fields_dcls = [i for i in fields if type(getattr(data, i)) in DCLASS_SET]
     for field in fields_dcls:
-        _encode_dclass(getattr(data, field), obj[field])
+        _encode_dclass(getattr(data, field), obj[field], requires_decoding)
 
     # TODO: handle lists of dclasses
 
-    return encode(obj)
+    return encode(obj, requires_decoding)
 
 
 def register_type(cls):
@@ -226,7 +227,6 @@ def initialise():
 from stests.core import types
 for i in types.TYPE_SET:
     register_type(i)
-
 
 # Auto-register logging types.
 from stests.core import logging

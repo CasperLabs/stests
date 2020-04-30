@@ -4,9 +4,9 @@ from casperlabs_client.abi import ABI
 
 from stests.core.clx import utils
 from stests.core.logging import log_event
+from stests.core.logging import MonitoringEventType
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
-from stests.core.types.infra import NodeEventType
 from stests.core.types.chain import ContractType
 from stests.core.types.orchestration import ExecutionContext
 
@@ -40,6 +40,6 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
             ]),
     )
 
-    log_event(NodeEventType.DEPLOY_DISPATCHED, node, message=f"TRANSFER_U512 {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", deploy_hash=deploy_hash)
+    log_event(MonitoringEventType.DEPLOY_DISPATCHED, node, message=f"TRANSFER_U512 {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", deploy_hash=deploy_hash)
 
     return node, deploy_hash
