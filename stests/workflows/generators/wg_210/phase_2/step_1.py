@@ -49,7 +49,6 @@ def verify(ctx: ExecutionContext):
     contract = clx.contracts.get_contract(ContractType.COUNTER_DEFINE)
     contract_account = cache.state1.get_account_by_index(ctx, constants.ACC_RUN_CONTRACT)
     count = contract.get_count(ctx, contract_account)
-    print(f"sss :: {count}")
     assert count == ctx.args.user_accounts * ctx.args.increments, "counter verification failed"
 
 

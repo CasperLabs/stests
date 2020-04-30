@@ -1,8 +1,10 @@
+# Initialise logging.
+from stests.core import logging
+logging.initialise(logging.OutputMode.DAEMON)
+
 # Initialise broker.
 from stests.core import mq
 mq.initialise()
-
-print(888)
 
 # Initialise encoder.
 from stests.core.mq import encoder
@@ -19,7 +21,7 @@ import stests.workflows.orchestration.actors
 
 # Import actors: monitoring.
 import stests.monitoring.control
-import stests.monitoring.events
+import stests.monitoring.listener
 
 # Start monitoring.
 from stests.monitoring.control import do_start_monitoring

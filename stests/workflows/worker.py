@@ -1,3 +1,7 @@
+# Initialise logging.
+from stests.core import logging
+logging.initialise(logging.OutputMode.DAEMON)
+
 # Initialise broker.
 from stests.core import mq
 mq.initialise()

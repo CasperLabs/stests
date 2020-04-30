@@ -3,9 +3,9 @@ import typing
 from stests.core.clx import utils
 from stests.core.clx import parser
 from stests.core.logging import log_event
-from stests.core.logging import MonitoringEventType
 from stests.core.types.chain import Account
 from stests.core.utils import logger
+from stests.events import EventType
 
 
 
@@ -49,7 +49,7 @@ def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -
             )
     except Exception as err:
         if "Failed to find base key at path" in err.details:
-            log_event(MonitoringEventType.ACCOUNT_NOT_FOUND, node, f"address={address}")
+            log_event(EventType.MONITORING_ACCOUNT_NOT_FOUND, f"address={address}", node)
             return 0
         raise err
     else:

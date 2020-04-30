@@ -232,3 +232,6 @@ for i in types.TYPE_SET:
 from stests.core import logging
 for i in logging.TYPE_SET:
     register_type(i)
+
+from stests.events import EventType
+register_type(EventType)

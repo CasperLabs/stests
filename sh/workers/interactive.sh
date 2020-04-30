@@ -7,7 +7,7 @@ source $STESTS_PATH_SH/utils.sh
 function main()
 {
     if [ $1 = "unified" ]; then
-        worker_path=$STESTS_HOME
+        worker_path=$STESTS_HOME/stests
     elif [ $1 = "monitoring" ]; then
         worker_path=$STESTS_HOME/stests/monitoring
     elif [ $1 = "workflows" ]; then

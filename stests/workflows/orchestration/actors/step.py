@@ -5,12 +5,12 @@ import dramatiq
 from stests.core import cache
 from stests.core import factory
 from stests.core.logging import log_event
-from stests.core.logging import WorkflowEventType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils.exceptions import IgnoreableAssertionError
+from stests.events import EventType
 from stests.workflows.orchestration.model import Workflow
 from stests.workflows.orchestration.model import WorkflowStep
 from stests.workflows.orchestration import predicates
@@ -47,7 +47,7 @@ def do_step(ctx: ExecutionContext):
     cache.orchestration.set_info(step_info)
 
     # Inform.
-    log_event(WorkflowEventType.STEP_START, ctx)
+    log_event(EventType.WORKFLOW_STEP_START, None, ctx)
 
     # Execute.
     _execute(ctx, step)
@@ -63,18 +63,18 @@ def do_step_verification(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        log_event(WorkflowEventType.STEP_FAILURE, ctx, "invalid step")
+        log_event(EventType.WORKFLOW_STEP_FAILURE, "invalid step", ctx)
 
     # Verify step.
     if not step.has_verifer:
-        log_event(WorkflowEventType.STEP_FAILURE, ctx, "verifier undefined")
+        log_event(EventType.WORKFLOW_STEP_FAILURE, "verifier undefined", ctx)
     else:
         try:
             step.verify(ctx)
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
-            log_event(WorkflowEventType.STEP_FAILURE, ctx, "verification failed")
+            log_event(EventType.WORKFLOW_STEP_FAILURE, "verification failed", ctx)
             return
 
     # Enqueue step end.
@@ -95,7 +95,7 @@ def on_step_end(ctx: ExecutionContext):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
     # Inform.
-    log_event(WorkflowEventType.STEP_END, ctx)
+    log_event(EventType.WORKFLOW_STEP_END, None, ctx)
 
     # Enqueue either end of phase or next step. 
     if step.is_last:
@@ -118,7 +118,7 @@ def on_step_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
     # Inform.
-    log_event(WorkflowEventType.STEP_ERROR, ctx, err)
+    log_event(EventType.WORKFLOW_STEP_ERROR, err, ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -139,29 +139,29 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        log_event(WorkflowEventType.STEP_FAILURE, ctx, "invalid step")
+        log_event(EventType.WORKFLOW_STEP_FAILURE, "invalid step", ctx)
 
     # Verify deploy.
     if not step.has_verifer_for_deploy:
-        log_event(WorkflowEventType.STEP_FAILURE, ctx, "deploy verifier undefined")
+        log_event(EventType.WORKFLOW_STEP_FAILURE, "deploy verifier undefined", ctx)
         return       
     else:
         try:
             step.verify_deploy(ctx, node_id, block_hash, deploy_hash)
         except AssertionError as err:
-            log_event(WorkflowEventType.STEP_FAILURE, ctx, f"deploy verification failed: {err} :: {deploy_hash}")
+            log_event(EventType.WORKFLOW_STEP_FAILURE, f"deploy verification failed: {err} :: {deploy_hash}", ctx)
             return
 
     # Verify step.
     if not step.has_verifer:
-        log_event(WorkflowEventType.STEP_FAILURE, ctx, f"verifier undefined")
+        log_event(EventType.WORKFLOW_STEP_FAILURE, f"verifier undefined", ctx)
     else:
         try:
             step.verify(ctx)
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
-            log_event(WorkflowEventType.STEP_FAILURE, ctx, f"verification failed")
+            log_event(EventType.WORKFLOW_STEP_FAILURE, f"verification failed", ctx)
             return
 
     # Step verification succeeded therefore signal step end.
@@ -184,13 +184,13 @@ def _can_start(ctx: ExecutionContext) -> bool:
     # False if current phase not found.
     phase = wflow.get_phase(ctx.phase_index)
     if phase is None:
-        log_event(WorkflowEventType.STEP_ABORT, ctx, "invalid phase index")
+        log_event(EventType.WORKFLOW_STEP_ABORT, "invalid phase index", ctx)
         return False
     
     # False if next step not found.
     step = phase.get_step(ctx.next_step_index)
     if step is None:
-        log_event(WorkflowEventType.STEP_ABORT, ctx, "invalid step index")
+        log_event(EventType.WORKFLOW_STEP_ABORT, "invalid step index", ctx)
         return False
 
     # False if next step locked - can happen when processing groups of messages.

@@ -9,7 +9,6 @@ from stests.core.utils import logger
 from stests.core.types.orchestration import ExecutionContext
 
 
-
 def start_generator(meta: typing.Any):
     """Entry point.
 
@@ -20,7 +19,7 @@ def start_generator(meta: typing.Any):
     args = meta.ARGS.parse_args()
 
     # Import worker to setup upstream services / actors.
-    import stests.workflows.worker
+    _import_actors()
 
     # Import dramatiq actor used to ping message to broker.
     from stests.workflows.orchestration.actors import do_run
@@ -33,6 +32,25 @@ def start_generator(meta: typing.Any):
     for ctx in _get_context_list(meta, args, network_id, node_id):
         do_run.send(ctx)
         logger.log(f"{ctx.run_type} :: run {ctx.run_index} started")
+
+
+def _import_actors():
+    """Import actors used during launch.
+    
+    """
+    # Initialise broker.
+    from stests.core import mq
+    mq.initialise()
+
+    # Initialise encoder.
+    from stests.core.mq import encoder
+    encoder.initialise()
+
+    # Import actors: generators.
+    import stests.workflows.generators.wg_100.meta
+    import stests.workflows.generators.wg_110.meta
+    import stests.workflows.generators.wg_200.meta
+    import stests.workflows.generators.wg_210.meta
 
 
 def _get_context_list(

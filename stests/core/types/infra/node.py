@@ -2,17 +2,17 @@ import dataclasses
 import typing
 from datetime import datetime
 
-from stests.monitoring import MonitoringEventType
 from stests.core.types.chain.account import Account
 from stests.core.types.infra.enums import NodeStatus
 from stests.core.types.infra.enums import NodeType
 from stests.core.types.infra.network import NetworkIdentifier
+from stests.events import EventType
 
 
 
 @dataclasses.dataclass
 class Node:
-    """Encpasulates information pertaining to a node within a target network.
+    """Encapsulates information pertaining to a node within a target network.
     
     """
     # Bonding account associated with node.
@@ -59,7 +59,7 @@ class Node:
 
 @dataclasses.dataclass
 class NodeEventInfo:
-    """Encpasulates information pertaining to a node event.
+    """Encapsulates information pertaining to a node event.
     
     """
     # Hash of block associated with event.
@@ -75,7 +75,7 @@ class NodeEventInfo:
     event_ts: datetime
 
     # Type of event.
-    event_type: MonitoringEventType
+    event_type: EventType
 
     # Associated network.
     network: str
@@ -111,7 +111,7 @@ class NodeEventInfo:
 
 @dataclasses.dataclass
 class NodeIdentifier:
-    """Encpasulates information required to disambiguate between nodes.
+    """Encapsulates information required to disambiguate between nodes.
     
     """ 
     # Associated network identifer.
@@ -135,7 +135,7 @@ class NodeIdentifier:
 
 @dataclasses.dataclass
 class NodeMonitoringLock:
-    """Encpasulates information used to lock monitoring of a node.
+    """Encapsulates information used to lock monitoring of a node.
     
     """
     # Numerical index to distinguish between nodes upon the same network.

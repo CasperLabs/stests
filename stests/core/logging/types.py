@@ -3,10 +3,25 @@ import datetime
 import enum
 import typing
 
-from stests.core.logging.enums import Level
-from stests.core.logging.enums import SubSystem
-from stests.core.logging.enums import ENUM_SET
 
+class OutputMode(enum.Enum):
+    """Flag over set of execution container.
+    
+    """
+    DAEMON = enum.auto()
+    INTERACTIVE = enum.auto()
+
+
+class Level(enum.Enum):
+    """Flag over set of log levels.
+    
+    """
+    DEBUG = 1
+    INFO = 5
+    WARN = 7
+    ERROR = 9
+    CRITICAL = 99
+    FATAL = 999
 
 
 @dataclasses.dataclass
@@ -14,11 +29,17 @@ class ApplicationInfo():
     """Encapsulates information pertaining to the application.
     
     """
+    # Company information, i.e. clabs.
+    company: str
+
     # System emitting event, i.e. STESTS.
     system: str
 
-    # Sub-system emitting event, e.g. CORE
+    # Sub-system emitting event, e.g. CORE.
     sub_system: str
+
+    # System version.
+    version: str
 
 
 @dataclasses.dataclass
@@ -90,6 +111,5 @@ TYPE_SET = {
     EventInfo,
     Level,
     LogMessage,
-    SubSystem,
     ProcessInfo,
-} | ENUM_SET
+}

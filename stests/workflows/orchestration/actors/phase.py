@@ -3,10 +3,10 @@ import dramatiq
 from stests.core import cache
 from stests.core import factory
 from stests.core.logging import log_event
-from stests.core.logging import WorkflowEventType
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionStatus
+from stests.events import EventType
 from stests.workflows.orchestration.model import Workflow
 from stests.workflows.orchestration import predicates
 from stests.workflows.orchestration.actors.step import do_step
@@ -40,7 +40,7 @@ def do_phase(ctx: ExecutionContext):
     cache.orchestration.set_info(phase_info)
 
     # Inform.
-    log_event(WorkflowEventType.PHASE_START, ctx)
+    log_event(EventType.WORKFLOW_PHASE_START, None, ctx)
 
     # Enqueue step.
     do_step.send(ctx)
@@ -60,7 +60,7 @@ def on_phase_end(ctx: ExecutionContext):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
 
     # Inform.
-    log_event(WorkflowEventType.PHASE_END, ctx)
+    log_event(EventType.WORKFLOW_PHASE_END, None, ctx)
 
     # Enqueue either end of workflow or next phase. 
     if phase.is_last:
@@ -83,7 +83,7 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
 
     # Inform.
-    log_event(WorkflowEventType.PHASE_ERROR, ctx, err)
+    log_event(EventType.WORKFLOW_PHASE_ERROR, err, ctx)
 
 
 def _can_start(ctx: ExecutionContext) -> bool:
@@ -102,7 +102,7 @@ def _can_start(ctx: ExecutionContext) -> bool:
     # False if next phase not found.
     phase = wflow.get_phase(ctx.next_phase_index)
     if phase is None:
-        log_event(WorkflowEventType.PHASE_ABORT, ctx)
+        log_event(EventType.WORKFLOW_PHASE_ABORT, None, ctx)
         return False
 
     # False if next phase locked.

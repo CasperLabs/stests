@@ -1,32 +1,42 @@
 import dataclasses
 import typing
+from datetime import datetime
 
-from stests.core.logging.enums import CoreEventType
-from stests.core.logging.enums import MonitoringEventType
-from stests.core.logging.enums import WorkflowEventType
-from stests.core.logging.factory import get_core_event_info
-from stests.core.logging.factory import get_monitoring_event_info
-from stests.core.logging.factory import get_workflow_event_info
-
+from stests import events
+from stests.core.logging.factory import get_message
+from stests.core.logging.types import OutputMode
+from stests.core.utils import env
 
 
-# Map: event type enum -> event info factory.
-_FACTORIES = {
-    CoreEventType: get_core_event_info,
-    MonitoringEventType: get_monitoring_event_info,
-    WorkflowEventType: get_workflow_event_info,
-}
+# Mode - determines output format.
+_mode = OutputMode.INTERACTIVE
 
 
-def log_event(event_type: typing.Union[CoreEventType, MonitoringEventType, WorkflowEventType], *args, **kwargs):
+def log_event(event_type: events.EventType, message: typing.Optional[typing.Union[Exception, str]], *args, **kwargs):
     """Appends event information to event log.
 
     :param event_type: Type of event being logged.
+    :param message: Message to be written to log.
 
     """
-    from stests.core.utils import encoder
+    # Must be JIT imported.
+    # from stests.core.utils import encoder
 
-    info_factory = _FACTORIES[type(event_type)]
-    info = info_factory(event_type, *args, **kwargs)
+    # Build log message.
+    msg = get_message(events.get_event_info(event_type, message, *args, **kwargs))
+
+    # Write to log.
     # TODO - use structlog | logstash ?
-    print(f"{info.event.timestamp}Z {info.event.level} {info.event.priority} {info.process.host} {info.process.pid} {info.app.system} {info.app.sub_system}.{info.event.type}   payload={encoder.encode(info, False)}")
+    if _mode == OutputMode.INTERACTIVE:
+        print(f"{datetime.utcnow().isoformat()}Z [{msg.event.level}] [{msg.process.pid}] {msg.app.system} :: {msg.message}")
+    else:
+        print(f"{datetime.utcnow().isoformat()}Z {msg.event.level} {msg.event.priority} {msg.process.host} {msg.app.company.lower()}-{msg.app.system.lower()} {msg.app.sub_system.lower()} payload={dataclasses.asdict(msg)}")
+
+
+def initialise(mode: OutputMode):
+    """Initialises logger.
+
+    """
+    global _mode
+
+    _mode = mode
