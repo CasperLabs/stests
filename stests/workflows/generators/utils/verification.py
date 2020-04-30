@@ -16,7 +16,7 @@ def verify_deploy(ctx: ExecutionContext, block_hash: str, deploy_hash: str) -> D
     """Verifies that a deploy is in a finalized state.
     
     """
-    deploy = cache.state1.get_deploy(ctx, deploy_hash)
+    deploy = cache.state.get_deploy(ctx, deploy_hash)
     assert deploy, "deploy could not be retrieved"
     assert deploy.status == DeployStatus.FINALIZED, "deploy is not FINALIZED"
     assert deploy.block_hash == block_hash, f"finalized deploy block hash mismatch : block-hash={block_hash}"
@@ -36,7 +36,7 @@ def verify_transfer(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: 
     """Verifies that a transfer between counter-parties completed.
     
     """
-    transfer = cache.state1.get_transfer_by_ctx(ctx, deploy_hash)
+    transfer = cache.state.get_transfer_by_ctx(ctx, deploy_hash)
     assert transfer, "transfer could not be retrieved"
     assert transfer.status == TransferStatus.COMPLETE, "transfer is not COMPLETE"
 
@@ -52,9 +52,9 @@ def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block
     if verify_user_accounts_only and account_index < ACC_RUN_USERS:
         return
     
-    account = cache.state1.get_account_by_index(ctx, account_index)
+    account = cache.state.get_account_by_index(ctx, account_index)
     assert account, f"account {account_index} could not be retrieved"
 
-    expected = cache.state1.get_account_balance(account)
+    expected = cache.state.get_account_balance(account)
     actual = clx.get_account_balance(node_id, account.public_key, block_hash=block_hash)
     assert actual == expected, f"account balance mismatch: account_index={account_index}, actual={actual}, expected={expected}"

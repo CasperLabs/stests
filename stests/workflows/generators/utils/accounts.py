@@ -30,7 +30,7 @@ def do_create_account(ctx: ExecutionContext, index: int, typeof: AccountType):
 
     """
     account = factory.create_account_for_run(ctx, index=index, typeof=typeof)
-    cache.state1.set_account(account)
+    cache.state.set_account(account)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -60,14 +60,14 @@ def do_transfer(
     node, deploy_hash = contract.transfer(ctx, cp1, cp2, amount)
 
     # Update cache.
-    cache.state1.set_deploy(factory.create_deploy_for_run(
+    cache.state.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
         account=cp1,
         node=node, 
         deploy_hash=deploy_hash, 
         typeof=DeployType.TRANSFER_REFUND if is_refund else DeployType.TRANSFER
         ))
-    cache.state1.set_transfer(factory.create_transfer(
+    cache.state.set_transfer(factory.create_transfer(
         ctx=ctx,
         amount=amount,
         asset="CLX",
@@ -76,9 +76,9 @@ def do_transfer(
         deploy_hash=deploy_hash,
         ))
     if cp1.is_run_account:
-        cache.state1.decrement_account_balance(cp1, amount)
+        cache.state.decrement_account_balance(cp1, amount)
     if cp2.is_run_account:
-        cache.state1.increment_account_balance(cp2, amount)
+        cache.state.increment_account_balance(cp2, amount)
 
 
 def _get_account(ctx: ExecutionContext, account_index) -> Account:
@@ -92,4 +92,4 @@ def _get_account(ctx: ExecutionContext, account_index) -> Account:
             raise ValueError("Network faucet account does not exist.")
         return network.faucet
     else:
-        return cache.state1.get_account_by_index(ctx, account_index)           
+        return cache.state.get_account_by_index(ctx, account_index)           
