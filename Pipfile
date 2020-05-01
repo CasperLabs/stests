@@ -19,6 +19,7 @@ apscheduler = "*"
 typing-inspect = "*"
 beautifultable = "*"
 casperlabs-client = "*"
+python-logstash = "*"
 
 [requires]
 python_version = "3.7"

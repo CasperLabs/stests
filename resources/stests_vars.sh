@@ -3,7 +3,7 @@
 # --------------------------------------------------------------------
 
 # type (REDIS | STUB)
-export STESTS_CACHE_TYPE="REDIS"
+export STESTS_CACHE_TYPE=REDIS
 
 # --------------------------------------------------------------------
 # Cache: REDIS
@@ -13,7 +13,7 @@ export STESTS_CACHE_TYPE="REDIS"
 export STESTS_CACHE_REDIS_DB=1
 
 # Cache -> REDIS -> host
-export STESTS_CACHE_REDIS_HOST="localhost"
+export STESTS_CACHE_REDIS_HOST=localhost
 
 # Cache -> REDIS -> port
 export STESTS_CACHE_REDIS_PORT=6379
@@ -23,7 +23,7 @@ export STESTS_CACHE_REDIS_PORT=6379
 # --------------------------------------------------------------------
 
 # type (REDIS | RABBIT | STUB)
-export STESTS_BROKER_TYPE="REDIS"
+export STESTS_BROKER_TYPE=REDIS
 
 # --------------------------------------------------------------------
 # Broker: REDIS
@@ -78,3 +78,23 @@ export STESTS_MWARE_REDIS_HOST=localhost
 
 # Broker Middleware -> REDIS -> port
 export STESTS_MWARE_REDIS_PORT=6379
+
+# --------------------------------------------------------------------
+# Logging
+# --------------------------------------------------------------------
+
+# type (STDOUT | LOGSTASH)
+export STESTS_LOGGING_TYPE=STDOUT
+
+# --------------------------------------------------------------------
+# Logging: LOGSTASH
+# --------------------------------------------------------------------
+
+# Logging -> LOGSTASH -> host
+export STESTS_LOGGING_LOGSTASH_HOST=localhost
+
+# Logging -> LOGSTASH -> port (udp | tcp)
+export STESTS_LOGGING_LOGSTASH_PORT=5959
+
+# Logging -> LOGSTASH -> version
+export STESTS_LOGGING_LOGSTASH_VERSION=1

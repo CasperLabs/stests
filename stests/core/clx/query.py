@@ -9,6 +9,21 @@ from stests.events import EventType
 
 
 
+def get_account_info(src: typing.Any, account: Account, block_hash: str=None):
+    """Returns on-chain account info.
+
+    :param src: The source from which a node client will be instantiated.
+    :param account: Account whose on-chain representation will be queried.
+    :param block_hash: Hash of block against which query will be made.
+
+    :returns: Account info.
+
+    """
+    q = get_state(src, block_hash, account.public_key, "address", "")
+
+    return q.account
+
+
 def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -> int:
     """Queries account balance at a chain address.
 
@@ -20,6 +35,7 @@ def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -
 
     """
     node, client = utils.get_client(src)
+
     try:
         balance = client.balance(
             address=address,
@@ -46,7 +62,7 @@ def get_named_keys(src: typing.Any, account: Account, block_hash: str=None, filt
     :returns: Account named keys.
 
     """
-    a = get_account(src, account, block_hash)
+    a = get_account_info(src, account, block_hash)
 
     keys = a.named_keys
     if filter_keys:

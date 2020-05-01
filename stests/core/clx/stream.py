@@ -16,11 +16,10 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
 
     """
     node, client = utils.get_client(node_id)
+
     log_event(EventType.MONITORING_STREAM_OPENING, node.address, node)
 
-    for info in client.stream_events(all=True):
-        log_event(EventType.MONITORING_STREAM_EVENT_TYPE_UNKNOWN, f"event skipped as type is unsupported :: node={node.address} :: event-id={info.event_id}", node)
-
+    for info in client.stream_events(all=True):        
         # Set fields according to event type.
         if info.HasField("block_added"):
             event_type=EventType.MONITORING_BLOCK_ADD

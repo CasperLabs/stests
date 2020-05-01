@@ -5,6 +5,7 @@ from beautifultable import BeautifulTable
 from stests.core import cache
 from stests.core import factory
 from stests.core.types.orchestration import ExecutionAspect
+from stests.core.types.orchestration import ExecutionInfo
 from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
@@ -111,13 +112,16 @@ def _get_ctx(i, ctx_list):
             return ctx
 
 
-def _get_deploy_count(i, counts):
+def _get_deploy_count(i: ExecutionInfo, counts):
     """Returns count of deploys dispatched during course of a run.
     
     """
     key = f"{i.network}:{i.run_type}:{i.label_run_index}:deploy-count:-"
+    for count in counts:
+        if count.endswith(key):
+            return counts[count]
 
-    return counts.get(key, "--")
+    return "--"
 
 
 def _get_row(i, counts):

@@ -15,11 +15,18 @@ class EventType(enum.Enum):
     CORE_ENCODING_FAILURE = enum.auto()
     CORE_ACTOR_ERROR = enum.auto()    
 
+    # Chain info reporting sub-system.
+    CHAININFO_BLOCK = enum.auto()
+    CHAININFO_BLOCK_SUMMARY = enum.auto()
+    CHAININFO_DEPLOY = enum.auto()
+    CHAININFO_DEPLOY_SUMMARY = enum.auto()
+
     # Monitoring sub-system.
     MONITORING_API_ERROR = enum.auto()
     MONITORING_ACCOUNT_NOT_FOUND = enum.auto()
     MONITORING_BLOCK_ADD = enum.auto()
     MONITORING_BLOCK_FINALIZED = enum.auto()
+    MONITORING_BLOCK_FINALIZED_INFO = enum.auto()
     MONITORING_BLOCK_NOT_FOUND = enum.auto()
     MONITORING_DEPLOY_ADDED = enum.auto()
     MONITORING_DEPLOY_CORRELATED = enum.auto()
@@ -116,11 +123,15 @@ def get_event_info(event_type: EventType, message: typing.Union[BaseException, s
     
     """
     event_name = "_".join(event_type.name.split('_')[1:])
-    if event_type.name.startswith("CORE_"):
+    sub_system = event_type.name.split('_')[0]
+
+    if sub_system == "CORE":
         event_id, data = event_type.value, dict()
-    elif event_type.name.startswith("MONITORING_"):  
+    elif sub_system == "CHAININFO":
+        event_id, data = _get_event_info_chaininfo(event_type, *args, **kwargs)
+    elif sub_system == "MONITORING":
         event_id, data = _get_event_info_monitoring(event_type, *args, **kwargs)
-    elif event_type.name.startswith("WORKFLOW_"):
+    elif sub_system == "WORKFLOW":
         event_id, data = _get_event_info_workflow(event_type, *args, **kwargs)
 
     return EventInfo(
@@ -135,12 +146,23 @@ def get_event_info(event_type: EventType, message: typing.Union[BaseException, s
     )
 
 
+def _get_event_info_chaininfo(
+    event_type: EventType,
+    node: typing.Any,
+    data: typing.Any,
+    ) -> typing.Tuple[str, int, dict]:
+    """Returns monitoring sub-system event information.
+    
+    """
+    return event_id or event_type.value, data
+
+
 def _get_event_info_monitoring(
     event_type: EventType,
     node: typing.Any,
     event_id: int = None,
     block_hash: str = None,
-    deploy_hash: str = None
+    deploy_hash: str = None,
     ) -> typing.Tuple[str, int, dict]:
     """Returns monitoring sub-system event information.
     

@@ -63,7 +63,7 @@ def main(args):
     # Set deploy counts.
     keys, counts = cache.orchestration.get_deploy_count_list(network_id, args.run_type, args.run_index)
     keys = [i.split(":") for i in keys]
-    keys = [f"{i[2]}.{i[4]}" if i[4] != "-" else i[2] for i in keys]
+    keys = [f"{i[3]}.{i[5]}" if i[5] != "-" else i[3] for i in keys]
     counts = dict(zip(keys, counts))
 
     # Sort data.
