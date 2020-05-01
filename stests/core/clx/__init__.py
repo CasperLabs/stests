@@ -1,7 +1,6 @@
 from stests.core.clx import contracts
 from stests.core.clx.defaults import CLX_TX_FEE
 from stests.core.clx.defaults import CLX_TX_GAS_PRICE
-from stests.core.clx.query import get_account
 from stests.core.clx.query import get_account_balance
 from stests.core.clx.query import get_block_info
 from stests.core.clx.query import get_deploy_info

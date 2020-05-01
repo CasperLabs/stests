@@ -1,6 +1,9 @@
+import base64
 import pathlib
 import time
 import typing
+
+from google.protobuf.json_format import MessageToDict
 
 import casperlabs_client
 from casperlabs_client import CasperLabsClient
@@ -18,6 +21,7 @@ from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
+
 
 
 # Max. number of times a deploy will be dispatched.
@@ -133,6 +137,8 @@ def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, Ne
         host=node.host,
         port=node.port,
     )
+
+    # Associate client with node - useful when the client is reused. 
     client._node = node
 
     return node, client
@@ -205,3 +211,43 @@ def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: s
     )
 
     return node, deploy_hash
+
+
+def parse_chain_info(info: typing.Any) -> dict:
+    """Parses chain information returned from chain over grpc channel.
+
+    :param info: Chain information recieved from chain over RPC channel.
+
+    :returns: Parsed chain information.
+
+    """
+    if info is None:
+        return dict()
+
+    return _parse_dict(MessageToDict(info))
+
+
+def _parse_dict(obj: typing.Any, key: str=None) -> typing.Any:
+    """Performs a parse over a dictionary deserialized from protobuf layer.
+    
+    """
+    if isinstance(obj, dict):        
+        return {k: _parse_dict(v, k) for k, v in obj.items()}
+
+    if isinstance(obj, list):
+        return [_parse_dict(i, key) for i in obj]
+
+    # A few integer fields are actually strings in grpc schema.
+    try:
+        return int(obj)
+    except:
+        pass
+    
+    # Auto-encode cryptographic primitives to hex.
+    try:
+        if 'Hash' in key or 'Key' in key or key.startswith('sig'):
+            return base64.b64decode(obj).hex()
+    except:
+        pass
+
+    return obj  

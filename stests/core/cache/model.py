@@ -8,7 +8,7 @@ from stests.core.utils import encoder
 
 
 
-# Operating system user account identifier is prefixed to all keys.
+# Some partitions require that the OS user account name is prefixed to all keys within the partition.
 _OS_USER = pwd.getpwuid(os.getuid())[0]
 
 

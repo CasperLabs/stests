@@ -214,7 +214,7 @@ def initialise():
     if IS_INITIALISED:
         return
 
-    # Register generator args as these are currently 
+    # Generator args are passed over thet wire thus they need to be registered. 
     from stests.workflows.generators.wg_100.args import Arguments
     register_type(Arguments)
 

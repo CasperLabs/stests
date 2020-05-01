@@ -1,33 +1,12 @@
 import typing
 
+import casperlabs_client
+
 from stests.core.clx import utils
-from stests.core.clx import parser
 from stests.core.logging import log_event
 from stests.core.types.chain import Account
 from stests.events import EventType
 
-
-
-def get_account(src: typing.Any, account: Account, block_hash: str=None):
-    """Returns on-chain account info.
-
-    :param src: The source from which a node client will be instantiated.
-    :param account: Account whose on-chain representation will be queried.
-    :param block_hash: Hash of block against which query will be made.
-
-    :returns: Account info.
-
-    """
-    _, client = utils.get_client(src)
-
-    q = client.queryState(
-        block_hash or _get_last_block_hash(client),
-        account.public_key,
-        "",
-        keyType="address"
-        )
-
-    return q.account
 
 
 def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -> int:
@@ -47,9 +26,10 @@ def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -
             block_hash=block_hash or _get_last_block_hash(client)
             )
     except Exception as err:
-        if "Failed to find base key at path" in err.details:
-            log_event(EventType.MONITORING_ACCOUNT_NOT_FOUND, f"address={address}", node)
-            return 0
+        if err and err.details:
+            if "StatusCode.INVALID_ARGUMENT" in err.details:
+                log_event(EventType.MONITORING_ACCOUNT_NOT_FOUND, f"address={address}", node)
+                return 0
         raise err
     else:
         return balance
@@ -86,9 +66,18 @@ def get_block_info(src: typing.Any, block_hash: str, parse=True) -> typing.Dict:
 
     """
     _, client = utils.get_client(src)
-    info = client.showBlock(block_hash_base16=block_hash, full_view=False)
 
-    return parser.parse_block_info(info) if parse else info
+    try:
+        info = client.showBlock(block_hash_base16=block_hash, full_view=False)
+    except casperlabs_client.InternalError as err:
+        if err and err.details:
+            if "StatusCode.NOT_FOUND" in err.details:
+                return None
+            if "StatusCode.INVALID_ARGUMENT" in err.details:
+                raise ValueError("Block hash format is invalid")
+        raise err
+    else:
+        return utils.parse_chain_info(info) if parse else info    
 
 
 def get_deploy_info(src: typing.Any, deploy_hash: str, wait_for_processed: bool = True, parse=True) -> typing.Dict:
@@ -103,9 +92,18 @@ def get_deploy_info(src: typing.Any, deploy_hash: str, wait_for_processed: bool 
 
     """
     _, client = utils.get_client(src)
-    info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
 
-    return parser.parse_deploy_info(info) if parse else info
+    try:
+        info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
+    except casperlabs_client.InternalError as err:
+        if err and err.details:
+            if "StatusCode.NOT_FOUND" in err.details:
+                return None
+            if "StatusCode.INVALID_ARGUMENT" in err.details:
+                raise ValueError("Deploy hash format is invalid")
+        raise err
+    else:
+        return utils.parse_chain_info(info) if parse else info
 
 
 def _get_last_block_hash(client) -> str:
