@@ -1,9 +1,15 @@
 import enum
 import json
+import os
+import pwd
 import typing
 
 from stests.core.utils import encoder
 
+
+
+# Operating system user account identifier is prefixed to all keys.
+_OS_USER = pwd.getpwuid(os.getuid())[0]
 
 
 class ItemKey():
@@ -11,12 +17,12 @@ class ItemKey():
     
     """
     def __init__(self, paths: typing.List[str], names: typing.List[str]):
-        self.path = ":".join([str(i) for i in paths])
-        self.name = ".".join([str(i) for i in names])
+        path = ":".join([str(i) for i in paths])
+        name = ".".join([str(i) for i in names])
+        self.key = f"{path}:{name}"
     
-    @property
-    def key(self) -> str:
-        return f"{self.path}:{self.name}"
+    def apply_key_prefix(self):
+        self.key = f"{_OS_USER}:{self.key}"
 
 
 class Item():
@@ -30,6 +36,9 @@ class Item():
     @property
     def data_as_json(self):
         return json.dumps(encoder.encode(self.data), indent=4)
+
+    def apply_key_prefix(self):
+        self.key = f"{_OS_USER}:{self.key}"
 
 
 class CountDecrementKey(ItemKey):
@@ -55,7 +64,11 @@ class SearchKey():
     
     """
     def __init__(self, paths: typing.List[str], wildcard="*"):
-        self.key = f"{':'.join([str(i) for i in paths])}{wildcard}"
+        path = ':'.join([str(i) for i in paths])
+        self.key = f"{path}{wildcard}"
+
+    def apply_key_prefix(self):
+        self.key = f"{_OS_USER}:{self.key}"
 
 
 class StoreOperation(enum.Enum):

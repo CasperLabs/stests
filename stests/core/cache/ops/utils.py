@@ -37,7 +37,7 @@ def _delete_one(store: typing.Callable, item_key: ItemKey):
     store.delete(item_key.key)
 
 
-def _flush_many(store: typing.Callable, search_key: SearchKey):
+def _delete_many(store: typing.Callable, search_key: SearchKey):
     """Deletes items under matching keys.
 
     """
@@ -134,7 +134,7 @@ def _set_one_singleton(store: typing.Callable, item: Item) -> typing.Tuple[str, 
 _HANDLERS = {
     StoreOperation.COUNTER_DECR: _decr,
     StoreOperation.DELETE_ONE: _delete_one,
-    StoreOperation.DELETE_MANY: _flush_many,
+    StoreOperation.DELETE_MANY: _delete_many,
     StoreOperation.GET_COUNT: _get_count,
     StoreOperation.GET_COUNTER_ONE: _get_counter_one,
     StoreOperation.GET_COUNTER_MANY: _get_counter_many,
@@ -144,6 +144,12 @@ _HANDLERS = {
     StoreOperation.COUNTER_INCR: _incr,
     StoreOperation.SET_ONE: _set_one,
     StoreOperation.SET_ONE_SINGLETON: _set_one_singleton,
+}
+
+# Set of partitions whereby keys are prefixed with os-user. 
+_USER_PARTITIONS = {
+    StorePartition.ORCHESTRATION,
+    StorePartition.STATE,
 }
 
 
@@ -163,8 +169,16 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
             encoder.initialise()
             # Set store - use context manager to auto close connection.
             with stores.get_store(partition) as store:
-                # Invoke handler.
-                return _HANDLERS[operation](store, func(*args, **kwargs))
+                # Set item/key - if applicable apply key prefix.
+                obj = func(*args, **kwargs)
+                if partition in _USER_PARTITIONS:
+                    obj.apply_key_prefix()
+                
+                # Set handler.
+                handler = _HANDLERS[operation]
+
+                # TODO: apply retry semantics in case of broken pipes.
+                return handler(store, obj)
 
         return wrapper
     return decorator
