@@ -11,30 +11,22 @@ from stests.workflows.generators.utils.accounts import do_transfer
 
 
 # Step label.
-LABEL = "refund-users"
+LABEL = "refund-network-faucet"
 
 
-def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
+def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, tuple]:
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    :returns: 3 member tuple -> actor, message count, message arg factory.
+    :returns: 2 member tuple -> actor, args.
 
-    """
-    return do_transfer, ctx.args.user_accounts, lambda: _yield_parameterizations(ctx)
-
-
-def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
-    """Yields parameterizations to be dispatched to actor via a message queue.
-    
-    """
-    for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-        yield (
-            ctx,
-            account_index,
-            constants.ACC_RUN_FAUCET,
-        )
+    """   
+    return do_transfer, (
+        ctx,
+        constants.ACC_RUN_FAUCET,
+        constants.ACC_NETWORK_FAUCET,
+    )
 
 
 def verify(ctx: ExecutionContext):
@@ -43,7 +35,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    verification.verify_deploy_count(ctx, ctx.args.user_accounts) 
+    verification.verify_deploy_count(ctx, 1)
 
 
 def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):

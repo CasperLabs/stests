@@ -41,6 +41,7 @@ def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type
         ))
 
     # Persist named keys.
+    # TODO: review wg-210 as this needs the keys to be cached.
     # for key_name, key_hash in keys:
     #     cache.state.set_named_key(ctx, factory.create_named_key(
     #         account,

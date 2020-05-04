@@ -6,7 +6,6 @@ from stests.core import cache
 from stests.core import clx
 from stests.core import factory
 from stests.core.types.chain import Account
-from stests.core.types.chain import AccountType
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import DeployType
 from stests.core.types.orchestration import ExecutionContext
@@ -18,19 +17,6 @@ _QUEUE = "workflows.generators.accounts"
 
 # Account index: network faucet.
 ACC_NETWORK_FAUCET = 0
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_create_account(ctx: ExecutionContext, index: int, typeof: AccountType):
-    """Creates an account for use during the course of a simulation.
-
-    :param ctx: Execution context information.
-    :param index: Run specific account index.
-    :param typeof: Account type.
-
-    """
-    account = factory.create_account_for_run(ctx, index=index, typeof=typeof)
-    cache.state.set_account(account)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -52,14 +38,12 @@ def do_transfer(
         if amount <= 0:
             raise ValueError(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={cp1_balance}.")
 
-    # Set contract.
+    # Transfer CLX from cp1 -> cp2.    
     contract_type = ContractType.TRANSFER_U512 if ctx.run_type == "WG-100" else ContractType.TRANSFER_U512_STORED
     contract = clx.contracts.get_contract(contract_type)
-
-    # Transfer CLX from cp1 -> cp2.    
     node, deploy_hash = contract.transfer(ctx, cp1, cp2, amount)
 
-    # Update cache.
+    # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
         account=cp1,
@@ -67,6 +51,8 @@ def do_transfer(
         deploy_hash=deploy_hash, 
         typeof=DeployType.TRANSFER_REFUND if is_refund else DeployType.TRANSFER
         ))
+
+    # Update cache: transfer.
     cache.state.set_transfer(factory.create_transfer(
         ctx=ctx,
         amount=amount,
@@ -75,6 +61,8 @@ def do_transfer(
         cp2=cp2,
         deploy_hash=deploy_hash,
         ))
+
+    # Update cache: account balances.
     if cp1.is_run_account:
         cache.state.decrement_account_balance(cp1, amount)
     if cp2.is_run_account:
@@ -82,7 +70,7 @@ def do_transfer(
 
 
 def _get_account(ctx: ExecutionContext, account_index) -> Account:
-    """Returns account pulled from cache.
+    """Pulls & returns a cached account.
     
     """
     if account_index == ACC_NETWORK_FAUCET:

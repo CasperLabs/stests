@@ -11,23 +11,40 @@ from stests.workflows.generators.utils.accounts import do_transfer
 
 
 # Step label.
-LABEL = "fund-contract"
+LABEL = "fund-run-accounts"
 
 
-def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, tuple]:
+def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    :returns: 2 member tuple -> actor, args.
+    :returns: 3 member tuple -> actor, message count, message arg factory.
 
     """
-    return do_transfer, (
+    return do_transfer, ctx.args.user_accounts + 1, lambda: _yield_parameterizations(ctx)
+
+
+def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
+    """Yields parameterizations to be dispatched to actor via a message queue.
+    
+    """
+    # Dapp contract account.
+    yield (
         ctx,
         constants.ACC_RUN_FAUCET,
         constants.ACC_RUN_CONTRACT,
         ctx.args.contract_initial_clx_balance,
     )
+
+    # Dapp user accounts.
+    for account_index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
+        yield (
+            ctx,
+            constants.ACC_RUN_FAUCET,
+            account_index,
+            ctx.args.user_initial_clx_balance,
+        )
 
 
 def verify(ctx: ExecutionContext):
@@ -36,7 +53,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    verification.verify_deploy_count(ctx, 1)    
+    verification.verify_deploy_count(ctx, ctx.args.user_accounts + 1)
 
 
 def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
@@ -50,3 +67,4 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     """
     verification.verify_deploy(ctx, block_hash, deploy_hash)
     verification.verify_transfer(ctx, node_id, block_hash, deploy_hash)
+    
