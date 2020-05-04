@@ -8,6 +8,7 @@ from stests.core.utils import encoder
 from stests.core import factory
 from stests.core.logging import log_event
 from stests.core.types.chain import Deploy
+from stests.core.types.chain import DeployStatistics
 from stests.core.types.chain import DeployStatus
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
@@ -64,8 +65,10 @@ def _was_already_processed(node_id: NodeIdentifier, info: NodeEventInfo) -> bool
     """Returns flag indicating whether a finalised deploy has already been processed.
 
     """
-    summary = factory.create_deploy_summary_on_finalisation(node_id, info)
-    _, encached = cache.monitoring.set_deploy_summary(summary)
+    _, encached = cache.monitoring.set_deploy_summary(factory.create_deploy_summary_on_finalisation(
+        node_id,
+        info,
+    ))
 
     return not encached
 
@@ -89,6 +92,12 @@ def _process_deploy_dispatched_by_a_generator(
     deploy.finalization_time = deploy.finalization_ts.timestamp() - deploy.dispatch_ts.timestamp()    
     cache.state.set_deploy(deploy)
 
+    # TODO: push to log stream so that ELK pipeline can pick it up.
+    # 1. create new domain object DeployFinalizationStats in core.types.stats.
+    # 2. instantiate & hydrate domain object. 
+    # 3. create new log event: STATS_DEPLOY_FINALIZED
+    # 4. emit new log event
+
     # Update account balance for non-network faucet accounts.
     if not deploy.is_from_network_fauct:
         cache.state.decrement_account_balance_on_deploy_finalisation(deploy)
@@ -99,13 +108,19 @@ def _process_deploy_dispatched_by_a_generator(
         transfer.status = TransferStatus.COMPLETE
         cache.state.set_transfer(transfer)
 
-    # Signal to workflow orchestrator - note we go down a level in terms of dramtiq usage so as not to import non-monitoring actors.
+    # Signal to workflow orchestrator - note we go down a level in terms of 
+    # # dramtiq usage so as not to import non-monitoring actors.
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
         queue_name="workflows.orchestration.step",
         actor_name="on_step_deploy_finalized",
-        args=([encoder.encode(ctx), encoder.encode(node_id), info.block_hash, deploy.hash]),
+        args=([
+            encoder.encode(ctx),
+            encoder.encode(node_id),
+            info.block_hash,
+            deploy.hash
+            ]),
         kwargs=dict(),
         options=dict(),
     ))

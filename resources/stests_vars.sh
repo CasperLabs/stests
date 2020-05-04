@@ -84,7 +84,7 @@ export STESTS_MWARE_REDIS_PORT=6379
 # --------------------------------------------------------------------
 
 # type (STDOUT | LOGSTASH)
-export STESTS_LOGGING_TYPE=STDOUT
+export STESTS_LOGGING_TYPE=LOGSTASH
 
 # --------------------------------------------------------------------
 # Logging: LOGSTASH

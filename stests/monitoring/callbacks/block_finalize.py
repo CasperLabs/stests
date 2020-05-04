@@ -30,3 +30,9 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
     block_info = clx.get_block_info(node_id, block_hash, parse=False)
     if block_info is None:
         log_event(EventType.MONITORING_BLOCK_NOT_FOUND, None, node_id, block_hash=block_hash)
+
+    # TODO: push to log stream so that ELK pipeline can pick it up.
+    # 1. create new domain object BlockFinalizationStats in core.types.stats.
+    # 2. instantiate & hydrate domain object. 
+    # 3. create new log event: STATS_BLOCK_FINALIZED
+    # 4. emit new log event

@@ -2,7 +2,6 @@ import dataclasses
 import typing
 from datetime import datetime
 
-from stests.core.types.chain.block import Block
 from stests.core.types.chain.enums import DeployStatus
 from stests.core.types.chain.enums import DeployType
 
@@ -125,3 +124,49 @@ class DeploySummary:
     @property
     def label_node_index(self):
         return f"N-{str(self.streaming_node).zfill(4)}"
+
+
+@dataclasses.dataclass
+class DeployStatistics:
+    """Encapsulates statistical related information pertaining to a deploy.
+    
+    """
+    # Associated block hash in event of finalization. 
+    block_hash: typing.Optional[str]
+
+    # Cost of deploy (in motes).
+    cost: typing.Optional[int]
+
+    # Deploy's payload signature hash (blake). 
+    deploy_hash: str
+
+    # Node to which deploy was dispatched.
+    dispatch_node: int
+
+    # Moment in time when deploy dispatched to CLX network.
+    dispatch_ts: typing.Optional[datetime]
+
+    # Node which emitted finalization event of the block in which deploy was included.
+    finalization_node: typing.Optional[int]
+
+    # Time between dispatch & deploy finality.
+    finalization_time: typing.Optional[float]
+    
+    # Moment in time when deploy was finalized by CLX network.
+    finalization_ts: typing.Optional[datetime]
+
+    # Associated network.
+    network: str
+
+    # Type of generator, e.g. WG-100 ...etc.
+    run_type: str    
+
+    # Label to disambiguate a step within the context of a phase.
+    step_label: typing.Optional[str]
+
+    # Deploy's processing status.
+    status: DeployStatus
+
+    # Deploy's type so as to disambiguate.
+    typeof: DeployType
+

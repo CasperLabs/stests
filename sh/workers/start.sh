@@ -6,7 +6,6 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 function main()
 {
-	source $STESTS_PATH_SH/cache/flush.sh
 	source $STESTS_PATH_SH/workers/reset_logs.sh
 
 	pushd $STESTS_HOME

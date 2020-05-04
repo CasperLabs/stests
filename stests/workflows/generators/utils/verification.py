@@ -12,6 +12,7 @@ from stests.core.utils.exceptions import IgnoreableAssertionError
 from stests.workflows.generators.utils.constants import ACC_RUN_USERS
 
 
+
 def verify_deploy(ctx: ExecutionContext, block_hash: str, deploy_hash: str) -> Deploy:
     """Verifies that a deploy is in a finalized state.
     
@@ -40,15 +41,15 @@ def verify_transfer(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: 
     assert transfer, "transfer could not be retrieved"
     assert transfer.status == TransferStatus.COMPLETE, "transfer is not COMPLETE"
 
-    verify_account_balance(ctx, node_id, block_hash, transfer.cp1_index)
-    verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index)
+    _verify_account_balance(ctx, node_id, block_hash, transfer.cp1_index)
+    _verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index)
 
 
-def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, account_index: int, verify_user_accounts_only: bool = True) -> Account:
+def _verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, account_index: int, verify_user_accounts_only: bool = True) -> Account:
     """Verifies that an account balance is as per expectation.
     
     """
-    # Only verify user accounts as these are guaranteed.
+    # Only verify user accounts as these are guaranteed to be verifiable.
     if verify_user_accounts_only and account_index < ACC_RUN_USERS:
         return
     

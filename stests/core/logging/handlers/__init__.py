@@ -28,10 +28,8 @@ def get_handler(mode: OutputMode) -> typing.Callable:
     """
     if mode == OutputMode.INTERACTIVE:
         return stdout
-
-    try:
-        HANDLERS[EnvVars.TYPE]
-    except KeyError:
-        raise InvalidEnvironmentVariable("LOGGING_TYPE", EnvVars.TYPE, HANDLERS)
     else:
-        return HANDLERS[EnvVars.TYPE]
+        try:
+            return HANDLERS[EnvVars.TYPE]
+        except KeyError:
+            raise InvalidEnvironmentVariable("LOGGING_TYPE", EnvVars.TYPE, HANDLERS)

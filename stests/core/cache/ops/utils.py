@@ -2,6 +2,9 @@ import json
 import typing
 import dataclasses
 import functools
+import time
+
+import redis
 
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
@@ -152,6 +155,9 @@ _USER_PARTITIONS = {
     StorePartition.STATE,
 }
 
+# Max. number of times an operation will be tried.
+_MAX_OP_ATTEMPTS = 3
+
 
 def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Callable:
     """Decorator to orthoganally process a cache operation.
@@ -177,8 +183,17 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
                 # Set handler.
                 handler = _HANDLERS[operation]
 
-                # TODO: apply retry semantics in case of broken pipes.
-                return handler(store, obj)
+                # Invoke operation applying retry semantics in case of broken pipes.
+                # TODO: revisit connection pooling, 
+                attempts = 0
+                while attempts < _MAX_OP_ATTEMPTS:
+                    try:
+                        return handler(store, obj)
+                    except redis.ConnectionError as err:
+                        attempts += 1
+                        if attempts == _MAX_OP_ATTEMPTS:
+                            raise err
+                        time.sleep(float(0.01))
 
         return wrapper
     return decorator

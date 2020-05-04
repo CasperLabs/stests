@@ -73,3 +73,46 @@ class BlockLock:
 
     # Associated network.
     network: str
+
+
+@dataclasses.dataclass
+class BlockStatistics:
+    """Encapsulates statistical related information pertaining to a block.
+    
+    """
+    # Block hash (blake2b) identifier.
+    block_hash: str
+
+    # Motes spent during block processing.
+    deploy_cost_total: str
+
+    # Number of deploys within block.
+    deploy_count: str
+
+    # Average price of deploys.
+    deploy_gas_price_avg: int
+
+    # J-rank.
+    j_rank: int
+
+    # Main rank.
+    m_rank: int
+
+    # Associated network.
+    network: str
+
+    # Node which emitted block finalization event.
+    finalization_node: typing.Optional[int]
+
+    # Size in bytes of block.
+    size_bytes: int
+
+    # Block consensus status, e.g. ADDED | FINALIZED ... etc.
+    status: BlockStatus
+
+    # Block processing timestamp.
+    timestamp: datetime
+
+    # ID of validator that proposed block.
+    validator_id: str
+

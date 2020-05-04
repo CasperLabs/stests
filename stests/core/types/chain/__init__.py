@@ -2,7 +2,9 @@ from stests.core.types.chain.account import Account
 from stests.core.types.chain.account import AccountIdentifier
 from stests.core.types.chain.block import Block
 from stests.core.types.chain.block import BlockLock
+from stests.core.types.chain.block import BlockStatistics
 from stests.core.types.chain.deploy import Deploy
+from stests.core.types.chain.deploy import DeployStatistics
 from stests.core.types.chain.deploy import DeploySummary
 from stests.core.types.chain.enums import AccountType
 from stests.core.types.chain.enums import BlockStatus
@@ -21,8 +23,10 @@ TYPE_SET = {
     Account,
     AccountIdentifier,
     Block,
+    BlockStatistics,
     BlockLock,
     Deploy,
+    DeployStatistics,
     DeploySummary,
     NamedKey,
     Transfer,    

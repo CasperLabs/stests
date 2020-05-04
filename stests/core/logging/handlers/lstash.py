@@ -1,7 +1,5 @@
 import dataclasses
-from datetime import datetime
 import logging
-import sys
 import typing
 
 import logstash
@@ -15,6 +13,8 @@ from stests.core.utils import env
 # Logger instance. 
 _logger: typing.Optional[logging.Logger] = None
 
+# Map: log level -> log writer.
+_writers: typing.Optional[dict] = None
 
 # Environment variables required by this module.
 class EnvVars:
@@ -38,20 +38,14 @@ def log_event(msg: LogMessage, mode: OutputMode):
     # JIT initialise.
     if _logger is None:
         _initialise()
-    
-    if msg.event.level == Level.DEBUG.name:
-        writer = _logger.debug
-    elif msg.event.level == Level.INFO.name:
-        writer = _logger.info
-    elif msg.event.level == Level.WARN.name:
-        writer = _logger.warning
-    elif msg.event.level == Level.ERROR.name:
-        writer = _logger.error
-    elif msg.event.level in (Level.CRITICAL.name, Level.FATAL.name):
-        writer = _logger.critical
-    else:
+
+    # Set writer.
+    try:
+        writer = _writers[msg.event.level]
+    except KeyError:
         raise ValueError(f"Invalid log message event level: {msg.event.level}")
 
+    # Emit log event.
     writer(f"{msg.app.system}:{msg.app.sub_system}:{msg.event.type}", extra={
         'stests': dataclasses.asdict(msg)
     })
@@ -62,11 +56,23 @@ def _initialise() -> logging.Logger:
     
     """
     global _logger
+    global _writers
 
+    # Set logger.
     _logger = logging.getLogger('STESTS')
     _logger.setLevel(logging.INFO)
     _logger.addHandler(logstash.LogstashHandler(
         EnvVars.HOST,
-        5959,
+        EnvVars.PORT,
         version=EnvVars.VERSION
         ))
+
+    # Set writer map.
+    _writers = {
+        Level.DEBUG.name: _logger.debug,
+        Level.INFO.name: _logger.info,
+        Level.WARN.name: _logger.warning,
+        Level.ERROR.name: _logger.error,
+        Level.CRITICAL.name: _logger.critical,
+        Level.FATAL.name: _logger.critical,
+    }
