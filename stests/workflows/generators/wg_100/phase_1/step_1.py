@@ -44,10 +44,6 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    import time
-    time.sleep(float(1))
     cached = cache.state.get_account_count(ctx)
     expected = ctx.args.user_accounts + 2
-    if cached != expected:
-        print(f"cached account total mismatch: actual={cached}, expected={expected}.")
     assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."
