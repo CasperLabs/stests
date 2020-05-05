@@ -1,6 +1,6 @@
 # Initialise logging.
 from stests.core import logging
-logging.initialise(logging.OutputMode.DAEMON)
+logging.initialise(logging.OutputMode.INTERACTIVE)
 
 # Initialise broker.
 from stests.core import mq
@@ -18,11 +18,3 @@ import stests.workflows.generators.wg_210.meta
 
 # Import actors: orchestration.
 import stests.workflows.orchestration.actors
-
-# Import actors: monitoring.
-import stests.monitoring.control
-import stests.monitoring.listener
-
-# Start monitoring.
-from stests.monitoring.control import do_start_monitoring
-do_start_monitoring.send()
