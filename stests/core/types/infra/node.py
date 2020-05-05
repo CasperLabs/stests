@@ -106,7 +106,7 @@ class NodeEventInfo:
 
     @property
     def network_name(self):
-        return self.network.name
+        return self.network
 
 
 @dataclasses.dataclass

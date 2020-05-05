@@ -42,6 +42,8 @@ def decrement_account_balance(account: Account, amount: int) -> CountDecrementKe
     :param account: An account whose balance is being updated.
     :param amount: Balance delta to apply.
 
+    :returns: Cache decrement key.
+
     """
     return CountDecrementKey(
         paths=[
@@ -61,7 +63,7 @@ def decrement_account_balance(account: Account, amount: int) -> CountDecrementKe
 def decrement_account_balance_on_deploy_finalisation(deploy: Deploy) -> CountDecrementKey:
     """Updates (atomically) an account's (theoretical) balance.
 
-    :param deploy: A finalised deploy.
+    :returns: Cache decrement key.
 
     """
     return CountDecrementKey(
@@ -84,7 +86,7 @@ def get_account(account_id: AccountIdentifier) -> ItemKey:
 
     :param account_id: An account identifier.
 
-    :returns: A cached account.
+    :returns: Cache item key.
 
     """
     return ItemKey(
@@ -106,7 +108,7 @@ def get_account_balance(account: Account) -> ItemKey:
 
     :param account: An account.
 
-    :returns: Cached account balance.
+    :returns: Cache item key.
 
     """
     return ItemKey(
@@ -146,7 +148,7 @@ def get_account_count(ctx: ExecutionContext) -> SearchKey:
     :param ctx: Execution context information.
     :param aspect: Aspect of execution in scope.
 
-    :returns: Count of accounts.
+    :returns: Cache search key.
 
     """
     return SearchKey(
@@ -166,7 +168,7 @@ def get_deploy(ctx: ExecutionContext, deploy_hash: str) -> ItemKey:
     
     :param deploy_hash: A deploy hash.
 
-    :returns: A run deploy.
+    :returns: Cache item key.
 
     """
     return ItemKey(
@@ -185,24 +187,25 @@ def get_deploy(ctx: ExecutionContext, deploy_hash: str) -> ItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE_FROM_MANY)
-def get_deploy_by_node_event_info(info: NodeEventInfo) -> ItemKey:
+def get_deploy_on_finalisation(network_name: str, deploy_hash: str) -> ItemKey:
     """Decaches domain object: Deploy.
     
+    :param network_name: Name of network to which deploy was dispatched.
     :param deploy_hash: A deploy hash.
 
-    :returns: A run deploy.
+    :returns: Cache item key.
 
     """
     return ItemKey(
         paths=[
-            info.network,
+            network_name,
             "WG-*",
             "R-*",
             COL_DEPLOY,
         ],
         names=[
             "*.*",
-            info.deploy_hash,
+            deploy_hash,
             "A-*"
         ],
     )
@@ -216,7 +219,7 @@ def get_deploys(network_id: NetworkIdentifier, run_type: str, run_index: int) ->
     :param run_type: Type of run that was executed.
     :param run_index: Index of a run.
 
-    :returns: Keypath to domain object instance.
+    :returns: Cache search key.
 
     """
     return SearchKey(
@@ -235,8 +238,8 @@ def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: Contr
 
     :param network: A pointer to either a network or network identifier.
 
-    :returns: Collection of registered nodes.
-    
+    :returns: Cache search key.
+
     """
     return SearchKey(
         paths=[
@@ -256,7 +259,7 @@ def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> ItemKey:
     
     :param deploy_hash: A deploy hash.
 
-    :returns: A run deploy.
+    :returns: Cache item key.
 
     """
     return ItemKey(
@@ -279,7 +282,7 @@ def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX
     
     :param deploy_hash: A deploy hash.
 
-    :returns: A run deploy.
+    :returns: Cache item key.
 
     """
     return ItemKey(
@@ -303,6 +306,8 @@ def increment_account_balance(account: Account, amount: int) -> CountIncrementKe
     :param account: An account whose balance is being updated.
     :param amount: Balance delta to apply.
 
+    :returns: Cache increment key.
+
     """
     return CountIncrementKey(
         paths=[
@@ -324,7 +329,7 @@ def set_account(account: Account) -> Item:
     
     :param account: Account domain object instance to be cached.
 
-    :returns: Keypath + domain object instance.
+    :returns: Cache item.
 
     """
     return Item(
@@ -349,7 +354,7 @@ def set_deploy(deploy: Deploy) -> Item:
     
     :param deploy: Deploy domain object instance to be cached.
 
-    :returns: Keypath + domain object instance.
+    :returns: Cache item.
 
     """
     return Item(
@@ -376,7 +381,7 @@ def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> Item:
 
     :param network: NamedKey domain object instance to be cached.
     
-    :returns: Keypath + domain object instance.
+    :returns: Cache item.
 
     """
     return Item(
@@ -403,7 +408,7 @@ def set_transfer(transfer: Transfer) -> Item:
     
     :param transfer: Transfer domain object instance to be cached.
 
-    :returns: Keypath + domain object instance.
+    :returns: Cache item.
 
     """
     return Item(

@@ -48,4 +48,4 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
     )
 
     # Emit event.
-    log_event(EventType.CHAININFO_BLOCK_STATS, None, stats)
+    log_event(EventType.CHAININFO_FINALIZED_BLOCK_STATS, None, stats)

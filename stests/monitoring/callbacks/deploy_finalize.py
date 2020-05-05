@@ -8,7 +8,6 @@ from stests.core.utils import encoder
 from stests.core import factory
 from stests.core.logging import log_event
 from stests.core.types.chain import Deploy
-from stests.core.types.chain import DeployStatistics
 from stests.core.types.chain import DeployStatus
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
@@ -29,30 +28,29 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
     :param info: Node event information.
 
     """
-    # Query: on-chain block info.
+    # Escape if on-chain block info not found.
     block_info = clx.get_block_info(node_id, info.block_hash, parse=False)
     if block_info is None:
         log_event(EventType.MONITORING_BLOCK_NOT_FOUND, None, node_id, block_hash=info.block_hash)
         return
 
-    # Query: on-chain deploy info.
+    # Escape if on-chain deploy info not found.
     deploy_info = clx.get_deploy_info(node_id, info.deploy_hash, wait_for_processed=False, parse=True)
     if deploy_info is None:
         log_event(EventType.MONITORING_DEPLOY_NOT_FOUND, None, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
         return
 
-    # Escape if deploy event was already recieved from another node.
-    if _was_already_processed(node_id, info):
+    # Escape if deploy event already recieved from another node.
+    if _already_processed(node_id, info):
         return
 
-    # Escape if deploy was not dispatched by a generator.
-    deploy = cache.state.get_deploy_by_node_event_info(info)
+    # Escape if deploy is uncorrelated.
+    deploy = cache.state.get_deploy_on_finalisation(info.network_name, info.deploy_hash)
     if not deploy:
         return
 
-    # Process deploys dispatched by a generator.
-    log_event(EventType.MONITORING_DEPLOY_CORRELATED, None, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
-    _process_deploy_dispatched_by_a_generator(
+    # Process deploys previously dispatched by a generator within scope.
+    _process_correlated_deploy(
         node_id,
         info,
         datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
@@ -61,7 +59,7 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
         )
 
 
-def _was_already_processed(node_id: NodeIdentifier, info: NodeEventInfo) -> bool:
+def _already_processed(node_id: NodeIdentifier, info: NodeEventInfo) -> bool:
     """Returns flag indicating whether a finalised deploy has already been processed.
 
     """
@@ -73,7 +71,7 @@ def _was_already_processed(node_id: NodeIdentifier, info: NodeEventInfo) -> bool
     return not encached
 
 
-def _process_deploy_dispatched_by_a_generator(
+def _process_correlated_deploy(
     node_id: NodeIdentifier,
     info: NodeEventInfo,
     block_timestamp: datetime,
@@ -83,6 +81,9 @@ def _process_deploy_dispatched_by_a_generator(
     """Process a monitored deploy that was previously dispatched during a generator run.
     
     """
+    # Notify.
+    log_event(EventType.MONITORING_DEPLOY_CORRELATED, None, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
+
     # Update deploy.
     deploy.block_hash = info.block_hash
     deploy.cost = deploy_cost
@@ -92,15 +93,12 @@ def _process_deploy_dispatched_by_a_generator(
     deploy.finalization_time = deploy.finalization_ts.timestamp() - deploy.dispatch_ts.timestamp()    
     cache.state.set_deploy(deploy)
 
-    # TODO: push to log stream so that ELK pipeline can pick it up.
-    # 1. create new domain object DeployFinalizationStats in core.types.stats.
-    # 2. instantiate & hydrate domain object. 
-    # 3. create new log event: STATS_DEPLOY_FINALIZED
-    # 4. emit new log event
-
     # Update account balance for non-network faucet accounts.
     if not deploy.is_from_network_fauct:
         cache.state.decrement_account_balance_on_deploy_finalisation(deploy)
+
+    # Emit event.
+    log_event(EventType.CHAININFO_FINALIZED_DEPLOY_STATS, None, deploy)
 
     # Update transfer.
     transfer = cache.state.get_transfer_by_deploy(deploy)
@@ -110,7 +108,7 @@ def _process_deploy_dispatched_by_a_generator(
 
     # Signal to workflow orchestrator - note we go down a level in terms of 
     # # dramtiq usage so as not to import non-monitoring actors.
-    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
+    ctx = cache.orchestration.get_context(node_id.network_name, deploy.run_index, deploy.run_type)
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
         queue_name="workflows.orchestration.step",

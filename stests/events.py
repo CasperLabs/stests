@@ -15,8 +15,8 @@ class EventType(enum.Enum):
     CORE_ACTOR_ERROR = enum.auto()    
 
     # Chain info reporting sub-system.
-    CHAININFO_BLOCK_STATS = enum.auto()
-    CHAININFO_DEPLOY_STATS = enum.auto()
+    CHAININFO_FINALIZED_BLOCK_STATS = enum.auto()
+    CHAININFO_FINALIZED_DEPLOY_STATS = enum.auto()
 
     # Monitoring sub-system.
     MONITORING_API_ERROR = enum.auto()
