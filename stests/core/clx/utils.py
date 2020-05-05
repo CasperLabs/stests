@@ -28,7 +28,7 @@ from stests.events import EventType
 
 
 # Max. number of times a deploy will be dispatched.
-_MAX_DEPLOY_DISPATCH_ATTEMPTS = 3
+_MAX_DEPLOY_DISPATCH_ATTEMPTS = 4
 
 
 def await_deploy_processing(src: typing.Any, deploy_hash: str) -> str:
@@ -58,7 +58,7 @@ def dispatch_deploy(
     session_hash: str = None,
     session_name: str = None,
     session_uref: str = None,
-    ) -> typing.Tuple[Node, CasperLabsClient, str]:
+    ) -> typing.Tuple[Node, CasperLabsClient, str, float, int]:
     """Dispatches a deploy to target network.  Performs retries upon dispatch failure.  
     
     :param src: The source from which a node client will be instantiated.
@@ -71,12 +71,12 @@ def dispatch_deploy(
     :param session_name: Name of a named key associated with account.
     :param session_uref: Uref of a named key associated with account.
 
-    :returns: 4 member tuple -> (node, client, deploy_hash, time_to_dispatch)
+    :returns: 5 member tuple -> (node, client, deploy_hash, dispatch_time, dispatch_attempts)
 
     """
+    node, client = get_client(src)
+    attempts = 1
     with Timer() as timer:
-        node, client = get_client(src)
-        attempts = 0
         while attempts < _MAX_DEPLOY_DISPATCH_ATTEMPTS:
             try:
                 deploy_hash = client.deploy(
@@ -95,15 +95,15 @@ def dispatch_deploy(
                     gas_price=CLX_TX_GAS_PRICE
                 )
             except Exception as err:
-                attempts += 1
                 if attempts == _MAX_DEPLOY_DISPATCH_ATTEMPTS:
                     raise err
                 log_event(EventType.MONITORING_DEPLOY_DISPATCH_FAILURE, "try {attempts} failed - retrying", node)
+                attempts += 1
                 time.sleep(float(1))
             else:
                 break
     
-    return node, client, deploy_hash, timer.elapsed
+    return node, client, deploy_hash, timer.elapsed, attempts
 
 
 def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, NetworkIdentifier, Node, NodeIdentifier]) -> typing.Tuple[Node, CasperLabsClient]:
@@ -177,36 +177,36 @@ def get_named_keys(src: typing.Any, account: Account, block_hash: str, key_filte
     return [(i.name, i.key.hash.hash.hex()) for i in keys]
 
 
-def install_contract(src: typing.Any, account: Account, wasm_filename: str) -> typing.Tuple[Node, str]:
+def install_contract(src: typing.Any, account: Account, wasm_filename: str) -> typing.Tuple[Node, str, float, int]:
     """Install a contract under a hash & returns associated named keys.
         
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
     :param wasm_filename: Name of wasm file to be installed.
 
-    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time)
+    :returns: 4 member tuple -> (node, deploy_hash, dispatch_time, dispatch_attempts)
     
     """
-    node, client, deploy_hash, dispatch_time = dispatch_deploy(
+    node, _, deploy_hash, dispatch_time, dispatch_attempts = dispatch_deploy(
         src,
         account,
         session=get_contract_path(wasm_filename),
     )
 
-    return node, deploy_hash, dispatch_time
+    return node, deploy_hash, dispatch_time, dispatch_attempts
 
 
-def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: str) -> typing.Tuple[Node, str]:
+def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: str) -> typing.Tuple[Node, str, float, int]:
     """Install a contract under a hash & returns associated named keys.
         
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
     :param wasm_filename: Name of wasm file to be installed.
 
-    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time)
+    :returns: 4 member tuple -> (node, deploy_hash, dispatch_time, dispatch_attempts)
     
     """
-    node, client, deploy_hash, dispatch_time = dispatch_deploy(
+    node, _, deploy_hash, dispatch_time, dispatch_attempts = dispatch_deploy(
         src,
         account,
         session=get_contract_path(wasm_filename),
@@ -215,7 +215,7 @@ def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: s
         ])
     )
 
-    return node, deploy_hash, dispatch_time
+    return node, deploy_hash, dispatch_time, dispatch_attempts
 
 
 def parse_chain_info(info: typing.Any) -> dict:

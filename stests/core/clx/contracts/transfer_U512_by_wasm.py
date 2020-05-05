@@ -19,7 +19,7 @@ TYPE = ContractType.TRANSFER_U512
 WASM = "transfer_to_account_u512.wasm"
 
 
-def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> typing.Tuple[Node, str]:
+def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> typing.Tuple[Node, str, float, int]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
     :param ctx: Execution context information.
@@ -27,10 +27,10 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
 
-    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time).
+    :returns: 4 member tuple -> (node, deploy_hash, dispatch_time, dispatch_attempts).
 
     """
-    node, _, deploy_hash, dispatch_time = utils.dispatch_deploy(
+    node, _, deploy_hash, dispatch_time, dispatch_attempts = utils.dispatch_deploy(
         src=ctx,
         account=cp1,
         session=utils.get_contract_path(WASM),
@@ -42,4 +42,4 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
 
     log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"TRANSFER_U512 {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", node, deploy_hash=deploy_hash)
 
-    return node, deploy_hash, dispatch_time
+    return node, deploy_hash, dispatch_time, dispatch_attempts

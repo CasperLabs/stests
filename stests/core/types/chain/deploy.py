@@ -24,11 +24,14 @@ class Deploy:
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
 
-    # Time taken to dispatch deploy.
-    dispatch_time: float
+    # Number of times dispatcher had to try before deploy dispatch suceeded.
+    dispatch_attempts: int
 
     # Node to which deploy was dispatched.
     dispatch_node: int
+
+    # Time taken to dispatch deploy.
+    dispatch_time: float
 
     # Moment in time when deploy dispatched to CLX network.
     dispatch_ts: typing.Optional[datetime]
@@ -142,6 +145,9 @@ class DeployStatistics:
 
     # Deploy's payload signature hash. 
     deploy_hash: str
+
+    # Time taken to dispatch deploy.
+    dispatch_time: float
 
     # Node to which deploy was dispatched.
     dispatch_node: int

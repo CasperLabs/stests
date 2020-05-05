@@ -41,7 +41,7 @@ def do_transfer(
     # Transfer CLX from cp1 -> cp2.    
     contract_type = ContractType.TRANSFER_U512 if ctx.run_type == "WG-100" else ContractType.TRANSFER_U512_STORED
     contract = clx.contracts.get_contract(contract_type)
-    node, deploy_hash, dispatch_time = contract.transfer(ctx, cp1, cp2, amount)
+    node, deploy_hash, dispatch_time, dispatch_attempts = contract.transfer(ctx, cp1, cp2, amount)
 
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
@@ -49,6 +49,7 @@ def do_transfer(
         account=cp1,
         node=node, 
         deploy_hash=deploy_hash, 
+        dispatch_attempts=dispatch_attempts,
         dispatch_time=dispatch_time,
         typeof=DeployType.TRANSFER_REFUND if is_refund else DeployType.TRANSFER
         ))

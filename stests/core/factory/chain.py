@@ -152,6 +152,7 @@ def create_deploy_for_run(
     account: Account,
     node: Node,
     deploy_hash: str,
+    dispatch_attempts: int,
     dispatch_time: float,
     typeof: DeployType
     ) -> Deploy:
@@ -163,6 +164,7 @@ def create_deploy_for_run(
         block_hash=None,
         cost=None,
         deploy_hash=deploy_hash,
+        dispatch_attempts=dispatch_attempts,
         dispatch_node=node.index,
         dispatch_time=dispatch_time,
         dispatch_ts=datetime.now(),
