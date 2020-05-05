@@ -39,14 +39,13 @@ def do_step(ctx: ExecutionContext):
     ctx.step_index += 1
     ctx.step_label = step.label
 
-    # Set info.
-    step_info = factory.create_execution_info(ExecutionAspect.STEP, ctx)
-
     # Update cache.
     cache.orchestration.set_context(ctx)
-    cache.orchestration.set_info(step_info)
+    cache.orchestration.set_info(factory.create_execution_info(
+        ExecutionAspect.STEP, ctx
+        ))
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_STEP_START, None, ctx)
 
     # Execute.
@@ -94,12 +93,12 @@ def on_step_end(ctx: ExecutionContext):
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_STEP_END, None, ctx)
 
     # Enqueue either end of phase or next step. 
     if step.is_last:
-        # JIT import to avoid circularity.
+        # Note: JIT import to avoid circularity.
         from stests.workflows.orchestration.actors.phase import on_phase_end
         on_phase_end.send(ctx)
     else:
@@ -117,7 +116,7 @@ def on_step_error(ctx: ExecutionContext, err: str):
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_STEP_ERROR, err, ctx)
 
 
@@ -132,6 +131,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
 
     """
     # Increment deploy counts.
+    # TODO: batch cache update.
     cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.RUN)
     cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.PHASE)
     cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.STEP)
@@ -205,7 +205,7 @@ def _execute(ctx: ExecutionContext, step: WorkflowStep):
     """Handles actual step execution.
     
     """
-    # Execute.
+    # Execute - exceptions are trapped.
     step.execute(ctx)
 
     # Process errors.
@@ -223,6 +223,38 @@ def _execute(ctx: ExecutionContext, step: WorkflowStep):
     # Process result for sync ops.
     else:
         _on_execute_sync(ctx, step)
+
+
+def _on_execute_async(ctx: ExecutionContext, step: WorkflowStep):
+    """Performs post asynchronous step work.
+        
+    """
+    # Enqueue message.
+    if isinstance(step.result, tuple) and len(step.result) == 2:
+        _enqueue_message(ctx, step)
+
+    # Enqueue message batch.
+    elif isinstance(step.result, tuple) and len(step.result) == 3:
+        _enqueue_message_batch(ctx, step)
+    
+    else:
+        raise TypeError("Async steps must return either a single message or a batch of messages")
+
+
+def _on_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
+    """Performs asynchronous step work.
+        
+    """
+    # If unit of work is complete then signal step end.
+    if step.result is None:
+        do_step_verification.send(ctx)
+
+    # Enqueue message batch (with completion callback).
+    elif isinstance(step.result, tuple) and len(step.result) == 3:
+        _enqueue_message_batch(ctx, step)
+
+    else:
+        raise TypeError("Sync steps must return None or a batch of messages")
 
 
 def _enqueue_message(ctx, step):
@@ -261,35 +293,3 @@ def _enqueue_message_batch(ctx, step):
 
     # Enqueue message batch.
     group.run()
-
-
-def _on_execute_async(ctx: ExecutionContext, step: WorkflowStep):
-    """Performs post asynchronous step work.
-        
-    """
-    # Enqueue message.
-    if isinstance(step.result, tuple) and len(step.result) == 2:
-        _enqueue_message(ctx, step)
-
-    # Enqueue message batch.
-    elif isinstance(step.result, tuple) and len(step.result) == 3:
-        _enqueue_message_batch(ctx, step)
-    
-    else:
-        raise TypeError("Async steps must return either a single message or a batch of messages")
-
-
-def _on_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
-    """Performs asynchronous step work.
-        
-    """
-    # If unit of work is complete then signal step end.
-    if step.result is None:
-        do_step_verification.send(ctx)
-
-    # Enqueue message batch (with completion callback).
-    elif isinstance(step.result, tuple) and len(step.result) == 3:
-        _enqueue_message_batch(ctx, step)
-
-    else:
-        raise TypeError("Sync steps must return None or a batch of messages")

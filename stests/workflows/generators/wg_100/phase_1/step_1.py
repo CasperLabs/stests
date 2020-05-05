@@ -19,6 +19,7 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
+    # TODO: cache batch insert.
     for account_index, account_type in _yield_accounts(ctx):
         cache.state.set_account(factory.create_account_for_run(
             ctx,
@@ -43,6 +44,10 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
+    import time
+    time.sleep(float(1))
     cached = cache.state.get_account_count(ctx)
     expected = ctx.args.user_accounts + 2
+    if cached != expected:
+        print(f"cached account total mismatch: actual={cached}, expected={expected}.")
     assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."

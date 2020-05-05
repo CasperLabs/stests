@@ -42,14 +42,13 @@ def do_run(ctx: ExecutionContext):
     # Update ctx.
     ctx.status = ExecutionStatus.IN_PROGRESS
 
-    # Set info.
-    run_info = factory.create_execution_info(ExecutionAspect.RUN, ctx)
-
     # Update cache.
     cache.orchestration.set_context(ctx)
-    cache.orchestration.set_info(run_info)
+    cache.orchestration.set_info(factory.create_execution_info(
+        ExecutionAspect.RUN, ctx
+        ))
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_RUN_START, None, ctx)
 
     # Enqueue phase.
@@ -73,7 +72,7 @@ def on_run_end(ctx: ExecutionContext):
     # Locks can now be deleted.
     cache.orchestration.delete_locks(ctx)    
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_RUN_END, None, ctx)
 
     # Enqueue next run (when mode=SEQUENTIAL).
@@ -96,7 +95,7 @@ def on_run_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_context(ctx)
     cache.orchestration.set_info_update(ctx, ExecutionAspect.RUN, ExecutionStatus.ERROR)
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_RUN_ERROR, err, ctx)
 
 

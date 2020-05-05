@@ -35,19 +35,22 @@ def bind_to_stream(node_id: NodeIdentifier):
     :node_id: Identifier of node being monitored.
     
     """
-    def _on_node_event(node: Node, event_info: NodeEventInfo):
+    def _on_node_event(_, event_info: NodeEventInfo):
+        """Event callback.
+        
+        """
         # Escape if no handler.
         try:
             handler = HANDLERS[event_info.event_type]
         except KeyError:
             return
         
-        # Escape if event already processed.
+        # Escape if node event already processed.
         _, was_lock_acquired = cache.monitoring.set_node_event_info(event_info)
         if not was_lock_acquired:
             return
 
-        # Inform.
+        # Notify.
         log_event(event_info.event_type, None, node_id, event_id=event_info.event_id, block_hash=event_info.block_hash, deploy_hash=event_info.deploy_hash)
 
         # Dispatch message to actor for further processing.

@@ -16,11 +16,11 @@ from stests.events import EventType
 _QUEUE = "monitoring.control"
 
 # Number of monitors to launch per node.
-# TODO: use algo: processes * threads / nodes 
-_MONITORS_PER_NODE = 1
+# TODO: use algo: processes * threads / nodes ?
+_MONITORS_PER_NODE = 2
 
 # Time limit for node monitoring actor.
-_24_HOURS_IN_MS = 86400000
+_30_MINUTES_IN_MS = 1800000
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -30,13 +30,11 @@ def do_start_monitoring():
     """
     for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
-        nodeset = cache.infra.get_nodes_operational(network_id)
-        for node in nodeset:
-            node_id = factory.create_node_id(network_id, node.index)
-            do_monitor_node.send(node_id)
+        for node in cache.infra.get_nodes_operational(network_id):
+            do_monitor_node.send(factory.create_node_id(network_id, node.index))
 
 
-@dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True, time_limit=_24_HOURS_IN_MS)
+@dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True, time_limit=_30_MINUTES_IN_MS)
 def do_monitor_node(node_id: NodeIdentifier):   
     """Launches node monitoring.
     
@@ -59,7 +57,7 @@ def do_monitor_node(node_id: NodeIdentifier):
     try:
         listener.bind_to_stream(node_id)
 
-    # Exception: actor timeout - by default this occurs every 600 seconds.
+    # Exception: actor timeout.
     except TimeLimitExceeded:
         do_monitor_node.send(node_id)
 

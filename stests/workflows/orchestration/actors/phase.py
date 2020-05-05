@@ -32,14 +32,13 @@ def do_phase(ctx: ExecutionContext):
     ctx.phase_index += 1
     ctx.step_index = 0
 
-    # Set info.
-    phase_info = factory.create_execution_info(ExecutionAspect.PHASE, ctx)
-
     # Update cache.
     cache.orchestration.set_context(ctx)
-    cache.orchestration.set_info(phase_info)
+    cache.orchestration.set_info(factory.create_execution_info(
+        ExecutionAspect.PHASE, ctx
+        ))
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_PHASE_START, None, ctx)
 
     # Enqueue step.
@@ -59,7 +58,7 @@ def on_phase_end(ctx: ExecutionContext):
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_PHASE_END, None, ctx)
 
     # Enqueue either end of workflow or next phase. 
@@ -82,7 +81,7 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
 
-    # Inform.
+    # Notify.
     log_event(EventType.WORKFLOW_PHASE_ERROR, err, ctx)
 
 

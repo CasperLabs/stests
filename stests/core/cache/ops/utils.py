@@ -63,22 +63,28 @@ def _get_counter_many(store: typing.Callable, search_key: SearchKey) -> typing.T
     """Returns counts under matched keys.
     
     """
-    chunk_size = 5000
-    _, keys = store.scan(match=search_key.key, count=chunk_size)
+    keys = []
+    chunk_size = 1000
+    cursor = '0'
+    while cursor != 0:
+        cursor, keys_ = store.scan(cursor=cursor, match=search_key.key, count=chunk_size)
+        keys += keys_
 
-    return \
-        [i.decode('utf8') for i in keys], \
-        [int(i) for i in store.mget(keys)]
+    return [i.decode('utf8') for i in keys], [int(i) for i in store.mget(keys)]
 
 
 def _get_count(store: typing.Callable, search_key: SearchKey) -> int:
     """Returns length of collection under matched keys.
     
     """
-    chunk_size = 2000
-    _, keys = store.scan(match=search_key.key, count=chunk_size)
+    count = 0
+    chunk_size = 1000
+    cursor = '0'
+    while cursor != 0:
+        cursor, keys = store.scan(cursor=cursor, match=search_key.key, count=chunk_size)
+        count += len(keys)
 
-    return len(keys)
+    return count
 
 
 def _get_one(store: typing.Callable, item_key: ItemKey) -> typing.Any:
@@ -92,7 +98,7 @@ def _get_one_from_many(store: typing.Callable, item_key: ItemKey) -> typing.Any:
     """Returns item under first matched key.
     
     """
-    chunk_size = 10
+    chunk_size = 1000
     cursor = '0'
     while cursor != 0:
         cursor, keys = store.scan(cursor=cursor, match=item_key.key, count=chunk_size)
@@ -104,8 +110,12 @@ def _get_many(store: typing.Callable, search_key: SearchKey) -> typing.List[typi
     """Returns collection cached under all matched keys.
     
     """
-    chunk_size = 5000
-    _, keys = store.scan(match=search_key.key, count=chunk_size)
+    keys = []
+    chunk_size = 2000
+    cursor = '0'
+    while cursor != 0:
+        cursor, keys_ = store.scan(cursor=cursor, match=search_key.key, count=chunk_size)
+        keys += keys_
 
     return [_decode_item(i) for i in store.mget(keys)] if keys else []
 
