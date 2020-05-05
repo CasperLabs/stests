@@ -24,6 +24,9 @@ class Deploy:
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
 
+    # Time taken to dispatch deploy.
+    dispatch_time: float
+
     # Node to which deploy was dispatched.
     dispatch_node: int
 

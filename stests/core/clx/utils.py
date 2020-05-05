@@ -14,6 +14,7 @@ from stests.core import factory
 from stests.core.clx import query
 from stests.core.clx.defaults import CLX_TX_FEE
 from stests.core.clx.defaults import CLX_TX_GAS_PRICE
+from stests.core.logging import log_event
 from stests.core.types.chain import Account
 from stests.core.types.chain import DeployStatus
 from stests.core.types.infra import Network
@@ -21,6 +22,8 @@ from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
+from stests.core.utils.misc import Timer
+from stests.events import EventType
 
 
 
@@ -44,7 +47,7 @@ def await_deploy_processing(src: typing.Any, deploy_hash: str) -> str:
         raise ValueError(f"Deploy processing failure: {info}")
 
     return info.processing_results[0].block_info.summary.block_hash.hex()
-    
+
 
 def dispatch_deploy(
     src: typing.Any,
@@ -56,7 +59,7 @@ def dispatch_deploy(
     session_name: str = None,
     session_uref: str = None,
     ) -> typing.Tuple[Node, CasperLabsClient, str]:
-    """Dispatches a deploy to target network.  Performs retries upon dispatch failure. 
+    """Dispatches a deploy to target network.  Performs retries upon dispatch failure.  
     
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which deploy will be dispatched.
@@ -68,37 +71,39 @@ def dispatch_deploy(
     :param session_name: Name of a named key associated with account.
     :param session_uref: Uref of a named key associated with account.
 
-    :returns: 3 member tuple -> (node, client, deploy_hash)
+    :returns: 4 member tuple -> (node, client, deploy_hash, time_to_dispatch)
 
     """
-    node, client = get_client(src)
-    attempts = 0
-    while attempts < _MAX_DEPLOY_DISPATCH_ATTEMPTS:
-        try:
-            deploy_hash = client.deploy(
-                session=session,
-                session_args=session_args,
-                session_hash=session_hash,
-                session_name=session_name,
-                session_uref=session_uref,
+    with Timer() as timer:
+        node, client = get_client(src)
+        attempts = 0
+        while attempts < _MAX_DEPLOY_DISPATCH_ATTEMPTS:
+            try:
+                deploy_hash = client.deploy(
+                    session=session,
+                    session_args=session_args,
+                    session_hash=session_hash,
+                    session_name=session_name,
+                    session_uref=session_uref,
 
-                from_addr=from_addr or account.public_key,
-                # public_key=account.public_key_as_pem_filepath,
-                private_key=account.private_key_as_pem_filepath,
+                    from_addr=from_addr or account.public_key,
+                    # public_key=account.public_key_as_pem_filepath,
+                    private_key=account.private_key_as_pem_filepath,
 
-                # TODO: review how these are being assigned
-                payment_amount=CLX_TX_FEE,
-                gas_price=CLX_TX_GAS_PRICE
-            )
-        except Exception as err:
-            attempts += 1
-            if attempts == _MAX_DEPLOY_DISPATCH_ATTEMPTS:
-                raise err
-            time.sleep(float(1))
-        else:
-            break
-
-    return node, client, deploy_hash
+                    # TODO: review how these are being assigned
+                    payment_amount=CLX_TX_FEE,
+                    gas_price=CLX_TX_GAS_PRICE
+                )
+            except Exception as err:
+                attempts += 1
+                if attempts == _MAX_DEPLOY_DISPATCH_ATTEMPTS:
+                    raise err
+                log_event(EventType.MONITORING_DEPLOY_DISPATCH_FAILURE, "try {attempts} failed - retrying", node)
+                time.sleep(float(1))
+            else:
+                break
+    
+    return node, client, deploy_hash, timer.elapsed
 
 
 def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, NetworkIdentifier, Node, NodeIdentifier]) -> typing.Tuple[Node, CasperLabsClient]:
@@ -179,16 +184,16 @@ def install_contract(src: typing.Any, account: Account, wasm_filename: str) -> t
     :param account: Account under which contract will be installed.
     :param wasm_filename: Name of wasm file to be installed.
 
-    :returns: 2 member tuple -> (node, deploy_hash)
+    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time)
     
     """
-    node, client, deploy_hash = dispatch_deploy(
+    node, client, deploy_hash, dispatch_time = dispatch_deploy(
         src,
         account,
         session=get_contract_path(wasm_filename),
     )
 
-    return node, deploy_hash
+    return node, deploy_hash, dispatch_time
 
 
 def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: str) -> typing.Tuple[Node, str]:
@@ -198,10 +203,10 @@ def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: s
     :param account: Account under which contract will be installed.
     :param wasm_filename: Name of wasm file to be installed.
 
-    :returns: 2 member tuple -> (node, deploy_hash)
+    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time)
     
     """
-    node, client, deploy_hash = dispatch_deploy(
+    node, client, deploy_hash, dispatch_time = dispatch_deploy(
         src,
         account,
         session=get_contract_path(wasm_filename),
@@ -210,7 +215,7 @@ def install_contract_by_hash(src: typing.Any, account: Account, wasm_filename: s
         ])
     )
 
-    return node, deploy_hash
+    return node, deploy_hash, dispatch_time
 
 
 def parse_chain_info(info: typing.Any) -> dict:

@@ -34,7 +34,7 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str, typing
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
 
-    :returns: 2 member tuple -> (node, deploy_hash).
+    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time).
 
     """
     return utils.install_contract_by_hash(src, account, WASM)
@@ -48,7 +48,7 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
 
-    :returns: 2 member tuple -> (node, deploy_hash).
+    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time).
 
     """
     # Set named key associated with contract.
@@ -57,7 +57,7 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
         raise ValueError(f"{WASM} has not been installed upon chain.")
 
     # Dispatch deploy.
-    node, _, deploy_hash = utils.dispatch_deploy(
+    node, _, deploy_hash, dispatch_time = utils.dispatch_deploy(
         src=ctx,
         account=cp1,
         session_hash=named_key.hash_as_bytes,
@@ -69,4 +69,4 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
 
     log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"TRANSFER_U512_STORED {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", node, deploy_hash=deploy_hash)
 
-    return node, deploy_hash
+    return node, deploy_hash, dispatch_time

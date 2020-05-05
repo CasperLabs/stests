@@ -152,6 +152,7 @@ def create_deploy_for_run(
     account: Account,
     node: Node,
     deploy_hash: str,
+    dispatch_time: float,
     typeof: DeployType
     ) -> Deploy:
     """Returns a domain object instance: Deploy.
@@ -163,6 +164,7 @@ def create_deploy_for_run(
         cost=None,
         deploy_hash=deploy_hash,
         dispatch_node=node.index,
+        dispatch_time=dispatch_time,
         dispatch_ts=datetime.now(),
         finalization_node=None,
         finalization_time=None,

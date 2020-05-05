@@ -27,7 +27,7 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
 
-    :returns: 2 member tuple -> (node, deploy_hash)
+    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time)
 
     """
     return utils.install_contract(src, account, WASM)
@@ -39,10 +39,10 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract was installed.
 
-    :returns: 2 member tuple -> (node, deploy_hash).
+    :returns: 3 member tuple -> (node, deploy_hash, dispatch_time).
     
     """
-    node, _, deploy_hash = utils.dispatch_deploy(
+    node, _, deploy_hash, dispatch_time = utils.dispatch_deploy(
         src=src,
         account=account,
         session_name=_NKEY_INC,
@@ -50,7 +50,7 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str]:
 
     log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"COUNTER_DEFINE.increment :: address={account.public_key}", node)
 
-    return node, deploy_hash
+    return node, deploy_hash, dispatch_time
 
 
 # Shared function same API.
