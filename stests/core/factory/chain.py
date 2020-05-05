@@ -4,6 +4,7 @@ from stests.core.types.chain import Account
 from stests.core.types.chain import AccountIdentifier
 from stests.core.types.chain import AccountType
 from stests.core.types.chain import Block
+from stests.core.types.chain import BlockStatistics
 from stests.core.types.chain import BlockStatus
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import Deploy
@@ -110,6 +111,40 @@ def create_block_on_finalisation(
         timestamp=timestamp,
         validator_id=validator_id
         )
+
+
+def create_block_statistics_on_finalization(
+    block_hash: str,
+    chain_name: str,
+    deploy_cost_total: int,
+    deploy_count: int,
+    deploy_gas_price_avg: int,
+    j_rank: int,
+    m_rank: int,
+    network: str,
+    node_index: int,
+    size_bytes: int,
+    timestamp: datetime,
+    validator_id: str,
+) -> BlockStatistics:
+    """Returns a domain object instance: BlockStatistics.
+    
+    """
+    return BlockStatistics(
+        block_hash=block_hash,
+        chain_name=chain_name,
+        deploy_cost_total=deploy_cost_total,
+        deploy_count=deploy_count,
+        deploy_gas_price_avg=deploy_gas_price_avg,
+        finalization_node=node_index,
+        j_rank=j_rank,
+        m_rank = m_rank,
+        network=network,
+        size_bytes=size_bytes,
+        status=BlockStatus.FINALIZED,
+        timestamp=timestamp,
+        validator_id=validator_id,
+    )
 
 
 def create_deploy_for_run(

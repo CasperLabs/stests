@@ -5,7 +5,6 @@ import uuid
 from datetime import datetime
 
 
-
 class EventType(enum.Enum):
     """Enum over set of system events.
     
@@ -16,10 +15,8 @@ class EventType(enum.Enum):
     CORE_ACTOR_ERROR = enum.auto()    
 
     # Chain info reporting sub-system.
-    CHAININFO_BLOCK = enum.auto()
-    CHAININFO_BLOCK_SUMMARY = enum.auto()
-    CHAININFO_DEPLOY = enum.auto()
-    CHAININFO_DEPLOY_SUMMARY = enum.auto()
+    CHAININFO_BLOCK_STATS = enum.auto()
+    CHAININFO_DEPLOY_STATS = enum.auto()
 
     # Monitoring sub-system.
     MONITORING_API_ERROR = enum.auto()
@@ -61,8 +58,8 @@ class EventType(enum.Enum):
 # Set of error events.
 EVENTS_ERROR = (
     EventType.CORE_ACTOR_ERROR,
-    EventType.MONITORING_DEPLOY_DISCARDED,
-    EventType.MONITORING_DEPLOY_ORPHANED,
+    EventType.MONITORING_BLOCK_NOT_FOUND,
+    EventType.MONITORING_DEPLOY_NOT_FOUND,
     EventType.MONITORING_API_ERROR,
     EventType.WORKFLOW_RUN_ERROR,
     EventType.WORKFLOW_PHASE_ERROR,
@@ -74,7 +71,8 @@ EVENTS_ERROR = (
 EVENTS_WARN = (
     EventType.CORE_ENCODING_FAILURE,
     EventType.MONITORING_ACCOUNT_NOT_FOUND,
-    EventType.MONITORING_BLOCK_NOT_FOUND,
+    EventType.MONITORING_DEPLOY_DISCARDED,
+    EventType.MONITORING_DEPLOY_ORPHANED,
     EventType.MONITORING_DEPLOY_REQUEUED,
     EventType.MONITORING_STREAM_EVENT_TYPE_UNKNOWN,
     EventType.WORKFLOW_RUN_ABORT,
@@ -146,15 +144,11 @@ def get_event_info(event_type: EventType, message: typing.Union[BaseException, s
     )
 
 
-def _get_event_info_chaininfo(
-    event_type: EventType,
-    node: typing.Any,
-    data: typing.Any,
-    ) -> typing.Tuple[str, int, dict]:
+def _get_event_info_chaininfo(event_type: EventType, info: typing.Any) -> typing.Tuple[int, dict]:
     """Returns monitoring sub-system event information.
     
     """
-    return event_id or event_type.value, data
+    return event_type.value, info
 
 
 def _get_event_info_monitoring(
@@ -163,7 +157,7 @@ def _get_event_info_monitoring(
     event_id: int = None,
     block_hash: str = None,
     deploy_hash: str = None,
-    ) -> typing.Tuple[str, int, dict]:
+    ) -> typing.Tuple[int, dict]:
     """Returns monitoring sub-system event information.
     
     """
@@ -175,7 +169,7 @@ def _get_event_info_monitoring(
     }
 
 
-def _get_event_info_workflow(event_type: EventType, ctx: typing.Any) -> typing.Tuple[str, int, dict]:
+def _get_event_info_workflow(event_type: EventType, ctx: typing.Any) -> typing.Tuple[int, dict]:
     """Returns workflow sub-system event information.
     
     """

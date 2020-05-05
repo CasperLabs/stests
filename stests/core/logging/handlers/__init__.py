@@ -26,6 +26,7 @@ def get_handler(mode: OutputMode) -> typing.Callable:
     :returns: A configured message broker.
 
     """
+    return lstash
     if mode == OutputMode.INTERACTIVE:
         return stdout
     else:

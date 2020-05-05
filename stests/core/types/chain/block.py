@@ -83,6 +83,9 @@ class BlockStatistics:
     # Block hash (blake2b) identifier.
     block_hash: str
 
+    # Name of chain emitting block.
+    chain_name: str
+
     # Motes spent during block processing.
     deploy_cost_total: str
 
@@ -115,4 +118,3 @@ class BlockStatistics:
 
     # ID of validator that proposed block.
     validator_id: str
-

@@ -27,12 +27,25 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
     block_hash = event_info.block_hash
 
     # Query: on-chain block info.
-    block_info = clx.get_block_info(node_id, block_hash, parse=False)
+    block_info = clx.get_block_info(node_id, block_hash)
     if block_info is None:
         log_event(EventType.MONITORING_BLOCK_NOT_FOUND, None, node_id, block_hash=block_hash)
 
-    # TODO: push to log stream so that ELK pipeline can pick it up.
-    # 1. create new domain object BlockFinalizationStats in core.types.stats.
-    # 2. instantiate & hydrate domain object. 
-    # 3. create new log event: STATS_BLOCK_FINALIZED
-    # 4. emit new log event
+    # Set stats.
+    stats = factory.create_block_statistics_on_finalization(
+        block_hash=event_info.block_hash,
+        chain_name=block_info['summary']['header']['chainName'],
+        deploy_cost_total=block_info['status']['stats']['deployCostTotal'],
+        deploy_count=block_info['summary']['header']['deployCount'],
+        deploy_gas_price_avg=block_info['status']['stats']['deployGasPriceAvg'],
+        j_rank=block_info['summary']['header']['jRank'],
+        m_rank=block_info['summary']['header']['mainRank'],
+        network=node_id.network_name,
+        node_index=node_id.index,
+        size_bytes=block_info['status']['stats']['blockSizeBytes'],
+        timestamp=datetime.fromtimestamp(block_info['summary']['header']['timestamp'] / 1000.0),
+        validator_id=block_info['summary']['header']['validatorPublicKey'],        
+    )
+
+    # Emit event.
+    log_event(EventType.CHAININFO_BLOCK_STATS, None, stats)

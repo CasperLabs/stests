@@ -137,7 +137,7 @@ class DeployStatistics:
     # Cost of deploy (in motes).
     cost: typing.Optional[int]
 
-    # Deploy's payload signature hash (blake). 
+    # Deploy's payload signature hash. 
     deploy_hash: str
 
     # Node to which deploy was dispatched.
@@ -169,4 +169,3 @@ class DeployStatistics:
 
     # Deploy's type so as to disambiguate.
     typeof: DeployType
-

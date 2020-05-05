@@ -10,7 +10,7 @@ from stests.core.logging.types import Level
 from stests.core.logging.types import LogMessage
 from stests.core.logging.types import ProcessInfo
 
-from stests import events 
+from stests import events
 
 
 
@@ -30,6 +30,8 @@ def get_message(info: events.EventInfo) -> LogMessage:
         level = Level.INFO
     else:
         level = Level.DEBUG
+
+    from stests.core.utils import encoder
 
     return LogMessage(
         app=ApplicationInfo(
@@ -53,5 +55,5 @@ def get_message(info: events.EventInfo) -> LogMessage:
             pid=str(os.getpid()).zfill(5),
         ),
         message = info.message,
-        data=info.data,
+        data=encoder.encode(info.data, requires_decoding=False),
     )

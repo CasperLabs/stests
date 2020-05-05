@@ -18,12 +18,14 @@ def log_event(event_type: events.EventType, message: typing.Optional[typing.Unio
     :param message: Message to be written to log.
 
     """
-    event_info = events.get_event_info(event_type, message, *args, **kwargs)
-    msg = get_message(event_info)
-    handler = get_handler(_mode)
-    handler.log_event(msg, _mode)
+    get_handler(_mode).log_event(
+        get_message(
+            events.get_event_info(event_type, message, *args, **kwargs)
+            ),
+        _mode
+        )
 
-
+    
 def initialise(mode: OutputMode):
     """Initialises logger.
 
