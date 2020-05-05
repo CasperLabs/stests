@@ -99,7 +99,7 @@ def on_step_end(ctx: ExecutionContext):
     # Enqueue either end of phase or next step. 
     if step.is_last:
         # Note: JIT import to avoid circularity.
-        from stests.workflows.orchestration.actors.phase import on_phase_end
+        from stests.workflows.orchestration.phase import on_phase_end
         on_phase_end.send(ctx)
     else:
         do_step.send(ctx)

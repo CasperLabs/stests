@@ -10,7 +10,7 @@ from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils import encoder
 from stests.events import EventType
 from stests.workflows.orchestration import predicates
-from stests.workflows.orchestration.actors.phase import do_phase
+from stests.workflows.orchestration.phase import do_phase
 
 
 

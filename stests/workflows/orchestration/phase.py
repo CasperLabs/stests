@@ -9,7 +9,7 @@ from stests.core.types.orchestration import ExecutionStatus
 from stests.events import EventType
 from stests.workflows.orchestration.model import Workflow
 from stests.workflows.orchestration import predicates
-from stests.workflows.orchestration.actors.step import do_step
+from stests.workflows.orchestration.step import do_step
 
 
 
@@ -64,7 +64,7 @@ def on_phase_end(ctx: ExecutionContext):
     # Enqueue either end of workflow or next phase. 
     if phase.is_last:
         # JIT import to avoid circularity.
-        from stests.workflows.orchestration.actors.run import on_run_end
+        from stests.workflows.orchestration.run import on_run_end
         on_run_end.send(ctx)
     else:
         do_phase.send(ctx)
