@@ -1,20 +1,10 @@
-# Initialise logging.
-from stests.core import logging
-logging.initialise(logging.OutputMode.INTERACTIVE)
+from stests.workers.utils import setup_interactive
+from stests.workers.utils import start_workflows
 
-# Initialise broker.
-from stests.core import mq
-mq.initialise()
 
-# Initialise encoder.
-from stests.core.mq import encoder
-encoder.initialise()
 
-# Import actors: generators.
-import stests.workflows.generators.wg_100.meta
-import stests.workflows.generators.wg_110.meta
-import stests.workflows.generators.wg_200.meta
-import stests.workflows.generators.wg_210.meta
+# Setup.
+setup_interactive()
 
-# Import actors: orchestration.
-import stests.workflows.orchestration.actors
+# Start workload generators.
+start_workflows()
