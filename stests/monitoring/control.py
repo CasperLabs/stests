@@ -17,7 +17,7 @@ _QUEUE = "monitoring.control"
 
 # Number of monitors to launch per node.
 # TODO: use algo: processes * threads / nodes ?
-_MONITORS_PER_NODE = 2
+_MONITORS_PER_NODE = 1
 
 # Time limit for node monitoring actor.
 _30_MINUTES_IN_MS = 1800000
