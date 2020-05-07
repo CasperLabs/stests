@@ -40,7 +40,7 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
         deploy_gas_price_avg=block_info['status']['stats'].get('deployGasPriceAvg'),
         j_rank=block_info['summary']['header']['jRank'],
         m_rank=block_info['summary']['header']['mainRank'],
-        magic_bit=block_info['summary']['header']['magicBit'],
+        magic_bit=block_info['summary']['header'].get('magicBit'),
         message_role=block_info['summary']['header']['messageRole'],
         network=node_id.network_name,
         node_index=node_id.index,
