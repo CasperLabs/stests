@@ -61,7 +61,7 @@ def _initialise() -> logging.Logger:
     # Set logger.
     _logger = logging.getLogger('STESTS')
     _logger.setLevel(logging.INFO)
-    _logger.addHandler(logstash.LogstashHandler(
+    _logger.addHandler(logstash.UDPLogstashHandler(
         EnvVars.HOST,
         EnvVars.PORT,
         version=EnvVars.VERSION

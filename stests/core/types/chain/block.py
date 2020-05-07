@@ -101,11 +101,20 @@ class BlockStatistics:
     # Main rank.
     m_rank: int
 
+    # A random bit set by the creator of the block which is goes towards the leader seed.
+    magic_bit: int
+
+    # Highway specific role of a message.
+    message_role: str
+
     # Associated network.
     network: str
 
     # Node which emitted block finalization event.
     finalization_node: typing.Optional[int]
+
+    # identifier of consensus round during which block was finalized.
+    round_id: typing.Optional[int]
 
     # Size in bytes of block.
     size_bytes: int
