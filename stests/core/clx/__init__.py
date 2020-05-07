@@ -7,3 +7,4 @@ from stests.core.clx.query import get_deploy_info
 from stests.core.clx.query import get_named_keys
 from stests.core.clx.stream import stream_events
 from stests.core.clx.utils import await_deploy_processing
+from stests.core.clx.utils import propose_block

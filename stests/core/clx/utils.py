@@ -256,3 +256,9 @@ def _parse_dict(obj: typing.Any, key: str=None) -> typing.Any:
         pass
 
     return obj  
+
+
+def propose_block(src: typing.Any):
+    _, client = get_client(src)
+
+    client.propose()

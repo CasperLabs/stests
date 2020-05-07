@@ -82,6 +82,8 @@ alias stests-view-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_balance.py'
 alias stests-view-block-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_block_info.py'
 alias stests-view-deploy-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_deploy_info.py'
 
+alias stests-propose-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/propose.py'
+
 # ###############################################################
 # ALIASES: generators
 # ###############################################################

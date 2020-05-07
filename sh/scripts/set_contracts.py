@@ -54,7 +54,7 @@ def _install_contract(network: Network, account: Account, contract: typing.Calla
     utils.log(f"{contract.WASM} :: installation starts ... please wait")
 
     # Dispatch deploy.
-    node, deploy_hash = contract.install(network, account)
+    node, deploy_hash, _, _ = contract.install(network, account)
     utils.log(f"{contract.WASM} :: deploy dispatched >- {deploy_hash}")
 
     # Await deploy processing.
