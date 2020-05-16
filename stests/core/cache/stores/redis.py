@@ -20,9 +20,10 @@ class EnvVars:
 # Map: partition type -> cache db index offset.
 PARTITION_OFFSETS = {
     StorePartition.INFRA: 0,
-    StorePartition.MONITORING: 1,
-    StorePartition.ORCHESTRATION: 2,
-    StorePartition.STATE: 3,
+    StorePartition.MONITORING_LOCKS: 1,
+    StorePartition.MONITORING: 2,
+    StorePartition.ORCHESTRATION: 3,
+    StorePartition.STATE: 4,
 }
 
 

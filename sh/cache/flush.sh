@@ -9,14 +9,19 @@ function main()
     # Flush partition: broker.
     source $STESTS_PATH_SH/cache/flush_partition.sh 0
 
-    # Flush partition: monitoring.
-    source $STESTS_PATH_SH/cache/flush_partition.sh 2
+    # Flush partition: monitoring locks.
+    source $STESTS_PATH_SH/cache/flush_locks.sh
 
-    # Flush partition: workflow engine.
+    # Flush partition: monitoring data.
     source $STESTS_PATH_SH/cache/flush_partition.sh 3
 
-    # Flush partition: workflow data.
+    # Flush partition: orchestration locks.
     source $STESTS_PATH_SH/cache/flush_partition.sh 4
+
+    # Flush partition: orchestration data.
+    source $STESTS_PATH_SH/cache/flush_partition.sh 5
+
+    log "Cache successfully flushed"
 }
 
 # Invoke entry point.

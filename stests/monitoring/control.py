@@ -45,7 +45,7 @@ def do_monitor_node(node_id: NodeIdentifier):
     locked = False
     for i in range(_MONITORS_PER_NODE):
         lock = factory.create_node_monitoring_lock(node_id, i + 1)
-        _, lock_acquired = cache.monitoring.set_node_monitor_lock(lock)
+        _, lock_acquired = cache.monitoring_locks.set_node_monitor_lock(lock)
         if lock_acquired:
             break
 
@@ -72,4 +72,4 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Release lock.
     finally:
-        cache.monitoring.delete_node_monitor_lock(lock)
+        cache.monitoring_locks.delete_node_monitor_lock(lock)

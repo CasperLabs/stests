@@ -165,7 +165,7 @@ def _get_event_info_monitoring(
     """
     return event_id or event_type.value, {
         'network': node.network_name,
-        'node': node.label_index,
+        'node': node.address if hasattr(node, "address") else node.label_index,
         'block': block_hash,
         'deploy': deploy_hash,
     }

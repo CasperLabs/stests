@@ -8,6 +8,8 @@ function main()
 {
     # Flush partition: infra.
     source $STESTS_PATH_SH/cache/flush_partition.sh 1
+
+    log "Cache successfully flushed"
 }
 
 # Invoke entry point.

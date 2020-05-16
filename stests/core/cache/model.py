@@ -119,6 +119,9 @@ class StorePartition(enum.Enum):
     # Infrastructure.
     INFRA = enum.auto()
 
+    # Chain monitoring locks.
+    MONITORING_LOCKS = enum.auto()
+
     # Chain monitoring.
     MONITORING = enum.auto()
 
