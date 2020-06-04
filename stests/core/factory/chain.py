@@ -124,12 +124,12 @@ def create_block_statistics_on_finalization(
     magic_bit: int,
     message_role: str,
     network: str,
-    node_index: int,
+    node: str,
     round_id: int,
     size_bytes: int,
     timestamp: datetime,
     validator_id: str,
-) -> BlockStatistics:
+    ) -> BlockStatistics:
     """Returns a domain object instance: BlockStatistics.
     
     """
@@ -139,12 +139,12 @@ def create_block_statistics_on_finalization(
         deploy_cost_total=deploy_cost_total,
         deploy_count=deploy_count,
         deploy_gas_price_avg=deploy_gas_price_avg,
-        finalization_node=node_index,
         j_rank=j_rank,
         m_rank=m_rank,
         magic_bit=magic_bit,
         message_role=message_role,
         network=network,
+        node=node,
         round_id=round_id,
         size_bytes=size_bytes,
         status=BlockStatus.FINALIZED,
@@ -159,26 +159,28 @@ def create_deploy_for_run(
     node: Node,
     deploy_hash: str,
     dispatch_attempts: int,
-    dispatch_time: float,
+    dispatch_duration: float,
     typeof: DeployType
     ) -> Deploy:
     """Returns a domain object instance: Deploy.
 
     """
     return Deploy(
+        account=account.address,
         account_index=account.index,
         block_hash=None,
-        cost=None,
+        deploy_cost=None,
         deploy_hash=deploy_hash,
         dispatch_attempts=dispatch_attempts,
-        dispatch_node=node.index,
-        dispatch_time=dispatch_time,
-        dispatch_ts=datetime.now(),
+        dispatch_duration=dispatch_duration,
+        dispatch_node=node.address,
+        dispatch_timestamp=datetime.now(),
+        finalization_duration=None,
         finalization_node=None,
-        finalization_time=None,
-        finalization_ts=None,
+        finalization_timestamp=None,
         network=ctx.network,
         phase_index=ctx.phase_index,
+        round_id=None,
         run_index=ctx.run_index,
         run_type=ctx.run_type,        
         status=DeployStatus.DISPATCHED,
@@ -188,17 +190,17 @@ def create_deploy_for_run(
     )
 
 
-def create_deploy_summary_on_finalisation(node_id: NodeIdentifier, info: NodeEventInfo) -> DeploySummary:
+def create_deploy_summary_on_finalisation(info: NodeEventInfo) -> DeploySummary:
     """Returns a domain object instance: DeploySummary.
     
     """
     return DeploySummary(
         block_hash=info.block_hash,
         deploy_hash=info.deploy_hash,
-        network=node_id.network.name,
+        network=info.network,
         status=DeployStatus.FINALIZED,
-        streaming_node=node_id.index,
-        streaming_ts=datetime.now(),
+        streaming_node=info.node_index,
+        streaming_timestamp=datetime.now(),
     )
 
 
@@ -240,7 +242,7 @@ def create_transfer(
         cp1_index=cp1.index,
         cp2_index=cp2.index,
         deploy_hash=deploy_hash,
-        dispatch_ts=datetime.now(),
+        dispatch_timestamp=datetime.now(),
         network=ctx.network,
         node=ctx.node_index,
         phase_index=ctx.phase_index,

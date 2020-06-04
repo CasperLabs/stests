@@ -44,7 +44,7 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str, float,
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
 
-    :returns: 4 member tuple -> (node, deploy_hash, dispatch_time, dispatch_attempts).
+    :returns: 4 member tuple -> (node, deploy_hash, dispatch_duration, dispatch_attempts).
 
     """
     return utils.install_contract_by_hash(src, account, WASM)
@@ -63,13 +63,13 @@ def increment(
     :param contract_keys: Named keys associated with installed contract. 
     :param user_account: A user account invoking the installed contract.
 
-    :returns: 4 member tuple -> (node, deploy_hash, dispatch_time, dispatch_attempts).
+    :returns: 4 member tuple -> (node, deploy_hash, dispatch_duration, dispatch_attempts).
 
     """
     nk_contract = [i for i in contract_keys if i.name == _NKEY][0]
     nk_inc = [i for i in contract_keys if i.name == _NKEY_INC][0]
 
-    node, _, deploy_hash, dispatch_time, dispatch_attempts = utils.dispatch_deploy(
+    node, _, deploy_hash, dispatch_duration, dispatch_attempts = utils.dispatch_deploy(
         src,
         user_account,
         from_addr=user_account.public_key,
@@ -79,7 +79,7 @@ def increment(
 
     log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"COUNTER_DEFINE.increment :: address={user_account.public_key}", node)
 
-    return node, deploy_hash, dispatch_time, dispatch_attempts
+    return node, deploy_hash, dispatch_duration, dispatch_attempts
 
 
 def get_count(src: typing.Any, account: Account, block_hash: str=None) -> int:

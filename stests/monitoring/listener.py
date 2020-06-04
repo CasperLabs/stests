@@ -44,14 +44,21 @@ def bind_to_stream(node_id: NodeIdentifier):
             handler = HANDLERS[event_info.event_type]
         except KeyError:
             return
-        
+
         # Escape if node event already processed - happens if > 1 monitor per node.
         _, was_lock_acquired = cache.monitoring.set_node_event_info(event_info)
         if not was_lock_acquired:
             return
 
         # Notify.
-        log_event(event_info.event_type, None, node, event_id=event_info.event_id, block_hash=event_info.block_hash, deploy_hash=event_info.deploy_hash)
+        log_event(
+            event_info.event_type,
+            None,
+            node,
+            event_id=event_info.event_id,
+            block_hash=event_info.block_hash,
+            deploy_hash=event_info.deploy_hash
+            )
 
         # Dispatch message to actor for further processing.
         handler.send(node_id, event_info)

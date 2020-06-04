@@ -29,7 +29,7 @@ def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type
     contract = clx.contracts.get_contract(contract_type)
 
     # Install contract.
-    node, deploy_hash, dispatch_time, dispatch_attempts = contract.install(ctx, account)
+    node, deploy_hash, dispatch_duration, dispatch_attempts = contract.install(ctx, account)
 
     # Persist deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
@@ -38,7 +38,7 @@ def do_install_contract(ctx: ExecutionContext, account_index: int, contract_type
         node=node, 
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
-        dispatch_time=dispatch_time,
+        dispatch_duration=dispatch_duration,
         typeof=DeployType.CONTRACT_INSTALL,
         ))
 

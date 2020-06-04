@@ -34,6 +34,10 @@ class Account:
     typeof: AccountType
 
     @property
+    def address(self):
+        return self.public_key
+
+    @property
     def is_run_account(self):
         return self.run_index is not None
 

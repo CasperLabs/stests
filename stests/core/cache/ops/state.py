@@ -60,12 +60,16 @@ def decrement_account_balance(account: Account, amount: int) -> CountDecrementKe
 
 
 @cache_op(_PARTITION, StoreOperation.COUNTER_DECR)
-def decrement_account_balance_on_deploy_finalisation(deploy: Deploy) -> CountDecrementKey:
+def decrement_account_balance_on_deploy_finalisation(deploy: Deploy, cost: int) -> CountDecrementKey:
     """Updates (atomically) an account's (theoretical) balance.
 
     :returns: Cache decrement key.
 
     """
+    # Escape if processing a deploy dispatched under network faucet.
+    if deploy.is_from_network_faucet:
+        return
+    
     return CountDecrementKey(
         paths=[
             deploy.network,
@@ -76,7 +80,7 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy) -> CountDec
         names=[
             deploy.label_account_index,
         ],
-        amount=(deploy.cost * 10),
+        amount=(cost * 10),
     )
 
 
@@ -271,7 +275,7 @@ def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> ItemKey:
             asset.lower(),
         ],
         names=[
-            deploy.hash,
+            deploy.deploy_hash,
         ],
     )
 
@@ -367,7 +371,7 @@ def set_deploy(deploy: Deploy) -> Item:
                 COL_DEPLOY,
             ],
             names=[
-                str(deploy.dispatch_ts.timestamp()),
+                str(deploy.dispatch_timestamp.timestamp()),
                 deploy.deploy_hash,
                 deploy.label_account_index,
             ]

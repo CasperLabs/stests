@@ -18,7 +18,7 @@ supervisor = "*"
 apscheduler = "*"
 typing-inspect = "*"
 beautifultable = "*"
-casperlabs-client = "*"
+casperlabs-client = "==0.19.0"
 python-logstash = "*"
 
 [requires]

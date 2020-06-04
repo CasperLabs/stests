@@ -12,14 +12,17 @@ class Deploy:
     """Encapsulates information pertaining to a deploy dispatched to a test network.
     
     """
+    # Account under which deploy was dispatched.
+    account: str
+
     # Index of account with which the deploy is associated.
-    account_index: typing.Optional[int]
+    account_index: int
 
     # Associated block hash in event of finalization. 
     block_hash: typing.Optional[str]
 
     # Cost of deploy (in motes).
-    cost: typing.Optional[int]
+    deploy_cost: typing.Optional[int]    
 
     # Deploy's payload signature hash (blake). 
     deploy_hash: str
@@ -27,38 +30,47 @@ class Deploy:
     # Number of times dispatcher had to try before deploy dispatch suceeded.
     dispatch_attempts: int
 
-    # Node to which deploy was dispatched.
-    dispatch_node: int
+    # Address of node to which deploy was dispatched.
+    dispatch_node: str
 
     # Time taken to dispatch deploy.
-    dispatch_time: float
+    dispatch_duration: float
 
     # Moment in time when deploy dispatched to CLX network.
-    dispatch_ts: typing.Optional[datetime]
-
-    # Node which emitted finalization event of the block in which deploy was included.
-    finalization_node: typing.Optional[int]
+    dispatch_timestamp: datetime
 
     # Time between dispatch & deploy finality.
-    finalization_time: typing.Optional[float]
+    finalization_duration: typing.Optional[float]
+
+    # Address of node which emitted finalization event of the block in which deploy was included.
+    finalization_node: typing.Optional[str]
     
     # Moment in time when deploy was finalized by CLX network.
-    finalization_ts: typing.Optional[datetime]
+    finalization_timestamp: typing.Optional[datetime]    
 
-    # Associated network.
-    network: str
+    # # Numerical index to distinguish between multiple phase within a generator.
+    # generator_phase_index: typing.Optional[int]
+
+    # # Numerical index to distinguish between multiple runs of the same generator.
+    # generator_run_index: int
+
+    # # Type of generator, e.g. WG-100 ...etc.
+    # generator_type: str    
+
+    # # Numerical index to distinguish between multiple steps within a generator.
+    # generator_step_index: typing.Optional[int]
+
+    # # Label to disambiguate a step within the context of a phase.
+    # generator_step_label: typing.Optional[str]    
 
     # Numerical index to distinguish between multiple phase within a generator.
     phase_index: typing.Optional[int]
 
     # Numerical index to distinguish between multiple runs of the same generator.
-    run_index: int
+    run_index: typing.Optional[int]
 
     # Type of generator, e.g. WG-100 ...etc.
-    run_type: str    
-
-    # Deploy's processing status.
-    status: DeployStatus
+    run_type: typing.Optional[str]    
 
     # Numerical index to distinguish between multiple steps within a generator.
     step_index: typing.Optional[int]
@@ -66,25 +78,26 @@ class Deploy:
     # Label to disambiguate a step within the context of a phase.
     step_label: typing.Optional[str]
 
+    # Associated network.
+    network: str
+
+    # Identifier of consensus round during which deploy was finalized.
+    round_id: typing.Optional[int]    
+
+    # Deploy's processing status.
+    status: DeployStatus
+
     # Deploy's type so as to disambiguate.
     typeof: DeployType
-
-    @property
-    def hash(self):
-        return self.deploy_hash
-
-    @property
-    def is_from_run(self):
-        return self.run_type is not None
         
     @property
-    def is_from_network_fauct(self):
+    def is_from_network_faucet(self):
         return self.account_index == 0
 
     @property
-    def label_finalization_time(self):
-        if self.finalization_time:
-            return format(self.finalization_time, '.4f')
+    def label_finalization_duration(self):
+        if self.finalization_duration:
+            return format(self.finalization_duration, '.4f')
         return "--"
 
     @property
@@ -92,16 +105,8 @@ class Deploy:
         return f"A-{str(self.account_index).zfill(6)}"
 
     @property
-    def label_phase_index(self):
-        return f"P-{str(self.phase_index).zfill(2)}"
-
-    @property
     def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
-
-    @property
-    def label_step_index(self):
-        return f"S-{str(self.step_index).zfill(2)}"
 
 
 @dataclasses.dataclass
@@ -125,7 +130,7 @@ class DeploySummary:
     streaming_node: int
 
     # Moment in time when deploy was streamed.
-    streaming_ts: datetime
+    streaming_timestamp: datetime
 
     @property
     def label_node_index(self):

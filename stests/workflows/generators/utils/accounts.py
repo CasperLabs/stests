@@ -41,7 +41,7 @@ def do_transfer(
     # Transfer CLX from cp1 -> cp2.    
     contract_type = ContractType.TRANSFER_U512 if ctx.run_type == "WG-100" else ContractType.TRANSFER_U512_STORED
     contract = clx.contracts.get_contract(contract_type)
-    node, deploy_hash, dispatch_time, dispatch_attempts = contract.transfer(ctx, cp1, cp2, amount)
+    node, deploy_hash, dispatch_duration, dispatch_attempts = contract.transfer(ctx, cp1, cp2, amount)
 
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
@@ -50,7 +50,7 @@ def do_transfer(
         node=node, 
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
-        dispatch_time=dispatch_time,
+        dispatch_duration=dispatch_duration,
         typeof=DeployType.TRANSFER_REFUND if is_refund else DeployType.TRANSFER
         ))
 
@@ -71,7 +71,7 @@ def do_transfer(
         cache.state.increment_account_balance(cp2, amount)
 
 
-def _get_account(ctx: ExecutionContext, account_index) -> Account:
+def _get_account(ctx: ExecutionContext, account_index: int) -> Account:
     """Pulls & returns a cached account.
     
     """

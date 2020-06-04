@@ -15,7 +15,7 @@ NETWORK_INDEX_MIN = 1
 NETWORK_INDEX_MAX = 99
 
 # Node index min/max.
-NODE_INDEX_MIN = 1
+NODE_INDEX_MIN = 0
 NODE_INDEX_MAX = 999
 
 # Port min/max.

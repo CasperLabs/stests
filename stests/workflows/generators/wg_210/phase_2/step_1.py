@@ -78,7 +78,7 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
     user_account = cache.state.get_account_by_index(ctx, account_index)
 
     # Increment on-chain counter.
-    node, deploy_hash, dispatch_time, dispatch_attempts = contract.increment(ctx, contract_account, contract_keys, user_account)
+    node, deploy_hash, dispatch_duration, dispatch_attempts = contract.increment(ctx, contract_account, contract_keys, user_account)
 
     # Update cache.
     cache.state.set_deploy(factory.create_deploy_for_run(
@@ -87,6 +87,6 @@ def _do_increment_counter_1(ctx: ExecutionContext, account_index: int):
         node=node, 
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
-        dispatch_time=dispatch_time,
+        dispatch_duration=dispatch_duration,
         typeof=DeployType.COUNTER_DEFINE
         ))

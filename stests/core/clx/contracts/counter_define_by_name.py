@@ -27,7 +27,7 @@ def install(src: typing.Any, account: Account) -> typing.Tuple[Node, str, float,
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract will be installed.
 
-    :returns: 4 member tuple -> (node, deploy_hash, dispatch_time, dispatch_attempts)
+    :returns: 4 member tuple -> (node, deploy_hash, dispatch_duration, dispatch_attempts)
 
     """
     return utils.install_contract(src, account, WASM)
@@ -39,10 +39,10 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str, floa
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which contract was installed.
 
-    :returns: 4 member tuple -> (node, deploy_hash, dispatch_time, dispatch_attempts).
+    :returns: 4 member tuple -> (node, deploy_hash, dispatch_duration, dispatch_attempts).
     
     """
-    node, _, deploy_hash, dispatch_time, dispatch_attempts = utils.dispatch_deploy(
+    node, _, deploy_hash, dispatch_duration, dispatch_attempts = utils.dispatch_deploy(
         src=src,
         account=account,
         session_name=_NKEY_INC,
@@ -50,7 +50,7 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str, floa
 
     log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"COUNTER_DEFINE.increment :: address={account.public_key}", node)
 
-    return node, deploy_hash, dispatch_time, dispatch_attempts
+    return node, deploy_hash, dispatch_duration, dispatch_attempts
 
 
 # Shared function same API.

@@ -27,7 +27,7 @@ class Transfer:
     deploy_hash: str
 
     # Moment in time when deploy dispatched to CLX network.
-    dispatch_ts: typing.Optional[datetime.datetime]
+    dispatch_timestamp: typing.Optional[datetime.datetime]
 
     # Associated network.
     network: str

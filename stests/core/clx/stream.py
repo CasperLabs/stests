@@ -67,9 +67,9 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
 
         # Invoke callback.
         event_callback(node, factory.create_node_event_info(
-                node_id=node_id, 
-                event_id=info.event_id, 
-                event_type=event_type,
-                block_hash=block_hash,
-                deploy_hash=deploy_hash,
-            ))
+            node,
+            info.event_id, 
+            event_type,
+            block_hash=block_hash,
+            deploy_hash=deploy_hash,
+        ))

@@ -183,10 +183,15 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
         def wrapper(*args, **kwargs):
             # JIT initialise encoder so as to ensure that all types are registered.
             encoder.initialise()
+
             # Set store - use context manager to auto close connection.
             with stores.get_store(partition) as store:
-                # Set item/key - if applicable apply key prefix.
+                # Invoke inner function - escape if nothing returned as this indicates the function aborted processing.
                 obj = func(*args, **kwargs)
+                if obj is None:
+                    return
+                
+                # Apply key prefixing.
                 if partition in _USER_PARTITIONS:
                     obj.apply_key_prefix()
                 

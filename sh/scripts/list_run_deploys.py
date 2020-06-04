@@ -39,13 +39,14 @@ ARGS.add_argument(
 # Table columns.
 COLS = [
     ("#", BeautifulTable.ALIGN_LEFT),
+    ("Dispatch Timestamp", BeautifulTable.ALIGN_LEFT),
+    ("Dispatch Node", BeautifulTable.ALIGN_LEFT),
     ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
-    ("Type", BeautifulTable.ALIGN_RIGHT),
-    ("Status", BeautifulTable.ALIGN_RIGHT),
-    ("Node", BeautifulTable.ALIGN_RIGHT),
-    ("Account", BeautifulTable.ALIGN_RIGHT),
-    ("Dispatch Timestamp", BeautifulTable.ALIGN_RIGHT),
+    ("Type", BeautifulTable.ALIGN_LEFT),
+    ("Status", BeautifulTable.ALIGN_LEFT),
+    ("Dispatch Account", BeautifulTable.ALIGN_LEFT),
     ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
+    ("Round ID", BeautifulTable.ALIGN_RIGHT),
     ("Block Hash", BeautifulTable.ALIGN_RIGHT),
 ]
 
@@ -70,19 +71,20 @@ def main(args):
 
 def _render_table(args, network_id, data):
     # Sort data.
-    data = sorted(data, key=lambda i: i.dispatch_ts)
+    data = sorted(data, key=lambda i: i.dispatch_timestamp)
 
     # Set table cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         data.index(i) + 1,
+        i.dispatch_timestamp,
+        i.dispatch_node,
         i.deploy_hash,      
         i.typeof.name,
         i.status.name,      
-        i.dispatch_node,
-        i.account_index,
-        i.dispatch_ts,
-        i.label_finalization_time,
+        i.account,
+        i.label_finalization_duration,
+        i.round_id or "--",
         i.block_hash or "--"
     ], data)
 
@@ -102,7 +104,7 @@ def _render_finalization_stats(data):
     """Renders finalization stats.
     
     """
-    times = [i.finalization_time for i in data if i.finalization_time]
+    times = [i.finalization_duration for i in data if i.finalization_duration]
     if not times:
         return
 

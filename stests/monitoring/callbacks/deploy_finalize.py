@@ -28,55 +28,52 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
     :param info: Node event information.
 
     """
-    # Escape if on-chain block info not found.
+    # Escape if on-chain info not found.
     block_info = clx.get_block_info(node_id, info.block_hash, parse=False)
     if block_info is None:
         log_event(EventType.MONITORING_BLOCK_NOT_FOUND, None, node_id, block_hash=info.block_hash)
         return
 
-    # Escape if on-chain deploy info not found.
+    # Escape if on-chain info not found.
     deploy_info = clx.get_deploy_info(node_id, info.deploy_hash, wait_for_processed=False, parse=True)
     if deploy_info is None:
         log_event(EventType.MONITORING_DEPLOY_NOT_FOUND, None, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
         return
 
-    # Escape if deploy event already recieved from another node.
-    if _already_processed(node_id, info):
+    # Escape if event already received from another node.
+    if _already_processed(info):
         return
 
-    # Escape if deploy is uncorrelated.
+    # Process correlated.
     deploy = cache.state.get_deploy_on_finalisation(info.network_name, info.deploy_hash)
-    if not deploy:
-        return
-
-    # Process deploys previously dispatched by a generator within scope.
-    _process_correlated_deploy(
-        node_id,
-        info,
-        datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
-        deploy,
-        deploy_info['processingResults'][0]['cost']
-        )
+    if deploy:
+        _process_correlated(
+            node_id,
+            info,
+            datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
+            deploy,
+            deploy_info['processingResults'][0]['cost'],
+            block_info.summary.header.round_id
+            )
 
 
-def _already_processed(node_id: NodeIdentifier, info: NodeEventInfo) -> bool:
-    """Returns flag indicating whether a finalised deploy has already been processed.
+def _already_processed(info: NodeEventInfo) -> bool:
+    """Returns flag indicating whether finalised deploy event has already been processed.
 
     """
-    _, encached = cache.monitoring.set_deploy_summary(factory.create_deploy_summary_on_finalisation(
-        node_id,
-        info,
-    ))
+    summary = factory.create_deploy_summary_on_finalisation(info)
+    _, encached = cache.monitoring.set_deploy_summary(summary)
 
     return not encached
 
 
-def _process_correlated_deploy(
+def _process_correlated(
     node_id: NodeIdentifier,
     info: NodeEventInfo,
     block_timestamp: datetime,
     deploy: Deploy,
-    deploy_cost: int
+    deploy_cost: int,
+    round_id: int
     ):
     """Process a monitored deploy that was previously dispatched during a generator run.
     
@@ -84,31 +81,37 @@ def _process_correlated_deploy(
     # Notify.
     log_event(EventType.MONITORING_DEPLOY_CORRELATED, None, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
 
-    # Update deploy.
+    # Update cache: deploy.
     deploy.block_hash = info.block_hash
-    deploy.cost = deploy_cost
+    deploy.deploy_cost = deploy_cost
+    deploy.finalization_duration = block_timestamp.timestamp() - deploy.dispatch_timestamp.timestamp()    
+    deploy.finalization_node = info.node_address
+    deploy.finalization_timestamp = block_timestamp
+    deploy.round_id = round_id
     deploy.status = DeployStatus.FINALIZED
-    deploy.finalization_node = node_id.index
-    deploy.finalization_ts = block_timestamp
-    deploy.finalization_time = deploy.finalization_ts.timestamp() - deploy.dispatch_ts.timestamp()    
     cache.state.set_deploy(deploy)
 
-    # Update account balance for non-network faucet accounts.
-    if not deploy.is_from_network_fauct:
-        cache.state.decrement_account_balance_on_deploy_finalisation(deploy)
+    # Update cache: account balance.
+    cache.state.decrement_account_balance_on_deploy_finalisation(deploy, deploy_cost)
 
-    # Emit event.
-    log_event(EventType.CHAININFO_FINALIZED_DEPLOY_STATS, None, deploy)
-
-    # Update transfer.
+    # Update cache: transfer.
     transfer = cache.state.get_transfer_by_deploy(deploy)
     if transfer:
         transfer.status = TransferStatus.COMPLETE
         cache.state.set_transfer(transfer)
 
-    # Signal to workflow orchestrator - note we go down a level in terms of 
-    # # dramtiq usage so as not to import non-monitoring actors.
-    ctx = cache.orchestration.get_context(node_id.network_name, deploy.run_index, deploy.run_type)
+    # Emit event.
+    log_event(EventType.CHAININFO_FINALIZED_DEPLOY, None, deploy)
+
+    # Enqueue message for processing by orchestrator.
+    _enqueue_correlated(node_id, deploy)
+
+
+def _enqueue_correlated(node_id: NodeIdentifier, deploy: Deploy):
+    """Enqueues a correlated deploy for further processing by orchestrator.
+    
+    """
+    ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
         queue_name="workflows.orchestration.step",
@@ -116,8 +119,8 @@ def _process_correlated_deploy(
         args=([
             encoder.encode(ctx),
             encoder.encode(node_id),
-            info.block_hash,
-            deploy.hash
+            deploy.block_hash,
+            deploy.deploy_hash
             ]),
         kwargs=dict(),
         options=dict(),

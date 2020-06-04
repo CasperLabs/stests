@@ -24,26 +24,24 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
     :param event_info: Node event information.
 
     """
-    block_hash = event_info.block_hash
-
     # Query: on-chain block info.
-    block_info = clx.get_block_info(node_id, block_hash)
+    block_info = clx.get_block_info(node_id, event_info.block_hash)
     if block_info is None:
-        log_event(EventType.MONITORING_BLOCK_NOT_FOUND, None, node_id, block_hash=block_hash)
+        log_event(EventType.MONITORING_BLOCK_NOT_FOUND, None, node_id, block_hash=event_info.block_hash)
 
     # Set stats.
     stats = factory.create_block_statistics_on_finalization(
         block_hash=event_info.block_hash,
         chain_name=block_info['summary']['header']['chainName'],
         deploy_cost_total=block_info['status']['stats'].get('deployCostTotal'),
-        deploy_count=block_info['summary']['header'].get('deployCount'),
+        deploy_count=block_info['summary']['header'].get('deployCount', 0),
         deploy_gas_price_avg=block_info['status']['stats'].get('deployGasPriceAvg'),
         j_rank=block_info['summary']['header']['jRank'],
         m_rank=block_info['summary']['header']['mainRank'],
         magic_bit=block_info['summary']['header'].get('magicBit'),
         message_role=block_info['summary']['header']['messageRole'],
         network=node_id.network_name,
-        node_index=node_id.index,
+        node=event_info.node_address,
         round_id=block_info['summary']['header']['roundId'],
         size_bytes=block_info['status']['stats']['blockSizeBytes'],
         timestamp=datetime.fromtimestamp(block_info['summary']['header']['timestamp'] / 1000.0),
@@ -51,4 +49,7 @@ def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):
     )
 
     # Emit event.
-    log_event(EventType.CHAININFO_FINALIZED_BLOCK_STATS, None, stats)
+    if stats.deploy_count:
+        log_event(EventType.CHAININFO_FINALIZED_BLOCK, None, stats)
+    else:
+        log_event(EventType.CHAININFO_FINALIZED_BLOCK_EMPTY, None, stats)

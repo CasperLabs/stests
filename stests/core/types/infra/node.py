@@ -72,7 +72,7 @@ class NodeEventInfo:
     event_id: int
 
     # Moment in time when event was streamed.
-    event_ts: datetime
+    event_timestamp: datetime
 
     # Type of event.
     event_type: EventType
@@ -80,8 +80,11 @@ class NodeEventInfo:
     # Associated network.
     network: str
 
-    # Node from which deploy was streamed.
-    node: int
+    # Address of node from which deploy was streamed.
+    node_address: str
+
+    # Index of Node from which deploy was streamed.
+    node_index: int
 
     @property
     def label_event_id(self):
@@ -93,7 +96,7 @@ class NodeEventInfo:
 
     @property
     def label_node_index(self):
-        return f"N-{str(self.node).zfill(4)}"
+        return f"N-{str(self.node_index).zfill(4)}"
 
     @property
     def log_suffix(self):

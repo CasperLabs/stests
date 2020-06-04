@@ -77,7 +77,7 @@ class BlockLock:
 
 @dataclasses.dataclass
 class BlockStatistics:
-    """Encapsulates statistical related information pertaining to a block.
+    """Encapsulates statistical information pertaining to a block.
     
     """
     # Block hash (blake2b) identifier.
@@ -110,10 +110,10 @@ class BlockStatistics:
     # Associated network.
     network: str
 
-    # Node which emitted block finalization event.
-    finalization_node: typing.Optional[int]
+    # Address of node which emitted finalization event of the block in which deploy was included.
+    node: typing.Optional[str]
 
-    # identifier of consensus round during which block was finalized.
+    # Identifier of consensus round during which block was finalized.
     round_id: typing.Optional[int]
 
     # Size in bytes of block.

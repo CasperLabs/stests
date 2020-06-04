@@ -15,21 +15,22 @@ class EventType(enum.Enum):
     CORE_ACTOR_ERROR = enum.auto()    
 
     # Chain info reporting sub-system.
-    CHAININFO_FINALIZED_BLOCK_STATS = enum.auto()
-    CHAININFO_FINALIZED_DEPLOY_STATS = enum.auto()
+    CHAININFO_FINALIZED_BLOCK = enum.auto()
+    CHAININFO_FINALIZED_BLOCK_EMPTY = enum.auto()
+    CHAININFO_FINALIZED_DEPLOY = enum.auto()
 
     # Monitoring sub-system.
     MONITORING_API_ERROR = enum.auto()
     MONITORING_ACCOUNT_NOT_FOUND = enum.auto()
     MONITORING_BLOCK_ADD = enum.auto()
     MONITORING_BLOCK_FINALIZED = enum.auto()
-    MONITORING_BLOCK_FINALIZED_INFO = enum.auto()
     MONITORING_BLOCK_NOT_FOUND = enum.auto()
     MONITORING_DEPLOY_ADDED = enum.auto()
     MONITORING_DEPLOY_CORRELATED = enum.auto()
     MONITORING_DEPLOY_DISCARDED = enum.auto()
     MONITORING_DEPLOY_DISPATCHED = enum.auto()
     MONITORING_DEPLOY_DISPATCH_FAILURE = enum.auto()
+    MONITORING_DEPLOY_DISPATCH_ERROR = enum.auto()
     MONITORING_DEPLOY_FINALIZED = enum.auto()
     MONITORING_DEPLOY_NOT_FOUND = enum.auto()
     MONITORING_DEPLOY_ORPHANED = enum.auto()
@@ -55,12 +56,20 @@ class EventType(enum.Enum):
     WORKFLOW_INVALID = enum.auto()
     WORKFLOW_GENERATOR_LAUNCHED = enum.auto()
 
+# Set of debug events.
+EVENTS_DEBUG = (
+    EventType.CHAININFO_FINALIZED_BLOCK_EMPTY,
+    EventType.MONITORING_BLOCK_ADD,
+    EventType.MONITORING_BLOCK_FINALIZED,
+    EventType.MONITORING_DEPLOY_ADDED,
+)
 
 # Set of error events.
 EVENTS_ERROR = (
     EventType.CORE_ACTOR_ERROR,
     EventType.MONITORING_BLOCK_NOT_FOUND,
     EventType.MONITORING_DEPLOY_NOT_FOUND,
+    EventType.MONITORING_DEPLOY_DISPATCH_ERROR,
     EventType.MONITORING_API_ERROR,
     EventType.WORKFLOW_RUN_ERROR,
     EventType.WORKFLOW_PHASE_ERROR,
@@ -137,9 +146,12 @@ def get_event_info(event_type: EventType, message: typing.Union[BaseException, s
     return EventInfo(
         data=data,
         id=event_id,
-        message=f"{event_name} :: {str(message)}" if message else event_name,
+        message=f"[{sub_system}] {event_name} :: {str(message)}" if message else f"[{sub_system}] {event_name}",
         name=event_name,
-        priority=9 if event_type in EVENTS_ERROR else 7 if event_type in EVENTS_WARN else 5,
+        priority=9 if event_type in EVENTS_ERROR else \
+                 7 if event_type in EVENTS_WARN else \
+                 1 if event_type in EVENTS_DEBUG else \
+                 5,
         timestamp=datetime.utcnow().timestamp(),
         type=event_type,
         uid=str(uuid.uuid4()),
@@ -163,12 +175,16 @@ def _get_event_info_monitoring(
     """Returns monitoring sub-system event information.
     
     """
-    return event_id or event_type.value, {
+    data = {
         'network': node.network_name,
         'node': node.address if hasattr(node, "address") else node.label_index,
-        'block': block_hash,
-        'deploy': deploy_hash,
     }
+    if block_hash:
+        data['block_hash'] = block_hash
+    if deploy_hash:
+        data['deploy_hash'] = deploy_hash
+
+    return event_id or event_type.value, data
 
 
 def _get_event_info_workflow(event_type: EventType, ctx: typing.Any) -> typing.Tuple[int, dict]:
