@@ -22,6 +22,7 @@ from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
+from stests.core.utils.env import get_var
 from stests.core.utils.misc import Timer
 from stests.events import EventType
 
@@ -157,8 +158,9 @@ def get_contract_path(wasm_filename: str) -> pathlib.Path:
     :returns: Path to a wasm blob.
     
     """
-    # TODO: pull from ???
-    return pathlib.Path(casperlabs_client.__file__).parent / wasm_filename
+    path = get_var("PATH_WASM")
+
+    return pathlib.Path(path) / wasm_filename
 
 
 def get_named_keys(src: typing.Any, account: Account, block_hash: str, key_filter: typing.List[str]) -> typing.List[typing.Dict[str, str]]:
