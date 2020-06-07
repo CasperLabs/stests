@@ -59,7 +59,7 @@ Runs both monitoring & orchestration processes in a single interactive session.
 
 #### `stests-interactive-monitoring`
 
-Runs monitoring process in a single interactive session.  Useful when wishing to focus upon node monitoring events.
+Runs monitoring process in a single interactive session. 
 
 #### `stests-interactive-orchestration`
 
@@ -93,7 +93,7 @@ Displays a node's bonding ECC key pair.
 
 #### `stests-ls-run`
 
-Displays summary information related to a workload generator run.  The information is broken down into the various phases that a generator may pass through.  Within each phase the information is broken down into the various steps taken.
+Displays summary information related to a workload generator run.  The information is broken down into the various phases/steps that a generator may pass through in it's lifetime.
 
 #### `stests-ls-run-deploys`
 
@@ -107,7 +107,7 @@ Displays summary information regarding workload generator runs.  Such informatio
 
 #### `stests-set-contracts`
 
-Installs upon chain various smart contracts used by workload generators.
+Registers various smart contracts used by workload generators.  Contracts are installed on-chain.
 
 #### `stests-set-network`
 
@@ -175,6 +175,18 @@ For each workload generator a set of default parameters may be defined:
 - `--parallel`
 	- "Number of runs to launch in parallel.
 
+#### `stests-wg-004`
+
+Disconnects or reconnects a node from/to a network.  Does this by executing RunDeck API within underlying SRE infrastructure.
+
+#### `stests-wg-100`
+
+Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer a WASM file will be dispatched to the network as part of the deploy.
+
+#### `stests-wg-110`
+
+Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer an on-chain WASM contract is referenced via it's hash.
+
 ## Viewing On-Chain Information
 
 On-chain information can be queried, the query result is formatted and is displayed in the user's terminal session.  Binary information such as public keys, block hashes ...etc, are displayed in hexadecimal format.
@@ -191,6 +203,3 @@ Display information pertaining to a block.
 
 Display information pertaining to a deploy.
 
-## Viewing Workload Generator Information
-
-TODO
