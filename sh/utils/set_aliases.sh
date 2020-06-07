@@ -30,11 +30,12 @@ alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh moni
 alias stests-interactive-workflows='$STESTS_PATH_SH/workers/interactive.sh workflows'
 
 alias stests-workers=$STESTS_PATH_SH/workers/start.sh
+alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
+alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
+alias stests-workers-restart=$STESTS_PATH_SH/workers/restart.sh
 alias stests-workers-start=$STESTS_PATH_SH/workers/start.sh
 alias stests-workers-status=$STESTS_PATH_SH/workers/status.sh
 alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
-alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
-alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 
 # ###############################################################
 # ALIASES: cache - flush
