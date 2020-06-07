@@ -12,7 +12,7 @@ Upon successful installation a set of stests commands are available for executio
 - viewing on-chain information;
 - viewing workload generator information;
 
-### Updating Stack
+## Updating Stack
 
 #### `stests-stack-update`
 
@@ -22,7 +22,7 @@ Updates the locally installed stests stack by:
 - updating environment variables;
 - updating virtual environment.
 
-### Controlling Worker Daemons
+## Controlling Worker Daemons
 
 The stests worker processes can be run in daemon mode.  Process behaviour can be altered by editing the following configuration file:
 
@@ -48,19 +48,7 @@ Displays in terminal the current status of stests processes.
 
 Stops all stests processes currently running in daemon mode.
 
-### Managing Cache
-
-The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of worklopad generators that have been executed.
-
-#### `stests-flush`
-
-Deletes orchestration & monitoring related cache data.
-
-#### `stests-flush-infra`
-
-Deletes infrastructure related cache data.  Execution of this command requires subsequent re-registration of network infrastructure.
-
-### Controlling Interactive Sessions
+## Controlling Interactive Sessions
 
 Running orchestration & monitoring processes in interactive mode is useful in development & smokescreen scenarios.
 
@@ -76,7 +64,19 @@ Runs monitoring process in a single interactive session.  Useful when wishing to
 
 Runs orchestration process in a single interactive session.
 
-### Launching Workload Generators
+## Managing Cache
+
+The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of worklopad generators that have been executed.
+
+#### `stests-flush`
+
+Deletes orchestration & monitoring related cache data.
+
+#### `stests-flush-infra`
+
+Deletes infrastructure related cache data.  Execution of this command requires subsequent re-registration of network infrastructure.
+
+## Launching Workload Generators
 
 The stests application can be used to dispatch various workloads to a target network.  Such workloads may test scenarios pertaining to accounts, smart-contracts, and/or network infrastructure.    Workloads are executed from the command line:
 
@@ -91,18 +91,37 @@ For each workload generator a set of default parameters may be defined:
 
 - `--execution-mode`
 	- Generator execution mode - sequential | periodical
-	- If a generator is launched in sequential mode AND is instructed to loop N times, then loop N+1 will only be launched if run N successfully completed.
-	- If a generator is launched in periodical mode AND is instructed to loop N times, then loop N+1 will be scheduled for launch when run N starts.
-
+	- If a generator is launched in sequential mode AND is instructed to loop N times, then run N+1 will only be launched if run N successfully completed.
+	- If a generator is launched in periodical mode AND is instructed to loop N times, then run N+1 will be scheduled for launch when run N starts.  Thus even if run N fails, run N+1 will be started.
 
 - `--node`
-	- Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.\
+	- Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.
 
 - `--loop`
 	- Number of times to loop when running the generator multiple times.
 
 - `--loop-interval`
-	- Interval in seconds between loops.\
+	- Interval in seconds between loops.
 
 - `--parallel`
 	- "Number of runs to launch in parallel.
+
+## Viewing On-Chain Information
+
+On-chain information can be queried, the query result is formatted and is displayed in the user's terminal session.  Binary information such as public keys, block hashes ...etc, are displayed in hexadecimal format.
+
+#### `stests-view-balance`
+
+Displays an account's on-chain balance or zero if the chain does not exist.
+
+#### `stests-view-block-info`
+
+Display information pertaining to a block.
+
+#### `stests-view-deploy-info`
+
+Display information pertaining to a deploy.
+
+## Viewing Workload Generator Information
+
+TODO
