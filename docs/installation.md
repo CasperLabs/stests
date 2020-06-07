@@ -37,26 +37,15 @@ The installer detects the user's OS and installs the following:
 - virtual environment:
 	- installed using pipenv (see pre-requisites)
 
-## Post-Installation
-
-Once the installer has successfully completed a set of stests commands are available for execution from the command line.  The commands allow you to:
-
-- control worker daemons;
-- launch workload generator runs;
-- manage redis cache;
-- update stack;
-- view on-chain information;
-- view workload generator run progress;
-
 ## Stack Update
 
-As stests is updated one can sync with latest version by invoking the `stests-stack-update` command.  The updater does the following:
+To update to the latest version of stests simply execute the `stests-stack-update` command from within a terminal session.  The updater does the following:
 
 - GitHub repo:
 	- pulls latests changes.
 
 - environment variables:
-	- makes a backup of existing settings -> `$HOME/.casperlabs-stests/vars-YYYY-MM-DD` 
+	- backs up existing settings -> `$HOME/.casperlabs-stests/vars-YYYY-MM-DD` 
 	- installs new settings -> `$HOME/.casperlabs-stests/vars` 
 
 - virtual environment:
