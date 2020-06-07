@@ -8,9 +8,9 @@ Upon successful installation a set of stests commands are available for executio
 - controlling worker daemons;
 - controlling interactive sessions;
 - managing cache;
-- launching workload generator runs;
+- launching workload generators;
 - viewing on-chain information;
-- viewing workload generator run information;
+- viewing workload generator information;
 
 ### Updating Stack
 
@@ -24,11 +24,13 @@ Updates the locally installed stests stack by:
 
 ### Controlling Worker Daemons
 
-#### `stests-workers` | `stests-workers-start`
-
-Starts stests processes in daemon mode.  Process behaviour can be altered by editing the following configuration file:
+The stests worker processes can be run in daemon mode.  Process behaviour can be altered by editing the following configuration file:
 
 - `$HOME/.casperlabs-stests/ops/config/supervisord.conf`
+
+#### `stests-workers` | `stests-workers-start`
+
+Starts stests processes in daemon mode.  
 
 #### `stests-workers-reload`
 
@@ -48,9 +50,11 @@ Stops all stests processes currently running in daemon mode.
 
 ### Managing Cache
 
+The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of worklopad generators that have been executed.
+
 #### `stests-flush`
 
-Deletes monitoring & generator related cache data.
+Deletes orchestration & monitoring related cache data.
 
 #### `stests-flush-infra`
 
@@ -71,3 +75,34 @@ Runs monitoring process in a single interactive session.  Useful when wishing to
 #### `stests-interactive-orchestration`
 
 Runs orchestration process in a single interactive session.
+
+### Launching Workload Generators
+
+The stests application can be used to dispatch various workloads to a target network.  Such workloads may test scenarios pertaining to accounts, smart-contracts, and/or network infrastructure.    Workloads are executed from the command line:
+
+- `stests-wg-XXX YYY` 
+- XXX = generator ID
+- YYY = network-ID
+
+For each workload generator a set of default parameters may be defined:
+
+- `--deploys-per-second`
+	- Max. number of deploys to dispatch per second.
+
+- `--execution-mode`
+	- Generator execution mode - sequential | periodical
+	- If a generator is launched in sequential mode AND is instructed to loop N times, then loop N+1 will only be launched if run N successfully completed.
+	- If a generator is launched in periodical mode AND is instructed to loop N times, then loop N+1 will be scheduled for launch when run N starts.
+
+
+- `--node`
+	- Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.\
+
+- `--loop`
+	- Number of times to loop when running the generator multiple times.
+
+- `--loop-interval`
+	- Interval in seconds between loops.\
+
+- `--parallel`
+	- "Number of runs to launch in parallel.
