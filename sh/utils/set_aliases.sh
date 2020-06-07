@@ -31,7 +31,6 @@ alias stests-interactive-workflows='$STESTS_PATH_SH/workers/interactive.sh workf
 
 alias stests-workers=$STESTS_PATH_SH/workers/start.sh
 alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
-alias stests-workers-reset-logs=$STESTS_PATH_SH/workers/reset_logs.sh
 alias stests-workers-restart=$STESTS_PATH_SH/workers/restart.sh
 alias stests-workers-start=$STESTS_PATH_SH/workers/start.sh
 alias stests-workers-status=$STESTS_PATH_SH/workers/status.sh
