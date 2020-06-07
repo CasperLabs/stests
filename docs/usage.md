@@ -2,15 +2,16 @@
 
 ## Overview
 
-Upon successful installation a set of stests commands are available for execution from within a terminal session.  All such commands are prefixed by `stests-` and allow you to perform tasks:
+Upon successful installation a set of stests commands are available for execution from within a terminal session.  All such commands are prefixed by `stests-`, support the `--help` flag, and allow you to perform tasks:
 
 - updating stack;
 - controlling worker daemons;
 - controlling interactive sessions;
-- managing cache;
+- cache querying;
+- cache updating;
+- cache housekeeping;
 - launching workload generators;
 - viewing on-chain information;
-- viewing workload generator information;
 
 ## Updating Stack
 
@@ -64,9 +65,77 @@ Runs monitoring process in a single interactive session.  Useful when wishing to
 
 Runs orchestration process in a single interactive session.
 
-## Managing Cache
+## Cache Querying
 
-The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of worklopad generators that have been executed.
+#### `stests-ls-contracts`
+
+Displays information related to all smart contracts registered with stests & stored on-chain.
+
+#### `stests-ls-networks`
+
+Displays information related to the set of networks registered with stests.
+
+##### `stests-ls-network-faucet-balance`
+
+Displays a network's faucet account balance.
+
+#### `stests-ls-network-faucet-key`
+
+Displays a network's faucet account ECC key pair.
+
+#### `stests-ls-nodes`
+
+Displays set of nodes registered with stests for a particular network.
+
+#### `stests-ls-node-bonding-key`
+
+Displays a node's bonding ECC key pair.
+
+#### `stests-ls-run`
+
+Displays summary information related to a workload generator run.  The information is broken down into the various phases that a generator may pass through.  Within each phase the information is broken down into the various steps taken.
+
+#### `stests-ls-run-deploys`
+
+Displays information about each deploy dispatched during the course of a workload generator run.
+
+#### `stests-ls-runs`
+
+Displays summary information regarding workload generator runs.  Such information includes number of dispatched deploys plus execution stats & status. 
+
+## Cache Updating
+
+#### `stests-set-contracts`
+
+Installs upon chain various smart contracts used by workload generators.
+
+#### `stests-set-network`
+
+Registers a network for testing.
+
+#### `stests-set-network-faucet-key`
+
+Registers a network's faucet key.
+
+#### `stests-set-network-status`
+
+Updates the operational status of a registered network.
+
+#### `stests-set-node`
+
+Registers a network node.  When registering the node's mode must be specified as this will affect how stests will interact with the node.
+
+#### `stests-set-node-bonding-key`
+
+Registers a node's bonding key for use in Proof-of-Stake related scenarios.
+
+#### `stests-set-node-status`
+
+Updates the operational status of a registered node.
+
+## Cache Housekeeping
+
+The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of workload generators that have been executed.  Some management commands exist to simplify cache housekeeping.   
 
 #### `stests-flush`
 

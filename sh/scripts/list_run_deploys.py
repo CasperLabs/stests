@@ -112,9 +112,10 @@ def _render_finalization_stats(data):
     minima = min(times)
     avg = statistics.mean(times)
     stdev = statistics.stdev(times)
-    variance = format(statistics.variance(times), '.3f') if len(times) > 1 else 'N/A'
+    # variance = format(statistics.variance(times), '.3f') if len(times) > 1 else 'N/A'
 
-    print(f"Finalized = {len(times)} :: %={int((len(times) / len(data)) * 100)} :: Avg={format(avg, '.3f')}s :: Max={format(maxima, '.3f')}s :: Min={format(minima, '.3f')}s :: Variance={variance}s :: Std Dev= {format(stdev, '.3f')}s")
+    # print(f"Finalized = {len(times)} :: %={int((len(times) / len(data)) * 100)} :: Avg={format(avg, '.3f')}s :: Max={format(maxima, '.3f')}s :: Min={format(minima, '.3f')}s :: Variance={variance}s :: Std Dev= {format(stdev, '.3f')}s")
+    print(f"Finalized = {len(times)} :: %={int((len(times) / len(data)) * 100)} :: Avg={format(avg, '.3f')}s :: Max={format(maxima, '.3f')}s :: Min={format(minima, '.3f')}s :: Std Dev= {format(stdev, '.3f')}s")
 
 # Entry point.
 if __name__ == '__main__':

@@ -22,12 +22,16 @@ function _exec_cmd()
 alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 
 # ###############################################################
-# ALIASES: workers
+# ALIASES: interactive
 # ###############################################################
 
 alias stests-interactive='$STESTS_PATH_SH/workers/interactive.sh unified'
 alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh monitoring'
 alias stests-interactive-workflows='$STESTS_PATH_SH/workers/interactive.sh workflows'
+
+# ###############################################################
+# ALIASES: workers
+# ###############################################################
 
 alias stests-workers=$STESTS_PATH_SH/workers/start.sh
 alias stests-workers-reload=$STESTS_PATH_SH/workers/reload.sh
@@ -48,28 +52,23 @@ alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_infra.sh'
 # ###############################################################
 
 alias stests-ls-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_contracts.py'
-
 alias stests-ls-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_networks.py'
 alias stests-ls-network-faucet-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_network_faucet_balance.py'
 alias stests-ls-network-faucet-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_network_faucet_key.py'
-
 alias stests-ls-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_nodes.py'
 alias stests-ls-node-bonding-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_node_bonding_key.py'
-
 alias stests-ls-run='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_run.py'
 alias stests-ls-run-deploys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_run_deploys.py'
 alias stests-ls-runs='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_runs.py'
 
 # ###############################################################
-# ALIASES: cache - set
+# ALIASES: infra - set
 # ###############################################################
 
 alias stests-set-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_contracts.py'
-
 alias stests-set-network='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_network.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_network_faucet_key.py'
 alias stests-set-network-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_network_status.py'
-
 alias stests-set-node='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_node.py'
 alias stests-set-node-bonding-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_node_bonding_key.py'
 alias stests-set-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_node_status.py'
@@ -79,11 +78,8 @@ alias stests-set-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_node_status.
 # ###############################################################
 
 alias stests-view-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_balance.py'
-
 alias stests-view-block-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_block_info.py'
 alias stests-view-deploy-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_deploy_info.py'
-
-alias stests-propose-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/propose.py'
 
 # ###############################################################
 # ALIASES: generators
