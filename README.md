@@ -7,7 +7,7 @@ Casper Labs System Test Platform
 What is stests ?
 --------------------------------------
 
-stests stands for system tests.  It's goal is to encapsulate very large system testing of the CLX network.
+stests stands for system tests.  It's goal is to encapsulate large system testing of the CLX network.
 
 
 Why stests ?
@@ -21,21 +21,33 @@ Who uses stests ?
 
 CLX network community.  This encompasses developers, validators, evaluators ... etc.
 
-
 Requirements
 --------------------------------------
 
     - python 3.7+
+    - pipenv
     - redis
 
 Installation
 --------------------------------------
 
+See [installation](docs/installation.md) for further information.
+
 ```
 curl https://raw.githubusercontent.com/CasperLabs/stests/master/installer | bash
 ```
 
+Commands
+--------------------------------------
+
+Once installed a set of [commands](docs/commands.md) are available for use within a terminal session.
+
 Usage
+--------------------------------------
+
+See [usage](docs/usage.md) for further information.
+
+Quick Start
 --------------------------------------
 
 1.  Register network + faucet key:

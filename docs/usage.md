@@ -1,159 +1,68 @@
 # STESTS Usage
 
-## Overview
+Once installed stests commands can be used to interact with the target test network.  Whilst there are many supported commands, a few subsets typically form the vast majority of user workflows.  
 
-Upon successful installation a set of stests commands are available for execution from within a terminal session.  All such commands are prefixed by `stests-`, support the `--help` flag, and allow you to perform tasks:
+## Registering Infrastructure
 
-- updating stack;
-- controlling worker daemons;
-- controlling interactive sessions;
-- cache querying;
-- cache updating;
-- cache housekeeping;
-- launching workload generators;
-- viewing on-chain information;
+Prior to interacting with a test network one must register the network infrastructure with stests, this includes registering the network itself plus it's associated set of nodes.  Relevant private keys are also registered in order to support faucet and/or Proof-of-Stake scenarios.
 
-## Updating Stack
+1.  Register network + faucet key:
 
-#### `stests-stack-update`
+    ```
+    stests-set-network poc1
+    stests-set-network-faucet-key poc1 path-to-faucet-private-key-pem-file
+    ```
 
-Updates the locally installed stests stack by:
+2.  Register nodes + node bonding keys:
 
-- pulling latest changes from stests GitHub repo;
-- updating environment variables;
-- updating virtual environment.
+    ```
+    stests-set-node poc1:1 {host}:{port} full
+    stests-set-node-bonding-key poc1:1 path-to-validator-private-key-pem-file
 
-## Controlling Worker Daemons
+    stests-set-node poc1:2 {host}:{port} full
+    stests-set-node-bonding-key poc1:2 path-to-validator-private-key-pem-file
 
-The stests worker processes can be run in daemon mode.  Process behaviour can be altered by editing the following configuration file:
+    stests-set-node poc1:3 {host}:{port} full
+    stests-set-node-bonding-key poc1:3 path-to-validator-private-key-pem-file
+    ```
 
-- `$HOME/.casperlabs-stests/ops/config/supervisord.conf`
+## Launching Workers
 
-#### `stests-workers` | `stests-workers-start`
+Once the network is registered you can launch stests monitoring & orchestration worker processes.  These processes run in daemon mode, i.e. in the background, and are controlled from the command line.
 
-Starts stests processes in daemon mode.  
+1.  Start workers.
 
-#### `stests-workers-reload`
+	```
+	stests-workers
+	```
 
-Stops stests processes, pauses for 3 seconds, and then restarts processes.  **Does not flush cache**.  
+2.  From time to time it is a good idea to restart the workers so that the stests cache resources can be reset.
 
-#### `stests-workers-restart`
+	```
+	stests-workers-restart
+	```
 
-Stops stests processes, pauses for 3 seconds, flushes cache, and then restarts processes. 
+3.  Worker status can be viewed as follows:
 
-#### `stests-workers-status`
+	```
+	stests-workers-status
+	```
 
-Displays in terminal the current status of stests processes.
+4.  Stop workers.
 
-#### `stests-workers-stop`
-
-Stops all stests processes currently running in daemon mode.
-
-## Controlling Interactive Sessions
-
-Running orchestration & monitoring processes in interactive mode is useful in development & smokescreen scenarios.
-
-#### `stests-interactive`
-
-Runs both monitoring & orchestration processes in a single interactive session.
-
-#### `stests-interactive-monitoring`
-
-Runs monitoring process in a single interactive session. 
-
-#### `stests-interactive-orchestration`
-
-Runs orchestration process in a single interactive session.
-
-## Cache Querying
-
-#### `stests-ls-contracts`
-
-Displays information related to all smart contracts registered with stests & stored on-chain.
-
-#### `stests-ls-networks`
-
-Displays information related to the set of networks registered with stests.
-
-##### `stests-ls-network-faucet-balance`
-
-Displays a network's faucet account balance.
-
-#### `stests-ls-network-faucet-key`
-
-Displays a network's faucet account ECC key pair.
-
-#### `stests-ls-nodes`
-
-Displays set of nodes registered with stests for a particular network.
-
-#### `stests-ls-node-bonding-key`
-
-Displays a node's bonding ECC key pair.
-
-#### `stests-ls-run`
-
-Displays summary information related to a workload generator run.  The information is broken down into the various phases/steps that a generator may pass through in it's lifetime.
-
-#### `stests-ls-run-deploys`
-
-Displays information about each deploy dispatched during the course of a workload generator run.
-
-#### `stests-ls-runs`
-
-Displays summary information regarding workload generator runs.  Such information includes number of dispatched deploys plus execution stats & status. 
-
-## Cache Updating
-
-#### `stests-set-contracts`
-
-Registers various smart contracts used by workload generators.  Contracts are installed on-chain.
-
-#### `stests-set-network`
-
-Registers a network for testing.
-
-#### `stests-set-network-faucet-key`
-
-Registers a network's faucet key.
-
-#### `stests-set-network-status`
-
-Updates the operational status of a registered network.
-
-#### `stests-set-node`
-
-Registers a network node.  When registering the node's mode must be specified as this will affect how stests will interact with the node.
-
-#### `stests-set-node-bonding-key`
-
-Registers a node's bonding key for use in Proof-of-Stake related scenarios.
-
-#### `stests-set-node-status`
-
-Updates the operational status of a registered node.
-
-## Cache Housekeeping
-
-The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of workload generators that have been executed.  Some management commands exist to simplify cache housekeeping.   
-
-#### `stests-flush`
-
-Deletes orchestration & monitoring related cache data.
-
-#### `stests-flush-infra`
-
-Deletes infrastructure related cache data.  Execution of this command requires subsequent re-registration of network infrastructure.
+	```
+	stests-workers-stop
+	```
 
 ## Launching Workload Generators
 
-The stests application can be used to dispatch various workloads to a target network.  Such workloads may test scenarios pertaining to accounts, smart-contracts, and/or network infrastructure.    Workloads are executed from the command line:
+Once the network is registered and workers are up & running, you can proceed to run workload generators.  Each generator is numbered and can be executed as follows:
 
 - `stests-wg-XXX YYY` 
 - XXX = generator ID
 - YYY = network-ID
 
-For each workload generator a set of default parameters may be defined:
+Whilst each workload generator is associated with it's own set of parameters, each generator is also associated with a default set of parameters:
 
 - `--deploys-per-second`
 	- Max. number of deploys to dispatch per second.
@@ -174,32 +83,3 @@ For each workload generator a set of default parameters may be defined:
 
 - `--parallel`
 	- "Number of runs to launch in parallel.
-
-#### `stests-wg-004`
-
-Disconnects or reconnects a node from/to a network.  Does this by executing RunDeck API within underlying SRE infrastructure.
-
-#### `stests-wg-100`
-
-Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer a WASM file will be dispatched to the network as part of the deploy.
-
-#### `stests-wg-110`
-
-Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer an on-chain WASM contract is referenced via it's hash.
-
-## Viewing On-Chain Information
-
-On-chain information can be queried, the query result is formatted and is displayed in the user's terminal session.  Binary information such as public keys, block hashes ...etc, are displayed in hexadecimal format.
-
-#### `stests-view-balance`
-
-Displays an account's on-chain balance or zero if the chain does not exist.
-
-#### `stests-view-block-info`
-
-Display information pertaining to a block.
-
-#### `stests-view-deploy-info`
-
-Display information pertaining to a deploy.
-
