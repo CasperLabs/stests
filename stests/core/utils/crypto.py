@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 
 
 
-class KeyType(enum.Enum):
+class ECCAlgorithmType(enum.Enum):
     """Enumeration over set of supported key types.
     
     """
