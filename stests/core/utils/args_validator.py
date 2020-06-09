@@ -36,7 +36,7 @@ LOOP_COUNT_MAX = 65536
 
 # Parallel count min/max
 PARALLEL_COUNT_MIN = 1
-PARALLEL_COUNT_MAX = 127
+PARALLEL_COUNT_MAX = 511
 
 
 def validate_deploys_per_second(value):

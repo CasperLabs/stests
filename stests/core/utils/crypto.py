@@ -7,8 +7,16 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 
 
 
+class KeyType(enum.Enum):
+    """Enumeration over set of supported key types.
+    
+    """
+    ED25519 = enum.auto()
+    SECP256K1 = enum.auto()
+
+
 class KeyEncoding(enum.Enum):
-    """Enumeration over set of key encodings.
+    """Enumeration over set of supported key encodings.
     
     """
     BYTES = enum.auto()
