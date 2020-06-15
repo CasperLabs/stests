@@ -13,6 +13,9 @@ class Account:
     
     """
     # Numerical index to distinguish between multiple accounts within same run.
+    key_algo: str
+
+    # Numerical index to distinguish between multiple accounts within same run.
     index: int
 
     # Associated network.

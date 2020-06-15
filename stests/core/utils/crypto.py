@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 
 
 
-class ECCAlgorithmType(enum.Enum):
+class KeyAlgorithm(enum.Enum):
     """Enumeration over set of supported key types.
     
     """
@@ -24,10 +24,16 @@ class KeyEncoding(enum.Enum):
     PEM = enum.auto()
 
 
-def generate_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
+def generate_key_pair(
+    algo: KeyAlgorithm = KeyAlgorithm.ED25519,
+    encoding: KeyEncoding = KeyEncoding.BYTES
+    ) -> typing.Tuple[str, str]:
     """Returns an ED25519 key pair, each key is a 32 byte array.
 
-    :rtype: 2 member tuple: (private key, public key)
+    :param algo: Type of ECC algo to be used when generating key pair.
+    :param encoding: Key pair encoding type.
+
+    :returns : 2 member tuple: (private key, public key)
     
     """
     # Guard.
@@ -41,7 +47,11 @@ def generate_key_pair(encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple
     return _get_key_pair(pvk, encoding)
 
 
-def get_key_pair_from_pvk_bytes(pvk_bytes, encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
+def get_key_pair_from_pvk_bytes(
+    pvk_bytes: bytes,
+    algo: KeyAlgorithm = KeyAlgorithm.ED25519,
+    encoding: KeyEncoding = KeyEncoding.BYTES
+    ) -> typing.Tuple[str, str]:
     """Returns a key pair derived from an existing private key.
     
     """
@@ -50,23 +60,27 @@ def get_key_pair_from_pvk_bytes(pvk_bytes, encoding: KeyEncoding = KeyEncoding.B
     return _get_key_pair(pvk, encoding)
 
 
-def get_key_pair_from_pvk_pem_file(fpath, encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[str, str]:
+def get_key_pair_from_pvk_pem_file(
+    fpath: str,
+    algo: KeyAlgorithm = KeyAlgorithm.ED25519,
+    encoding: KeyEncoding = KeyEncoding.BYTES
+    ) -> typing.Tuple[str, str]:
     """Returns a key pair derived from an existing private key.
     
     """
     pvk_bytes = get_pvk_bytes_from_pem_file(fpath)
 
-    return get_key_pair_from_pvk_bytes(pvk_bytes, encoding)
+    return get_key_pair_from_pvk_bytes(pvk_bytes, algo, encoding)
 
 
-def get_pbk_bytes_from_pem_file(fpath):
+def get_pbk_bytes_from_pem_file(fpath: str):
     """Returns public key (bytes) pulled from a PEM file.
     
     """
     return _get_bytes_from_pem_file(fpath)
 
 
-def get_pbk_hex_from_pem_file(fpath):
+def get_pbk_hex_from_pem_file(fpath: str):
     """Returns public key (hex) pulled from a PEM file.
     
     """
@@ -75,7 +89,7 @@ def get_pbk_hex_from_pem_file(fpath):
     return as_bytes.hex()
 
 
-def get_pbk_pem_from_bytes(pbk_bytes):
+def get_pbk_pem_from_bytes(pbk_bytes: bytes):
     """Returns public key (pem) from bytes.
     
     """
@@ -85,14 +99,14 @@ def get_pbk_pem_from_bytes(pbk_bytes):
         )
 
 
-def get_pvk_bytes_from_pem_file(fpath):
+def get_pvk_bytes_from_pem_file(fpath: str):
     """Returns private key (bytes) pulled from a PEM file.
     
     """
     return _get_bytes_from_pem_file(fpath)
 
 
-def get_pvk_hex_from_pem_file(fpath):
+def get_pvk_hex_from_pem_file(fpath: str):
     """Returns private key (hex) pulled from a PEM file.
     
     """
@@ -101,7 +115,7 @@ def get_pvk_hex_from_pem_file(fpath):
     return as_bytes.hex()
 
 
-def get_pvk_pem_from_bytes(pvk_bytes):
+def get_pvk_pem_from_bytes(pvk_bytes: bytes) -> bytes:
     """Returns private key (pem) from bytes.
     
     """
@@ -112,7 +126,7 @@ def get_pvk_pem_from_bytes(pvk_bytes):
     )
 
 
-def _get_bytes_from_pem_file(fpath):
+def _get_bytes_from_pem_file(fpath: str) -> bytes:
     """Returns bytes from a pem file.
     
     """

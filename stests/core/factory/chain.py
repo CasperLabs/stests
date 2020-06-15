@@ -35,9 +35,13 @@ def create_account(
     
     """
     if private_key is None:
-        private_key, public_key = crypto.generate_key_pair(crypto.KeyEncoding.HEX)        
+        private_key, public_key = crypto.generate_key_pair(
+            crypto.KeyAlgorithm.ED25519,
+            crypto.KeyEncoding.HEX
+            )        
 
     return Account(
+        key_algo=crypto.KeyAlgorithm.ED25519.name,
         index=index if index is not None else 1,
         network=network,
         private_key=private_key,
