@@ -35,4 +35,4 @@ def execute(ctx: ExecutionContext):
     count_actual = len(json.loads(requests.get(url).content))
 
     # Assert actual count is likely to be correct by comparing against cached count plus user defined increments. 
-    assert count_actual >= count_cached + ctx.args['increments'], "Deploy count mismatch"
+    assert count_actual >= count_cached + ctx.args['deploys'], "Deploy count mismatch"

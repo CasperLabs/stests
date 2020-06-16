@@ -31,7 +31,7 @@ def execute(ctx: ExecutionContext):
     cache.workflow.set_deploy_count(ctx, deploy_count)
 
     # Build an array of new 'deploys'.
-    new_deploys = list(range(deploy_count + 1, deploy_count + 1 + ctx.args['increments']))    
+    new_deploys = list(range(deploy_count + 1, deploy_count + 1 + ctx.args['deploys']))    
 
     # Push deploy array to node.
     requests.post(url, json.dumps(new_deploys))

@@ -12,8 +12,8 @@ class Arguments:
     """Custom generator arguments passed along chain of execution.
     
     """
-    # Number of increments to apply to array.
-    increments: int
+    # Number of 'deploys' to apply to array.
+    deploys: int
 
     @classmethod
     def create(cls, args: argparse.Namespace):
@@ -23,7 +23,7 @@ class Arguments:
 
         """
         return cls(
-            increments='increments' in args and args.increments,
+            deploys='deploys' in args and args.deploys,
         )
 
 
@@ -32,9 +32,9 @@ ARGS = get_argparser(f"Executes simple node-rs deploy mock.")
 
 # CLI argument: initial CLX balance.
 ARGS.add_argument(
-    "--increments",
+    "--deploys",
     help="Increments deploy array count. Default=1",
-    dest="increments",
+    dest="deploys",
     type=int,
     default=1
     )
