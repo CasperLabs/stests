@@ -30,8 +30,8 @@ def execute(ctx: ExecutionContext):
     # Cache current count for verification in phase 2.
     cache.workflow.set_deploy_count(ctx, deploy_count)
 
-    # Build an array of new 'deploys'.
+    # Build a 'deploy batch'.
     new_deploys = list(range(deploy_count + 1, deploy_count + 1 + ctx.args['deploys']))    
 
-    # Push deploy array to node.
+    # Push deploy batch to node.
     requests.post(url, json.dumps(new_deploys))

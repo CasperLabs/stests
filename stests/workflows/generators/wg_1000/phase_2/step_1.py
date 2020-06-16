@@ -28,11 +28,11 @@ def execute(ctx: ExecutionContext):
         )
     url = f"http://{node.address}/deploys"
 
-    # Get deploy count just before posting deploy batch.
+    # Get count prior to dispatching deploy batch.
     count_cached = cache.workflow.get_deploy_count(ctx)['deploy_count']
 
-    # Get  deploy count.
+    # Get actual count.
     count_actual = len(json.loads(requests.get(url).content))
 
-    # Assert actual count is likely to be correct by comparing against cached count plus user defined increments. 
+    # Assert actual count is likely to be correct by comparing against cached count. 
     assert count_actual >= count_cached + ctx.args['deploys'], "Deploy count mismatch"
