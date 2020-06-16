@@ -1,6 +1,10 @@
 # --------------------------------------------------------------------
-# Paths
+# General
 # --------------------------------------------------------------------
+
+# NODE -> implementation (SCALA | RUST)
+# N.B. this is a temporary setting
+export STESTS_NODE_IMPLEMENTATION=SCALA
 
 # PATH -> wasm
 export STESTS_PATH_WASM=/opt/CasperLabs/client-py/casperlabs_client

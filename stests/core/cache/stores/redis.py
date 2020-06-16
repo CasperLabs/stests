@@ -24,6 +24,7 @@ PARTITION_OFFSETS = {
     StorePartition.MONITORING: 2,
     StorePartition.ORCHESTRATION: 3,
     StorePartition.STATE: 4,
+    StorePartition.WORKFLOW: 5,
 }
 
 

@@ -109,3 +109,11 @@ alias stests-wg-200='_exec_generator 200'
 
 # WG-210: Counter - stored contract.
 alias stests-wg-210='_exec_generator 210'
+
+
+# ###############################################################
+# ALIASES: generators
+# ###############################################################
+
+# WG-1000: Test node-rs.
+alias stests-wg-1000='_exec_generator 1000'

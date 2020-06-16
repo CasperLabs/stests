@@ -65,9 +65,7 @@ def do_step_verification(ctx: ExecutionContext):
         log_event(EventType.WORKFLOW_STEP_FAILURE, "invalid step", ctx)
 
     # Verify step.
-    if not step.has_verifer:
-        log_event(EventType.WORKFLOW_STEP_FAILURE, "verifier undefined", ctx)
-    else:
+    if step.has_verifer:
         try:
             step.verify(ctx)
         except AssertionError as err:
@@ -153,9 +151,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
             return
 
     # Verify step.
-    if not step.has_verifer:
-        log_event(EventType.WORKFLOW_STEP_FAILURE, f"verifier undefined", ctx)
-    else:
+    if step.has_verifer:
         try:
             step.verify(ctx)
         except AssertionError as err:

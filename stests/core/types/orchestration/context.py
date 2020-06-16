@@ -26,8 +26,8 @@ class ExecutionContext:
     # Numerical index to distinguish between loops.
     loop_index: int
 
-    # Upon successful completion of a run, the number of seconds after which a new run will be started.
-    loop_interval: int
+    # The number of milli-seconds after which a new run will be started.
+    loop_interval_ms: int
 
     # Associated network.
     network: str

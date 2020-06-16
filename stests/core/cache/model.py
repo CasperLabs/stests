@@ -130,3 +130,6 @@ class StorePartition(enum.Enum):
 
     # Workflow state
     STATE = enum.auto()
+
+    # Workflow state
+    WORKFLOW = enum.auto()

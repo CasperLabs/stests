@@ -149,7 +149,7 @@ def _loop(ctx):
     ctx.step_index = 0
 
     # Set loop delay.
-    loop_delay = ctx.loop_interval or _DEFAULT_LOOP_INTERVAL_MS[ctx.execution_mode]
+    loop_delay = ctx.loop_interval_ms or _DEFAULT_LOOP_INTERVAL_MS[ctx.execution_mode]
 
     # Enqueue next loop.
     do_run.send_with_options(args=(ctx, ), delay=loop_delay)

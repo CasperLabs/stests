@@ -1,4 +1,5 @@
 import base64
+import os
 import pathlib
 import time
 import typing
@@ -158,9 +159,17 @@ def get_contract_path(wasm_filename: str) -> pathlib.Path:
     :returns: Path to a wasm blob.
     
     """
-    path = get_var("PATH_WASM")
+    # Return wasm at path specified by env var.
+    path = pathlib.Path(get_var("PATH_WASM")) / wasm_filename    
+    if path.exists():
+        return path
 
-    return pathlib.Path(path) / wasm_filename
+    # Return wasm at python client root.
+    path = pathlib.Path(os.path.dirname(casperlabs_client.__file__)) / wasm_filename
+    if path.exists():
+        return path
+
+    raise ValueError("WASM file could not be found. Verify the STESTS_PATH_WASM env var setting.")
 
 
 def get_named_keys(src: typing.Any, account: Account, block_hash: str, key_filter: typing.List[str]) -> typing.List[typing.Dict[str, str]]:
