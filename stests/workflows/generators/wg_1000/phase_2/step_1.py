@@ -18,7 +18,7 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    # Grant baby network has time to propogate.
+    # Grant baby network time to propagate.
     time.sleep(2.0)
 
     # Set target URL by selecting a node at random.
