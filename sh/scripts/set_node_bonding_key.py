@@ -43,7 +43,11 @@ def main(args):
         raise ValueError("Unregistered node.")
 
     # Set key pair.
-    pvk, pbk = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
+    pvk, pbk = crypto.get_key_pair_from_pvk_pem_file(
+        args.pem_path,
+        algo=crypto.KeyAlgorithm.ED25519,
+        encoding=crypto.KeyEncoding.HEX
+        )
 
     # Set bonding account.
     node.account = factory.create_account(

@@ -41,7 +41,11 @@ def main(args):
         raise ValueError("Unregistered network.")
 
     # Set key pair.
-    pvk, pbk = crypto.get_key_pair_from_pvk_pem_file(args.pem_path, crypto.KeyEncoding.HEX)
+    pvk, pbk = crypto.get_key_pair_from_pvk_pem_file(
+        args.pem_path,
+        algo=crypto.KeyAlgorithm.ED25519,
+        encoding=crypto.KeyEncoding.HEX
+        )
 
     # Set faucet.
     network.faucet = factory.create_account(

@@ -36,8 +36,8 @@ def create_account(
     """
     if private_key is None:
         private_key, public_key = crypto.generate_key_pair(
-            crypto.KeyAlgorithm.ED25519,
-            crypto.KeyEncoding.HEX
+            algo=crypto.KeyAlgorithm.ED25519,
+            encoding=crypto.KeyEncoding.HEX
             )        
 
     return Account(
