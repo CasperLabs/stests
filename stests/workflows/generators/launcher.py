@@ -88,7 +88,7 @@ def _get_context(
         deploys_per_second=args.deploys_per_second,
         execution_mode=args.execution_mode,
         loop_count=args.loop_count,
-        loop_interval=args.loop_interval,
+        loop_interval_ms=args.loop_interval * 1000,
         network_id=network_id,
         node_id=node_id,
         run_index=run_index,

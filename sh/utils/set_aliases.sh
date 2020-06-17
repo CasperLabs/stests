@@ -77,7 +77,8 @@ alias stests-set-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_node_status.
 # ALIASES: chain - view
 # ###############################################################
 
-alias stests-view-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_balance.py'
+alias stests-view-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_balance.py'
+alias stests-view-account-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_info.py'
 alias stests-view-block-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_block_info.py'
 alias stests-view-deploy-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_deploy_info.py'
 
@@ -109,3 +110,11 @@ alias stests-wg-200='_exec_generator 200'
 
 # WG-210: Counter - stored contract.
 alias stests-wg-210='_exec_generator 210'
+
+
+# ###############################################################
+# ALIASES: generators
+# ###############################################################
+
+# WG-1000: Test node-rs.
+alias stests-wg-1000='_exec_generator 1000'

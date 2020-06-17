@@ -7,6 +7,7 @@ from stests.core import factory
 from stests.core.logging import log_event
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.infra import NodeMonitoringLock
+from stests.core.utils.env import get_var
 from stests.monitoring import listener
 from stests.events import EventType
 
@@ -15,8 +16,10 @@ from stests.events import EventType
 # Queue to which messages will be dispatched.
 _QUEUE = "monitoring.control"
 
+# Number of monitors to launch per process.
+_MONITORS_PER_PROCESS = 8
+
 # Number of monitors to launch per node.
-# TODO: use algo: processes * threads / nodes ?
 _MONITORS_PER_NODE = 1
 
 # Time limit for node monitoring actor.
@@ -28,6 +31,10 @@ def do_start_monitoring():
     """Starts monitoring of registered networks.
     
     """
+    # Escape if node implementation being tested is rust.
+    if get_var("NODE_IMPLEMENTATION", "SCALA") != "SCALA":
+        return
+    
     for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
         for node in cache.infra.get_nodes_operational(network_id):

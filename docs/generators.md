@@ -65,3 +65,10 @@ Launches a workload generator that will perform a sequence of on-chain balance t
 
 - `--user-initial-clx-balance`
     - Initial CLX balance of user accounts.
+
+## WG-1000 - Temporary node-rs test generator
+
+Launches a workload generator that queries a node's `deploys` endpoint to get a count of pseudo-deploys dispatched to network.  It then dipatches N pseudo-deploys, waits for 2 seconds, and then asserts that the new deploy count is as expected.
+
+- `--deploys`
+    Number of pseudo-deploys to dispatch.

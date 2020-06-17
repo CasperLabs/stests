@@ -21,6 +21,9 @@ function main()
     # Flush partition: orchestration data.
     source $STESTS_PATH_SH/cache/flush_partition.sh 5
 
+    # Flush partition: workflow data.
+    source $STESTS_PATH_SH/cache/flush_partition.sh 6
+
     log "Cache successfully flushed"
 }
 
