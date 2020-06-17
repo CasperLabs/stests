@@ -5,11 +5,12 @@ import typing
 from stests.core import clx
 from stests.core import factory
 from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays block information pulled from chain.")
+ARGS = argparse.ArgumentParser("Displays an on-chain account information.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -18,12 +19,13 @@ ARGS.add_argument(
     type=args_validator.validate_network
     )
 
-# CLI argument: run type.
+# CLI argument: network name.
 ARGS.add_argument(
-    "block_hash",
-    help="Block hash.",
-    type=str,
+    "account",
+    help="Network account (hex format), e.g. 853b4f5e2cb1e05416dc8af8ebdfae792b5c7b9246172450c0df9bff88c28297.",
+    type=str
     )
+
 
 def main(args):
     """Entry point.
@@ -31,9 +33,9 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    _render(clx.get_block_info(
+    _render(clx.get_account_info(
         factory.create_network_id(args.network),
-        args.block_hash
+        args.account
         ))
 
 
@@ -45,7 +47,7 @@ def _render(info: typing.Dict[str, typing.Union[str, int]]):
     if info:
         print(json.dumps(info, indent=4))
     else:
-        print("Chain query returned null - is the block hash correct ?")
+        print("Chain query returned null - is the address correct ?")
     print("--------------------------------------------------------------------------------------------")
 
 

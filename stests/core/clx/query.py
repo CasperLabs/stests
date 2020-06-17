@@ -9,7 +9,7 @@ from stests.events import EventType
 
 
 
-def get_account_info(src: typing.Any, account: Account, block_hash: str=None):
+def get_account_info(src: typing.Any, address: str, block_hash: str=None, parse=True):
     """Returns on-chain account info.
 
     :param src: The source from which a node client will be instantiated.
@@ -19,9 +19,9 @@ def get_account_info(src: typing.Any, account: Account, block_hash: str=None):
     :returns: Account info.
 
     """
-    q = get_state(src, block_hash, account.public_key, "address", "")
+    q = get_state(src, block_hash, address, "address", "")
 
-    return q.account
+    return utils.parse_chain_info(q.account) if parse else q.account
 
 
 def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -> int:
@@ -62,7 +62,7 @@ def get_named_keys(src: typing.Any, account: Account, block_hash: str=None, filt
     :returns: Account named keys.
 
     """
-    a = get_account_info(src, account, block_hash)
+    a = get_account_info(src, account.public_key, block_hash, parse=False)
 
     keys = a.named_keys
     if filter_keys:

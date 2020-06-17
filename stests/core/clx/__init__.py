@@ -2,9 +2,9 @@ from stests.core.clx import contracts
 from stests.core.clx.defaults import CLX_TX_FEE
 from stests.core.clx.defaults import CLX_TX_GAS_PRICE
 from stests.core.clx.query import get_account_balance
+from stests.core.clx.query import get_account_info
 from stests.core.clx.query import get_block_info
 from stests.core.clx.query import get_deploy_info
 from stests.core.clx.query import get_named_keys
 from stests.core.clx.stream import stream_events
 from stests.core.clx.utils import await_deploy_processing
-from stests.core.clx.utils import propose_block
