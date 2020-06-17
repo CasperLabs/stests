@@ -1,5 +1,7 @@
 import json
+import random
 import requests
+import sys
 
 from stests.core import cache
 from stests.core import factory
@@ -9,6 +11,9 @@ from stests.core.types.orchestration import ExecutionContext
 
 # Step label.
 LABEL = "increment-deploys"
+
+# Max. size of a u32 integer in rust.
+MAX_RUST_U32 = 4294967295
 
 
 def execute(ctx: ExecutionContext):
@@ -30,8 +35,8 @@ def execute(ctx: ExecutionContext):
     # Cache current count for verification in phase 2.
     cache.workflow.set_deploy_count(ctx, deploy_count)
 
-    # Build a 'deploy batch'.
-    new_deploys = list(range(deploy_count + 1, deploy_count + 1 + ctx.args['deploys']))    
+    # Build a 'deploy batch' = list of random integers.
+    new_deploys = list(map(lambda _: random.randint(0, MAX_RUST_U32), range(ctx.args['deploys'])))
 
     # Push deploy batch to node.
     requests.post(url, json.dumps(new_deploys))
