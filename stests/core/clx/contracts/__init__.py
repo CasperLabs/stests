@@ -1,5 +1,6 @@
 from stests.core.clx.contracts import counter_define_by_hash
 from stests.core.clx.contracts import counter_define_by_name
+from stests.core.clx.contracts import transfer_U512
 from stests.core.clx.contracts import transfer_U512_by_hash
 from stests.core.clx.contracts import transfer_U512_by_wasm
 from stests.core.types.chain import ContractType
@@ -10,6 +11,7 @@ from stests.core.clx.utils import get_named_keys
 CONTRACTS = {
     counter_define_by_hash,
     counter_define_by_name,
+    transfer_U512,
     transfer_U512_by_hash,
     transfer_U512_by_wasm,
 }

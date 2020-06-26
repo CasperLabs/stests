@@ -31,7 +31,7 @@ def main(args):
         utils.log_warning(f"Network {args.network} is unregistered.")
         return
 
-    balance = clx.get_account_balance(network_id, network.faucet.public_key)
+    balance = clx.get_account_balance(network_id, network.faucet.account_id)
 
     utils.log(f"""NETWORK: {network.name} -> faucet balance = {balance}""")
 

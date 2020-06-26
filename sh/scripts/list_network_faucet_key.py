@@ -29,8 +29,9 @@ def main(args):
         utils.log_warning(f"Network {args.network} is unregistered.")
         return
 
-    utils.log(f"""NETWORK: {network.name} -> faucet pvk {network.faucet.private_key}""")
-    utils.log(f"""NETWORK: {network.name} -> faucet pbk {network.faucet.public_key}""")
+    utils.log(f"""NETWORK: {network.name} -> faucet account-id {network.faucet.account_id}""")
+    utils.log(f"""NETWORK: {network.name} -> faucet private-key {network.faucet.private_key}""")
+    utils.log(f"""NETWORK: {network.name} -> faucet public-key {network.faucet.public_key}""")
 
 # Entry point.
 if __name__ == '__main__':

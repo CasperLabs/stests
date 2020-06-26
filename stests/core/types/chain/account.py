@@ -1,9 +1,8 @@
 import dataclasses
 import typing
 
+from stests.core import crypto
 from stests.core.types.chain.enums import AccountType
-from stests.core.types.chain.key_pair import PrivateKey
-from stests.core.types.chain.key_pair import PublicKey
 
 
 
@@ -12,6 +11,9 @@ class Account:
     """A non-designated account that maps to an address upon target chain.
     
     """
+    # On-chain account identifier.
+    account_id: str
+
     # Numerical index to distinguish between multiple accounts within same run.
     key_algo: str
 
@@ -37,28 +39,12 @@ class Account:
     typeof: AccountType
 
     @property
-    def address(self):
-        return self.public_key
+    def account_id_as_bytes(self):
+        return bytes.fromhex(self.account_id)
 
     @property
     def is_run_account(self):
         return self.run_index is not None
-
-    @property
-    def private_key_as_bytes(self):
-        return bytes.fromhex(self.private_key)
-
-    @property
-    def private_key_as_pem_filepath(self):
-        return PrivateKey(self.private_key).as_pem_filepath
-
-    @property
-    def public_key_as_bytes(self):
-        return bytes.fromhex(self.public_key)
-
-    @property
-    def public_key_as_pem_filepath(self):
-        return PublicKey(self.public_key).as_pem_filepath
 
     @property
     def label_index(self):
@@ -67,6 +53,11 @@ class Account:
     @property
     def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
+
+    def get_private_key_pem_file(self):
+        return crypto.get_pvk_pem_file_from_bytes(
+            bytes.fromhex(self.private_key), crypto.KeyAlgorithm[self.key_algo]
+            )
 
 
 @dataclasses.dataclass

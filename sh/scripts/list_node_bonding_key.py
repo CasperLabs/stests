@@ -5,7 +5,6 @@ from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
-from stests.core.utils import crypto
 
 
 
@@ -40,8 +39,9 @@ def main(args):
         return
 
     # Inform.
-    utils.log(f"""NODE: {node.label} -> bonding pvk {node.account.private_key}""")
-    utils.log(f"""NODE: {node.label} -> bonding pbk {node.account.public_key}""")
+    utils.log(f"""NODE: {node.label} -> bonding account-id {node.account.account_id}""")
+    utils.log(f"""NODE: {node.label} -> bonding private-key {node.account.private_key}""")
+    utils.log(f"""NODE: {node.label} -> bonding public-key {node.account.public_key}""")
 
 # Entry point.
 if __name__ == '__main__':

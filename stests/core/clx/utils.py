@@ -14,7 +14,6 @@ from stests.core import cache
 from stests.core import factory
 from stests.core.clx import query
 from stests.core.clx.defaults import CLX_TX_FEE
-from stests.core.clx.defaults import CLX_TX_GAS_PRICE
 from stests.core.logging import log_event
 from stests.core.types.chain import Account
 from stests.core.types.chain import DeployStatus
@@ -54,24 +53,31 @@ def await_deploy_processing(src: typing.Any, deploy_hash: str) -> str:
 def dispatch_deploy(
     src: typing.Any,
     account: Account,
-    from_addr: str = None,
+    from_account_id: bytes = None,
     session: str = None,
     session_args = None,
+    session_entry_point: str = None,
     session_hash: str = None,
     session_name: str = None,
     session_uref: str = None,
+    transfer_args = None,
+    payment_amount=CLX_TX_FEE
     ) -> typing.Tuple[Node, CasperLabsClient, str, float, int]:
     """Dispatches a deploy to target network.  Performs retries upon dispatch failure.  
     
     :param src: The source from which a node client will be instantiated.
     :param account: Account under which deploy will be dispatched.
-    :param from_addr: Purse address that will be used to pay for the deployment.
+    :param from_account_id: Purse address that will be used to pay for the deployment.
 
     :param session: Path to session wasm file.
     :param session_args: Arguments used during deploy processing.
+    :param session_entry_point: Name of Entrypoint in contract to call.
     :param session_hash: Hash of a named key associated with account.
     :param session_name: Name of a named key associated with account.
     :param session_uref: Uref of a named key associated with account.
+
+    :param transfer_args: Arguments used when dispatching a transfer.
+    :param payment_amount: Gas payment to cover deploy processing costs.
 
     :returns: 5 member tuple -> (node, client, deploy_hash, dispatch_duration, dispatch_attempts)
 
@@ -80,22 +86,23 @@ def dispatch_deploy(
         attempts = 0
         while attempts < _MAX_DEPLOY_DISPATCH_ATTEMPTS:
             attempts += 1
-            node, client = get_client(src)
+            node, client = get_client(src)            
             try:
                 deploy_hash = client.deploy(
+                    # ... account info
+                    # algorithm=account.key_algo,
+                    from_addr=from_account_id or account.account_id_as_bytes,
+                    private_key=account.get_private_key_pem_file(),
+                    # ... session info
                     session=session,
                     session_args=session_args,
+                    session_entry_point=session_entry_point,
                     session_hash=session_hash,
                     session_name=session_name,
-                    session_uref=session_uref,
-
-                    from_addr=from_addr or account.public_key,
-                    public_key=account.public_key_as_pem_filepath,
-                    private_key=account.private_key_as_pem_filepath,
-
-                    # TODO: review how these are being assigned
-                    payment_amount=CLX_TX_FEE,
-                    gas_price=CLX_TX_GAS_PRICE
+                    # ... transfer info
+                    transfer_args=transfer_args,
+                    # ... payment info
+                    payment_amount=payment_amount,
                 )
             except Exception as err:
                 if attempts == _MAX_DEPLOY_DISPATCH_ATTEMPTS:
@@ -106,7 +113,7 @@ def dispatch_deploy(
                 break
 
     return node, client, deploy_hash, timer.elapsed, attempts
-        
+
 
 def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, NetworkIdentifier, Node, NodeIdentifier]) -> typing.Tuple[Node, CasperLabsClient]:
     """Factory method to return a configured client plus the node with which it is associated.
@@ -261,7 +268,11 @@ def _parse_dict(obj: typing.Any, key: str=None) -> typing.Any:
     
     # Auto-encode cryptographic primitives to hex.
     try:
-        if 'Hash' in key or 'Key' in key or key.startswith('sig'):
+        if 'Hash' in key or \
+           'Key' in key or \
+           'hash' in key or \
+           'uref' in key or \
+           key.startswith('sig'):
             return base64.b64decode(obj).hex()
     except:
         pass

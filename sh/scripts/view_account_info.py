@@ -21,8 +21,8 @@ ARGS.add_argument(
 
 # CLI argument: network name.
 ARGS.add_argument(
-    "account",
-    help="Network account (hex format), e.g. 853b4f5e2cb1e05416dc8af8ebdfae792b5c7b9246172450c0df9bff88c28297.",
+    "account_id",
+    help="Network account identifier (hex format), e.g. 78d38ce2ffab138bfa972f1d69e3aad7327fc0b1bcf89a5b0ca89475c2f49f43.",
     type=str
     )
 
@@ -35,7 +35,7 @@ def main(args):
     """
     _render(clx.get_account_info(
         factory.create_network_id(args.network),
-        args.account
+        args.account_id
         ))
 
 

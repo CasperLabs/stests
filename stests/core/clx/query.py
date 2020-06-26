@@ -9,26 +9,26 @@ from stests.events import EventType
 
 
 
-def get_account_info(src: typing.Any, address: str, block_hash: str=None, parse=True):
+def get_account_info(src: typing.Any, account_id: str, block_hash: str=None, parse=True):
     """Returns on-chain account info.
 
     :param src: The source from which a node client will be instantiated.
-    :param account: Account whose on-chain representation will be queried.
+    :param account_id: Identifier of account whose on-chain representation will be queried.
     :param block_hash: Hash of block against which query will be made.
 
     :returns: Account info.
 
     """
-    q = get_state(src, block_hash, address, "address", "")
+    q = get_state(src, block_hash, account_id, "address", "")
 
     return utils.parse_chain_info(q.account) if parse else q.account
 
 
-def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -> int:
+def get_account_balance(src: typing.Any, account_id: str, block_hash: str = None) -> int:
     """Queries account balance at a chain address.
 
     :param src: The source from which a node client will be instantiated.
-    :param address: Address whose balance will be queried.
+    :param account_id: Identifier of account whose balance will be queried.
     :param block_hash: Hash of block against which query will be made.
 
     :returns: Account balance.
@@ -38,13 +38,13 @@ def get_account_balance(src: typing.Any, address: str, block_hash: str = None) -
 
     try:
         balance = client.balance(
-            address=address,
+            address=account_id,
             block_hash=block_hash or _get_last_block_hash(client)
             )
     except Exception as err:
         if err and err.details:
             if "StatusCode.INVALID_ARGUMENT" in err.details:
-                log_event(EventType.MONITORING_ACCOUNT_NOT_FOUND, f"address={address}", node)
+                log_event(EventType.MONITORING_ACCOUNT_NOT_FOUND, f"account_id={account_id}", node)
                 return 0
         raise err
     else:
@@ -62,7 +62,7 @@ def get_named_keys(src: typing.Any, account: Account, block_hash: str=None, filt
     :returns: Account named keys.
 
     """
-    a = get_account_info(src, account.public_key, block_hash, parse=False)
+    a = get_account_info(src, account.account_id, block_hash, parse=False)
 
     keys = a.named_keys
     if filter_keys:

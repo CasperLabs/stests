@@ -72,7 +72,7 @@ def increment(
     node, _, deploy_hash, dispatch_duration, dispatch_attempts = utils.dispatch_deploy(
         src,
         user_account,
-        from_addr=user_account.public_key,
+        from_account_id=user_account.account_id_as_bytes,
         session_hash=nk_inc.hash_as_bytes,
         session_args=[ABI.key_hash("counter_key", nk_contract.hash_as_bytes)],
         ) 

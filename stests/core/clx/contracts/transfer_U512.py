@@ -13,10 +13,7 @@ from stests.events import EventType
 
 
 # Type of contract.
-TYPE = ContractType.TRANSFER_U512_WASM
-
-# Wasm file name.
-WASM = "transfer_to_account_u512.wasm"
+TYPE = ContractType.TRANSFER_U512
 
 
 def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> typing.Tuple[Node, str, float, int]:
@@ -33,13 +30,12 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
     node, _, deploy_hash, dispatch_duration, dispatch_attempts = utils.dispatch_deploy(
         src=ctx,
         account=cp1,
-        session=utils.get_contract_path(WASM),
-        session_args=ABI.args([
+        transfer_args=ABI.args([
             ABI.fixed_list("target", cp2.account_id_as_bytes),
             ABI.u512("amount", amount),
             ]),
     )
 
-    log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"TRANSFER_U512_WASM {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", node, deploy_hash=deploy_hash)
+    log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"TRANSFER_U512 {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", node, deploy_hash=deploy_hash)
 
     return node, deploy_hash, dispatch_duration, dispatch_attempts

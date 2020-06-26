@@ -1,10 +1,10 @@
 import argparse
 
 from stests.core import cache
+from stests.core import crypto
 from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
-from stests.core.utils import crypto
 from stests.core.utils import cli as utils
 
 
@@ -54,6 +54,7 @@ def main(args):
         network=network_id.name,
         typeof=AccountType.BOND,
         index=-node_id.index,
+        key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=pvk,
         public_key=pbk,
     )

@@ -30,6 +30,7 @@ class ContractType(enum.Enum):
     COUNTER_DEFINE_STORED = enum.auto()
     TRANSFER_U512 = enum.auto()
     TRANSFER_U512_STORED = enum.auto()
+    TRANSFER_U512_WASM = enum.auto()
 
 
 class ContractLocation(enum.Enum):

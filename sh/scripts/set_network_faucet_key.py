@@ -2,11 +2,11 @@ import argparse
 import pathlib
 
 from stests.core import cache
+from stests.core import crypto
 from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
-from stests.core.utils import crypto
 
 
 
@@ -43,8 +43,8 @@ def main(args):
     # Set key pair.
     pvk, pbk = crypto.get_key_pair_from_pvk_pem_file(
         args.pem_path,
-        algo=crypto.KeyAlgorithm.ED25519,
-        encoding=crypto.KeyEncoding.HEX
+        crypto.KeyAlgorithm.ED25519,
+        crypto.KeyEncoding.HEX,
         )
 
     # Set faucet.
@@ -52,6 +52,7 @@ def main(args):
         network=network.name,
         typeof=AccountType.FAUCET,
         index=0,
+        key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=pvk,
         public_key=pbk,
     )

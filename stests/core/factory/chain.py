@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from stests.core import crypto
 from stests.core.types.chain import Account
 from stests.core.types.chain import AccountIdentifier
 from stests.core.types.chain import AccountType
@@ -20,7 +21,7 @@ from stests.core.types.chain import TransferStatus
 from stests.core.factory.infra import create_network_id
 from stests.core.factory.orchestration import create_execution_id
 from stests.core.types.orchestration import ExecutionContext
-from stests.core.utils import crypto
+
 
 
 
@@ -28,6 +29,7 @@ def create_account(
     network: str,
     typeof: AccountType,
     index: int = 1,
+    key_algo = crypto.KeyAlgorithm.ED25519,
     private_key: str = None, 
     public_key: str = None,
     ) -> Account:
@@ -35,13 +37,18 @@ def create_account(
     
     """
     if private_key is None:
-        private_key, public_key = crypto.generate_key_pair(
-            algo=crypto.KeyAlgorithm.ED25519,
-            encoding=crypto.KeyEncoding.HEX
-            )        
+        private_key, public_key = \
+            crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+
+    account_id = crypto.get_hash(
+        key_algo.name.encode("UTF-8") + b"\x00" + bytes.fromhex(public_key),
+        algo=crypto.HashAlgorithm.BLAKE2B,
+        encoding=crypto.HashEncoding.HEX,   
+    )
 
     return Account(
-        key_algo=crypto.KeyAlgorithm.ED25519.name,
+        account_id=account_id,
+        key_algo=key_algo.name,
         index=index if index is not None else 1,
         network=network,
         private_key=private_key,
@@ -53,7 +60,7 @@ def create_account(
 
 
 def create_account_for_run(
-    ctx:ExecutionContext,
+    ctx: ExecutionContext,
     typeof: AccountType,
     index: int = 1,
     private_key: str = None, 
@@ -62,7 +69,14 @@ def create_account_for_run(
     """Returns a domain object instance: Account.
     
     """
-    account = create_account(ctx.network, typeof, index, private_key, public_key)
+    account = create_account(
+        ctx.network,
+        typeof,
+        index=index,
+        key_algo=crypto.KeyAlgorithm.ED25519,
+        private_key=private_key,
+        public_key=public_key,
+        )
     account.run_index = ctx.run_index
     account.run_type = ctx.run_type
 
@@ -170,7 +184,7 @@ def create_deploy_for_run(
 
     """
     return Deploy(
-        account=account.address,
+        account=account.account_id,
         account_index=account.index,
         block_hash=None,
         deploy_cost=None,
@@ -218,6 +232,7 @@ def create_named_key(
     
     """
     return NamedKey(
+        account_id=account.account_id,
         account_index=account.index,
         contract_type=contract_type,
         hash=hash,

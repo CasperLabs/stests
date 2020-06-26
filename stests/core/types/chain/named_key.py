@@ -10,6 +10,9 @@ class NamedKey:
     """Account's can be associated with named keys, some of those keys are used in testing.
     
     """
+    # On-chain account identifier.
+    account_id: str
+
     # Numerical index to distinguish between multiple accounts.
     account_index: int
 

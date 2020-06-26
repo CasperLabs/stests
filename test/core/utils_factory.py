@@ -5,7 +5,7 @@ from datetime import datetime as dt
 
 from stests.core.domain import *
 from stests.core.orchestration import *
-from stests.core.utils import crypto
+from stests.core import crypto
 from stests.core.utils import factory
 
 
