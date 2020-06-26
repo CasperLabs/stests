@@ -218,6 +218,9 @@ def initialise():
     from stests.workflows.generators.wg_100.args import Arguments
     register_type(Arguments)
 
+    from stests.workflows.generators.wg_120.args import Arguments
+    register_type(Arguments)
+
     from stests.workflows.generators.wg_200.args import Arguments
     register_type(Arguments)
 

@@ -19,10 +19,11 @@ TYPE = ContractType.TRANSFER_U512_STORED
 # Wasm file name.
 WASM = "transfer_to_account_u512_stored.wasm"
 
+# Entry point when calling into contract.
+_SESSION_ENTRY_POINT = "transfer"
+
 # Name of contract - see use when passed as session-name.
 _NKEY = "transfer_to_account"
-# _NKEY = "transfer_to_account_U512"
-
 
 # Named keys associated with contract.
 NKEYS = [
@@ -62,7 +63,7 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
     node, _, deploy_hash, dispatch_duration, dispatch_attempts = utils.dispatch_deploy(
         src=ctx,
         account=cp1,
-        session_entry_point="transfer",
+        session_entry_point=_SESSION_ENTRY_POINT,
         session_hash=named_key.hash_as_bytes,
         session_args=ABI.args([
             ABI.account("target", cp2.account_id),

@@ -99,11 +99,14 @@ function _exec_generator()
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
 
-# WG-100: Token transfer - client contract.
+# WG-100: Token transfer - invoked by wasm dispatched for each transfer.
 alias stests-wg-100='_exec_generator 100'
 
-# WG-110: Token transfer - stored contract.
+# WG-110: Token transfer - invoked by stored contract hash.
 alias stests-wg-110='_exec_generator 110'
+
+# WG-120: Token transfer - invoked directly, i.e. wasm-less.
+alias stests-wg-120='_exec_generator 120'
 
 # WG-200: Counter - client contract.
 alias stests-wg-200='_exec_generator 200'
@@ -113,7 +116,7 @@ alias stests-wg-210='_exec_generator 210'
 
 
 # ###############################################################
-# ALIASES: generators
+# ALIASES: generators - node-rs
 # ###############################################################
 
 # WG-1000: Test node-rs.

@@ -55,7 +55,7 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
                 info,
                 datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
                 deploy,
-                deploy_info['processingResults'][0]['cost'],
+                deploy_info['processingResults'][0].get('cost', 0),
                 block_info.summary.header.round_id
                 )
 
@@ -95,7 +95,8 @@ def _process_correlated(
     cache.state.set_deploy(deploy)
 
     # Update cache: account balance.
-    cache.state.decrement_account_balance_on_deploy_finalisation(deploy, deploy_cost)
+    if deploy_cost > 0:
+        cache.state.decrement_account_balance_on_deploy_finalisation(deploy, deploy_cost)
 
     # Update cache: transfer.
     transfer = cache.state.get_transfer_by_deploy(deploy)

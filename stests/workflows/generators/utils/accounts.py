@@ -38,9 +38,17 @@ def do_transfer(
         if amount <= 0:
             raise ValueError(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={cp1_balance}.")
 
+    # Set contract.
+    if ctx.run_type == "WG-100":
+        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512_WASM)
+    elif ctx.run_type == "WG-110":
+        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
+    elif ctx.run_type == "WG-120" and ctx.phase_index == 1:
+        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
+    else:
+        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512)
+
     # Transfer CLX from cp1 -> cp2.    
-    contract_type = ContractType.TRANSFER_U512_WASM if ctx.run_type == "WG-100" else ContractType.TRANSFER_U512_STORED
-    contract = clx.contracts.get_contract(contract_type)
     node, deploy_hash, dispatch_duration, dispatch_attempts = contract.transfer(ctx, cp1, cp2, amount)
 
     # Update cache: deploy.
