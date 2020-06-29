@@ -56,7 +56,7 @@ def get_key_pair_from_pvk_pem_file(fpath: str) -> typing.Tuple[bytes, bytes]:
 
 
 def get_pvk_pem_from_bytes(pvk: bytes) -> bytes:
-    """Returns private key (pem) from bytes.
+    """Returns ED25519 private key (pem) from bytes.
     
     """
     return ed25519.Ed25519PrivateKey.from_private_bytes(pvk).private_bytes(

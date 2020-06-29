@@ -21,7 +21,7 @@ python-logstash = "*"
 requests = "*"
 pyblake2 = "*"
 ecdsa = "*"
-casperlabs-client = {editable = true, path = "/Users/a-0/Engineering/clabs/CasperLabs/client-py"}
+casperlabs-client = {editable = true, path = "/Users/a-0/Engineering/clabs/client-py"}
 
 [requires]
 python_version = "3.7.5"
