@@ -3,7 +3,6 @@ import typing
 import ecdsa
 
 from stests.core.crypto.enums import KeyEncoding
-from stests.core.crypto.utils import get_bytes_from_pem_file
 
 
 
@@ -20,15 +19,7 @@ def get_key_pair() -> typing.Tuple[bytes, bytes]:
     :returns : 2 member tuple: (private key, public key)
     
     """    
-    # Generate.
-    sk = ecdsa.SigningKey.generate(curve=CURVE)
-    vk = sk.verifying_key
-
-    # Encode -> bytes.
-    pvk = sk.to_string()
-    pbk = vk.to_string(UNCOMPRESSED)
-
-    return pvk, pbk
+    return _get_key_pair_from_sk(ecdsa.SigningKey.generate(curve=CURVE))
 
 
 def get_key_pair_from_pvk_pem_file(fpath: str) -> typing.Tuple[bytes, bytes]:
@@ -39,14 +30,10 @@ def get_key_pair_from_pvk_pem_file(fpath: str) -> typing.Tuple[bytes, bytes]:
     :returns : 2 member tuple: (private key, public key)
     
     """
-    pvk = get_bytes_from_pem_file(fpath)
-    sk = ecdsa.SigningKey.from_string(pvk, curve=CURVE)
-    vk = sk.verifying_key
+    as_pem = _get_bytes_from_pem_file(fpath)
+    as_pem = as_pem.decode("UTF-8")
 
-    # Encode -> bytes.
-    pbk = vk.to_string(UNCOMPRESSED)
-
-    return pvk, pbk
+    return _get_key_pair_from_sk(ecdsa.SigningKey.from_pem(as_pem))
 
 
 def get_pvk_pem_from_bytes(pvk: bytes) -> bytes:
@@ -54,3 +41,19 @@ def get_pvk_pem_from_bytes(pvk: bytes) -> bytes:
     
     """
     return ecdsa.SigningKey.from_string(pvk, curve=CURVE).to_pem()
+
+
+def _get_bytes_from_pem_file(fpath: str) -> bytes:
+    """Returns bytes from a pem file.
+    
+    """
+    with open(fpath, "rb") as f:
+        return f.read()
+
+
+def _get_key_pair_from_sk(sk: ecdsa.SigningKey) -> typing.Tuple[bytes, bytes]:
+    """Returns key pair from a signing key.
+    
+    """
+    return sk.to_string(), \
+           sk.verifying_key.to_string(UNCOMPRESSED)

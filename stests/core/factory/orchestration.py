@@ -9,6 +9,7 @@ from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionIdentifier
 from stests.core.types.orchestration import ExecutionInfo
+from stests.core.types.orchestration import ExecutionLock
 from stests.core.types.orchestration import ExecutionMode
 from stests.core.types.orchestration import ExecutionStatus
 
@@ -82,3 +83,23 @@ def create_execution_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> Exe
 
     return info
 
+
+def create_execution_lock(
+    aspect: ExecutionAspect,
+    network: str,
+    run_index: int,
+    run_type: str,
+    phase_index: int,
+    step_index: int,
+    ) -> ExecutionLock:
+    """Returns an orchestration object instance: ExecutionLock.
+    
+    """
+    return ExecutionLock(
+        aspect=aspect,
+        network=network,
+        run_index=run_index,
+        run_type=run_type,
+        phase_index=phase_index,
+        step_index=step_index,
+    )

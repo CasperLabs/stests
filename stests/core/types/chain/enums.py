@@ -33,14 +33,6 @@ class ContractType(enum.Enum):
     TRANSFER_U512_WASM = enum.auto()
 
 
-class ContractLocation(enum.Enum):
-    """Enumeration over set of contract locations.
-    
-    """
-    ON_CHAIN = enum.auto()
-    OFF_CHAIN = enum.auto()
-
-
 class DeployStatus(enum.Flag):
     """Flag over set of deploy states.
     
@@ -79,7 +71,6 @@ ENUM_SET = {
     AccountType,    
     BlockStatus,
     ContractType,
-    ContractLocation,
     DeployStatus,
     DeployType,
     TransferStatus,

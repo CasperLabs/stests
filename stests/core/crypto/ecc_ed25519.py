@@ -1,10 +1,10 @@
+import base64
 import typing
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
 
 from stests.core.crypto.enums import KeyEncoding
-from stests.core.crypto.utils import get_bytes_from_pem_file
 
 
 
@@ -17,22 +17,7 @@ def get_key_pair() -> typing.Tuple[bytes, bytes]:
     :returns : 2 member tuple: (private key, public key)
     
     """
-    # Generate.
-    sk = ed25519.Ed25519PrivateKey.generate()
-    vk = sk.public_key()
-
-    # Encode -> bytes.
-    pvk = sk.private_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PrivateFormat.Raw,
-        encryption_algorithm=serialization.NoEncryption()
-    )
-    pbk = vk.public_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PublicFormat.Raw
-    )
-
-    return pvk, pbk
+    return _get_key_pair_from_sk(ed25519.Ed25519PrivateKey.generate())
 
 
 def get_key_pair_from_pvk_pem_file(fpath: str) -> typing.Tuple[bytes, bytes]:
@@ -43,16 +28,11 @@ def get_key_pair_from_pvk_pem_file(fpath: str) -> typing.Tuple[bytes, bytes]:
     :returns : 2 member tuple: (private key, public key)
     
     """
-    pvk = get_bytes_from_pem_file(fpath)
-    sk = ed25519.Ed25519PrivateKey.from_private_bytes(pvk)
-    vk = sk.public_key()
-    pbk = vk.public_bytes(
-        encoding=serialization.Encoding.Raw,
-        format=serialization.PublicFormat.Raw
-    )
-
-    return pvk, pbk
-
+    return _get_key_pair_from_sk(
+        ed25519.Ed25519PrivateKey.from_private_bytes(
+            _get_bytes_from_pem_file(fpath)
+            )
+        )
 
 
 def get_pvk_pem_from_bytes(pvk: bytes) -> bytes:
@@ -64,3 +44,31 @@ def get_pvk_pem_from_bytes(pvk: bytes) -> bytes:
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption()
     )
+
+
+def _get_bytes_from_pem_file(fpath: str) -> bytes:
+    """Returns bytes from a pem file.
+    
+    """
+    with open(fpath, 'r') as fstream:
+        as_pem = fstream.readlines()
+    as_b64 = [l for l in as_pem if l and not l.startswith("-----")][0].strip()
+    as_bytes = base64.b64decode(as_b64)
+
+    return len(as_bytes) % 32 == 0 and as_bytes[:32] or as_bytes[-32:]
+
+
+def _get_key_pair_from_sk(sk: ed25519.Ed25519PrivateKey) -> typing.Tuple[bytes, bytes]:
+    """Returns key pair from a signing key.
+    
+    """
+    return \
+        sk.private_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PrivateFormat.Raw,
+            encryption_algorithm=serialization.NoEncryption()
+        ), \
+        sk.public_key().public_bytes(
+            encoding=serialization.Encoding.Raw,
+            format=serialization.PublicFormat.Raw
+        )

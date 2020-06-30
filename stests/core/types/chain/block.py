@@ -61,21 +61,6 @@ class Block:
 
 
 @dataclasses.dataclass
-class BlockLock:
-    """Execution lock information - block.
-    
-    """
-    # Block hash (blake2b) identifier.
-    block_hash: str
-
-    # Type of event for which the lock is being acquired.
-    event_type: str
-
-    # Associated network.
-    network: str
-
-
-@dataclasses.dataclass
 class BlockStatistics:
     """Encapsulates statistical information pertaining to a block.
     
