@@ -38,14 +38,8 @@ def create_account(
     private_key, public_key = \
         crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
 
-    account_id = crypto.get_hash(
-        key_algo.name.encode("UTF-8") + b"\x00" + bytes.fromhex(public_key),
-        algo=crypto.HashAlgorithm.BLAKE2B,
-        encoding=crypto.HashEncoding.HEX,   
-    )
-
     return Account(
-        account_id=account_id,
+        account_id=crypto.get_account_id(key_algo, public_key),
         key_algo=key_algo.name,
         index=index if index is not None else 1,
         network=network,

@@ -13,6 +13,7 @@ FIXTURES = {
     'HashEncoding',
     'KeyAlgorithm',
     'KeyEncoding',
+    'get_account_id',
     'get_hash',
     'get_key_pair',
     'get_key_pair_from_pvk_pem_file',
@@ -23,16 +24,12 @@ FIXTURES = {
 def test_01():
     """Test module import."""
     assert inspect.ismodule(crypto)
-
-
-def test_02():
-    """Test slots are exposed."""
     for func in FIXTURES:
         slot = getattr(crypto, func)
         assert inspect.isfunction(slot) or inspect.isclass(slot)
 
 
-def _test_03_parameterizations():
+def _test_02_parameterizations():
     """Test parameterizations."""   
     for algo, encoding, expected_type, expected_pvk_len, expected_pbk_len in (
         (crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.BYTES, bytes, 32, 32),
@@ -43,9 +40,9 @@ def _test_03_parameterizations():
         yield algo, encoding, expected_type, expected_pvk_len, expected_pbk_len
 
 
-@pytest.mark.parametrize("algo, encoding, expected_type, expected_pvk_len, expected_pbk_len", _test_03_parameterizations())
-def test_03(algo, encoding, expected_type, expected_pvk_len, expected_pbk_len):
-    """Test function: crypto.generate_key_pair."""
+@pytest.mark.parametrize("algo, encoding, expected_type, expected_pvk_len, expected_pbk_len", _test_02_parameterizations())
+def test_02(algo, encoding, expected_type, expected_pvk_len, expected_pbk_len):
+    """Test function: crypto.get_key_pair."""
     pvk, pbk = crypto.get_key_pair(algo, encoding)
     assert isinstance(pvk, expected_type)
     assert isinstance(pbk, expected_type)
@@ -54,8 +51,8 @@ def test_03(algo, encoding, expected_type, expected_pvk_len, expected_pbk_len):
 
 
 @pytest.mark.parametrize("algo", list(crypto.KeyAlgorithm))
-def test_04(algo):
-    """Test function: crypto.get_key_pair_from_pvk_bytes."""
+def test_03(algo):
+    """Test function: crypto.get_pvk_pem_file_from_bytes."""
     encoding = crypto.KeyEncoding.BYTES
     pvk, pbk = crypto.get_key_pair(algo, encoding)    
 
@@ -65,3 +62,12 @@ def test_04(algo):
     pvk1, pbk1 = crypto.get_key_pair_from_pvk_pem_file(fpath, algo, encoding)
     assert pvk == pvk1
     assert pbk == pbk1
+
+
+@pytest.mark.parametrize("algo", list(crypto.KeyAlgorithm))
+def test_04(algo):
+    """Test function: crypto.get_account_id."""
+    _, pbk = crypto.get_key_pair(algo, crypto.KeyEncoding.HEX)
+    account_id = crypto.get_account_id(algo, pbk)
+    assert isinstance(account_id, str)
+    assert len(account_id) == 64
