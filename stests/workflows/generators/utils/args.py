@@ -77,5 +77,13 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         default=1,
         )
 
+    # parallel count.
+    args.add_argument(
+        "--key-algorithm",
+        dest="key_algorithm",
+        help="Elliptic Curve Cryptography algorithm used when creating accounts.  Supported = ED25519 | SECP256K1 | ANY",
+        type=args_validator.validate_key_algorithm,
+        default="ED25519",
+        )
 
     return args

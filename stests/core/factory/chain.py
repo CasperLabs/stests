@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 
 from stests.core import crypto
@@ -30,15 +31,12 @@ def create_account(
     typeof: AccountType,
     index: int = 1,
     key_algo = crypto.KeyAlgorithm.ED25519,
-    private_key: str = None, 
-    public_key: str = None,
     ) -> Account:
     """Returns a domain object instance: Account.
     
     """
-    if private_key is None:
-        private_key, public_key = \
-            crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+    private_key, public_key = \
+        crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
 
     account_id = crypto.get_hash(
         key_algo.name.encode("UTF-8") + b"\x00" + bytes.fromhex(public_key),
@@ -63,19 +61,20 @@ def create_account_for_run(
     ctx: ExecutionContext,
     typeof: AccountType,
     index: int = 1,
-    private_key: str = None, 
-    public_key: str = None,
     ) -> Account:
     """Returns a domain object instance: Account.
     
     """
+    try:
+        key_algo = crypto.KeyAlgorithm[ctx.key_algorithm]
+    except KeyError:
+        key_algo = random.choice(list(crypto.KeyAlgorithm))
+
     account = create_account(
         ctx.network,
         typeof,
         index=index,
-        key_algo=crypto.KeyAlgorithm.ED25519,
-        private_key=private_key,
-        public_key=public_key,
+        key_algo=key_algo,
         )
     account.run_index = ctx.run_index
     account.run_type = ctx.run_type

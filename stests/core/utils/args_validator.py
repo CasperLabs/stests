@@ -1,6 +1,7 @@
 import argparse
 import pathlib
 
+from stests.core.crypto import KeyAlgorithm
 from stests.core.types.infra import NetworkType
 from stests.core.types.orchestration import ExecutionMode
 
@@ -44,6 +45,22 @@ def validate_deploys_per_second(value):
     
     """
     return _validate_int(value, DEPLOYS_PER_SECOND_MIN, DEPLOYS_PER_SECOND_MAX, "Deploys per second")
+
+
+def validate_key_algorithm(value):
+    """Argument verifier: key algorithm.
+    
+    """
+    name = str(value).upper()
+    if name == "ANY":
+        return name
+
+    # Validate network type.
+    for algo in KeyAlgorithm:
+        if algo.name == name:
+            return algo.name
+
+    raise argparse.ArgumentError("Invalid ECC key algorithm")
 
 
 def validate_execution_mode(value):

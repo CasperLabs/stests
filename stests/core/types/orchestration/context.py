@@ -20,6 +20,9 @@ class ExecutionContext:
     # Mode of execution.
     execution_mode: ExecutionMode
 
+    # Algorithm to use when generating keys during the course of a run.
+    key_algorithm: str
+
     # Number of times to loop.
     loop_count: int
 

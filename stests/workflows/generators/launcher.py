@@ -88,6 +88,7 @@ def _get_context(
         args=meta.Arguments.create(args),
         deploys_per_second=args.deploys_per_second,
         execution_mode=args.execution_mode,
+        key_algorithm=args.key_algorithm,
         loop_count=args.loop_count,
         loop_interval_ms=args.loop_interval * 1000,
         network_id=network_id,
