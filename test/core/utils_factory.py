@@ -7,9 +7,7 @@ from stests import events
 from stests.core import crypto
 from stests.core import factory
 from stests.core import types
-from stests.core.logging.types import LogMessage
-
-from stests.core import logging
+from stests.core.types.logging import LogMessage
 
 
 
@@ -186,8 +184,8 @@ def create_execution_lock() -> types.orchestration.ExecutionLock:
     )
 
 
-def create_log_application_info() -> logging.types.ApplicationInfo:
-    return logging.types.ApplicationInfo(
+def create_log_application_info() -> types.logging.ApplicationInfo:
+    return types.logging.ApplicationInfo(
         company="Casper Labs",
         system="stests",
         sub_system="unit tests",
@@ -195,10 +193,10 @@ def create_log_application_info() -> logging.types.ApplicationInfo:
     )
 
 
-def create_log_event_info() -> logging.types.EventInfo:
-    return logging.types.EventInfo(
+def create_log_event_info() -> types.logging.EventInfo:
+    return types.logging.EventInfo(
         id="1234",
-        level=logging.types.Level.DEBUG,
+        level=types.logging.Level.DEBUG,
         priority=1,
         timestamp=dt.now().timestamp(),
         type="UNIT_TEST",
@@ -206,8 +204,8 @@ def create_log_event_info() -> logging.types.EventInfo:
 
     )
 
-def create_log_message() -> logging.types.LogMessage:
-    return logging.types.LogMessage(
+def create_log_message() -> types.logging.LogMessage:
+    return types.logging.LogMessage(
         app=create_log_application_info(),
         event=create_log_event_info(),
         process=create_log_process_info(),
@@ -218,8 +216,8 @@ def create_log_message() -> logging.types.LogMessage:
     )
 
 
-def create_log_process_info() -> logging.types.ProcessInfo:
-    return logging.types.ProcessInfo(
+def create_log_process_info() -> types.logging.ProcessInfo:
+    return types.logging.ProcessInfo(
         host="localhost",
         net="TEST",
         os_user="a-0",
@@ -254,10 +252,10 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     types.orchestration.ExecutionLock: create_execution_lock,
 
     # Logging types.
-    logging.types.LogMessage: create_log_message,
-    logging.types.ApplicationInfo: create_log_application_info,
-    logging.types.EventInfo: create_log_event_info,
-    logging.types.ProcessInfo: create_log_process_info,
+    types.logging.LogMessage: create_log_message,
+    types.logging.ApplicationInfo: create_log_application_info,
+    types.logging.EventInfo: create_log_event_info,
+    types.logging.ProcessInfo: create_log_process_info,
 }
 
 
