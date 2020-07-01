@@ -1,7 +1,6 @@
 import inspect
 
-from stests.core.domain import *
-from stests.core.orchestration import *
+from stests.core.types import TYPE_SET
 from stests.core.utils import encoder
 from test.core import utils_factory as factory
 
@@ -117,4 +116,4 @@ def test_12():
 
 
 def _get_test_dclass_instances():
-    return [factory.get_instance(i) for i in encoder.DCLASS_SET if i not in (RunLock, PhaseLock, StepLock)]
+    return [factory.get_instance(i) for i in encoder.DCLASS_SET]

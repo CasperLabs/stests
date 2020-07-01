@@ -1,11 +1,15 @@
 import random
 import typing
+import uuid
 from datetime import datetime as dt
 
 from stests import events
 from stests.core import crypto
 from stests.core import factory
 from stests.core import types
+from stests.core.logging.types import LogMessage
+
+from stests.core import logging
 
 
 
@@ -145,6 +149,7 @@ def create_execution_context() -> types.orchestration.ExecutionContext:
     return factory.create_execution_context(
         args=None,
         deploys_per_second=100,
+        key_algorithm="ED25519",        
         loop_count=10,
         loop_interval_ms=1000,
         execution_mode="periodic",
@@ -181,6 +186,47 @@ def create_execution_lock() -> types.orchestration.ExecutionLock:
     )
 
 
+def create_log_application_info() -> logging.types.ApplicationInfo:
+    return logging.types.ApplicationInfo(
+        company="Casper Labs",
+        system="stests",
+        sub_system="unit tests",
+        version="1.0.0",
+    )
+
+
+def create_log_event_info() -> logging.types.EventInfo:
+    return logging.types.EventInfo(
+        id="1234",
+        level=logging.types.Level.DEBUG,
+        priority=1,
+        timestamp=dt.now().timestamp(),
+        type="UNIT_TEST",
+        uid=str(uuid.uuid4()),
+
+    )
+
+def create_log_message() -> logging.types.LogMessage:
+    return logging.types.LogMessage(
+        app=create_log_application_info(),
+        event=create_log_event_info(),
+        process=create_log_process_info(),
+        message="Hello Dolly",
+        data={
+            "a-field": 1234,
+        },
+    )
+
+
+def create_log_process_info() -> logging.types.ProcessInfo:
+    return logging.types.ProcessInfo(
+        host="localhost",
+        net="TEST",
+        os_user="a-0",
+        pid="12345"
+    )
+
+
 # Map: encodeable type to factory function.
 FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     # Chain types.
@@ -206,6 +252,12 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     types.orchestration.ExecutionIdentifier: create_execution_identifier,
     types.orchestration.ExecutionInfo: create_execution_info,
     types.orchestration.ExecutionLock: create_execution_lock,
+
+    # Logging types.
+    logging.types.LogMessage: create_log_message,
+    logging.types.ApplicationInfo: create_log_application_info,
+    logging.types.EventInfo: create_log_event_info,
+    logging.types.ProcessInfo: create_log_process_info,
 }
 
 
