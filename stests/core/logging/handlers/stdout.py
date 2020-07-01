@@ -1,8 +1,8 @@
 import dataclasses
 from datetime import datetime
 
-from stests.core.logging.types import LogMessage
-from stests.core.logging.types import OutputMode
+from stests.core.types.logging import LogMessage
+from stests.core.types.logging import OutputMode
 
 
 

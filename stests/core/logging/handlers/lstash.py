@@ -4,10 +4,11 @@ import typing
 
 import logstash
 
-from stests.core.logging.types import Level
-from stests.core.logging.types import LogMessage
-from stests.core.logging.types import OutputMode
+from stests.core.types.logging import Level
+from stests.core.types.logging import LogMessage
+from stests.core.types.logging import OutputMode
 from stests.core.utils import env
+
 
 
 # Logger instance. 

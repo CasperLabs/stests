@@ -1,6 +1,7 @@
-from stests.core import logging
 from stests.core import mq
+from stests.core import logging
 from stests.core.mq import encoder
+from stests.core.types.logging import OutputMode
 
 
 
@@ -8,17 +9,17 @@ def setup_daemon():
     """Perform setup when run in daemon mode.
     
     """
-    _setup(logging.OutputMode.DAEMON)
+    _setup(OutputMode.DAEMON)
 
 
 def setup_interactive():
     """Perform setup when run in interactive mode.
     
     """
-    _setup(logging.OutputMode.INTERACTIVE)
+    _setup(OutputMode.INTERACTIVE)
 
 
-def _setup(output_mode: logging.OutputMode):
+def _setup(output_mode: OutputMode):
     """Perform setup tasks standard to all workers.
     
     """

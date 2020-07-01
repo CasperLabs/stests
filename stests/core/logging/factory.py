@@ -4,11 +4,11 @@ import pwd
 import socket
 
 from stests import __version__
-from stests.core.logging.types import ApplicationInfo
-from stests.core.logging.types import EventInfo
-from stests.core.logging.types import Level
-from stests.core.logging.types import LogMessage
-from stests.core.logging.types import ProcessInfo
+from stests.core.types.logging import ApplicationInfo
+from stests.core.types.logging import EventInfo
+from stests.core.types.logging import Level
+from stests.core.types.logging import LogMessage
+from stests.core.types.logging import ProcessInfo
 
 from stests import events
 

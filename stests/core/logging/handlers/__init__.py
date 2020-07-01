@@ -2,9 +2,10 @@ import typing
 
 from stests.core.logging.handlers import stdout
 from stests.core.logging.handlers import lstash
-from stests.core.logging.types import OutputMode
+from stests.core.types.logging import OutputMode
 from stests.core.utils import env
 from stests.core.utils.exceptions import InvalidEnvironmentVariable
+
 
 
 # Environment variables required by this module.

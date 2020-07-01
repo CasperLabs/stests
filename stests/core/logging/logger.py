@@ -3,7 +3,7 @@ import typing
 from stests import events
 from stests.core.logging.factory import get_message
 from stests.core.logging.handlers import get_handler
-from stests.core.logging.types import OutputMode
+from stests.core.types.logging import OutputMode
 
 
 
