@@ -118,7 +118,7 @@ def _enqueue_correlated(node_id: NodeIdentifier, deploy: Deploy):
     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
     broker = dramatiq.get_broker()
     broker.enqueue(dramatiq.Message(
-        queue_name="workflows.orchestration.step",
+        queue_name="orchestration.engine.step",
         actor_name="on_step_deploy_finalized",
         args=([
             encoder.encode(ctx),

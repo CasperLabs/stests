@@ -14,7 +14,7 @@ from stests.orchestration.engine.step import do_step
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "workflows.orchestration.phase"
+_QUEUE = "orchestration.engine.phase"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
