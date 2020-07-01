@@ -1,11 +1,11 @@
 # Reuse wg_100 phase 1 & 3.
-from stests.workflows.generators.wg_100 import meta as wg_100
+from stests.orchestration.generators.wg_100 import meta as wg_100
 
 # Reuse wg_200 args + types.
-from stests.workflows.generators.wg_200 import meta as wg_200
+from stests.orchestration.generators.wg_200 import meta as wg_200
 
-from stests.workflows.generators.wg_210 import phase_1
-from stests.workflows.generators.wg_210 import phase_2
+from stests.orchestration.generators.wg_210 import phase_1
+from stests.orchestration.generators.wg_210 import phase_2
 
 
 

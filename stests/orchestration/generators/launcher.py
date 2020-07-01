@@ -49,11 +49,11 @@ def _import_actors():
     encoder.initialise()
 
     # Import actors: generators.
-    import stests.workflows.generators.wg_100.meta
-    import stests.workflows.generators.wg_110.meta
-    import stests.workflows.generators.wg_120.meta
-    import stests.workflows.generators.wg_200.meta
-    import stests.workflows.generators.wg_210.meta
+    import stests.orchestration.generators.wg_100.meta
+    import stests.orchestration.generators.wg_110.meta
+    import stests.orchestration.generators.wg_120.meta
+    import stests.orchestration.generators.wg_200.meta
+    import stests.orchestration.generators.wg_210.meta
 
 
 def _get_context_list(

@@ -1,7 +1,7 @@
 from stests.core.types.orchestration import ExecutionContext
-from stests.workflows.generators.wg_120 import args
-from stests.workflows.generators.wg_120 import phase_1
-from stests.workflows.generators.wg_120 import phase_2
+from stests.orchestration.generators.wg_120 import args
+from stests.orchestration.generators.wg_120 import phase_1
+from stests.orchestration.generators.wg_120 import phase_2
 
 
 # Workload custom args.

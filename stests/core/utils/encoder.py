@@ -215,16 +215,16 @@ def initialise():
         return
 
     # Generator args are passed over thet wire thus they need to be registered. 
-    from stests.workflows.generators.wg_100.args import Arguments
+    from stests.orchestration.generators.wg_100.args import Arguments
     register_type(Arguments)
 
-    from stests.workflows.generators.wg_120.args import Arguments
+    from stests.orchestration.generators.wg_120.args import Arguments
     register_type(Arguments)
 
-    from stests.workflows.generators.wg_200.args import Arguments
+    from stests.orchestration.generators.wg_200.args import Arguments
     register_type(Arguments)
 
-    from stests.workflows.generators.wg_1000.args import Arguments
+    from stests.orchestration.generators.wg_1000.args import Arguments
     register_type(Arguments)
 
     IS_INITIALISED = True

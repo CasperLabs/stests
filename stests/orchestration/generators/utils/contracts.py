@@ -10,7 +10,7 @@ from stests.core import factory
 
 
 # Queue to which messages will be dispatched.
-_QUEUE = "workflows.generators.contracts"
+_QUEUE = "orchestration.generators.contracts"
 
 
 @dramatiq.actor(queue_name=_QUEUE)

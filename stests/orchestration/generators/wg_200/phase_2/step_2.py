@@ -9,8 +9,8 @@ from stests.core.types.chain import DeployType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core import factory
-from stests.workflows.generators.utils import constants
-from stests.workflows.generators.utils import verification
+from stests.orchestration.generators.utils import constants
+from stests.orchestration.generators.utils import verification
 
 
 
@@ -65,7 +65,7 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     assert count == ctx.args.increments, "counter verification failed"
 
 
-@dramatiq.actor(queue_name="workflows.generators.WG-200")
+@dramatiq.actor(queue_name="orchestration.generators.WG-200")
 def _do_increment_counter_0(ctx: ExecutionContext, account_index: int):
     """Dispatches counter increment deploy.
     

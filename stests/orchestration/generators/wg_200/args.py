@@ -2,8 +2,8 @@ import argparse
 import dataclasses
 import typing
 
-from stests.workflows.generators.utils import constants
-from stests.workflows.generators.utils.args import get_argparser
+from stests.orchestration.generators.utils import constants
+from stests.orchestration.generators.utils.args import get_argparser
 
 
 # Default number of times counters will be incremented.

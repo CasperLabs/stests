@@ -6,9 +6,9 @@ from stests.core.types.chain import AccountType
 from stests.core.types.chain import ContractType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
-from stests.workflows.generators.utils import constants
-from stests.workflows.generators.utils import verification
-from stests.workflows.generators.utils.contracts import do_install_contract
+from stests.orchestration.generators.utils import constants
+from stests.orchestration.generators.utils import verification
+from stests.orchestration.generators.utils.contracts import do_install_contract
 
 
 

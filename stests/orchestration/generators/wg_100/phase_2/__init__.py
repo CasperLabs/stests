@@ -1,5 +1,5 @@
-from stests.workflows.generators.wg_100.phase_2 import step_1
-from stests.workflows.generators.wg_100.phase_2 import step_2
+from stests.orchestration.generators.wg_100.phase_2 import step_1
+from stests.orchestration.generators.wg_100.phase_2 import step_2
 
 
 

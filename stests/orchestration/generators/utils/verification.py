@@ -9,7 +9,7 @@ from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.chain import Transfer
 from stests.core.types.chain import TransferStatus
 from stests.core.utils.exceptions import IgnoreableAssertionError
-from stests.workflows.generators.utils.constants import ACC_RUN_USERS
+from stests.orchestration.generators.utils.constants import ACC_RUN_USERS
 
 
 

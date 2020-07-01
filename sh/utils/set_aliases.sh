@@ -27,7 +27,7 @@ alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 
 alias stests-interactive='$STESTS_PATH_SH/workers/interactive.sh unified'
 alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh monitoring'
-alias stests-interactive-workflows='$STESTS_PATH_SH/workers/interactive.sh workflows'
+alias stests-interactive-orchestration='$STESTS_PATH_SH/workers/interactive.sh orchestration'
 
 # ###############################################################
 # ALIASES: workers

@@ -37,7 +37,7 @@ function main()
     elif [ $1 = "monitoring" ]; then
         source $STESTS_PATH_SH/cache/flush_locks.sh
         pipenv run dramatiq interactive_1 --path $worker_path --watch $STESTS_PATH_SRC
-    elif [ $1 = "workflows" ]; then
+    elif [ $1 = "orchestration" ]; then
         pipenv run dramatiq interactive_2 --path $worker_path --watch $STESTS_PATH_SRC
     fi
 

@@ -7,7 +7,7 @@ from stests.core import crypto
 from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.types.orchestration import ExecutionContext
-from stests.workflows.generators.utils import constants
+from stests.orchestration.generators.utils import constants
 
 
 # Step label.

@@ -1,9 +1,9 @@
 # Reuse wg_100 phase 1 & 3.
-from stests.workflows.generators.wg_100 import meta as wg_100
+from stests.orchestration.generators.wg_100 import meta as wg_100
 
 from stests.core.types.orchestration import ExecutionContext
-from stests.workflows.generators.wg_200 import args
-from stests.workflows.generators.wg_200 import phase_2
+from stests.orchestration.generators.wg_200 import args
+from stests.orchestration.generators.wg_200 import phase_2
 
 
 

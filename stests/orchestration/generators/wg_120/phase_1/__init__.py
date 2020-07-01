@@ -1,6 +1,6 @@
-from stests.workflows.generators.wg_120.phase_1 import step_1
-from stests.workflows.generators.wg_120.phase_1 import step_2
-from stests.workflows.generators.wg_120.phase_1 import step_3
+from stests.orchestration.generators.wg_120.phase_1 import step_1
+from stests.orchestration.generators.wg_120.phase_1 import step_2
+from stests.orchestration.generators.wg_120.phase_1 import step_3
 
 
 # Set: steps to be executed.

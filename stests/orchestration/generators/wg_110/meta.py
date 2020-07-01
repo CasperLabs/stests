@@ -1,6 +1,6 @@
 # Note - import wg_100 as we are basically running
 # same workflow but with differing parameterisation.
-from stests.workflows.generators.wg_100 import meta as wg_100
+from stests.orchestration.generators.wg_100 import meta as wg_100
 
 
 

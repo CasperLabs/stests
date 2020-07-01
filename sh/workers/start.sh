@@ -19,7 +19,7 @@ function main()
         log "- if the socket file ($interactive_socket) is stale then clear it and retry,"
 		exit 0
     fi
-	interactive_socket=$STESTS_PATH_OPS/daemon/interactive-workflows.sock
+	interactive_socket=$STESTS_PATH_OPS/daemon/interactive-orchestration.sock
     if [ -e $interactive_socket ]; then
         log "stests is already running in interactive mode:"
         log "- if the socket file ($interactive_socket) is stale then clear it and retry,"

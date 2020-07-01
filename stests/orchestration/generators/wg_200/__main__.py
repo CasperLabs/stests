@@ -1,4 +1,4 @@
-from stests.workflows.generators import launcher
-from stests.workflows.generators.wg_200 import meta
+from stests.orchestration.generators import launcher
+from stests.orchestration.generators.wg_200 import meta
 
 launcher.start_generator(meta)
