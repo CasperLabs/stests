@@ -24,7 +24,7 @@ def start_generator(meta: typing.Any):
     _import_actors()
 
     # Import dramatiq actor used to ping message to broker.
-    from stests.workflows.orchestration.run import do_run
+    from stests.orchestration.engine.run import do_run
 
     # Unpack args.
     network_id = factory.create_network_id(args.network_name)

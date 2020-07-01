@@ -44,9 +44,9 @@ def start_workflows():
     import stests.workflows.generators.wg_210.meta
 
     # JIT import actors: orchestration.
-    import stests.workflows.orchestration.run
-    import stests.workflows.orchestration.phase
-    import stests.workflows.orchestration.step
+    import stests.orchestration.engine.run
+    import stests.orchestration.engine.phase
+    import stests.orchestration.engine.step
 
 
 def start_monitoring():

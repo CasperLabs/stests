@@ -11,9 +11,9 @@ from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionStatus
 from stests.core.utils.exceptions import IgnoreableAssertionError
 from stests.events import EventType
-from stests.workflows.orchestration.model import Workflow
-from stests.workflows.orchestration.model import WorkflowStep
-from stests.workflows.orchestration import predicates
+from stests.orchestration.engine.model import Workflow
+from stests.orchestration.engine.model import WorkflowStep
+from stests.orchestration.engine import predicates
 
 
 
@@ -97,7 +97,7 @@ def on_step_end(ctx: ExecutionContext):
     # Enqueue either end of phase or next step. 
     if step.is_last:
         # Note: JIT import to avoid circularity.
-        from stests.workflows.orchestration.phase import on_phase_end
+        from stests.orchestration.engine.phase import on_phase_end
         on_phase_end.send(ctx)
     else:
         do_step.send(ctx)
