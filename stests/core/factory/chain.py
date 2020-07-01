@@ -25,18 +25,20 @@ from stests.core.types.orchestration import ExecutionContext
 
 
 
-
 def create_account(
     network: str,
     typeof: AccountType,
     index: int = 1,
     key_algo = crypto.KeyAlgorithm.ED25519,
+    private_key: str = None,
+    public_key: str = None,
     ) -> Account:
     """Returns a domain object instance: Account.
     
     """
-    private_key, public_key = \
-        crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+    if private_key is None:
+        private_key, public_key = \
+            crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
 
     return Account(
         account_id=crypto.get_account_id(key_algo, public_key),
