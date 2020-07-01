@@ -31,9 +31,15 @@ def start_generator(meta: typing.Any):
     node_id = factory.create_node_id(network_id, args.node_index)
 
     # Start generator(s).    
-    for ctx in _get_context_list(meta, args, network_id, node_id):
+    ctx_list = _get_context_list(meta, args, network_id, node_id)
+    for ctx in ctx_list:
         do_run.send(ctx)
+
+    # Notify.
+    if len(ctx_list) == 1:
         log_event(EventType.WORKFLOW_GENERATOR_LAUNCHED, f"{ctx.run_type} :: run {ctx.run_index}", ctx)
+    else:
+        log_event(EventType.WORKFLOW_GENERATORS_LAUNCHED, f"{ctx.run_type} :: runs {ctx_list[0].run_index} -> {ctx_list[-1].run_index}", ctx)
 
 
 def _import_actors():
@@ -65,10 +71,10 @@ def _get_context_list(
     """Returns collection of contextual information passed along chain of execution.
     
     """
-    return map(
+    return list(map(
         lambda _: _get_context(meta, args, network_id, node_id), 
         range(1, args.parallel_count + 1)
-        )
+        ))
 
 
 def _get_context(

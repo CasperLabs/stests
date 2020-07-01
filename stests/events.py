@@ -56,6 +56,7 @@ class EventType(enum.Enum):
     WORKFLOW_STEP_START = enum.auto()
     WORKFLOW_INVALID = enum.auto()
     WORKFLOW_GENERATOR_LAUNCHED = enum.auto()
+    WORKFLOW_GENERATORS_LAUNCHED = enum.auto()
 
 # Set of debug events.
 EVENTS_DEBUG = (
