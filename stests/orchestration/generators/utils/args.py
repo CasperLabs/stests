@@ -77,7 +77,7 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         default=1,
         )
 
-    # parallel count.
+    # key algorithm.
     args.add_argument(
         "--key-algorithm",
         dest="key_algorithm",
