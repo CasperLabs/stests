@@ -71,6 +71,6 @@ def transfer(ctx: ExecutionContext, cp1: Account, cp2: Account, amount: int) -> 
             ]),
     )
 
-    log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"TRANSFER_U512_STORED {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", node, deploy_hash=deploy_hash)
+    log_event(EventType.WFLOW_DEPLOY_DISPATCHED, f"{deploy_hash} :: TRANSFER_U512_STORED {amount} CLX from {cp1.public_key[:8]} to {cp2.public_key[:8]}", node, deploy_hash=deploy_hash)
 
     return node, deploy_hash, dispatch_duration, dispatch_attempts

@@ -77,7 +77,7 @@ def increment(
         session_args=[ABI.key_hash("counter_key", nk_contract.hash_as_bytes)],
         ) 
 
-    log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"COUNTER_DEFINE.increment :: address={user_account.public_key}", node)
+    log_event(EventType.WFLOW_DEPLOY_DISPATCHED, f"{deploy_hash} :: COUNTER_DEFINE.increment :: address={user_account.public_key}", node)
 
     return node, deploy_hash, dispatch_duration, dispatch_attempts
 

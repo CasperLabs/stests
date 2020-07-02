@@ -2,6 +2,7 @@ from stests.core.types.chain.account import Account
 from stests.core.types.chain.account import AccountIdentifier
 from stests.core.types.chain.block import Block
 from stests.core.types.chain.block import BlockStatistics
+from stests.core.types.chain.block import BlockSummary
 from stests.core.types.chain.deploy import Deploy
 from stests.core.types.chain.deploy import DeploySummary
 from stests.core.types.chain.enums import AccountType
@@ -21,6 +22,7 @@ TYPE_SET = {
     AccountIdentifier,
     Block,
     BlockStatistics,
+    BlockSummary,
     Deploy,
     DeploySummary,
     NamedKey,

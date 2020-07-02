@@ -49,7 +49,7 @@ def do_run(ctx: ExecutionContext):
         ))
 
     # Notify.
-    log_event(EventType.WORKFLOW_RUN_START, None, ctx)
+    log_event(EventType.WFLOW_RUN_START, None, ctx)
 
     # Enqueue phase.
     do_phase.send(ctx)
@@ -73,7 +73,7 @@ def on_run_end(ctx: ExecutionContext):
     cache.orchestration.delete_locks(ctx)    
 
     # Notify.
-    log_event(EventType.WORKFLOW_RUN_END, None, ctx)
+    log_event(EventType.WFLOW_RUN_END, None, ctx)
 
     # Enqueue next run (when mode=SEQUENTIAL).
     if ctx.execution_mode == ExecutionMode.SEQUENTIAL:
@@ -96,7 +96,7 @@ def on_run_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.RUN, ExecutionStatus.ERROR)
 
     # Notify.
-    log_event(EventType.WORKFLOW_RUN_ERROR, err, ctx)
+    log_event(EventType.WFLOW_RUN_ERROR, err, ctx)
 
 
 def _can_start(ctx: ExecutionContext) -> bool:
@@ -114,7 +114,7 @@ def _can_start(ctx: ExecutionContext) -> bool:
 
     # False if phase/step are not initialised.
     if ctx.phase_index != 0 or ctx.step_index != 0:
-        log_event(EventType.WORKFLOW_RUN_ABORT, None, ctx)
+        log_event(EventType.WFLOW_RUN_ABORT, None, ctx)
         return False
 
     # False if locked.

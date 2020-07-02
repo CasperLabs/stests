@@ -46,7 +46,7 @@ def do_step(ctx: ExecutionContext):
         ))
 
     # Notify.
-    log_event(EventType.WORKFLOW_STEP_START, None, ctx)
+    log_event(EventType.WFLOW_STEP_START, None, ctx)
 
     # Execute.
     _execute(ctx, step)
@@ -62,7 +62,7 @@ def do_step_verification(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        log_event(EventType.WORKFLOW_STEP_FAILURE, "invalid step", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
 
     # Verify step.
     if step.has_verifer:
@@ -71,7 +71,7 @@ def do_step_verification(ctx: ExecutionContext):
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
-            log_event(EventType.WORKFLOW_STEP_FAILURE, "verification failed", ctx)
+            log_event(EventType.WFLOW_STEP_FAILURE, "verification failed", ctx)
             return
 
     # Enqueue step end.
@@ -92,7 +92,7 @@ def on_step_end(ctx: ExecutionContext):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
     # Notify.
-    log_event(EventType.WORKFLOW_STEP_END, None, ctx)
+    log_event(EventType.WFLOW_STEP_END, None, ctx)
 
     # Enqueue either end of phase or next step. 
     if step.is_last:
@@ -115,7 +115,7 @@ def on_step_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
     # Notify.
-    log_event(EventType.WORKFLOW_STEP_ERROR, err, ctx)
+    log_event(EventType.WFLOW_STEP_ERROR, err, ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -137,17 +137,17 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        log_event(EventType.WORKFLOW_STEP_FAILURE, "invalid step", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
 
     # Verify deploy.
     if not step.has_verifer_for_deploy:
-        log_event(EventType.WORKFLOW_STEP_FAILURE, "deploy verifier undefined", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, "deploy verifier undefined", ctx)
         return       
     else:
         try:
             step.verify_deploy(ctx, node_id, block_hash, deploy_hash)
         except AssertionError as err:
-            log_event(EventType.WORKFLOW_STEP_FAILURE, f"deploy verification failed: {err} :: {deploy_hash}", ctx)
+            log_event(EventType.WFLOW_STEP_FAILURE, f"deploy verification failed: {err} :: {deploy_hash}", ctx)
             return
 
     # Verify step.
@@ -157,7 +157,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
         except AssertionError as err:
             if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
                 return
-            log_event(EventType.WORKFLOW_STEP_FAILURE, f"verification failed", ctx)
+            log_event(EventType.WFLOW_STEP_FAILURE, f"verification failed", ctx)
             return
 
     # Step verification succeeded therefore signal step end.
@@ -180,13 +180,13 @@ def _can_start(ctx: ExecutionContext) -> bool:
     # False if current phase not found.
     phase = wflow.get_phase(ctx.phase_index)
     if phase is None:
-        log_event(EventType.WORKFLOW_STEP_ABORT, "invalid phase index", ctx)
+        log_event(EventType.WFLOW_STEP_ABORT, "invalid phase index", ctx)
         return False
     
     # False if next step not found.
     step = phase.get_step(ctx.next_step_index)
     if step is None:
-        log_event(EventType.WORKFLOW_STEP_ABORT, "invalid step index", ctx)
+        log_event(EventType.WFLOW_STEP_ABORT, "invalid step index", ctx)
         return False
 
     # False if next step locked - can happen when processing groups of messages.
@@ -276,7 +276,7 @@ def _enqueue_message_batch(ctx, step):
         for args in args_factory():
             yield actor.message_with_options(
                 args=args,
-                delay=0 if step.is_sync else random.randint(0, dispatch_window)
+                delay=random.randint(0, dispatch_window)
                 )
 
     # Instantiate a dramatiq group to batch message set.

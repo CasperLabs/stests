@@ -21,18 +21,18 @@ def is_valid_wflow(ctx: ExecutionContext) -> typing.Tuple[typing.Optional[Workfl
     try:
         wflow = Workflow.create(ctx)
     except ValueError:
-        log_event(EventType.WORKFLOW_INVALID, "unregistered", ctx)
+        log_event(EventType.WFLOW_INVALID, "unregistered", ctx)
         return None, False
 
     # False if workflow has no phases.
     if not wflow.phases:
-        log_event(EventType.WORKFLOW_INVALID, "has no associated phases", ctx)
+        log_event(EventType.WFLOW_INVALID, "has no associated phases", ctx)
         return None, False
 
     # False if a phase has no steps.
     for phase in wflow.phases:
         if not phase.steps:
-            log_event(EventType.WORKFLOW_INVALID, "a phase has no associated steps", ctx)
+            log_event(EventType.WFLOW_INVALID, "a phase has no associated steps", ctx)
             return None, False
 
     # All tests passed, therefore return true.   

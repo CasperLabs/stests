@@ -1,77 +1,28 @@
-import typing
-
 from stests.core.cache.model import Item
 from stests.core.cache.model import ItemKey
-from stests.core.cache.model import SearchKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
 from stests.core.cache.ops.utils import cache_op
-from stests.core.types.chain import Block
+from stests.core.types.chain import BlockSummary
 from stests.core.types.chain import DeploySummary
-from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NodeEventInfo
-from stests.core.types.infra import NodeMonitoringLock
 
 
 # Cache partition.
 _PARTITION = StorePartition.MONITORING
 
 # Cache collections.
-COL_BLOCK = "block"
-COL_DEPLOY = "deploy"
+COL_BLOCK_SUMMARY = "block-summary"
+COL_DEPLOY_SUMMARY = "deploy-summary"
 COL_EVENT = "event"
 
 
 
-@cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_block(network_id: NetworkIdentifier, block_hash: str) -> ItemKey:
-    """Returns a cached item: Block.
-    
-    :param network_id: Identifier of network.
-    :param block_hash: Hash of a cached block.
-
-    :returns: Key of cached item.
-
-    """
-    return ItemKey(
-        paths=[
-            network_id.name,
-            COL_BLOCK,
-        ],
-        names=[
-            "*",
-            block_hash,
-        ],
-    )
-
-
-@cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_deploy(network_id: NetworkIdentifier, deploy_hash: str) -> ItemKey:
-    """Returns a cached item: Deploy.
-    
-    :param network_id: Identifier of network.
-    :param deploy_hash: Hash of a cached deploy.
-
-    :returns: Key of cached item.
-
-    """
-    return ItemKey(
-        paths=[
-            network_id.name,
-            COL_DEPLOY,
-        ],
-        names=[
-            "*",
-            deploy_hash,
-        ],
-    )
-
-
 @cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
-def set_block(block: Block) -> Item:
+def set_block_summary(summary: BlockSummary) -> Item:
     """Encaches an item.
     
-    :param block: Block instance to be cached.
+    :param summary: Block summary instance to be cached.
 
     :returns: Item to be cached.
 
@@ -79,15 +30,14 @@ def set_block(block: Block) -> Item:
     return Item(
         item_key=ItemKey(
             paths=[
-                block.network,
-                COL_BLOCK,
+                summary.network,
+                COL_BLOCK_SUMMARY,
             ],
             names=[
-                block.label_j_rank,
-                block.block_hash,
+                summary.block_hash,
             ],
         ),
-        data=block
+        data=summary
     )
 
 
@@ -104,7 +54,7 @@ def set_deploy_summary(summary: DeploySummary) -> Item:
         item_key=ItemKey(
             paths=[
                 summary.network,
-                COL_DEPLOY,
+                COL_DEPLOY_SUMMARY,
             ],
             names=[
                 summary.block_hash,

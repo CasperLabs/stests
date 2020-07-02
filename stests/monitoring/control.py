@@ -75,7 +75,7 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Exception: chain exception, e.g. node down, comms channel issue ...etc.
     except Exception as err:
-        log_event(EventType.MONITORING_API_ERROR, err, node_id)
+        log_event(EventType.MONIT_STREAM_BIND_ERROR, err, node_id)
         do_monitor_node.send(node_id)
 
     # Release lock.

@@ -18,14 +18,14 @@ from stests.events import EventType
 
 # Map: event type -> handler.
 HANDLERS = {
-    EventType.MONITORING_BLOCK_ADD: on_block_added,
-    EventType.MONITORING_BLOCK_FINALIZED: on_block_finalized,
-    EventType.MONITORING_DEPLOY_ADDED: on_deploy_added,
-    EventType.MONITORING_DEPLOY_DISCARDED: on_deploy_discarded,
-    EventType.MONITORING_DEPLOY_FINALIZED: on_deploy_finalized,
-    EventType.MONITORING_DEPLOY_ORPHANED: on_deploy_orphaned,
-    EventType.MONITORING_DEPLOY_PROCESSED: on_deploy_processed,
-    EventType.MONITORING_DEPLOY_REQUEUED: on_deploy_requeued,
+    EventType.MONIT_BLOCK_ADD: on_block_added,
+    EventType.MONIT_BLOCK_FINALIZED: on_block_finalized,
+    EventType.MONIT_DEPLOY_ADDED: on_deploy_added,
+    EventType.MONIT_DEPLOY_DISCARDED: on_deploy_discarded,
+    EventType.MONIT_DEPLOY_FINALIZED: on_deploy_finalized,
+    EventType.MONIT_DEPLOY_ORPHANED: on_deploy_orphaned,
+    EventType.MONIT_DEPLOY_PROCESSED: on_deploy_processed,
+    EventType.MONIT_DEPLOY_REQUEUED: on_deploy_requeued,
 }
 
 

@@ -95,9 +95,6 @@ class BlockStatistics:
     # Associated network.
     network: str
 
-    # Address of node which emitted finalization event of the block in which deploy was included.
-    node: typing.Optional[str]
-
     # Identifier of consensus round during which block was finalized.
     round_id: typing.Optional[int]
 
@@ -112,3 +109,18 @@ class BlockStatistics:
 
     # ID of validator that proposed block.
     validator_id: str
+
+
+@dataclasses.dataclass
+class BlockSummary:
+    """Encapsulates summary information pertaining to an monitored block.
+    
+    """
+    # Associated block hash in event of finalization. 
+    block_hash: typing.Optional[str]
+
+    # Associated network.
+    network: str
+
+    # Block consensus status, e.g. ADDED | FINALIZED ... etc.
+    status: BlockStatus

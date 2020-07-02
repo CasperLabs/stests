@@ -39,7 +39,7 @@ def do_phase(ctx: ExecutionContext):
         ))
 
     # Notify.
-    log_event(EventType.WORKFLOW_PHASE_START, None, ctx)
+    log_event(EventType.WFLOW_PHASE_START, None, ctx)
 
     # Enqueue step.
     do_step.send(ctx)
@@ -59,7 +59,7 @@ def on_phase_end(ctx: ExecutionContext):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.COMPLETE)
 
     # Notify.
-    log_event(EventType.WORKFLOW_PHASE_END, None, ctx)
+    log_event(EventType.WFLOW_PHASE_END, None, ctx)
 
     # Enqueue either end of workflow or next phase. 
     if phase.is_last:
@@ -82,7 +82,7 @@ def on_phase_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.PHASE, ExecutionStatus.ERROR)
 
     # Notify.
-    log_event(EventType.WORKFLOW_PHASE_ERROR, err, ctx)
+    log_event(EventType.WFLOW_PHASE_ERROR, err, ctx)
 
 
 def _can_start(ctx: ExecutionContext) -> bool:
@@ -101,7 +101,7 @@ def _can_start(ctx: ExecutionContext) -> bool:
     # False if next phase not found.
     phase = wflow.get_phase(ctx.next_phase_index)
     if phase is None:
-        log_event(EventType.WORKFLOW_PHASE_ABORT, None, ctx)
+        log_event(EventType.WFLOW_PHASE_ABORT, None, ctx)
         return False
 
     # False if next phase locked.

@@ -44,7 +44,7 @@ def get_account_balance(src: typing.Any, account_id: str, block_hash: str = None
     except Exception as err:
         if err and err.details:
             if "StatusCode.INVALID_ARGUMENT" in err.details:
-                log_event(EventType.MONITORING_ACCOUNT_NOT_FOUND, f"account_id={account_id}", node)
+                log_event(EventType.MONIT_ACCOUNT_NOT_FOUND, f"account_id={account_id}", node)
                 return 0
         raise err
     else:

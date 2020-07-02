@@ -111,7 +111,7 @@ class Deploy:
 
 @dataclasses.dataclass
 class DeploySummary:
-    """Encapsulates summary information pertaining to an monitored deploy.
+    """Encapsulates summary information pertaining to a monitored deploy.
     
     """
     # Associated block hash in event of finalization. 
@@ -125,14 +125,4 @@ class DeploySummary:
 
     # Deploy's processing status.
     status: DeployStatus
-
-    # Node from which deploy event was streamed.
-    streaming_node: int
-
-    # Moment in time when deploy was streamed.
-    streaming_timestamp: datetime
-
-    @property
-    def label_node_index(self):
-        return f"N-{str(self.streaming_node).zfill(4)}"
 

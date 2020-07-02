@@ -15,84 +15,89 @@ class EventType(enum.Enum):
     CORE_ACTOR_ERROR = enum.auto()    
 
     # Chain info reporting sub-system.
-    CHAININFO_FINALIZED_BLOCK = enum.auto()
-    CHAININFO_FINALIZED_BLOCK_EMPTY = enum.auto()
-    CHAININFO_FINALIZED_DEPLOY = enum.auto()
+    CHAIN_FINALIZED_BLOCK = enum.auto()
+    CHAIN_FINALIZED_BLOCK_EMPTY = enum.auto()
+    CHAIN_FINALIZED_DEPLOY = enum.auto()
 
     # Monitoring sub-system.
-    MONITORING_API_ERROR = enum.auto()
-    MONITORING_ACCOUNT_NOT_FOUND = enum.auto()
-    MONITORING_BLOCK_ADD = enum.auto()
-    MONITORING_BLOCK_FINALIZED = enum.auto()
-    MONITORING_BLOCK_NOT_FOUND = enum.auto()
-    MONITORING_DEPLOY_ADDED = enum.auto()
-    MONITORING_DEPLOY_CORRELATED = enum.auto()
-    MONITORING_DEPLOY_DISCARDED = enum.auto()
-    MONITORING_DEPLOY_DISPATCHED = enum.auto()
-    MONITORING_DEPLOY_DISPATCH_FAILURE = enum.auto()
-    MONITORING_DEPLOY_DISPATCH_ERROR = enum.auto()
-    MONITORING_DEPLOY_EXECUTION_ERROR = enum.auto()
-    MONITORING_DEPLOY_FINALIZED = enum.auto()
-    MONITORING_DEPLOY_NOT_FOUND = enum.auto()
-    MONITORING_DEPLOY_ORPHANED = enum.auto()
-    MONITORING_DEPLOY_PROCESSED = enum.auto()
-    MONITORING_DEPLOY_REQUEUED = enum.auto()    
-    MONITORING_STREAM_OPENING = enum.auto()
-    MONITORING_STREAM_EVENT_TYPE_UNKNOWN = enum.auto()
+    MONIT_ACCOUNT_NOT_FOUND = enum.auto()
+    MONIT_BLOCK_ADD = enum.auto()
+    MONIT_BLOCK_FINALIZED = enum.auto()
+    MONIT_BLOCK_NOT_FOUND = enum.auto()
+    MONIT_DEPLOY_ADDED = enum.auto()
+    MONIT_DEPLOY_DISCARDED = enum.auto()
+    MONIT_DEPLOY_EXECUTION_ERROR = enum.auto()
+    MONIT_DEPLOY_FINALIZED = enum.auto()
+    MONIT_DEPLOY_NOT_FOUND = enum.auto()
+    MONIT_DEPLOY_ORPHANED = enum.auto()
+    MONIT_DEPLOY_PROCESSED = enum.auto()
+    MONIT_DEPLOY_REQUEUED = enum.auto()    
+    MONIT_STREAM_BIND_ERROR = enum.auto()
+    MONIT_STREAM_EVENT_TYPE_UNKNOWN = enum.auto()
+    MONIT_STREAM_OPENING = enum.auto()
 
-    # Workflow sub-system.
-    WORKFLOW_RUN_ABORT = enum.auto()
-    WORKFLOW_RUN_END = enum.auto()
-    WORKFLOW_RUN_ERROR = enum.auto()
-    WORKFLOW_RUN_START = enum.auto()
-    WORKFLOW_PHASE_ABORT = enum.auto()
-    WORKFLOW_PHASE_END = enum.auto()
-    WORKFLOW_PHASE_ERROR = enum.auto()
-    WORKFLOW_PHASE_START = enum.auto()
-    WORKFLOW_STEP_ABORT = enum.auto()
-    WORKFLOW_STEP_END = enum.auto()
-    WORKFLOW_STEP_ERROR = enum.auto()
-    WORKFLOW_STEP_FAILURE = enum.auto()
-    WORKFLOW_STEP_START = enum.auto()
-    WORKFLOW_INVALID = enum.auto()
-    WORKFLOW_GENERATOR_LAUNCHED = enum.auto()
-    WORKFLOW_GENERATORS_LAUNCHED = enum.auto()
+    # Workflow sub-system: deploys.
+    WFLOW_DEPLOY_CORRELATED = enum.auto()
+    WFLOW_DEPLOY_DISPATCHED = enum.auto()
+    WFLOW_DEPLOY_DISPATCH_FAILURE = enum.auto()
+    WFLOW_DEPLOY_DISPATCH_ERROR = enum.auto()
+
+    # Workflow sub-system: engine.
+    WFLOW_RUN_ABORT = enum.auto()
+    WFLOW_RUN_END = enum.auto()
+    WFLOW_RUN_ERROR = enum.auto()
+    WFLOW_RUN_START = enum.auto()
+    WFLOW_PHASE_ABORT = enum.auto()
+    WFLOW_PHASE_END = enum.auto()
+    WFLOW_PHASE_ERROR = enum.auto()
+    WFLOW_PHASE_START = enum.auto()
+    WFLOW_STEP_ABORT = enum.auto()
+    WFLOW_STEP_END = enum.auto()
+    WFLOW_STEP_ERROR = enum.auto()
+    WFLOW_STEP_FAILURE = enum.auto()
+    WFLOW_STEP_START = enum.auto()
+    WFLOW_INVALID = enum.auto()
+    WFLOW_GENERATOR_LAUNCHED = enum.auto()
+    WFLOW_GENERATORS_LAUNCHED = enum.auto()
 
 # Set of debug events.
 EVENTS_DEBUG = (
-    EventType.CHAININFO_FINALIZED_BLOCK_EMPTY,
-    EventType.MONITORING_BLOCK_ADD,
-    # EventType.MONITORING_BLOCK_FINALIZED,
-    EventType.MONITORING_DEPLOY_ADDED,
+    EventType.CORE_BROKER_CONNECTION_ESTABLISHED,
+    EventType.CHAIN_FINALIZED_BLOCK_EMPTY,
+    EventType.MONIT_BLOCK_ADD,
+    EventType.MONIT_BLOCK_FINALIZED,
+    EventType.MONIT_DEPLOY_ADDED,
+    EventType.MONIT_DEPLOY_PROCESSED,
+    EventType.MONIT_DEPLOY_FINALIZED,
 )
 
 # Set of error events.
 EVENTS_ERROR = (
     EventType.CORE_ACTOR_ERROR,
-    EventType.MONITORING_BLOCK_NOT_FOUND,
-    EventType.MONITORING_DEPLOY_NOT_FOUND,
-    EventType.MONITORING_DEPLOY_DISPATCH_ERROR,
-    EventType.MONITORING_DEPLOY_EXECUTION_ERROR,
-    EventType.MONITORING_API_ERROR,
-    EventType.WORKFLOW_RUN_ERROR,
-    EventType.WORKFLOW_PHASE_ERROR,
-    EventType.WORKFLOW_STEP_ERROR,
+    EventType.MONIT_BLOCK_NOT_FOUND,
+    EventType.MONIT_DEPLOY_NOT_FOUND,
+    EventType.MONIT_DEPLOY_EXECUTION_ERROR,
+    EventType.MONIT_STREAM_BIND_ERROR,
+    EventType.WFLOW_DEPLOY_DISPATCH_ERROR,
+    EventType.WFLOW_RUN_ERROR,
+    EventType.WFLOW_PHASE_ERROR,
+    EventType.WFLOW_STEP_ERROR,
 )
 
 
 # Set of warning events.
 EVENTS_WARN = (
     EventType.CORE_ENCODING_FAILURE,
-    EventType.MONITORING_ACCOUNT_NOT_FOUND,
-    EventType.MONITORING_DEPLOY_DISCARDED,
-    EventType.MONITORING_DEPLOY_DISPATCH_FAILURE,
-    EventType.MONITORING_DEPLOY_ORPHANED,
-    EventType.MONITORING_DEPLOY_REQUEUED,
-    EventType.MONITORING_STREAM_EVENT_TYPE_UNKNOWN,
-    EventType.WORKFLOW_RUN_ABORT,
-    EventType.WORKFLOW_PHASE_ABORT,
-    EventType.WORKFLOW_STEP_ABORT,
-    EventType.WORKFLOW_STEP_FAILURE,
+    EventType.MONIT_ACCOUNT_NOT_FOUND,
+    EventType.MONIT_DEPLOY_DISCARDED,
+    EventType.WFLOW_DEPLOY_DISPATCH_FAILURE,
+    EventType.MONIT_DEPLOY_ORPHANED,
+    EventType.MONIT_DEPLOY_REQUEUED,
+    EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,
+    EventType.WFLOW_RUN_ABORT,
+    EventType.WFLOW_PHASE_ABORT,
+    EventType.WFLOW_STEP_ABORT,
+    EventType.WFLOW_STEP_FAILURE,
 )
 
 
@@ -139,12 +144,15 @@ def get_event_info(event_type: EventType, message: typing.Union[BaseException, s
 
     if sub_system == "CORE":
         event_id, data = event_type.value, dict()
-    elif sub_system == "CHAININFO":
-        event_id, data = _get_event_info_chaininfo(event_type, *args, **kwargs)
-    elif sub_system == "MONITORING":
-        event_id, data = _get_event_info_monitoring(event_type, *args, **kwargs)
-    elif sub_system == "WORKFLOW":
-        event_id, data = _get_event_info_workflow(event_type, *args, **kwargs)
+    elif sub_system == "CHAIN":
+        event_id, message, data = _get_event_info_chaininfo(event_type, message, *args, **kwargs)
+    elif sub_system == "MONIT":
+        event_id, message, data = _get_event_info_monitoring(event_type, message, *args, **kwargs)
+    elif sub_system == "WFLOW":
+        if event_name.startswith("DEPLOY_"):
+            event_id, message, data = _get_event_info_monitoring(event_type, message, *args, **kwargs)
+        else:
+            event_id, message, data = _get_event_info_workflow(event_type, message, *args, **kwargs)
 
     return EventInfo(
         data=data,
@@ -161,15 +169,20 @@ def get_event_info(event_type: EventType, message: typing.Union[BaseException, s
     )
 
 
-def _get_event_info_chaininfo(event_type: EventType, info: typing.Any) -> typing.Tuple[int, dict]:
+def _get_event_info_chaininfo(
+    event_type: EventType,
+    message: typing.Union[str, None],
+    info: typing.Any,
+    ) -> typing.Tuple[int, dict]:
     """Returns monitoring sub-system event information.
     
     """
-    return event_type.value, info
+    return event_type.value, message, info
 
 
 def _get_event_info_monitoring(
     event_type: EventType,
+    message: typing.Union[str, None],
     node: typing.Any,
     event_id: int = None,
     block_hash: str = None,
@@ -187,14 +200,18 @@ def _get_event_info_monitoring(
     if deploy_hash:
         data['deploy_hash'] = deploy_hash
 
-    return event_id or event_type.value, data
+    return event_id or event_type.value, message, data
 
 
-def _get_event_info_workflow(event_type: EventType, ctx: typing.Any) -> typing.Tuple[int, dict]:
+def _get_event_info_workflow(
+    event_type: EventType,
+    message: typing.Union[str, None],
+    ctx: typing.Any,
+    ) -> typing.Tuple[int, dict]:
     """Returns workflow sub-system event information.
     
     """
-    return event_type.value, {
+    return event_type.value, message, {
         'network': ctx.network,
         'phase_index': ctx.phase_index,
         'run_index': ctx.run_index,

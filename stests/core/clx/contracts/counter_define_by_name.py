@@ -48,7 +48,7 @@ def increment(src: typing.Any, account: Account) -> typing.Tuple[Node, str, floa
         session_name=_NKEY_INC,
     )
 
-    log_event(EventType.MONITORING_DEPLOY_DISPATCHED, f"COUNTER_DEFINE.increment :: address={account.public_key}", node)
+    log_event(EventType.WFLOW_DEPLOY_DISPATCHED, f"{deploy_hash} :: COUNTER_DEFINE.increment :: address={account.public_key}", node)
 
     return node, deploy_hash, dispatch_duration, dispatch_attempts
 

@@ -107,7 +107,7 @@ def dispatch_deploy(
             except Exception as err:
                 if attempts == _MAX_DEPLOY_DISPATCH_ATTEMPTS:
                     raise Exception(f"deploy dispatch failed {_MAX_DEPLOY_DISPATCH_ATTEMPTS} times - {err}")
-                log_event(EventType.MONITORING_DEPLOY_DISPATCH_FAILURE, f"try {attempts} failed - retrying", node)
+                log_event(EventType.WFLOW_DEPLOY_DISPATCH_FAILURE, f"try {attempts} failed - retrying", node)
                 time.sleep(float(1))
             else:
                 break

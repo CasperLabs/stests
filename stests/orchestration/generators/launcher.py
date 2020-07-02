@@ -37,9 +37,9 @@ def start_generator(meta: typing.Any):
 
     # Notify.
     if len(ctx_list) == 1:
-        log_event(EventType.WORKFLOW_GENERATOR_LAUNCHED, f"{ctx.run_type} :: run {ctx.run_index}", ctx)
+        log_event(EventType.WFLOW_GENERATOR_LAUNCHED, f"{ctx.run_type} :: run {ctx.run_index}", ctx)
     else:
-        log_event(EventType.WORKFLOW_GENERATORS_LAUNCHED, f"{ctx.run_type} :: runs {ctx_list[0].run_index} -> {ctx_list[-1].run_index}", ctx)
+        log_event(EventType.WFLOW_GENERATORS_LAUNCHED, f"{ctx.run_type} :: runs {ctx_list[0].run_index} -> {ctx_list[-1].run_index}", ctx)
 
 
 def _import_actors():
