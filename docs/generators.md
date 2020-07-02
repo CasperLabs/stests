@@ -12,6 +12,7 @@ The stests application can be used to dispatch various workloads to a target net
 
 - `--deploys-per-second`
 	- Max. number of deploys to dispatch per second.
+    - Defaults to zero, i.e. dispatch as many as possible
 
 - `--execution-mode`
 	- Generator execution mode - sequential | periodical
