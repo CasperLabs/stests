@@ -1,13 +1,11 @@
 import typing
 
-import dramatiq
-
 from stests.core import cache
-from stests.core import crypto
 from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils import constants
+from stests.orchestration.generators.utils import verification
 
 
 
@@ -46,6 +44,4 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    cached = cache.state.get_account_count(ctx)
-    expected = ctx.args.user_accounts + 2
-    assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."
+    verification.verify_account_count(ctx)

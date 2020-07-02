@@ -35,6 +35,7 @@ def do_start_monitoring():
     if get_var("NODE_IMPLEMENTATION", "SCALA") != "SCALA":
         return
     
+    # TODO: reduce number of instantiated monitors.
     for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
         for node in cache.infra.get_nodes_operational(network_id):

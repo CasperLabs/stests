@@ -13,6 +13,15 @@ from stests.orchestration.generators.utils.constants import ACC_RUN_USERS
 
 
 
+def verify_account_count(ctx: ExecutionContext) -> Deploy:
+    """Verifies number of created accounts.
+    
+    """
+    cached = cache.state.get_account_count(ctx)
+    expected = ctx.args.user_accounts + 2
+    assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."
+
+
 def verify_deploy(ctx: ExecutionContext, block_hash: str, deploy_hash: str) -> Deploy:
     """Verifies that a deploy is in a finalized state.
     
@@ -41,11 +50,11 @@ def verify_transfer(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: 
     assert transfer, "transfer could not be retrieved"
     assert transfer.status == TransferStatus.COMPLETE, "transfer is not COMPLETE"
 
-    _verify_account_balance(ctx, node_id, block_hash, transfer.cp1_index)
-    _verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index)
+    verify_account_balance(ctx, node_id, block_hash, transfer.cp1_index)
+    verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index)
 
 
-def _verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, account_index: int, verify_user_accounts_only: bool = True) -> Account:
+def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, account_index: int, verify_user_accounts_only: bool = True) -> Account:
     """Verifies that an account balance is as per expectation.
     
     """
