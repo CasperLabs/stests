@@ -39,14 +39,7 @@ def do_transfer(
             raise ValueError(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={cp1_balance}.")
 
     # Set contract.
-    if ctx.run_type == "WG-100":
-        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512_WASM)
-    elif ctx.run_type == "WG-110":
-        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
-    elif ctx.run_type == "WG-120" and ctx.phase_index == 1:
-        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
-    else:
-        contract = clx.contracts.get_contract(ContractType.TRANSFER_U512)
+    contract = _get_contract_for_transfer(ctx)
 
     # Transfer CLX from cp1 -> cp2.    
     node, deploy_hash, dispatch_duration, dispatch_attempts = contract.transfer(ctx, cp1, cp2, amount)
@@ -79,6 +72,32 @@ def do_transfer(
         cache.state.increment_account_balance(cp2, amount)
 
 
+@dramatiq.actor(queue_name=_QUEUE)
+def do_transfer_lite(
+    ctx: ExecutionContext,
+    cp1_index: int,
+    cp2_index: int,
+    amount: int = None,
+    ):
+    # Set counterparties.
+    cp1 = _get_account(ctx, cp1_index)
+    cp2 = _get_account(ctx, cp2_index)
+
+    # Set amount for refunds.
+    is_refund = amount is None
+    if is_refund:
+        cp1_balance = clx.get_account_balance(ctx, cp1.account_id)
+        amount = cp1_balance - clx.CLX_TX_FEE
+        if amount <= 0:
+            raise ValueError(f"Counter party 1 (account={cp1.index}) does not have enough CLX to pay refund transaction fee, balance={cp1_balance}.")
+
+    # Set contract.
+    contract = _get_contract_for_transfer(ctx)
+
+    # Transfer CLX from cp1 -> cp2.    
+    node, deploy_hash, dispatch_duration, dispatch_attempts = contract.transfer(ctx, cp1, cp2, amount)
+
+
 def _get_account(ctx: ExecutionContext, account_index: int) -> Account:
     """Pulls & returns a cached account.
     
@@ -91,3 +110,19 @@ def _get_account(ctx: ExecutionContext, account_index: int) -> Account:
         return network.faucet
     else:
         return cache.state.get_account_by_index(ctx, account_index)           
+
+
+def _get_contract_for_transfer(ctx):
+    """Returns relevant transfer contract.
+    
+    """
+    if ctx.run_type == "WG-100":
+        return clx.contracts.get_contract(ContractType.TRANSFER_U512_WASM)
+    elif ctx.run_type == "WG-110":
+        return clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
+    elif ctx.run_type == "WG-120" and ctx.phase_index == 1:
+        return clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
+    elif ctx.run_type == "WG-121" and ctx.phase_index == 1:
+        return clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
+    else:
+        return clx.contracts.get_contract(ContractType.TRANSFER_U512)

@@ -221,6 +221,9 @@ def initialise():
     from stests.orchestration.generators.wg_120.args import Arguments
     register_type(Arguments)
 
+    from stests.orchestration.generators.wg_121.args import Arguments
+    register_type(Arguments)
+
     from stests.orchestration.generators.wg_200.args import Arguments
     register_type(Arguments)
 

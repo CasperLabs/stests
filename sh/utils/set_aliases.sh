@@ -108,6 +108,9 @@ alias stests-wg-110='_exec_generator 110'
 # WG-120: Token transfer - invoked directly, i.e. wasm-less.
 alias stests-wg-120='_exec_generator 120'
 
+# WG-121: Token transfer - invoked directly, i.e. wasm-less - without monitoring.
+alias stests-wg-121='_exec_generator 121'
+
 # WG-200: Counter - client contract.
 alias stests-wg-200='_exec_generator 200'
 
