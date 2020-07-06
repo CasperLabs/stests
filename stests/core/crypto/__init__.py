@@ -1,5 +1,6 @@
 from stests.core.crypto.account_id import get_account_id
 from stests.core.crypto.ecc import get_key_pair
+from stests.core.crypto.ecc import get_key_pair_from_pvk_b64
 from stests.core.crypto.ecc import get_key_pair_from_pvk_pem_file
 from stests.core.crypto.ecc import get_pvk_pem_file_from_bytes
 from stests.core.crypto.enums import HashAlgorithm

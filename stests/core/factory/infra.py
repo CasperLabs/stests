@@ -56,7 +56,8 @@ def create_node(
     network_id: NetworkIdentifier,
     port: int,
     typeof: NodeType,
-    status=NodeStatus.HEALTHY
+    status=NodeStatus.HEALTHY,
+    weight=0,
     ) -> Node:
     """Returns a domain object instance: Node.
     
@@ -68,7 +69,8 @@ def create_node(
         network=network_id.name,
         port=port,
         status=status,
-        typeof=typeof
+        typeof=typeof,
+        weight=weight,
     )
 
 

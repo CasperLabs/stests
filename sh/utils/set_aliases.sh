@@ -65,6 +65,8 @@ alias stests-ls-runs='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_runs.py'
 # ALIASES: infra - set
 # ###############################################################
 
+alias stests-register='_exec_cmd $STESTS_PATH_SH_SCRIPTS/register.py'
+
 alias stests-set-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_contracts.py'
 alias stests-set-network='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_network.py'
 alias stests-set-network-faucet-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_network_faucet_key.py'

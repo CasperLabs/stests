@@ -24,8 +24,22 @@ def get_key_pair(algo: KeyAlgorithm, encoding: KeyEncoding = KeyEncoding.BYTES) 
     :returns : 2 member tuple: (private key, public key)
     
     """
-    algo = ALGOS[algo]
-    pvk, pbk = algo.get_key_pair()
+    pvk, pbk = ALGOS[algo].get_key_pair()
+
+    return (pvk.hex(), pbk.hex()) if encoding == KeyEncoding.HEX else (pvk, pbk)
+
+
+def get_key_pair_from_pvk_b64(pvk_b64: str, algo: KeyAlgorithm, encoding: KeyEncoding = KeyEncoding.BYTES):
+    """Returns an ECC key pair derived from a previously base 64 private key.
+
+    :param pvk_b64: Base64 encoded private key.
+    :param algo: Type of ECC algo used to generate private key.
+    :param encoding: Key pair encoding type.
+
+    :returns : 2 member tuple: (private key, public key)
+    
+    """
+    pvk, pbk = ALGOS[algo].get_key_pair_from_pvk_b64(pvk_b64)
 
     return (pvk.hex(), pbk.hex()) if encoding == KeyEncoding.HEX else (pvk, pbk)
 
@@ -40,8 +54,7 @@ def get_key_pair_from_pvk_pem_file(fpath: str, algo: KeyAlgorithm, encoding: Key
     :returns : 2 member tuple: (private key, public key)
     
     """
-    algo = ALGOS[algo]
-    pvk, pbk = algo.get_key_pair_from_pvk_pem_file(fpath)
+    pvk, pbk = ALGOS[algo].get_key_pair_from_pvk_pem_file(fpath)
 
     return (pvk.hex(), pbk.hex()) if encoding == KeyEncoding.HEX else (pvk, pbk)
 

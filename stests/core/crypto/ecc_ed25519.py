@@ -20,6 +20,21 @@ def get_key_pair() -> typing.Tuple[bytes, bytes]:
     return _get_key_pair_from_sk(ed25519.Ed25519PrivateKey.generate())
 
 
+def get_key_pair_from_pvk_b64(pvk_b64: str):
+    """Returns an ED25519 key pair derived from a previously base 64 private key.
+
+    :param pvk_b64: Base64 encoded private key.
+
+    :returns : 2 member tuple: (private key, public key)
+    
+    """
+    return _get_key_pair_from_sk(
+        ed25519.Ed25519PrivateKey.from_private_bytes(
+            base64.b64decode(pvk_b64)
+            )
+        )
+
+
 def get_key_pair_from_pvk_pem_file(fpath: str) -> typing.Tuple[bytes, bytes]:
     """Returns an ED25519 key pair derived from a previously persisted PEM file.
 

@@ -35,6 +35,9 @@ class Node:
 
     # Type of node in terms of it's degree of consensus participation.
     typeof: NodeType
+
+    # POS weight.
+    weight: typing.Optional[int]
     
     @property
     def address(self):
