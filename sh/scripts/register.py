@@ -40,7 +40,7 @@ def _yield_network_artefacts() -> typing.Tuple[str, typing.List, typing.List]:
     """Yields relevant artefacts from each sub-directory within $HOME/.casperlabs-stests/nets.
     
     """
-    path = pathlib.Path("/Users/a-0/.casperlabs-stests/nets")
+    path = pathlib.Path(os.path.expanduser("~/.casperlabs-stests/nets"))
     if not path.exists:
         raise ValueError(f"Cannot find any network metadata in {path}")
     if not path.is_dir:
@@ -143,7 +143,7 @@ def _register_node(
     cache.infra.set_node(node)
 
     # Inform.
-    utils.log(f"registered {network.name_raw} - {node.address}")
+    utils.log(f"registered {network.name_raw} - {node.address} : {node.typeof.name}")
 
 
 def _get_faucet_pvk(accounts: typing.List[typing.Union[str, int, str, int]]):
