@@ -92,6 +92,6 @@ def get_count(src: typing.Any, account: Account, block_hash: str=None) -> int:
     :returns: Current counter value.
 
     """
-    state = query.get_state(src, block_hash, account.public_key, "address", _QPATH_COUNT)
+    state = query.get_state(src, block_hash, account.account_id, "address", _QPATH_COUNT)
 
     return state.cl_value.value.i32
