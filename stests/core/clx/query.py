@@ -84,7 +84,7 @@ def get_block_info(src: typing.Any, block_hash: str, parse=True) -> typing.Dict:
     _, client = utils.get_client(src)
 
     try:
-        info = client.showBlock(block_hash_base16=block_hash, full_view=False)
+        info = client.show_block(block_hash_base16=block_hash, full_view=False)
     except casperlabs_client.InternalError as err:
         if err and err.details:
             if "StatusCode.NOT_FOUND" in err.details:
@@ -110,7 +110,7 @@ def get_deploy_info(src: typing.Any, deploy_hash: str, wait_for_processed: bool 
     _, client = utils.get_client(src)
 
     try:
-        info = client.showDeploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
+        info = client.show_deploy(deploy_hash, full_view=False, wait_for_processed=wait_for_processed)
     except casperlabs_client.InternalError as err:
         if err and err.details:
             if "StatusCode.NOT_FOUND" in err.details:
@@ -126,7 +126,7 @@ def _get_last_block_hash(client) -> str:
     """Returns a chain's last block hash.
     
     """
-    last_block_info = next(client.showBlocks(1))
+    last_block_info = next(client.show_blocks(1))
 
     return last_block_info.summary.block_hash.hex()
 
@@ -145,7 +145,7 @@ def get_state(src: typing.Any, block_hash: str, key: str, key_type: str, path: s
     """    
     _, client = utils.get_client(src)
 
-    return client.queryState(
+    return client.query_state(
         block_hash or _get_last_block_hash(client),
         key,
         path,

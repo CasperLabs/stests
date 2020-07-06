@@ -43,7 +43,7 @@ def await_deploy_processing(src: typing.Any, deploy_hash: str) -> str:
     """
     _, client = get_client(src)
 
-    info = client.showDeploy(deploy_hash, wait_for_processed=True)
+    info = client.show_deploy(deploy_hash, wait_for_processed=True)
     if info.status.state not in (DeployStatus.FINALIZED.value, DeployStatus.PROCESSED.value):        
         raise ValueError(f"Deploy processing failure: {info}")
 
