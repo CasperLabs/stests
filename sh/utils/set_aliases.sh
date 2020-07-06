@@ -46,6 +46,7 @@ alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 
 alias stests-flush='$STESTS_PATH_SH/cache/flush.sh'
 alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_infra.sh'
+alias stests-register='$STESTS_PATH_SH/cache/register.sh'
 
 # ###############################################################
 # ALIASES: cache - ls
@@ -64,8 +65,6 @@ alias stests-ls-runs='_exec_cmd $STESTS_PATH_SH_SCRIPTS/list_runs.py'
 # ###############################################################
 # ALIASES: infra - set
 # ###############################################################
-
-alias stests-register='_exec_cmd $STESTS_PATH_SH_SCRIPTS/register.py'
 
 alias stests-set-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_contracts.py'
 alias stests-set-network='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_network.py'
