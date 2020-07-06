@@ -121,8 +121,10 @@ def _get_contract_for_transfer(ctx):
     elif ctx.run_type == "WG-110":
         return clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
     elif ctx.run_type == "WG-120" and ctx.phase_index == 1:
+        # return clx.contracts.get_contract(ContractType.TRANSFER_U512)
         return clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
     elif ctx.run_type == "WG-121" and ctx.phase_index == 1:
+        # return clx.contracts.get_contract(ContractType.TRANSFER_U512)
         return clx.contracts.get_contract(ContractType.TRANSFER_U512_STORED)
     else:
         return clx.contracts.get_contract(ContractType.TRANSFER_U512)
