@@ -49,7 +49,7 @@ class Node:
 
     @property
     def is_operational(self):
-        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
+        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED) and self.typeof == NodeType.FULL
 
     @property
     def label(self):
