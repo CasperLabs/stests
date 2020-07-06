@@ -78,19 +78,6 @@ export STESTS_BROKER_RABBIT_USER_PWD=clabs
 export STESTS_BROKER_RABBIT_VHOST=CLABS
 
 # --------------------------------------------------------------------
-# Broker Middleware: REDIS
-# --------------------------------------------------------------------
-
-# Broker Middleware -> REDIS -> db #
-export STESTS_MWARE_REDIS_DB=0
-
-# Broker Middleware -> REDIS -> host
-export STESTS_MWARE_REDIS_HOST=localhost
-
-# Broker Middleware -> REDIS -> port
-export STESTS_MWARE_REDIS_PORT=6379
-
-# --------------------------------------------------------------------
 # Logging
 # --------------------------------------------------------------------
 
