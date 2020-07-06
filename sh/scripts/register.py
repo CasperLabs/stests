@@ -123,7 +123,7 @@ def _register_node(
         network_id=factory.create_network_id(network.name_raw),
         port=int(port),
         typeof=NodeType.FULL if int(weight) > 256 else NodeType.READ_ONLY,
-        weight=int(weight),
+        # weight=int(weight),
     )
 
     # Set bonding key pair.
