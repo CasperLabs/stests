@@ -24,22 +24,27 @@ def on_block_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
     :param info: Node event information.
 
     """
-    # Escape if on-chain block info not found.
-    block_info = clx.get_block_info(node_id, info.block_hash)
-    if block_info is None:
-        log_event(EventType.MONIT_BLOCK_NOT_FOUND, None, node_id, block_hash=info.block_hash)
-        return
-
     # Escape if already processed.
     if _already_processed(info):
         return
 
-    # Set stats.
-    stats = factory.create_block_statistics_on_finalization(
+    # Escape if on-chain block info not found.
+    block_info = clx.get_block_info(node_id, info.block_hash)
+    if block_info is None:
+        log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, node_id, block_hash=info.block_hash)
+        return
+
+    # Escape if empty.
+    deploy_count=block_info['summary']['header'].get('deployCount', 0)    
+    if deploy_count == 0:
+        return
+
+    # Emit event.
+    log_event(EventType.CHAIN_FINALIZED_BLOCK, f"{info.block_hash}", factory.create_block_statistics_on_finalization(
         block_hash=info.block_hash,
         chain_name=block_info['summary']['header']['chainName'],
         deploy_cost_total=block_info['status']['stats'].get('deployCostTotal'),
-        deploy_count=block_info['summary']['header'].get('deployCount', 0),
+        deploy_count=deploy_count,
         deploy_gas_price_avg=block_info['status']['stats'].get('deployGasPriceAvg'),
         j_rank=block_info['summary']['header']['jRank'],
         m_rank=block_info['summary']['header']['mainRank'],
@@ -50,11 +55,7 @@ def on_block_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
         size_bytes=block_info['status']['stats']['blockSizeBytes'],
         timestamp=datetime.fromtimestamp(block_info['summary']['header']['timestamp'] / 1000.0),
         validator_id=block_info['summary']['header']['validatorPublicKey'],        
-    )
-
-    # Emit event.
-    event_type = EventType.CHAIN_FINALIZED_BLOCK if stats.deploy_count else EventType.CHAIN_FINALIZED_BLOCK_EMPTY
-    log_event(event_type, f"{info.block_hash}", stats)
+    ))
 
 
 def _already_processed(info: NodeEventInfo) -> bool:

@@ -106,7 +106,7 @@ def get_networks() -> SearchKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_node(node_id: NodeIdentifier) -> ItemKey:
+def get_node_by_identifier(node_id: NodeIdentifier) -> ItemKey:
     """Decaches domain object: Node.
     
     :param node_id: A node identifier.
@@ -134,7 +134,7 @@ def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> No
 
     """
     # Pull operational nodeset.
-    nodeset = get_nodes_operational(network) 
+    nodeset = get_nodes_for_dispatching(network) 
     if not nodeset:
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
@@ -152,7 +152,7 @@ def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int) 
 
     """
     # Pull operational nodes.
-    nodeset = get_nodes_operational(network_id)
+    nodeset = get_nodes_for_dispatching(network_id)
     if not nodeset:
         raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
     
@@ -184,7 +184,7 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> SearchK
     )     
 
 
-def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
+def get_nodes_for_dispatching(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
     """Decaches domain objects: Node (if operational).
 
     :param network: A pointer to either a network or network identifier.
@@ -192,7 +192,33 @@ def get_nodes_operational(network: typing.Union[NetworkIdentifier, Network]) -> 
     :returns: Collection of registered nodes.
     
     """
-    nodeset = {i.address: i for i in get_nodes(network) if i.is_operational}
+    nodeset = {i.address: i for i in get_nodes(network) if i.is_dispatchable}
+
+    return list(nodeset.values())
+
+
+def get_nodes_for_monitoring(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
+    """Decaches domain objects: Node (if monitorable).
+
+    :param network: A pointer to either a network or network identifier.
+
+    :returns: Collection of registered nodes.
+    
+    """
+    nodeset = {i.address: i for i in get_nodes(network) if i.is_monitorable}
+
+    return list(nodeset.values())
+
+
+def get_nodes_for_querying(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
+    """Decaches domain objects: Node (if operational).
+
+    :param network: A pointer to either a network or network identifier.
+
+    :returns: Collection of registered nodes.
+    
+    """
+    nodeset = {i.address: i for i in get_nodes(network) if i.is_queryable}
 
     return list(nodeset.values())
 

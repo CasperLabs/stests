@@ -1,7 +1,6 @@
 import dataclasses
 import enum
 import typing
-import uuid
 from datetime import datetime
 
 
@@ -16,19 +15,22 @@ class EventType(enum.Enum):
 
     # Chain info reporting sub-system.
     CHAIN_FINALIZED_BLOCK = enum.auto()
-    CHAIN_FINALIZED_BLOCK_EMPTY = enum.auto()
     CHAIN_FINALIZED_DEPLOY = enum.auto()
+    CHAIN_QUERY_BALANCE = enum.auto()
+    CHAIN_QUERY_BALANCE_NOT_FOUND = enum.auto()
+    CHAIN_QUERY_BLOCK = enum.auto()
+    CHAIN_QUERY_BLOCK_NOT_FOUND = enum.auto()
+    CHAIN_QUERY_DEPLOY = enum.auto()
+    CHAIN_QUERY_DEPLOY_NOT_FOUND = enum.auto()
+    CHAIN_QUERY_STATE = enum.auto()
 
     # Monitoring sub-system.
-    MONIT_ACCOUNT_NOT_FOUND = enum.auto()
     MONIT_BLOCK_ADD = enum.auto()
     MONIT_BLOCK_FINALIZED = enum.auto()
-    MONIT_BLOCK_NOT_FOUND = enum.auto()
     MONIT_DEPLOY_ADDED = enum.auto()
     MONIT_DEPLOY_DISCARDED = enum.auto()
     MONIT_DEPLOY_EXECUTION_ERROR = enum.auto()
     MONIT_DEPLOY_FINALIZED = enum.auto()
-    MONIT_DEPLOY_NOT_FOUND = enum.auto()
     MONIT_DEPLOY_ORPHANED = enum.auto()
     MONIT_DEPLOY_PROCESSED = enum.auto()
     MONIT_DEPLOY_REQUEUED = enum.auto()    
@@ -63,7 +65,6 @@ class EventType(enum.Enum):
 # Set of debug events.
 EVENTS_DEBUG = (
     EventType.CORE_BROKER_CONNECTION_ESTABLISHED,
-    EventType.CHAIN_FINALIZED_BLOCK_EMPTY,
     EventType.MONIT_BLOCK_ADD,
     EventType.MONIT_BLOCK_FINALIZED,
     EventType.MONIT_DEPLOY_ADDED,
@@ -74,8 +75,8 @@ EVENTS_DEBUG = (
 # Set of error events.
 EVENTS_ERROR = (
     EventType.CORE_ACTOR_ERROR,
-    EventType.MONIT_BLOCK_NOT_FOUND,
-    EventType.MONIT_DEPLOY_NOT_FOUND,
+    EventType.CHAIN_QUERY_BLOCK_NOT_FOUND,
+    EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND,
     EventType.MONIT_DEPLOY_EXECUTION_ERROR,
     EventType.MONIT_STREAM_BIND_ERROR,
     EventType.WFLOW_DEPLOY_DISPATCH_ERROR,
@@ -88,7 +89,7 @@ EVENTS_ERROR = (
 # Set of warning events.
 EVENTS_WARN = (
     EventType.CORE_ENCODING_FAILURE,
-    EventType.MONIT_ACCOUNT_NOT_FOUND,
+    EventType.CHAIN_QUERY_BALANCE_NOT_FOUND,
     EventType.MONIT_DEPLOY_DISCARDED,
     EventType.WFLOW_DEPLOY_DISPATCH_FAILURE,
     EventType.MONIT_DEPLOY_ORPHANED,
@@ -127,9 +128,6 @@ class EventInfo():
     # Event type for disambiguation purpose.
     type: EventType
 
-    # Unique identifier.
-    uid: str
-
     @property
     def sub_system(self):
         return self.type.name.split("_")[0]
@@ -157,15 +155,11 @@ def get_event_info(event_type: EventType, message: typing.Union[BaseException, s
     return EventInfo(
         data=data,
         id=event_id,
-        message=f"[{sub_system}] {event_name} :: {str(message)}" if message else f"[{sub_system}] {event_name}",
-        name=event_name,
-        priority=9 if event_type in EVENTS_ERROR else \
-                 7 if event_type in EVENTS_WARN else \
-                 1 if event_type in EVENTS_DEBUG else \
-                 5,
+        message=f"{event_type.name} :: {str(message)}" if message else f"{event_type.name}",
+        name=event_type.name,
+        priority=9 if event_type in EVENTS_ERROR else 7 if event_type in EVENTS_WARN else 1 if event_type in EVENTS_DEBUG else 5,
         timestamp=datetime.utcnow().timestamp(),
         type=event_type,
-        uid=str(uuid.uuid4()),
     )
 
 

@@ -48,8 +48,16 @@ class Node:
         return f"N-{str(self.index).zfill(4)}"
 
     @property
-    def is_operational(self):
+    def is_dispatchable(self):
+        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
+
+    @property
+    def is_monitorable(self):
         return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED) and self.typeof == NodeType.FULL
+
+    @property
+    def is_queryable(self):
+        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
 
     @property
     def label(self):

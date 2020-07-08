@@ -24,6 +24,3 @@ class EventInfo():
 
     # Event type for disambiguation purpose.
     type: str
-
-    # Unique identifier.
-    uid: str

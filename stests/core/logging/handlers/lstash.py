@@ -47,9 +47,7 @@ def log_event(msg: LogMessage, mode: OutputMode):
         raise ValueError(f"Invalid log message event level: {msg.event.level}")
 
     # Emit log event.
-    writer(f"{msg.app.sub_system} -> {msg.event.type}", extra={
-        'stests': dataclasses.asdict(msg)
-    })
+    writer(msg.event.type, extra={'stests': dataclasses.asdict(msg)})
 
 
 def _initialise() -> logging.Logger:

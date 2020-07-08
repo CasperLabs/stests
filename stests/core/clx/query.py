@@ -44,31 +44,13 @@ def get_account_balance(src: typing.Any, account_id: str, block_hash: str = None
     except Exception as err:
         if err and err.details:
             if "StatusCode.INVALID_ARGUMENT" in err.details:
-                log_event(EventType.MONIT_ACCOUNT_NOT_FOUND, f"account_id={account_id}", node)
+                log_event(EventType.CHAIN_QUERY_BALANCE_NOT_FOUND, f"account_id={account_id}", node)
                 return 0
         raise err
-    else:
-        return balance
 
+    log_event(EventType.CHAIN_QUERY_BALANCE, account_id, balance)
 
-def get_named_keys(src: typing.Any, account: Account, block_hash: str=None, filter_keys: typing.List[str]=[]):
-    """Returns named keys associated with a chain account.
-
-    :param src: The source from which a node client will be instantiated.
-    :param account: Account whose on-chain representation will be queried.
-    :param block_hash: Hash of block against which query will be made.
-    :param filter_keys: Keys of interest.
-
-    :returns: Account named keys.
-
-    """
-    a = get_account_info(src, account.account_id, block_hash, parse=False)
-
-    keys = a.named_keys
-    if filter_keys:
-        keys = [i for i in keys if i.name in filter_keys]
-
-    return keys
+    return balance
 
 
 def get_block_info(src: typing.Any, block_hash: str, parse=True) -> typing.Dict:
@@ -92,8 +74,10 @@ def get_block_info(src: typing.Any, block_hash: str, parse=True) -> typing.Dict:
             if "StatusCode.INVALID_ARGUMENT" in err.details:
                 raise ValueError("Block hash format is invalid")
         raise err
-    else:
-        return utils.parse_chain_info(info) if parse else info    
+
+    log_event(EventType.CHAIN_QUERY_BLOCK, f"{block_hash}", utils.parse_chain_info(info))
+
+    return utils.parse_chain_info(info) if parse else info    
 
 
 def get_deploy_info(src: typing.Any, deploy_hash: str, wait_for_processed: bool = True, parse=True) -> typing.Dict:
@@ -118,17 +102,30 @@ def get_deploy_info(src: typing.Any, deploy_hash: str, wait_for_processed: bool 
             if "StatusCode.INVALID_ARGUMENT" in err.details:
                 raise ValueError("Deploy hash format is invalid")
         raise err
-    else:
-        return utils.parse_chain_info(info) if parse else info
+
+    log_event(EventType.CHAIN_QUERY_DEPLOY, f"{deploy_hash}", utils.parse_chain_info(info))
+
+    return utils.parse_chain_info(info) if parse else info
 
 
-def _get_last_block_hash(client) -> str:
-    """Returns a chain's last block hash.
-    
+def get_named_keys(src: typing.Any, account: Account, block_hash: str=None, filter_keys: typing.List[str]=[]):
+    """Returns named keys associated with a chain account.
+
+    :param src: The source from which a node client will be instantiated.
+    :param account: Account whose on-chain representation will be queried.
+    :param block_hash: Hash of block against which query will be made.
+    :param filter_keys: Keys of interest.
+
+    :returns: Account named keys.
+
     """
-    last_block_info = next(client.show_blocks(1))
+    a = get_account_info(src, account.account_id, block_hash, parse=False)
 
-    return last_block_info.summary.block_hash.hex()
+    keys = a.named_keys
+    if filter_keys:
+        keys = [i for i in keys if i.name in filter_keys]
+
+    return keys
 
 
 def get_state(src: typing.Any, block_hash: str, key: str, key_type: str, path: str):
@@ -145,9 +142,22 @@ def get_state(src: typing.Any, block_hash: str, key: str, key_type: str, path: s
     """    
     _, client = utils.get_client(src)
 
-    return client.query_state(
+    state = client.query_state(
         block_hash or _get_last_block_hash(client),
         key,
         path,
         key_type,
         )
+    
+    log_event(EventType.CHAIN_QUERY_STATE, f"{block_hash} :: {key} :: {key_type} :: {path}", utils.parse_chain_info(state))
+
+    return state
+
+
+def _get_last_block_hash(client) -> str:
+    """Returns a chain's last block hash.
+    
+    """
+    last_block_info = next(client.show_blocks(1))
+
+    return last_block_info.summary.block_hash.hex()

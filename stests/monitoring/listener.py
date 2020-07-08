@@ -4,6 +4,7 @@ from stests.core.logging import log_event
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
+from stests.events import EventType
 from stests.monitoring.callbacks.block_add import on_block_added
 from stests.monitoring.callbacks.block_finalize import on_block_finalized
 from stests.monitoring.callbacks.deploy_add import on_deploy_added
@@ -12,7 +13,6 @@ from stests.monitoring.callbacks.deploy_finalize import on_deploy_finalized
 from stests.monitoring.callbacks.deploy_orphan import on_deploy_orphaned
 from stests.monitoring.callbacks.deploy_processed import on_deploy_processed
 from stests.monitoring.callbacks.deploy_requeue import on_deploy_requeued
-from stests.events import EventType
 
 
 

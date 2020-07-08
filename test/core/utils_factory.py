@@ -1,6 +1,5 @@
 import random
 import typing
-import uuid
 from datetime import datetime as dt
 
 from stests import events
@@ -200,8 +199,6 @@ def create_log_event_info() -> types.logging.EventInfo:
         priority=1,
         timestamp=dt.now().timestamp(),
         type="UNIT_TEST",
-        uid=str(uuid.uuid4()),
-
     )
 
 def create_log_message() -> types.logging.LogMessage:

@@ -1,3 +1,5 @@
+import time
+
 import dramatiq
 from dramatiq.middleware import TimeLimitExceeded
 from dramatiq.middleware import Shutdown
@@ -38,7 +40,8 @@ def do_start_monitoring():
     # TODO: reduce number of instantiated monitors.
     for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
-        for node in cache.infra.get_nodes_operational(network_id):
+        for idx, node in enumerate(cache.infra.get_nodes_for_monitoring(network_id)):
+            time.sleep(float(idx) * 2)
             do_monitor_node.send(factory.create_node_id(network_id, node.index))
 
 

@@ -20,7 +20,7 @@ def stream_events(node_id: NodeIdentifier, event_callback: typing.Callable):
     log_event(EventType.MONIT_STREAM_OPENING, node.address, node)
 
     for info in client.stream_events(all=True):        
-        # Set fields according to event type.
+        # Set event fields according to event type.
         if info.HasField("block_added"):
             event_type=EventType.MONIT_BLOCK_ADD
             block_hash=info.block_added.block.summary.block_hash.hex()

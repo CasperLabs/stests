@@ -132,7 +132,7 @@ def get_client(src: typing.Union[CasperLabsClient, ExecutionContext, Network, Ne
     if isinstance(src, Node):
         node = src
     elif isinstance(src, NodeIdentifier):
-        node = cache.infra.get_node(src)
+        node = cache.infra.get_node_by_identifier(src)
     elif isinstance(src, (Network, NetworkIdentifier)):
         node = cache.infra.get_node_by_network(src)
     elif isinstance(src, ExecutionContext):
