@@ -40,8 +40,11 @@ def do_start_monitoring():
     # TODO: reduce number of instantiated monitors.
     for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
-        for node in cache.infra.get_nodes_for_monitoring(network_id):
-            time.sleep(float(2))
+        nodeset = cache.infra.get_nodes_for_monitoring(network_id)
+        for node in nodeset:
+            # We want to stagger the monitors so as to enhance system resilience.
+            if node != nodeset[0]:
+                time.sleep(float(2))
             do_monitor_node.send(factory.create_node_id(network_id, node.index))
 
 
