@@ -22,9 +22,12 @@ HANDLERS = {
 
 
 def get_handler(mode: OutputMode) -> typing.Callable:
-    """Returns an MQ broker instance for integration with dramatiq framework.
+    """Returns logging output handler matching STESTS_LOGGING_TYPE environment variable 
+    unless output mode is interactive in which case dfault handler is returned.
 
-    :returns: A configured message broker.
+    :param mode: The mode of output as per the current execution container.
+
+    :returns: A configured logging output handler.
 
     """
     if mode == OutputMode.INTERACTIVE:
