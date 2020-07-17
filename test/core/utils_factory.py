@@ -53,11 +53,19 @@ def create_block_statistics() -> types.chain.BlockStatistics:
         magic_bit=1,
         message_role="a-role",
         network="lrt1",
-        node="localhost:40401",
         round_id=120,
         size_bytes=int(1e8),
         timestamp=dt.now().timestamp(),
         validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",        
+    )
+
+    
+def create_block_summary() -> types.chain.BlockSummary:
+    """Returns a domain object instance: BlockSummary.
+    
+    """
+    return factory.create_block_summary_on_finalisation(
+        info=create_node_event_info()
     )
 
 
@@ -185,7 +193,6 @@ def create_execution_lock() -> types.orchestration.ExecutionLock:
 
 def create_log_application_info() -> types.logging.ApplicationInfo:
     return types.logging.ApplicationInfo(
-        company="Casper Labs",
         system="stests",
         sub_system="unit tests",
         version="1.0.0",
@@ -215,8 +222,6 @@ def create_log_message() -> types.logging.LogMessage:
 
 def create_log_process_info() -> types.logging.ProcessInfo:
     return types.logging.ProcessInfo(
-        host="localhost",
-        net="TEST",
         os_user="a-0",
         pid="12345"
     )
@@ -229,6 +234,7 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     types.chain.AccountIdentifier: create_account_id,
     types.chain.Block: create_block,
     types.chain.BlockStatistics: create_block_statistics,
+    types.chain.BlockSummary: create_block_summary,
     types.chain.Deploy: create_deploy,
     types.chain.DeploySummary: create_deploy_summary,
     types.chain.NamedKey: create_named_key,
