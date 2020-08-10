@@ -1,13 +1,3 @@
-"""
-.. module:: stests.core.utils.env.py
-   :copyright: Copyright "December 01, 2016", IPSL
-   :license: GPL/CeCIL
-   :platform: Unix, Windows
-   :synopsis: System test environment access utility functions.
-
-.. moduleauthor:: Mark Conway-Greenslade <mark@casperlabs.io>
-
-"""
 import os
 import typing
 
