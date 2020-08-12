@@ -54,9 +54,13 @@ class Account:
     def label_run_index(self):
         return f"R-{str(self.run_index).zfill(3)}"
 
-    def get_private_key_pem_file(self):
+    def get_private_key_pem_filepath(self):
+        """Returns path to associated pem file.
+        
+        """
         return crypto.get_pvk_pem_file_from_bytes(
-            bytes.fromhex(self.private_key), crypto.KeyAlgorithm[self.key_algo]
+            bytes.fromhex(self.private_key),
+            crypto.KeyAlgorithm[self.key_algo],
             )
 
 

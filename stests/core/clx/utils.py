@@ -92,7 +92,7 @@ def dispatch_deploy(
                     # ... account info
                     # algorithm=account.key_algo,
                     from_addr=from_account_id or account.account_id_as_bytes,
-                    private_key=account.get_private_key_pem_file(),
+                    private_key=account.get_private_key_pem_filepath(),
                     # ... session info
                     session=session,
                     session_args=session_args,

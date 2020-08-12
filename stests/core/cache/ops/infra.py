@@ -142,11 +142,11 @@ def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> No
     return random.choice(nodeset)
 
 
-def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int) -> Node:
+def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int = None) -> Node:
     """Decaches domain object: Node.
     
     :param network_id: A network identifier.
-    :param node_index: A node index.
+    :param node_index: A node index (1 based).
 
     :returns: A registered node.
 
@@ -157,7 +157,7 @@ def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int) 
         raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
     
     # Select random if node index unspecified.
-    if node_index <= 0 or node_index is None:
+    if node_index is None or node_index <= 0:
         return random.choice(nodeset)
 
     # Select specific with fallback to random.

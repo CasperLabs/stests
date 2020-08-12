@@ -14,6 +14,9 @@ class Network:
     # Primary faucet associated with network.
     faucet: typing.Optional[typing.Any]
 
+    # Name of chain associated with network.
+    chain_name: typing.Optional[str]
+
     # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
     index: int
     

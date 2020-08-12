@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from stests.core.types.chain import DEFAULT_CHAIN_NAME
 from stests.core.types.infra import Network
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NetworkStatus
@@ -14,13 +15,14 @@ from stests.events import EventType
 
 
 
-def create_network(name_raw: str) -> Network:
+def create_network(name_raw: str, chain_name: str = DEFAULT_CHAIN_NAME) -> Network:
     """Returns a domain object instance: Network.
     
     """
     identifier = create_network_id(name_raw)
 
     return Network(
+        chain_name=chain_name,
         faucet=None,
         index=identifier.index,
         name=identifier.name,
