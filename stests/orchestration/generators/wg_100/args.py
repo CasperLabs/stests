@@ -1,6 +1,5 @@
 import argparse
 import dataclasses
-import typing
 
 from stests.orchestration.generators.utils import constants
 from stests.orchestration.generators.utils.args import get_argparser

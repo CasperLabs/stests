@@ -1,17 +1,21 @@
+import functools
 import subprocess
+import typing
 
-from stests.core.client import constants
-from stests.core.client import utils
+from stests.chain import constants
+from stests.chain import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
 from stests.core.types.infra import Network
-
+from stests.core.utils.misc import Timer
+from stests.events import EventType
 
 
 # Method upon client to be invoked.
 _CLIENT_METHOD = "put-deploy"
 
 
+@utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
 def execute(
     account: Account,
     network: Network,
@@ -31,13 +35,10 @@ def execute(
     :param tx_fee: Transaction network fee.
     :param tx_gas_price: Network gas price.
 
-    :returns: Hexadecimal representation of dispatched transaction hash.
+    :returns: 3 member tuple -> (deploy_hash, dispatch_duration, dispatch_attempts)
 
     """
-    # TODO: secret key from user account 
-    # TODO: http | https protocol derivation
-
-    response = subprocess.run([
+    cli_response = subprocess.run([
         constants.PATH_TO_BINARY, _CLIENT_METHOD,
         "--chain-name", network.chain_name or "",
         "--gas-price", str(tx_gas_price),
@@ -48,6 +49,6 @@ def execute(
         "--ttl", str(tx_ttl),
         ],
         stdout=subprocess.PIPE,
-        )
-
-    return response.stdout.split(b'\n')[1]
+        )   
+    
+    return cli_response.stdout.split(b'\n')[1]

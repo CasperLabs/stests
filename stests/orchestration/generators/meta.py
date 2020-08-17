@@ -5,6 +5,7 @@ import stests.orchestration.generators.wg_121.meta as wg_121
 import stests.orchestration.generators.wg_200.meta as wg_200
 import stests.orchestration.generators.wg_210.meta as wg_210
 import stests.orchestration.generators.wg_1000.meta as wg_1000
+import stests.orchestration.generators.wg_1100.meta as wg_1100
 
 
 
@@ -17,6 +18,7 @@ GENERATOR_SET = {
     wg_200,
     wg_210,
     wg_1000,
+    wg_1100,
 }
 
 # Map: generator type --> generator module.

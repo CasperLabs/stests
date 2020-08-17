@@ -98,7 +98,6 @@ function _exec_generator()
     g_type=${args[0]}
     g_args=${args[@]:1:$args_len}
 
-
     # Execute generator.
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
@@ -128,3 +127,6 @@ alias stests-wg-210='_exec_generator 210'
 
 # WG-1000: Test node-rs.
 alias stests-wg-1000='_exec_generator 1000'
+
+# WG-1000: Test node-rs.
+alias stests-wg-1100='_exec_generator 1100'

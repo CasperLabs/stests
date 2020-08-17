@@ -59,7 +59,7 @@ def get_key_pair_from_pvk_pem_file(fpath: str, algo: KeyAlgorithm, encoding: Key
     return (pvk.hex(), pbk.hex()) if encoding == KeyEncoding.HEX else (pvk, pbk)
 
 
-def get_pvk_pem_file_from_bytes(pvk: bytes, algo: KeyAlgorithm) -> bytes:
+def get_pvk_pem_from_bytes(pvk: bytes, algo: KeyAlgorithm) -> bytes:
     """Returns an ECC private key in PEM format.
 
     :param pvk: Private key.
@@ -68,9 +68,20 @@ def get_pvk_pem_file_from_bytes(pvk: bytes, algo: KeyAlgorithm) -> bytes:
     :returns : Private key in PEM format.
     
     """
-    as_pem = ALGOS[algo].get_pvk_pem_from_bytes(pvk)
+    return ALGOS[algo].get_pvk_pem_from_bytes(pvk)
+
+
+def get_pvk_pem_file_from_bytes(pvk: bytes, algo: KeyAlgorithm) -> bytes:
+    """Returns path to a file containing an ECC private key in PEM format.
+
+    :param pvk: Private key.
+    :param algo: Type of ECC algo used to generate private key.
+
+    :returns : Private key in PEM format.
+    
+    """
     with tempfile.NamedTemporaryFile("wb", delete=False) as temp_file:
         with open(temp_file.name, "wb") as fstream:
-            fstream.write(as_pem)
+            fstream.write(get_pvk_pem_from_bytes(pvk, algo))
 
-        return temp_file.name    
+        return temp_file.name
