@@ -11,23 +11,31 @@ from stests.orchestration.generators.utils.accounts import do_transfer
 
 
 # Step label.
-LABEL = "fund-run-faucet"
+LABEL = "fund-run-accounts"
 
 
-def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, tuple]:
+def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    :returns: 2 member tuple -> actor, args.
+    :returns: 3 member tuple -> actor, message count, message arg factory.
 
     """
-    return do_transfer, (
-        ctx,
-        constants.ACC_NETWORK_FAUCET,
-        constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_clx_balance,
-    )
+    return do_transfer, ctx.args.transfers, lambda: _yield_parameterizations(ctx)
+
+
+def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
+    """Yields parameterizations to be dispatched to actor via a message queue.
+    
+    """
+    for account_index in range(ctx.args.transfers):
+        yield (
+            ctx,
+            constants.ACC_NETWORK_FAUCET,
+            account_index,
+            ctx.args.amount,
+        )
 
 
 def verify(ctx: ExecutionContext):
@@ -36,17 +44,6 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    verification.verify_deploy_count(ctx, 1)  
+    # TODO verify count of transfers
+    pass
     
-
-def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
-    """Step deploy verifier.
-    
-    :param ctx: Execution context information.
-    :param node_id: Identifier of node that emitted finalization event.
-    :param block_hash: Hash of a finalized block.
-    :param deploy_hash: Hash of a finalized deploy.
-
-    """
-    verification.verify_deploy(ctx, block_hash, deploy_hash)
-    verification.verify_transfer(ctx, node_id, block_hash, deploy_hash)

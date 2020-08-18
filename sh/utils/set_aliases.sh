@@ -79,9 +79,8 @@ alias stests-set-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/set_node_status.
 # ALIASES: chain - view
 # ###############################################################
 
-alias stests-view-account-id='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_id.py'
-
 alias stests-view-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_balance.py'
+alias stests-view-account-id='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_id.py'
 alias stests-view-account-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_info.py'
 alias stests-view-block-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_block_info.py'
 alias stests-view-deploy-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_deploy_info.py'
@@ -102,31 +101,8 @@ function _exec_generator()
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
 
-# WG-100: Token transfer - invoked by wasm dispatched for each transfer.
+# WG-000: Temporary test command.
+alias stests-wg-000='_exec_generator 000'
+
+# WG-100: Token transfer - invoked directly, i.e. wasm-less.
 alias stests-wg-100='_exec_generator 100'
-
-# WG-110: Token transfer - invoked by stored contract hash.
-alias stests-wg-110='_exec_generator 110'
-
-# WG-120: Token transfer - invoked directly, i.e. wasm-less.
-alias stests-wg-120='_exec_generator 120'
-
-# WG-121: Token transfer - invoked directly, i.e. wasm-less - without monitoring.
-alias stests-wg-121='_exec_generator 121'
-
-# WG-200: Counter - client contract.
-alias stests-wg-200='_exec_generator 200'
-
-# WG-210: Counter - stored contract.
-alias stests-wg-210='_exec_generator 210'
-
-
-# ###############################################################
-# ALIASES: generators - node-rs
-# ###############################################################
-
-# WG-1000: Test node-rs.
-alias stests-wg-1000='_exec_generator 1000'
-
-# WG-1000: Test node-rs.
-alias stests-wg-1100='_exec_generator 1100'

@@ -1,8 +1,6 @@
 import functools
-import pathlib
 import typing
 
-from stests.core.utils.env import get_var
 from stests.core.utils.misc import Timer
 from stests.events import EventType
 
@@ -46,19 +44,3 @@ def execute_cli(
 
         return wrapper
     return decorator
-
-
-def get_contract_path(wasm_filename: str) -> pathlib.Path:
-    """Returns a path to a smart contract.
-
-    :param wasm_filename: Name of wasm file to be loaded into memory.
-
-    :returns: Path to a wasm blob.
-    
-    """
-    # Return wasm at path specified by env var.
-    path = pathlib.Path(get_var("PATH_WASM")) / wasm_filename    
-    if path.exists():
-        return path
-
-    raise ValueError("WASM file could not be found. Verify the STESTS_PATH_WASM env var setting.")

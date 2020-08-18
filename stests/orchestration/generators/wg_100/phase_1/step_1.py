@@ -5,7 +5,7 @@ from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils import constants
-from stests.orchestration.generators.utils import verification
+
 
 
 # Step label.
@@ -18,23 +18,12 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    # TODO: cache batch insert.
-    for account_index, account_type in _yield_accounts(ctx):
+    for account_index in range(ctx.args.transfers):
         cache.state.set_account(factory.create_account_for_run(
             ctx,
             index=account_index,
-            typeof=account_type,
+            typeof=AccountType.USER,
         ))
-
-
-def _yield_accounts(ctx: ExecutionContext) -> typing.Generator:
-    """Yields account information to be persisted to cache.
-    
-    """
-    yield constants.ACC_RUN_FAUCET, AccountType.FAUCET
-    yield constants.ACC_RUN_CONTRACT, AccountType.CONTRACT
-    for index in range(constants.ACC_RUN_USERS, ctx.args.user_accounts + constants.ACC_RUN_USERS):
-        yield index, AccountType.USER
 
 
 def verify(ctx: ExecutionContext):
@@ -43,4 +32,6 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    verification.verify_account_count(ctx)
+    cached = cache.state.get_account_count(ctx)
+    expected = ctx.args.transfers
+    assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."

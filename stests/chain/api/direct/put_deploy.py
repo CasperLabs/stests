@@ -3,6 +3,7 @@ import subprocess
 import typing
 
 from stests.chain import constants
+from stests.chain import contracts
 from stests.chain import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
@@ -45,7 +46,7 @@ def execute(
         "--node-address", f"http://{node.address}",
         "--payment-amount", str(tx_fee),
         "--secret-key", "/Users/a-0/.clabs-clx/infra/node-1/keys/secret_key.pem",
-        "--session-path", utils.get_contract_path(contract_fname),
+        "--session-path", contracts.get_contract_path(contract_fname),
         "--ttl", str(tx_ttl),
         ],
         stdout=subprocess.PIPE,

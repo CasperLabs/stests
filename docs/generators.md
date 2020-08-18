@@ -35,41 +35,26 @@ The stests application can be used to dispatch various workloads to a target net
 
 Disconnects or reconnects a node from/to a network.  Does this by executing RunDeck API within underlying SRE infrastructure.
 
-## WG-100 - Balance Transfer via client-side WASM
-
-Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer a WASM file will be dispatched to the network as part of the deploy.
-
-- `--user-accounts`
-    Number of user accounts to dynamically generate & use for transfer simulations.
-
-- `--faucet-initial-clx-balance`
-    - Initial CLX balance of run faucet account.
-
-- `--contract-initial-clx-balance`
-    - Initial CLX balance of contract account.
-
-- `--user-initial-clx-balance`
-    - Initial CLX balance of user accounts.
-
-## WG-110 - Balance Transfer via stored WASM
-
-Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer an on-chain WASM contract is referenced via it's hash.
-
-- `--user-accounts`
-    Number of user accounts to dynamically generate & use for transfer simulations.
-
-- `--faucet-initial-clx-balance`
-    - Initial CLX balance of run faucet account.
-
-- `--contract-initial-clx-balance`
-    - Initial CLX balance of contract account.
-
-- `--user-initial-clx-balance`
-    - Initial CLX balance of user accounts.
-
-## WG-1000 - Temporary node-rs test generator
+## WG-000 - Temporary node-rs test generator
 
 Launches a workload generator that queries a node's `deploys` endpoint to get a count of pseudo-deploys dispatched to network.  It then dipatches N pseudo-deploys, waits for 2 seconds, and then asserts that the new deploy count is as expected.
 
 - `--deploys`
     Number of pseudo-deploys to dispatch.
+
+
+## WG-100 - Balance Transfer (WASM-less)
+
+Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  
+
+- `--user-accounts`
+    Number of user accounts to dynamically generate & use for transfer simulations.
+
+- `--faucet-initial-clx-balance`
+    - Initial CLX balance of run faucet account.
+
+- `--contract-initial-clx-balance`
+    - Initial CLX balance of contract account.
+
+- `--user-initial-clx-balance`
+    - Initial CLX balance of user accounts.
