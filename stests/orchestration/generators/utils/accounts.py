@@ -32,7 +32,7 @@ def do_transfer(
     cp2 = _get_account(ctx, cp2_index)
 
     # Dispatch tx -> chain.
-    chain.transfer(ctx, cp1, cp2, amount)
+    chain.set_transfer(ctx, cp1, cp2, amount)
 
 
 def _get_account(ctx: ExecutionContext, account_index: int) -> Account:

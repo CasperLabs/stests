@@ -1,5 +1,4 @@
 from stests.core import cache
-from stests.core import clx
 from stests.core.types.chain import Account
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeployStatus

@@ -11,7 +11,7 @@ from stests.core.types.orchestration import ExecutionContext
 
 
 # Step label.
-LABEL = "increment-deploys"
+LABEL = "set-deploy"
 
 # Max. size of a u32 integer in rust.
 MAX_RUST_U32 = 4294967295
@@ -23,29 +23,27 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    network_id = factory.create_network_id("lrt1")
-
-    network = cache.infra.get_network(network_id)
-    for node in cache.infra.get_nodes(network_id):
-        if node.port == 50000:
-            break
-
-    account = node.account
-    secret_key_pem_filepath = node.account.get_private_key_pem_filepath()
-
+    # TODO: select a random node
     # Set target URL by selecting a node at random.
     # node = cache.infra.get_node_by_network_nodeset(
     #     factory.create_network_id(ctx.network),
     #     ctx.node_index
     #     )
 
-    deploy_hash = chain.put_deploy(
+    network_id = factory.create_network_id("lrt1")
+    network = cache.infra.get_network(network_id)
+    node = cache.infra.get_node_by_port(network_id, 50000)
+    account = node.account
+    secret_key_pem_filepath = node.account.get_private_key_pem_filepath()
+
+    (deploy_hash, dispatch_duration, dispatch_attempts) = chain.set_deploy(
         account=account,
         network=network,
         node=node,
         contract_fname="transfer_to_account_u512.wasm",
     )
 
+    print(deploy_hash)
 
     # # Set current count.
     # deploy_count = len(json.loads(requests.get(url).content))

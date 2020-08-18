@@ -167,6 +167,25 @@ def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int =
         return random.choice(nodeset)
 
 
+def get_node_by_port(network: typing.Union[Network, NetworkIdentifier], port: int) -> Node:
+    """Decaches domain object: Node.
+    
+    :param network: A network.
+    :param port: Identifier of port to be mapped to a node.
+
+    :returns: A registered node.
+
+    """
+    # Pull operational nodeset.
+    nodeset = get_nodes_for_dispatching(network) 
+    if not nodeset:
+        raise ValueError(f"Network {network.name} has no registered operational nodes.")
+
+    for node in nodeset:
+        if node.port == port:
+            return node
+
+
 @cache_op(_PARTITION, StoreOperation.GET_MANY)
 def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> SearchKey:
     """Decaches domain objects: Node.

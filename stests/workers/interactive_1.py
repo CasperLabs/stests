@@ -1,5 +1,5 @@
 from stests.workers.utils import setup_interactive
-from stests.workers.utils import start_monitoring
+# from stests.workers.utils import start_monitoring
 
 
 
@@ -7,4 +7,4 @@ from stests.workers.utils import start_monitoring
 setup_interactive()
 
 # Start chain monitoring.
-start_monitoring()
+# start_monitoring()

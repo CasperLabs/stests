@@ -1,5 +1,5 @@
 from stests.core import cache
-from stests.core import clx
+# from stests.core import clx
 from stests.core.logging import log_event
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
