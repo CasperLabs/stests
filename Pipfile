@@ -26,7 +26,7 @@ python-logstash = "*"
 requests = "*"
 pyblake2 = "*"
 ecdsa = "*"
-casperlabs-client-test = {version="*", index="pypi-test"}
+toml = "*"
 
 [requires]
 python_version = "3.7"

@@ -19,6 +19,7 @@ class NetworkType(enum.Enum):
     """Enumeration over set of network types.
     
     """
+    NCTL = enum.auto()
     LOC = enum.auto()
     DEV = enum.auto()
     LRT = enum.auto()

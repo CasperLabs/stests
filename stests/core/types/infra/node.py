@@ -37,7 +37,7 @@ class Node:
     typeof: NodeType
 
     # POS weight.
-    # weight: typing.Optional[int]
+    weight: typing.Optional[int]
     
     @property
     def address(self):

@@ -59,7 +59,7 @@ def create_node(
     port: int,
     typeof: NodeType,
     status=NodeStatus.HEALTHY,
-    # weight=0,
+    weight=0,
     ) -> Node:
     """Returns a domain object instance: Node.
     
@@ -72,7 +72,7 @@ def create_node(
         port=port,
         status=status,
         typeof=typeof,
-        # weight=weight,
+        weight=weight,
     )
 
 
