@@ -55,7 +55,6 @@ def _import_actors():
     encoder.initialise()
 
     # Import actors: generators.
-    import stests.orchestration.generators.wg_000.meta
     import stests.orchestration.generators.wg_100.meta
 
 

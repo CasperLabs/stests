@@ -31,18 +31,6 @@ The stests application can be used to dispatch various workloads to a target net
 - `--parallel`
 	- Number of runs to launch in parallel.
 
-## WG-004 - Node Deactivate / Activate
-
-Disconnects or reconnects a node from/to a network.  Does this by executing RunDeck API within underlying SRE infrastructure.
-
-## WG-000 - Temporary node-rs test generator
-
-Launches a workload generator that queries a node's `deploys` endpoint to get a count of pseudo-deploys dispatched to network.  It then dipatches N pseudo-deploys, waits for 2 seconds, and then asserts that the new deploy count is as expected.
-
-- `--deploys`
-    Number of pseudo-deploys to dispatch.
-
-
 ## WG-100 - Balance Transfer (WASM-less)
 
 Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  
@@ -51,10 +39,10 @@ Launches a workload generator that will perform a sequence of wasm-less on-chain
     Number of user accounts to dynamically generate & use for transfer simulations.
 
 - `--faucet-initial-clx-balance`
-    - Initial CLX balance of run faucet account.
+    - Initial CSPR balance of run faucet account.
 
 - `--contract-initial-clx-balance`
-    - Initial CLX balance of contract account.
+    - Initial CSPR balance of contract account.
 
 - `--user-initial-clx-balance`
-    - Initial CLX balance of user accounts.
+    - Initial CSPR balance of user accounts.

@@ -36,7 +36,7 @@ class Deploy:
     # Time taken to dispatch deploy.
     dispatch_duration: float
 
-    # Moment in time when deploy dispatched to CLX network.
+    # Moment in time when deploy dispatched to CSPR network.
     dispatch_timestamp: datetime
 
     # Time between dispatch & deploy finality.
@@ -45,7 +45,7 @@ class Deploy:
     # Address of node which emitted finalization event of the block in which deploy was included.
     finalization_node: typing.Optional[str]
     
-    # Moment in time when deploy was finalized by CLX network.
+    # Moment in time when deploy was finalized by CSPR network.
     finalization_timestamp: typing.Optional[datetime]    
 
     # # Numerical index to distinguish between multiple phase within a generator.

@@ -7,7 +7,7 @@ Casper Labs System Test Platform
 What is stests ?
 --------------------------------------
 
-stests stands for system tests.  It's goal is to encapsulate large system testing of the CLX network.
+stests stands for system tests.  It's goal is to encapsulate large system testing of the CSPR network.
 
 
 Why stests ?
@@ -19,7 +19,7 @@ Launching a blockchain network within a hostile permission-less setting is non-t
 Who uses stests ?
 --------------------------------------
 
-CLX network community.  This encompasses developers, validators, evaluators ... etc.
+CSPR network community.  This encompasses developers, validators, evaluators ... etc.
 
 Requirements
 --------------------------------------

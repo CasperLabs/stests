@@ -41,9 +41,7 @@ def do_step(ctx: ExecutionContext):
 
     # Update cache.
     cache.orchestration.set_context(ctx)
-    cache.orchestration.set_info(factory.create_execution_info(
-        ExecutionAspect.STEP, ctx
-        ))
+    cache.orchestration.set_info(factory.create_execution_info(ExecutionAspect.STEP, ctx))
 
     # Notify.
     log_event(EventType.WFLOW_STEP_START, None, ctx)

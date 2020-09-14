@@ -1,12 +1,12 @@
-from stests.core.crypto.enums import HashAlgorithm
-from stests.core.crypto.enums import HashEncoding
 from stests.core.crypto.enums import KeyAlgorithm
-from stests.core.crypto.hashifier import get_hash
 
 
 
-# Seperator to be applied when setting data to be passed to hashifier.
-_SEPERATOR = b"\x00"
+# Map: key algorithm to key prefix.
+_KEY_ALGO_PREFIX = {
+    KeyAlgorithm.ED25519: "01",
+    KeyAlgorithm.SECP256K1: "02",
+}
 
 
 def get_account_id(key_algo: KeyAlgorithm, public_key: str) -> str:
@@ -18,8 +18,9 @@ def get_account_id(key_algo: KeyAlgorithm, public_key: str) -> str:
     :returns: An on-chain account identifier.
 
     """ 
-    return get_hash(
-        key_algo.name.encode("UTF-8") + _SEPERATOR + bytes.fromhex(public_key),
-        algo=HashAlgorithm.BLAKE2B,
-        encoding=HashEncoding.HEX,   
-    )
+    try:
+        _KEY_ALGO_PREFIX[key_algo]
+    except KeyError:
+        raise KeyError(f"Unsupported key type: {key_algo}")
+
+    return f"{_KEY_ALGO_PREFIX[key_algo]}{public_key}"

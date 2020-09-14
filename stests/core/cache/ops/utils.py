@@ -56,7 +56,9 @@ def _get_counter_one(store: typing.Callable, item_key: ItemKey) -> int:
     """Returns count under exactly matched key.
     
     """
-    return int(store.get(item_key.key))
+    count = store.get(item_key.key)
+
+    return 0 if count is None else int(count)
 
 
 def _get_counter_many(store: typing.Callable, search_key: SearchKey) -> typing.Tuple[typing.List[str], typing.List[int]]:

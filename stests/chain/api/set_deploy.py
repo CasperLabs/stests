@@ -1,6 +1,4 @@
-import functools
 import subprocess
-import typing
 
 from stests.chain import constants
 from stests.chain import contracts
@@ -8,7 +6,6 @@ from stests.chain import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
 from stests.core.types.infra import Network
-from stests.core.utils.misc import Timer
 from stests.events import EventType
 
 

@@ -2,17 +2,17 @@
 # DEFAULTS
 # --------------------------------------------------------------------
 
-# Default contract's initial CLX balance.
-CONTRACT_INITIAL_CLX_BALANCE = int(1e8)
+# Default contract's initial CSPR balance.
+CONTRACT_INITIAL_CSPR_BALANCE = int(1e8)
 
-# Default faucet's initial CLX balance.
-FAUCET_INITIAL_CLX_BALANCE = int(1e11)
+# Default faucet's initial CSPR balance.
+FAUCET_INITIAL_CSPR_BALANCE = int(1e11)
 
 # Default number of user accounts to generate.
 USER_ACCOUNTS = 5
 
-# Default user's CLX balance.
-USER_INITIAL_CLX_BALANCE = int(1e8)
+# Default user's CSPR balance.
+USER_INITIAL_CSPR_BALANCE = int(1e8)
 
 # --------------------------------------------------------------------
 # ACCOUNT OFFSETS

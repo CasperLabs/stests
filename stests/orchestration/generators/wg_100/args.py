@@ -36,10 +36,10 @@ ARGS = get_argparser(f"Executes pure transfers per second generator.")
 # CLI argument: # transfers to dispatch.
 ARGS.add_argument(
     "--transfers",
-    help="Number of transfers to dispatch. Default=1000",
+    help="Number of transfers to dispatch. Default=100",
     dest="transfers",
     type=int,
-    default=1000
+    default=100
     )
 
 # CLI argument: motes per transfer.

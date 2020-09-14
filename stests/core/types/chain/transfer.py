@@ -8,7 +8,7 @@ from stests.core.types.chain.enums import TransferStatus
 
 @dataclasses.dataclass
 class Transfer:
-    """Encapsulates information pertaining to a CLX transfer between counterparties.
+    """Encapsulates information pertaining to a CSPR transfer between counterparties.
     
     """
     # Amount in motes that was transferred.
@@ -26,7 +26,7 @@ class Transfer:
     # Associated deploy hash.
     deploy_hash: str
 
-    # Moment in time when deploy dispatched to CLX network.
+    # Moment in time when deploy dispatched to CSPR network.
     dispatch_timestamp: typing.Optional[datetime.datetime]
 
     # Associated network.

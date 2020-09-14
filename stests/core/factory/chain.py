@@ -260,7 +260,7 @@ def create_transfer(
     """
     return Transfer(
         amount=amount,
-        asset=asset or "CLX",
+        asset=asset or "CSPR",
         cp1_index=cp1.index,
         cp2_index=cp2.index,
         deploy_hash=deploy_hash,

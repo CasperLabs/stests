@@ -102,8 +102,5 @@ function _exec_generator()
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
 
-# WG-000: Temporary test command.
-alias stests-wg-000='_exec_generator 000'
-
 # WG-100: Token transfer - invoked directly, i.e. wasm-less.
 alias stests-wg-100='_exec_generator 100'

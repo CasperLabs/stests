@@ -19,13 +19,6 @@ from stests.core.utils import cli as utils
 # CLI argument parser.
 ARGS = argparse.ArgumentParser("Register an nctl network with stests.")
 
-# CLI argument: network name.
-ARGS.add_argument(
-    "--net",
-    help="Network nctl identifer, e.g. 1.",
-    type=int
-    )
-
 
 def main(args):
     """Entry point.
@@ -33,14 +26,8 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Set artefacts to be mapped to stests types.
-    accounts, faucet_pvk_as_pem, nodeset = _get_artefacts(args.net)
-
-    # Register artefacts accordingly.
-    network = _register_network(args.net)
-    _register_faucet(network, faucet_pvk_as_pem)
-    for node in nodeset:
-        _register_node(network, accounts, node)
+    for artefacts in _yield_artefacts():
+        _register(artefacts)
 
 
 def _get_account(accounts, pbk_hex):
@@ -52,12 +39,34 @@ def _get_account(accounts, pbk_hex):
             return key, key_algo, initial_balance, int(stake_weight)
 
 
+def _yield_artefacts():
+    """Yields aretefacts for mapping to stests types.
+    
+    """
+    # Set path to nctl network artefacts.
+    path = pathlib.Path(os.getenv("NCTL")) / "assets"
+    if not path.exists() or not path.is_dir():
+        raise ValueError(f"Invalid nctl network - network path not found: {path}")
+
+    # Set paths to each network.
+    paths = [i for i in path.rglob("net-*") if i.is_dir()]
+    if not paths:
+        raise ValueError(f"Invalid nctl network - networks undefined")
+
+    # For each nctl network, yield relevant artefacts.
+    for path in paths:
+        yield int(str(path).split("-")[-1]), \
+              _get_artefacts_accounts(path), \
+              _get_artefacts_faucet(path), \
+              _get_artefacts_nodeset(path)
+    
+
 def _get_artefacts(network_idx: int):
     """Returns network artefacts to be mapped.
     
     """
     # Set path to nctl network artefacts.
-    path = pathlib.Path(os.getenv("NTCL")) / "nets" / f"net-{network_idx}"
+    path = pathlib.Path(os.getenv("NCTL")) / "assets" / f"net-{network_idx}"
     if not path.exists() or not path.is_dir():
         raise ValueError(f"Invalid nctl network - path not found: {path}")
     
@@ -132,6 +141,19 @@ def _get_artefacts_node(path: pathlib.Path) -> typing.Tuple[int, dict, pathlib.P
         path_pvk
 
 
+def _register(artefacts):
+    """Register a network.
+    
+    """
+    # Destructure artefacts.
+    network_idx, accounts, faucet_pvk_as_pem, nodeset = artefacts
+
+    network = _register_network(network_idx)
+    _register_faucet(network, faucet_pvk_as_pem)
+    for node in nodeset:
+        _register_node(network, accounts, node)
+
+
 def _register_faucet(network: Network, path_pvk_pem: str):
     """Register a network's faucet account.
     
@@ -165,7 +187,7 @@ def _register_network(network_idx: int):
     
     """
     # Set network.
-    network = factory.create_network(f"nctl{network_idx}")
+    network = factory.create_network(f"nctl{network_idx}", f"casper-net-{network_idx}")
 
     # Push to cache.
     cache.infra.set_network(network)

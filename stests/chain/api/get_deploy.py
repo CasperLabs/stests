@@ -26,11 +26,10 @@ def execute(
     :returns: Hexadecimal representation of dispatched transaction hash.
 
     """
-    # TODO: http | https protocol derivation
     response = subprocess.run([
         constants.PATH_TO_BINARY, _CLIENT_METHOD,
         deploy_hash,
-        "--node-address", f"http://{node.address}"
+        "--node-address", f"http://{node.address}",
         ],
         stdout=subprocess.PIPE,
         )

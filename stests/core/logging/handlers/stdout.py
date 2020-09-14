@@ -1,4 +1,5 @@
 import dataclasses
+import sys
 from datetime import datetime
 
 from stests.core.types.logging import LogMessage
@@ -15,6 +16,8 @@ def log_event(msg: LogMessage, mode: OutputMode):
     """
     if mode == OutputMode.INTERACTIVE:
         if msg.event.priority > 1:
-            print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.app.system}] [{msg.event.level}] {msg.message}")
+            print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.app.system}] [{msg.event.level}] {msg.message}",
+                  file=sys.stderr if msg.event.priority > 9 else sys.stdout)
     else:
-        print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.process.host}] [{msg.event.level}] [{msg.event.priority}] [{msg.app.company.lower()}-{msg.app.system.lower()}] [{msg.app.sub_system.lower()}] payload={dataclasses.asdict(msg)}")
+        print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.app.system}] [{msg.event.level}] {msg.message}",
+                file=sys.stderr if msg.event.priority > 9 else sys.stdout)

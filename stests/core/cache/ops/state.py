@@ -258,7 +258,7 @@ def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: Contr
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> ItemKey:
+def get_transfer_by_deploy(deploy: Deploy, asset: str="CSPR") -> ItemKey:
     """Decaches domain object: Transfer.
     
     :param deploy_hash: A deploy hash.
@@ -281,7 +281,7 @@ def get_transfer_by_deploy(deploy: Deploy, asset: str="CLX") -> ItemKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CLX") -> ItemKey:
+def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CSPR") -> ItemKey:
     """Decaches domain object: Transfer.
     
     :param deploy_hash: A deploy hash.

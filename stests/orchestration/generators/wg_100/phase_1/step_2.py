@@ -44,6 +44,4 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    # TODO verify count of transfers
-    pass
-    
+    verification.verify_deploy_count(ctx, ctx.args.transfers) 

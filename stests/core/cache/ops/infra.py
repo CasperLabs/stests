@@ -134,7 +134,7 @@ def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> No
 
     """
     # Pull operational nodeset.
-    nodeset = get_nodes_for_dispatching(network) 
+    nodeset = get_nodes_for_dispatch(network) 
     if not nodeset:
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
@@ -152,7 +152,7 @@ def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int =
 
     """
     # Pull operational nodes.
-    nodeset = get_nodes_for_dispatching(network_id)
+    nodeset = get_nodes_for_dispatch(network_id)
     if not nodeset:
         raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
     
@@ -177,7 +177,7 @@ def get_node_by_port(network: typing.Union[Network, NetworkIdentifier], port: in
 
     """
     # Pull operational nodeset.
-    nodeset = get_nodes_for_dispatching(network) 
+    nodeset = get_nodes_for_dispatch(network) 
     if not nodeset:
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
@@ -203,7 +203,7 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> SearchK
     )     
 
 
-def get_nodes_for_dispatching(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
+def get_nodes_for_dispatch(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
     """Decaches domain objects: Node (if operational).
 
     :param network: A pointer to either a network or network identifier.

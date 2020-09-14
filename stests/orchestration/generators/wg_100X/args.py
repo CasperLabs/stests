@@ -11,16 +11,16 @@ class Arguments:
     """Custom generator arguments passed along chain of execution.
     
     """
-    # Initial contract account CLX balance.
+    # Initial contract account CSPR balance.
     contract_initial_clx_balance: int
 
-    # Initial faucet account CLX balance.
+    # Initial faucet account CSPR balance.
     faucet_initial_clx_balance: int
 
     # Number of user accounts to generate.
     user_accounts: int
 
-    # Initial user account CLX balance.
+    # Initial user account CSPR balance.
     user_initial_clx_balance: int
 
     @classmethod
@@ -41,22 +41,22 @@ class Arguments:
 # Set command line arguments.
 ARGS = get_argparser(f"Executes token-transfer generator.")
 
-# CLI argument: initial CLX balance.
+# CLI argument: initial CSPR balance.
 ARGS.add_argument(
     "--faucet-initial-clx-balance",
-    help=f"Initial CLX balance of faucet account. Default={constants.FAUCET_INITIAL_CLX_BALANCE}",
+    help=f"Initial CSPR balance of faucet account. Default={constants.FAUCET_INITIAL_CSPR_BALANCE}",
     dest="faucet_initial_clx_balance",
     type=int,
-    default=constants.FAUCET_INITIAL_CLX_BALANCE
+    default=constants.FAUCET_INITIAL_CSPR_BALANCE
     )
 
-# CLI argument: initial CLX balance.
+# CLI argument: initial CSPR balance.
 ARGS.add_argument(
     "--contract-initial-clx-balance",
-    help=f"Initial CLX balance of contract account. Default={constants.CONTRACT_INITIAL_CLX_BALANCE}",
+    help=f"Initial CSPR balance of contract account. Default={constants.CONTRACT_INITIAL_CSPR_BALANCE}",
     dest="contract_initial_clx_balance",
     type=int,
-    default=constants.CONTRACT_INITIAL_CLX_BALANCE
+    default=constants.CONTRACT_INITIAL_CSPR_BALANCE
     )
 
 # CLI argument: user accounts.
@@ -68,11 +68,11 @@ ARGS.add_argument(
     default=constants.USER_ACCOUNTS
     )
 
-# CLI argument: initial CLX balance.
+# CLI argument: initial CSPR balance.
 ARGS.add_argument(
     "--user-initial-clx-balance",
-    help=f"Initial CLX balance of user accounts. Default={constants.USER_INITIAL_CLX_BALANCE}",
+    help=f"Initial CSPR balance of user accounts. Default={constants.USER_INITIAL_CSPR_BALANCE}",
     dest="user_initial_clx_balance",
     type=int,
-    default=constants.USER_INITIAL_CLX_BALANCE
+    default=constants.USER_INITIAL_CSPR_BALANCE
     )

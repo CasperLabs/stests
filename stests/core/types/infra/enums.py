@@ -20,7 +20,6 @@ class NetworkType(enum.Enum):
     
     """
     NCTL = enum.auto()
-    LOC = enum.auto()
     DEV = enum.auto()
     LRT = enum.auto()
     SYS = enum.auto()

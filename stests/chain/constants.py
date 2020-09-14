@@ -12,4 +12,4 @@ DEFAULT_TX_GAS_PRICE = 10
 DEFAULT_TX_FEE = int(2e6)
 
 # Path to client binary.
-PATH_TO_BINARY = os.getenv("CLX_CLIENT")
+PATH_TO_BINARY = os.getenv("CASPER_CLIENT")

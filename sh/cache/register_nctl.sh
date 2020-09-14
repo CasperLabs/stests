@@ -11,9 +11,9 @@ function main()
     source $STESTS_PATH_SH/cache/flush_infra.sh
 
     pushd $STESTS_HOME
-    pipenv run python $STESTS_PATH_SH_SCRIPTS/register_nctl.py --net $1
+    pipenv run python $STESTS_PATH_SH_SCRIPTS/register_nctl.py
     popd -1    
 }
 
 # Invoke entry point.
-main $1
+main
