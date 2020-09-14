@@ -1,9 +1,11 @@
 import subprocess
 
 from stests.chain import constants
+from stests.chain import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
+from stests.events import EventType
 
 
 
@@ -11,6 +13,7 @@ from stests.core.types.infra import Node
 _CLIENT_METHOD = "transfer"
 
 
+@utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
 def execute(
     network: Network,
     node: Node,
@@ -20,7 +23,7 @@ def execute(
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
     tx_fee=constants.DEFAULT_TX_FEE,
     tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
-    ) -> str:
+    ) -> typing.Tuple[str, float, int]:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
     :param network: Network to which transfer is being dispatched.
@@ -32,7 +35,7 @@ def execute(
     :param tx_fee: Transaction network fee.
     :param tx_gas_price: Network gas price.
 
-    :returns: deploy_hash.
+    :returns: 3 member tuple -> (deploy_hash, dispatch_duration, dispatch_attempts)
 
     """
     cli_response = subprocess.run([
@@ -49,10 +52,4 @@ def execute(
         stdout=subprocess.PIPE,
         )
 
-    try:
-        deploy_hash = cli_response.stdout.split(b'\n')[1]
-    except Exception as err:
-        # TODO: inspect error and decide correct course of action (e.g. discard or retries)
-        raise err
-    else:
-        return str(deploy_hash)
+    return str(cli_response.stdout.split(b'\n')[1])

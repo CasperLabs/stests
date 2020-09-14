@@ -40,7 +40,7 @@ def do_transfer(
     cp2 = _get_account(ctx, network, cp2_index)
 
     # Dispatch tx -> chain.
-    deploy_hash = chain.set_transfer(
+    deploy_hash, dispatch_duration, dispatch_attempts = chain.set_transfer(
         network,
         node,
         cp1,
@@ -54,8 +54,8 @@ def do_transfer(
         account=cp1,
         node=node, 
         deploy_hash=deploy_hash, 
-        dispatch_attempts=1,
-        dispatch_duration=1,
+        dispatch_attempts=dispatch_attempts,
+        dispatch_duration=dispatch_duration,
         typeof=DeployType.TRANSFER
         ))
 

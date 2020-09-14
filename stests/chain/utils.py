@@ -41,7 +41,7 @@ def execute_cli(
     command: str,
     on_failure_event: EventType, 
     max_attempts: int = 5,
-    retry_delay: float = float(1),
+    retry_delay: float = 1.0,
     ) -> typing.Callable:
     """Decorator to orthoganally execute a CLI operation.
 

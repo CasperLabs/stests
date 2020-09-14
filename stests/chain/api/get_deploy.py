@@ -12,11 +12,7 @@ from stests.core.types.infra import Network
 _CLIENT_METHOD = "get-deploy"
 
 
-def execute(
-    network: Network,
-    node: Node,
-    deploy_hash: str,
-    ) -> str:
+def execute(network: Network, node: Node, deploy_hash: str) -> str:
     """Dispatches a transaction to a node upon test network.
     
     :param network: Target network being tested.
