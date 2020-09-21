@@ -1,4 +1,5 @@
 import subprocess
+import typing
 
 from stests.chain import constants
 from stests.chain import utils

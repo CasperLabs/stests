@@ -104,3 +104,6 @@ function _exec_generator()
 
 # WG-100: Token transfer - invoked directly, i.e. wasm-less.
 alias stests-wg-100='_exec_generator 100'
+
+# WG-110: Token transfer - wasm dispatched per deploy.
+alias stests-wg-110='_exec_generator 110'

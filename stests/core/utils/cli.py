@@ -20,7 +20,7 @@ def get_table(cols, rows, max_width=1080) -> BeautifulTable:
 
     """
     # Set table data.
-    t = BeautifulTable(max_width=max_width)
+    t = BeautifulTable(maxwidth=max_width)
     t.column_headers = cols
     for row in rows:
         t.append_row(row)

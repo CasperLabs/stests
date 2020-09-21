@@ -1,10 +1,12 @@
 import random
+import time
 
 import dramatiq
 
 from stests.core import cache
 from stests.core import factory
 from stests.core.logging import log_event
+from stests.core.mq.extensions import MessageGroup
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
@@ -266,24 +268,21 @@ def _enqueue_message_batch(ctx, step):
     # Unpack step result.
     actor, count, args_factory = step.result
 
-    # Set window of dispatch.
-    dispatch_window = 0 if step.is_sync else ctx.get_dispatch_window_ms(count)
-
     # Yield args of messages to be enqueued.
     def message_factory():
         for args in args_factory():
-            yield actor.message_with_options(
-                args=args,
-                delay=random.randint(0, dispatch_window)
-                )
+            yield actor.message_with_options(args=args)
 
     # Instantiate a dramatiq group to batch message set.
-    group = dramatiq.group(message_factory())
+    group = MessageGroup(message_factory())
 
     # When in sync mode we can signal end of step in a completion callback. 
     # In async mode the step end signal is determined post deploy finalisation event.
     if step.is_sync:
         group.add_completion_callback(do_step_verification.message(ctx))
 
+    # Set window of dispatch.
+    dispatch_window = None if not ctx.deploys_per_second else ctx.get_dispatch_window_ms(count)
+
     # Enqueue message batch.
-    group.run()
+    group.run(dispatch_window=dispatch_window)

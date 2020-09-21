@@ -56,6 +56,7 @@ def _import_actors():
 
     # Import actors: generators.
     import stests.orchestration.generators.wg_100.meta
+    import stests.orchestration.generators.wg_110.meta
 
 
 def _get_context_list(

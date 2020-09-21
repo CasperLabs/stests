@@ -39,6 +39,7 @@ def start_orchestration():
     """
     # JIT import actors: generators.
     import stests.orchestration.generators.wg_100.meta
+    import stests.orchestration.generators.wg_110.meta
 
     # JIT import actors: orchestration.
     import stests.orchestration.engine.run

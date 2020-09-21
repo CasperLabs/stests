@@ -218,6 +218,9 @@ def initialise():
     from stests.orchestration.generators.wg_100.args import Arguments
     register_type(Arguments)
 
+    from stests.orchestration.generators.wg_110.args import Arguments
+    register_type(Arguments)
+
     IS_INITIALISED = True
 
 
