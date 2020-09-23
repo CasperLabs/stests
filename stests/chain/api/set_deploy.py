@@ -21,6 +21,7 @@ def execute(
     node: Node,
     account: Account,
     contract_fname = None,
+    session_args=[],
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
     tx_fee=constants.DEFAULT_TX_FEE,
     tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
@@ -44,11 +45,13 @@ def execute(
         "--gas-price", str(tx_gas_price),
         "--node-address", f"http://{node.address}",
         "--payment-amount", str(tx_fee),
-        "--secret-key", account.get_private_key_pem_filepath,
-        "--session-path", contracts.get_contract_path(contract_fname),
+        "--secret-key", account.get_private_key_pem_filepath(),
+        "--session-path", contracts.get_contract_path(contract_fname, network),
         "--ttl", str(tx_ttl),
         ],
         stdout=subprocess.PIPE,
         )
-    
+
+    print(cli_response)
+
     return str(cli_response.stdout.split(b'\n')[1])

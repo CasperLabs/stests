@@ -1,9 +1,16 @@
-from datetime import datetime
 import os
+import sys
 import typing
+from datetime import datetime
 
 from beautifultable import BeautifulTable
 
+
+
+# BeautifulTable is emitting several warnings - these are to be suppressed until resolved.
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
 
 
 # Set of logging levels.
@@ -20,7 +27,7 @@ def get_table(cols, rows, max_width=1080) -> BeautifulTable:
 
     """
     # Set table data.
-    t = BeautifulTable(maxwidth=max_width)
+    t = BeautifulTable(max_width=max_width)
     t.column_headers = cols
     for row in rows:
         t.append_row(row)

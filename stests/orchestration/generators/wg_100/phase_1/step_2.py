@@ -6,7 +6,7 @@ from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils import constants
 from stests.orchestration.generators.utils import verification
-from stests.orchestration.generators.utils.accounts import do_transfer
+from stests.orchestration.generators.utils.accounts import do_transfer_wasmless as do_transfer
 
 
 

@@ -19,7 +19,7 @@ PHASES = (
 )
 
 # Workload type.
-TYPE = "WG-100"
+TYPE = "WG-110"
 
 # Workload typeset - registered with encoder.
 TYPE_SET = {
