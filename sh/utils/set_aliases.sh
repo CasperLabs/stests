@@ -47,7 +47,7 @@ alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 
 alias stests-flush='$STESTS_PATH_SH/cache/flush.sh'
 alias stests-flush-infra='$STESTS_PATH_SH/cache/flush_infra.sh'
-alias stests-register='$STESTS_PATH_SH/cache/register.sh'
+alias stests-register-sre='$STESTS_PATH_SH/cache/register_sre.sh'
 alias stests-register-nctl='$STESTS_PATH_SH/cache/register_nctl.sh'
 
 # ###############################################################

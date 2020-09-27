@@ -43,6 +43,14 @@ class Account:
         return bytes.fromhex(self.account_id)
 
     @property
+    def account_hash(self):
+        return crypto.get_hash(
+            self.account_id_as_bytes,
+            algo=crypto.HashAlgorithm.BLAKE2B,
+            encoding=crypto.HashEncoding.HEX,
+            )
+
+    @property
     def is_run_account(self):
         return self.run_index is not None
 

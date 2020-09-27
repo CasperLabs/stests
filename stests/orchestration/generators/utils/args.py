@@ -36,7 +36,7 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
     args.add_argument(
         "--execution-mode",
         dest="execution_mode",
-        help="Generator execution mode - sequential | periodical.",
+        help="Generator execution mode - sequential | periodic.",
         type=args_validator.validate_execution_mode,
         default=ExecutionMode.SEQUENTIAL.name.lower(),
         )

@@ -24,7 +24,7 @@ function main()
     # Flush partition: workflow data.
     source $STESTS_PATH_SH/cache/flush_partition.sh 6
 
-    log "Cache successfully flushed"
+    log "Cache successfully flushed - partitions"
 }
 
 # Invoke entry point.

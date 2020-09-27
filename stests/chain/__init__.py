@@ -2,7 +2,6 @@ from stests.chain.api import get_account_balance
 from stests.chain.api import get_deploy
 from stests.chain.api import get_deploy_list
 from stests.chain.api import get_state
-from stests.chain.api import set_deploy
 from stests.chain.api import set_transfer_wasm
 from stests.chain.api import set_transfer_wasmless
 

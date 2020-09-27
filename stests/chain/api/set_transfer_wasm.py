@@ -1,9 +1,10 @@
+import json
 import subprocess
 import typing
 
 from stests.chain import constants
+from stests.chain import contracts
 from stests.chain import utils
-from stests.chain.api import set_deploy
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
@@ -11,10 +12,14 @@ from stests.events import EventType
 
 
 
+# Method upon client to be invoked.
+_CLIENT_METHOD = "put-deploy"
+
 # Name of smart contract to dispatch & invoke.
-_CONTRACT_FNAME = "transfer_to_account.wasm"
+_CONTRACT_FNAME = "transfer_to_account_u512.wasm"
 
 
+@utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
 def execute(
     network: Network,
     node: Node,
@@ -39,12 +44,19 @@ def execute(
     :returns: 3 member tuple -> (deploy_hash, dispatch_duration, dispatch_attempts)
 
     """
-    return set_deploy(
-        network=network,
-        node=node,
-        account=cp1,
-        contract_fname=_CONTRACT_FNAME,
-        tx_ttl=tx_ttl,
-        tx_fee=tx_fee,
-        tx_gas_price=tx_gas_price,
-    )
+    cli_response = subprocess.run([
+        constants.PATH_TO_BINARY, _CLIENT_METHOD,
+        "--chain-name", network.chain_name,
+        "--gas-price", str(tx_gas_price),
+        "--node-address", f"http://{node.address}",
+        "--payment-amount", str(tx_fee),
+        "--secret-key", cp1.get_private_key_pem_filepath(),
+        "--session-path", contracts.get_contract_path(_CONTRACT_FNAME, network),
+        "--ttl", str(tx_ttl),
+        "--session-arg", "amount:u512='1000000'",
+        "--session-arg", f"target:account_hash='account-hash-{cp2.account_hash}'",
+        ],
+        stdout=subprocess.PIPE,
+        )
+
+    return json.loads(cli_response.stdout)['deploy_hash']

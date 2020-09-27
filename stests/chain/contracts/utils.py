@@ -22,7 +22,6 @@ def get_contract_path(wasm_filename: str, network: Network=None) -> pathlib.Path
 
     # Return wasm at NCTL path.
     path = pathlib.Path(os.getenv("NCTL")) / "assets" / f"net-{network.index}" / "bin" / wasm_filename
-    print(path)
     if path.exists():
         return path
 
