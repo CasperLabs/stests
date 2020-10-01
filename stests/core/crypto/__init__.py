@@ -1,3 +1,4 @@
+from stests.core.crypto.account_hash import get_account_hash
 from stests.core.crypto.account_id import get_account_id
 from stests.core.crypto.ecc import get_key_pair
 from stests.core.crypto.ecc import get_key_pair_from_pvk_b64

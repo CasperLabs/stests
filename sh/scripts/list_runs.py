@@ -17,7 +17,9 @@ ARGS = argparse.ArgumentParser("Displays summary information for all runs.")
 
 # CLI argument: network name.
 ARGS.add_argument(
-    "network",
+    "--net",
+    default="nctl1",
+    dest="network",
     help="Network name {type}{id}, e.g. lrt1.",
     type=args_validator.validate_network,
     )
@@ -99,6 +101,7 @@ def main(args):
         t.column_alignments[key] = aligmnent  
 
     # Render.
+    print(f"Network = {args.network}.")
     print(t)
     print(f"Total runs = {len(data)}.  ")
 

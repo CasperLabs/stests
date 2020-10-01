@@ -11,6 +11,9 @@ class Account:
     """A non-designated account that maps to an address upon target chain.
     
     """
+    # On-chain account hash.
+    account_hash: str
+
     # On-chain account identifier.
     account_id: str
 
@@ -41,14 +44,6 @@ class Account:
     @property
     def account_id_as_bytes(self):
         return bytes.fromhex(self.account_id)
-
-    @property
-    def account_hash(self):
-        return crypto.get_hash(
-            self.account_id_as_bytes,
-            algo=crypto.HashAlgorithm.BLAKE2B,
-            encoding=crypto.HashEncoding.HEX,
-            )
 
     @property
     def is_run_account(self):

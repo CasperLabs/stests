@@ -51,10 +51,10 @@ def execute(
         "--node-address", f"http://{node.address}",
         "--payment-amount", str(tx_fee),
         "--secret-key", cp1.get_private_key_pem_filepath(),
-        "--session-path", contracts.get_contract_path(_CONTRACT_FNAME, network),
-        "--ttl", str(tx_ttl),
         "--session-arg", "amount:u512='1000000'",
         "--session-arg", f"target:account_hash='account-hash-{cp2.account_hash}'",
+        "--session-path", contracts.get_contract_path(_CONTRACT_FNAME, network),
+        "--ttl", str(tx_ttl),
         ],
         stdout=subprocess.PIPE,
         )

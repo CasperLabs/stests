@@ -24,42 +24,73 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    for network_id, accounts, nodes in _yield_network_artefacts():
+    for network_id, faucet, nodeset in _yield_assets():
         # Register network.
         network = _register_network(network_id)
 
-        # Register network faucet.
-        _register_faucet(network, accounts)
+        # Register faucet.
+        _register_faucet(network, faucet)
 
-        # Register network nodes.
-        for node_idx, node_info in enumerate([i.split(',') for i in nodes]):
-            _register_node(network, node_idx, node_info)
+        # Register nodeset.
+        for index, info in enumerate(nodeset, start=1):
+            _register_node(network, index, info)
 
 
-def _yield_network_artefacts() -> typing.Tuple[str, typing.List, typing.List]:
-    """Yields relevant artefacts from each sub-directory within $HOME/.casperlabs-stests/nets.
+def _yield_assets() -> typing.Tuple[str, typing.List, typing.List]:
+    """Yields relevant assets from each sub-directory within $HOME/.casperlabs-stests/nets.
     
     """
     path = pathlib.Path(os.path.expanduser("~/.casperlabs-stests/nets"))
-    if not path.exists:
-        raise ValueError(f"Cannot find any network metadata in {path}")
-    if not path.is_dir:
+    if not path.exists or not path.is_dir:
         raise ValueError(f"Invalid network metadata directory: {path}")
 
     for network_id in os.listdir(path):
-        path_accounts = path / network_id / "accounts.csv"
-        if not path_accounts.exists:
-            raise ValueError(f"accounts.csv file not found: {path_accounts}")
-        with open(path_accounts, 'r') as fstream:
-            accounts = fstream.readlines()
+        path_assets = path / network_id
+        yield \
+            network_id, \
+            _get_faucet(path_assets), \
+            _get_nodeset(path_assets)
 
-        path_nodes = path / network_id / "nodes.csv"
-        if not path_nodes.exists:
-            raise ValueError(f"nodes.csv file not found: {path_nodes}")
-        with open(path_nodes, 'r') as fstream:
-            nodes = fstream.readlines()
-        
-        yield network_id, accounts, nodes
+
+def _get_faucet(path_assets: pathlib.Path) -> typing.Tuple[str, crypto.KeyAlgorithm]:
+    """Returns faucet information.
+    
+    """
+    path_sk_pem = path_assets / "faucet_secret_key.pem"
+    if not path_sk_pem.exists():
+        # path_sk_pem = "/Users/a-0/Engineering/clabs/nctl/assets/net-1/nodes/node-1/keys/secret_key.pem"
+        raise ValueError(f"faucet_secret_key.pem file not found: {path_sk_pem}")
+
+    return (path_sk_pem, crypto.KeyAlgorithm.ED25519)
+
+
+def _get_nodeset(path_assets: pathlib.Path) -> typing.List[typing.Tuple[str, int, int, str]]:
+    """Returns nodeset information.
+    
+    """
+    # Read node.csv.
+    path = path_assets / "nodes.csv"
+    if not path.exists:
+        raise ValueError(f"nodes.csv file not found: {path}")
+    with open(path, 'r') as fstream:
+        data = fstream.readlines()
+
+    return [_get_node(path_assets, i.split(",")) for i in data]
+
+
+def _get_node(path_assets: pathlib.Path, info):
+    """Returns node information.
+    
+    """
+    host, port, _, weight = info
+
+    # Set path to secret key.
+    path_sk_pem = path_assets / "configs" / port / "secret_key.pem"
+    if not path_sk_pem.exists():
+        # path_sk_pem = "/Users/a-0/Engineering/clabs/nctl/assets/net-1/nodes/node-1/keys/secret_key.pem"
+        raise ValueError(f"node secret_key.pem file not found: {path_sk_pem}")
+
+    return (host, int(port), int(weight), path_sk_pem)
 
 
 def _register_network(network_id: str):
@@ -75,25 +106,21 @@ def _register_network(network_id: str):
     return network
 
 
-def _register_faucet(
-    network: Network,
-    accounts: typing.List[typing.Union[str, int, str, int]]
-    ):
+def _register_faucet(network: Network, info: typing.Tuple[str, crypto.KeyAlgorithm]):
     """Register a network's faucet account.
     
     """
-    # Destructure faucet private key.
-    pvk_b64, key_algo = _get_faucet_pvk(accounts)
-
     # Set key pair.
-    private_key, public_key = crypto.get_key_pair_from_pvk_b64(pvk_b64, key_algo, crypto.KeyEncoding.HEX)
+    path_secret_key_pem, secret_key_algo = info
+    private_key, public_key = \
+        crypto.get_key_pair_from_pvk_pem_file(path_secret_key_pem, algo=secret_key_algo, encoding=crypto.KeyEncoding.HEX)
 
     # Set faucet.
     network.faucet = factory.create_account(
         network=network.name,
         typeof=AccountType.FAUCET,
         index=0,
-        key_algo=key_algo,
+        key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=private_key,
         public_key=public_key,
     )
@@ -108,26 +135,30 @@ def _register_faucet(
 def _register_node(
     network: Network,
     index: int,
-    info: typing.Tuple[str, int, str, int]
+    info: typing.Tuple[str, int, int, pathlib.Path]
     ):
     """Register a network node.
     
     """
     # Destructure node info.
-    host, port, pvk_b64, weight = info
+    host, port, weight, path_sk_pem = info
 
     # Set node.
     node = factory.create_node(
         host=host,
         index=index,  
         network_id=factory.create_network_id(network.name_raw),
-        port=int(port),
-        typeof=NodeType.FULL if int(weight) > 256 else NodeType.READ_ONLY,
-        # weight=int(weight),
+        port=port,
+        typeof=NodeType.FULL if weight > 1000 else NodeType.READ_ONLY,
+        weight=weight,
     )
 
     # Set bonding key pair.
-    private_key, public_key = crypto.get_key_pair_from_pvk_b64(pvk_b64, crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.HEX)
+    private_key, public_key = crypto.get_key_pair_from_pvk_pem_file(
+        path_sk_pem,
+        algo=crypto.KeyAlgorithm.ED25519,
+        encoding=crypto.KeyEncoding.HEX,
+        )
 
     # Set bonding account.
     node.account = factory.create_account(
@@ -144,20 +175,6 @@ def _register_node(
 
     # Inform.
     utils.log(f"registered {network.name_raw} - {node.address} : {node.typeof.name}")
-
-
-def _get_faucet_pvk(accounts: typing.List[typing.Union[str, int, str, int]]):
-    """Returns faucet key derived from accounts.csv.
-    
-    """
-    # Facuet is either first or last account and is distinguished by it's balance > 0.
-    _, _, balance, _ = accounts[-1].split(',')
-    account = accounts[-1] if int(balance) > 0 else accounts[0]
-
-    # Destructure key info.
-    pvk_b64, key_algo, _, _ = account.split(',')
-
-    return pvk_b64, crypto.KeyAlgorithm[key_algo.upper()]
 
 
 # Entry point.
