@@ -56,10 +56,9 @@ def _get_faucet(path_assets: pathlib.Path) -> typing.Tuple[str, crypto.KeyAlgori
     """Returns faucet information.
     
     """
-    path_sk_pem = path_assets / "faucet_secret_key.pem"
+    path_sk_pem = path_assets / faucet / "secret_key.pem"
     if not path_sk_pem.exists():
-        # path_sk_pem = "/Users/a-0/Engineering/clabs/nctl/assets/net-1/nodes/node-1/keys/secret_key.pem"
-        raise ValueError(f"faucet_secret_key.pem file not found: {path_sk_pem}")
+        raise ValueError(f"faucet secret_key.pem file not found: {path_sk_pem}")
 
     return (path_sk_pem, crypto.KeyAlgorithm.ED25519)
 
@@ -85,9 +84,8 @@ def _get_node(path_assets: pathlib.Path, info):
     host, port, _, weight = info
 
     # Set path to secret key.
-    path_sk_pem = path_assets / "configs" / port / "secret_key.pem"
+    path_sk_pem = path_assets / "configs" / host / "secret_key.pem"
     if not path_sk_pem.exists():
-        # path_sk_pem = "/Users/a-0/Engineering/clabs/nctl/assets/net-1/nodes/node-1/keys/secret_key.pem"
         raise ValueError(f"node secret_key.pem file not found: {path_sk_pem}")
 
     return (host, int(port), int(weight), path_sk_pem)
