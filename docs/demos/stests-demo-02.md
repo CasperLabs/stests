@@ -17,8 +17,8 @@
 
 4.  Terminal 2 - list progress of all runs
 
-    ```stests-ls-runs lrt1```
+    ```stests-cache-view-runs lrt1```
 
 5.  Terminal 2 - list progress of a run
 
-    ```stests-ls-run lrt1 wg-100 1```
+    ```stests-cache-view-run lrt1 wg-100 1```

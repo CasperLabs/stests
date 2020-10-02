@@ -11,7 +11,7 @@ function main()
     source $STESTS_PATH_SH/cache/flush_infra.sh
 
     pushd $STESTS_HOME
-    pipenv run python $STESTS_PATH_SH_SCRIPTS/register_sre.py
+    pipenv run python $STESTS_PATH_SH_SCRIPTS/cache_register_sre.py
     popd -1    
 }
 

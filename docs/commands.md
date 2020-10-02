@@ -65,43 +65,57 @@ Runs monitoring process in a single interactive session.
 
 Runs orchestration process in a single interactive session.
 
+## Cache Housekeeping
+
+The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of workload generators that have been executed.  Some management commands exist to simplify cache housekeeping.   
+
+#### `stests-cache-flush`
+
+Deletes orchestration & monitoring related cache data.
+
+#### `stests-cache-flush-infra`
+
+Deletes infrastructure related cache data.  Execution of this command requires subsequent re-registration of network infrastructure.
+
 ## Cache Querying
 
-#### `stests-ls-contracts`
-
-Displays information related to all smart contracts registered with stests & stored on-chain.
-
-#### `stests-ls-networks`
+#### `stests-cache-view-networks`
 
 Displays information related to the set of networks registered with stests.
 
-##### `stests-ls-network-faucet-balance`
-
-Displays a network's faucet account balance.
-
-#### `stests-ls-network-faucet-key`
+#### `stests-cache-view-network-faucet-key`
 
 Displays a network's faucet account ECC key pair.
 
-#### `stests-ls-nodes`
+#### `stests-cache-view-nodes`
 
 Displays set of nodes registered with stests for a particular network.
 
-#### `stests-ls-node-bonding-key`
+#### `stests-cache-view-node-bonding-key`
 
 Displays a node's bonding ECC key pair.
 
-#### `stests-ls-run`
+#### `stests-cache-view-run`
 
 Displays summary information related to a workload generator run.  The information is broken down into the various phases/steps that a generator may pass through in it's lifetime.
 
-#### `stests-ls-run-deploys`
+#### `stests-cache-view-run-deploys`
 
 Displays information about each deploy dispatched during the course of a workload generator run.
 
-#### `stests-ls-runs`
+#### `stests-cache-view-runs`
 
 Displays summary information regarding workload generator runs.  Such information includes number of dispatched deploys plus execution stats & status. 
+
+
+
+
+#### `stests-cache-view-contracts`
+
+Displays information related to all smart contracts registered with stests & stored on-chain.
+
+
+
 
 ## Cache Updating
 
@@ -132,18 +146,6 @@ Registers a node's bonding key for use in Proof-of-Stake related scenarios.
 #### `stests-set-node-status`
 
 Updates the operational status of a registered node.
-
-## Cache Housekeeping
-
-The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of workload generators that have been executed.  Some management commands exist to simplify cache housekeeping.   
-
-#### `stests-flush`
-
-Deletes orchestration & monitoring related cache data.
-
-#### `stests-flush-infra`
-
-Deletes infrastructure related cache data.  Execution of this command requires subsequent re-registration of network infrastructure.
 
 ## Launching Workload Generators
 
@@ -203,3 +205,6 @@ Display information pertaining to a block.
 
 Display information pertaining to a deploy.
 
+##### `stests-view-faucet-balance`
+
+Displays a network's faucet account balance.
