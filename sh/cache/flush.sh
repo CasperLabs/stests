@@ -6,6 +6,8 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 function main()
 {
+    log "cache :: flushing"
+
     # Flush partition: broker.
     source $STESTS_PATH_SH/cache/flush_partition.sh 0
 
@@ -24,7 +26,7 @@ function main()
     # Flush partition: workflow data.
     source $STESTS_PATH_SH/cache/flush_partition.sh 6
 
-    log "Cache successfully flushed - partitions"
+    log "cache :: flushed"
 }
 
 # Invoke entry point.

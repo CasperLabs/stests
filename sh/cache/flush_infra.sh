@@ -6,10 +6,9 @@ source $STESTS_PATH_SH/utils.sh
 # Main entry point.
 function main()
 {
-    # Flush partition: infra.
+    log "cache :: flushing infra ..."
     source $STESTS_PATH_SH/cache/flush_partition.sh 1
-
-    log "Cache successfully flushed - infra"
+    log "cache :: flushed infra"
 }
 
 # Invoke entry point.
