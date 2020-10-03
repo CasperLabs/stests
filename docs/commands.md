@@ -135,10 +135,10 @@ The stests library can be used to dispatch various **workloads** to target netwo
 
 Workload generators are executed from the command line:  
 
-- `stests-wg-X Y` 
+- `stests-wg-X --net Y` 
 
 - X = generator ID
-- Y = network-ID
+- Y = network-ID, e.g. nctl1
 
 For **some** workload generators the following set of **default** parameters are defineable:
 
@@ -179,11 +179,11 @@ Launches a workload generator that will perform a sequence of **wasm-less** on-c
 
 Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy.
 
-- `--key-algorithm`
+`--key-algorithm`
 	- Elliptic Curve Cryptography algorithm used when creating accounts.
 
-- `--transfers`
+`--transfers`
 	- Number of transfers to dispatch. Default=100.
 
-- `--amount`
+`--amount`
 	- Motes per transfer. Default=100000000.
