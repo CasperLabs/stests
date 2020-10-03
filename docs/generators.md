@@ -10,7 +10,10 @@ The stests tool is used to dispatch workloads to a target test network.  Workloa
 
 ## Default Parameters
 
-For **some** workload generators the following set of **default** parameters are defineable:
+Depending upon the type of generator being executed the following set of **default** parameters are defineable:
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
 
 - `--deploys-per-second`
 	- Max. number of deploys to dispatch per second.
@@ -37,7 +40,7 @@ For **some** workload generators the following set of **default** parameters are
 
 ## WG-100 - Balance Transfer (WASM-less)
 
-- `stests-wg-100` 
+- `stests-wg-100 --net X --transfers Y --amount Z` 
 
 Launches a workload generator that will perform a sequence of **wasm-less** on-chain balance transfers.
 
@@ -50,7 +53,7 @@ Launches a workload generator that will perform a sequence of **wasm-less** on-c
 
 ## WG-110 - Balance Transfer (WASM based)
 
-- `stests-wg-100` 
+- `stests-wg-110 --net X --transfers Y --amount Z` 
 
 Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy.
 
