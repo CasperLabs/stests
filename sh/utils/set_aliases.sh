@@ -20,7 +20,7 @@ function _exec_cmd()
 # ###############################################################
 
 alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh                                             
-alias stests-stack-view-vars=$STESTS_PATH_SH/stack/view_vars.sh
+alias stests-stack-vars=$STESTS_PATH_SH/stack/view_vars.sh
 
 # ###############################################################
 # ALIASES: interactive

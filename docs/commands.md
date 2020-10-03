@@ -15,7 +15,7 @@ Upon successful installation a set of stests commands are available for executio
 
 ## Updating Stack
 
-#### `stests-stack-view-vars`
+#### `stests-stack-vars`
 
 Displays in terminal full set of sests environment variables.
 
