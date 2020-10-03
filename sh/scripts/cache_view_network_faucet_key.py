@@ -7,7 +7,7 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Lists a network's faucet asymmetric key pair.")
+ARGS = argparse.ArgumentParser("Displays a network's faucet asymmetric key pair.")
 
 # CLI argument: network name.
 ARGS.add_argument(

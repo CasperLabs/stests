@@ -9,7 +9,7 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser(f"Lists a node's bonding asymmetric key pair.")
+ARGS = argparse.ArgumentParser(f"Displays a node's bonding asymmetric key pair.")
 
 # CLI argument: node reference.
 ARGS.add_argument(

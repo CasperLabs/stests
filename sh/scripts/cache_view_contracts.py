@@ -9,7 +9,7 @@ from stests.core.utils import args_validator
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Lists a network's client side contracts.")
+ARGS = argparse.ArgumentParser("Displays a network's client side contracts.")
 
 # CLI argument: network name.
 ARGS.add_argument(

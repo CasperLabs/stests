@@ -12,18 +12,29 @@ from stests.core.utils import cli as utils
 # CLI argument parser.
 ARGS = argparse.ArgumentParser(f"Register a node's bonding key with stests.")
 
-# CLI argument: node reference.
+# CLI argument: network name.
 ARGS.add_argument(
-    "node",
-    help="Node name: {network-type}{network-index}:{node-index}.",
-    type=args_validator.validate_node_name
+    "--net",
+    default="nctl1",
+    dest="network",
+    help="Network name {type}{id}, e.g. nctl1.",
+    type=args_validator.validate_network,
     )
 
-# Set CLI argument: private key in PEM format.
+# CLI argument: node index.
 ARGS.add_argument(
-    "pem_path",
-    help="Absolute path to the node's private key in PEM format.",
-    type=args_validator.validate_filepath
+    "--node",
+    dest="node",
+    help="Node index, e.g. 1.",
+    type=args_validator.validate_node_index
+    )
+
+# CLI argument: faucet secret key PEM file path.
+ARGS.add_argument(
+    "--path",
+    dest="pem_path",
+    help="Absolute path to the node's secret key in PEM format.",
+    type=args_validator.validate_filepath,
     )
 
 
@@ -34,8 +45,8 @@ def main(args):
 
     """
     # Unpack.
-    network_id = factory.create_network_id(args.node.split(':')[0])
-    node_id = factory.create_node_id(network_id, int(args.node.split(':')[-1]))
+    network_id = factory.create_network_id(args.network)
+    node_id = factory.create_node_id(network_id, int(args.node))
 
     # Pull.
     node = cache.infra.get_node_by_identifier(node_id)
@@ -63,7 +74,7 @@ def main(args):
     cache.infra.set_node(node)
 
     # Inform.
-    utils.log(f"Node {args.node} bonding key was successfully registered")
+    utils.log(f"Node {args.network}:{args.node} bonding key was successfully registered")
 
 
 # Entry point.

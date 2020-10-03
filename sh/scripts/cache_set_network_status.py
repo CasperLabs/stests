@@ -8,19 +8,22 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Informs stests of a mutation in the status of a network.")
+ARGS = argparse.ArgumentParser("Updates network status within stests cache.")
 
 # CLI argument: network name.
 ARGS.add_argument(
-    "network",
-    help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network
+    "--net",
+    default="nctl1",
+    dest="network",
+    help="Network name {type}{id}, e.g. nctl1.",
+    type=args_validator.validate_network,
     )
 
 # Set CLI argument: network status.
 ARGS.add_argument(
-    "status",
+    "--status",
     choices=[i.name.lower() for i in NetworkStatus],
+    dest="status",
     help="Network status.",
     type=str
     )

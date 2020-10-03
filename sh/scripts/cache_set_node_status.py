@@ -9,19 +9,30 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Informs stests of a mutation in the status of a node.")
+ARGS = argparse.ArgumentParser("Updates node status within stests cache.")
 
-# CLI argument: node reference.
+# CLI argument: network name.
 ARGS.add_argument(
-    "node",
-    help="Node name: {network-type}{network-index}:{node-index}.",
-    type=args_validator.validate_node_name
+    "--net",
+    default="nctl1",
+    dest="network",
+    help="Network name {type}{id}, e.g. nctl1.",
+    type=args_validator.validate_network,
+    )
+
+# CLI argument: node index.
+ARGS.add_argument(
+    "--node",
+    dest="node",
+    help="Node index, e.g. 1.",
+    type=args_validator.validate_node_index
     )
 
 # Set CLI argument: node status.
 ARGS.add_argument(
-    "status",
+    "--status",
     choices=[i.name.lower() for i in NodeStatus],
+    dest="status",
     help="Node status.",
     type=str
     )
@@ -34,8 +45,8 @@ def main(args):
 
     """
     # Unpack.
-    network_id = factory.create_network_id(args.node.split(':')[0])
-    node_id = factory.create_node_id(network_id, int(args.node.split(':')[-1]))
+    network_id = factory.create_network_id(args.network)
+    node_id = factory.create_node_id(network_id, int(args.node))
 
     # Pull.
     node = cache.infra.get_node_by_identifier(node_id)
@@ -49,7 +60,7 @@ def main(args):
     cache.infra.set_node(node)
 
     # Notify.
-    utils.log(f"Node {args.node} status was updated --> {node.status}")
+    utils.log(f"Node {args.network}:{args.node} status was updated --> {node.status}")
 
 
 # Entry point.

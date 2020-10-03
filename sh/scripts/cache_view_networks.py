@@ -9,7 +9,7 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Lists set of registered networks.")
+ARGS = argparse.ArgumentParser("Displays set of registered networks.")
 
 
 # Table columns.
