@@ -20,7 +20,7 @@ ARGS.add_argument(
     "--net",
     default="nctl1",
     dest="network",
-    help="Network name {type}{id}, e.g. lrt1.",
+    help="Network name {type}{id}, e.g. nctl1.",
     type=args_validator.validate_network,
     )
 

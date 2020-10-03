@@ -18,8 +18,10 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
 
     # network name.
     args.add_argument(
-        "network_name",
-        help="Network name {type}{id}, e.g. lrt1.",
+        "--net",
+        default="nctl1",
+        dest="network_name",
+        help="Network name {type}{id}, e.g. nctl1.",
         type=args_validator.validate_network,
         )
 
