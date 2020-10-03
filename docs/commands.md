@@ -164,10 +164,26 @@ For **some** workload generators the following set of **default** parameters are
 
 #### `stests-wg-100`
 
-Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer a WASM file will be dispatched to the network as part of the deploy.
+Launches a workload generator that will perform a sequence of **wasm-less** on-chain balance transfers.
 
 - `--key-algorithm`
 	- Elliptic Curve Cryptography algorithm used when creating accounts.
 
 - `--transfers`
-	- Number of runs to launch in parallel.
+	- Number of transfers to dispatch. Default=100.
+
+- `--amount`
+	- Motes per transfer. Default=100000000.
+
+#### `stests-wg-110`
+
+Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy.
+
+- `--key-algorithm`
+	- Elliptic Curve Cryptography algorithm used when creating accounts.
+
+- `--transfers`
+	- Number of transfers to dispatch. Default=100.
+
+- `--amount`
+	- Motes per transfer. Default=100000000.
