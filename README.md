@@ -53,21 +53,21 @@ Quick Start
 1.  Register network + faucet key:
 
     ```
-    stests-set-network poc1
-    stests-set-network-faucet-key poc1 path-to-faucet-private-key-pem-file
+    stests-cache-set-network poc1
+    stests-cache-set-network-faucet-key poc1 path-to-faucet-private-key-pem-file
     ```
 
 2.  Register nodes + node bonding keys:
 
     ```
-    stests-set-node poc1:1 {host}:{port} full
-    stests-set-node-bonding-key poc1:1 path-to-validator-private-key-pem-file
+    stests-cache-set-node poc1:1 {host}:{port} full
+    stests-cache-set-node-bonding-key poc1:1 path-to-validator-private-key-pem-file
 
-    stests-set-node poc1:2 {host}:{port} full
-    stests-set-node-bonding-key poc1:2 path-to-validator-private-key-pem-file
+    stests-cache-set-node poc1:2 {host}:{port} full
+    stests-cache-set-node-bonding-key poc1:2 path-to-validator-private-key-pem-file
 
-    stests-set-node poc1:3 {host}:{port} full
-    stests-set-node-bonding-key poc1:3 path-to-validator-private-key-pem-file
+    stests-cache-set-node poc1:3 {host}:{port} full
+    stests-cache-set-node-bonding-key poc1:3 path-to-validator-private-key-pem-file
     ```
 
 3.  Run a generator:

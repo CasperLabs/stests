@@ -15,6 +15,10 @@ Upon successful installation a set of stests commands are available for executio
 
 ## Updating Stack
 
+#### `stests-stack-view-vars`
+
+Displays in terminal fulls set of sests environment variables.
+
 #### `stests-stack-update`
 
 Updates the locally installed stests stack by:
@@ -123,15 +127,15 @@ Displays information related to all smart contracts registered with stests & sto
 
 Registers various smart contracts used by workload generators.  Contracts are installed on-chain.
 
-#### `stests-set-network`
+#### `stests-cache-set-network`
 
 Registers a network for testing.
 
-#### `stests-set-network-faucet-key`
+#### `stests-cache-set-network-faucet-key`
 
 Registers a network's faucet key.
 
-#### `stests-set-network-status`
+#### `stests-cache-set-network-status`
 
 Updates the operational status of a registered network.
 

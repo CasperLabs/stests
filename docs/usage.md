@@ -9,8 +9,8 @@ Prior to interacting with a test network one must register the network infrastru
 1.  Register network + faucet key:
 
     ```
-    stests-set-network poc1
-    stests-set-network-faucet-key poc1 path-to-faucet-private-key-pem-file
+    stests-cache-set-network poc1
+    stests-cache-set-network-faucet-key poc1 path-to-faucet-private-key-pem-file
     ```
 
 2.  Register nodes + node bonding keys:
