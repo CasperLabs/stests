@@ -3,7 +3,7 @@ import os
 
 
 # Default time after which transaction processing should be aborted.
-DEFAULT_TX_TIME_TO_LIVE = 3600000
+DEFAULT_TX_TIME_TO_LIVE = "3600000ms"
 
 # Default transaction gas price to apply.
 DEFAULT_TX_GAS_PRICE = 10

@@ -19,6 +19,12 @@ from stests.core.utils import cli as utils
 # CLI argument parser.
 ARGS = argparse.ArgumentParser("Register an nctl network with stests.")
 
+# Map: key prefix to algo.
+KEY_ALGO = {
+    "01": "ed25519",
+    "02": "secp256k1",
+}
+
 
 def main(args):
     """Entry point.
@@ -30,13 +36,13 @@ def main(args):
         _register(artefacts)
 
 
-def _get_account(accounts, pbk_hex):
+def _get_account(accounts, public_key, key_algo):
     """Returns matching entry in accounts.csv.
     
     """
-    for key, key_algo, initial_balance, stake_weight in accounts:
-        if key == pbk_hex:
-            return key, key_algo, initial_balance, int(stake_weight)
+    for key, initial_balance, stake_weight in accounts:
+        if key.startswith(f"0{key_algo.value}") and key.endswith(public_key):
+            return key, KEY_ALGO[key[0:2]], initial_balance, int(stake_weight)
 
 
 def _yield_artefacts():
@@ -213,14 +219,19 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
         )
 
     # Get staking weight from entry in accounts.csv.
-    _, _, _, stake_weight = _get_account(accounts, public_key)
+    _, _, _, stake_weight = _get_account(accounts, public_key, crypto.DEFAULT_KEY_ALGO)
+
+    # Destructure node host & port.
+    node_address = cfg['http_server']['address']
+    node_host = node_address.split(":")[0]
+    node_port = int(node_address.split(":")[1])
 
     # Set node.
     node = factory.create_node(
-        host=cfg['http_server']['bind_interface'],
+        host=node_host,
         index=index,  
         network_id=factory.create_network_id(network.name_raw),
-        port=cfg['http_server']['bind_port'],
+        port=node_port,
         typeof=NodeType.FULL if stake_weight > 256 else NodeType.READ_ONLY,
         weight=stake_weight,
     )
