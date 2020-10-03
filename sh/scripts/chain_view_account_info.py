@@ -10,7 +10,7 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays an on-chain account information.")
+ARGS = argparse.ArgumentParser("Displays on-chain account information.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -21,10 +21,11 @@ ARGS.add_argument(
     type=args_validator.validate_network,
     )
 
-# CLI argument: network name.
+# CLI argument: account identifer.
 ARGS.add_argument(
-    "account_id",
-    help="Network account identifier (hex format), e.g. 78d38ce2ffab138bfa972f1d69e3aad7327fc0b1bcf89a5b0ca89475c2f49f43.",
+    "--account",
+    dest="account_id",
+    help="Network account id (hex format), e.g. 78d38ce2ffab138bfa972f1d69e3aad7327fc0b1bcf89a5b0ca89475c2f49f43.",
     type=str
     )
 

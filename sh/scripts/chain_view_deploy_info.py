@@ -9,7 +9,7 @@ from stests.core.utils import args_validator
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays deploy information return from a chain query.")
+ARGS = argparse.ArgumentParser("Displays deploy information returned by a chain query.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -22,7 +22,9 @@ ARGS.add_argument(
 
 # CLI argument: run type.
 ARGS.add_argument(
+    "--deploy-hash",
     "deploy_hash",
+    dest="",
     help="Deploy hash.",
     type=str,
     )

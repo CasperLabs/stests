@@ -9,7 +9,7 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Lists a network's faucet balance.")
+ARGS = argparse.ArgumentParser("Displays a network's faucet balance.")
 
 # CLI argument: network name.
 ARGS.add_argument(

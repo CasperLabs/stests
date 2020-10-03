@@ -12,7 +12,7 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Upload a smart contract to stests.")
+ARGS = argparse.ArgumentParser("Uploads smart contracts used in testing to both chain & stests.")
 
 # CLI argument: network name.
 ARGS.add_argument(

@@ -120,7 +120,7 @@ Registers various smart contracts used by workload generators.  Contracts are in
 
 Registers a network for testing.
 
-#### `stests-cache-set-network-faucet-key`
+#### `stests-cache-set-faucet-key`
 
 Registers a network's faucet key.
 

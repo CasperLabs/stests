@@ -9,7 +9,7 @@ from stests.core.utils import args_validator
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays block information pulled from chain.")
+ARGS = argparse.ArgumentParser("Displays block information returned by a chain query.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -20,12 +20,14 @@ ARGS.add_argument(
     type=args_validator.validate_network,
     )
 
-# CLI argument: run type.
+# CLI argument: block hash.
 ARGS.add_argument(
-    "block_hash",
+    "--block-hash",
+    dest="block_hash",
     help="Block hash.",
     type=str,
     )
+
 
 def main(args):
     """Entry point.

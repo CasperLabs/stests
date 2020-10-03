@@ -24,14 +24,16 @@ ARGS.add_argument(
 
 # CLI argument: run type.
 ARGS.add_argument(
-    "run_type",
+    "--run-type",
+    dest="run_type",
     help="Generator type - e.g. wg-100.",
     type=args_validator.validate_run_type,
     )
 
 # CLI argument: run index.
 ARGS.add_argument(
-    "run_index",
+    "--run",
+    dest="run_index",
     help="Run identifier.",
     type=args_validator.validate_run_index,
     )

@@ -10,25 +10,37 @@ from stests.core.utils import cli as utils
 # CLI argument parser.
 ARGS = argparse.ArgumentParser(f"Upload node information to stests.")
 
-# CLI argument: node reference.
+# CLI argument: network name.
 ARGS.add_argument(
-    "node",
-    help="Node name: {network-type}{network-index}:{node-index}.",
-    type=args_validator.validate_node_name
+    "--net",
+    default="nctl1",
+    dest="network",
+    help="Network name {type}{id}, e.g. nctl1.",
+    type=args_validator.validate_network,
     )
 
-# Set CLI argument: node host.
+# CLI argument: node index.
 ARGS.add_argument(
-    "address",
+    "--node",
+    dest="node",
+    help="Node index, e.g. 1.",
+    type=args_validator.validate_node_index
+    )
+
+# Set CLI argument: node address.
+ARGS.add_argument(
+    "--address",
     default="localhost",
+    dest="address",
     help="Node public network address: {host}:{port}.",
     type=args_validator.validate_node_address
     )
 
 # Set CLI argument: node type.
 ARGS.add_argument(
-    "typeof",
+    "--type",
     choices=[i.name.lower() for i in NodeType],
+    dest="typeof",
     help="Node type.",
     type=str
     )
@@ -42,8 +54,8 @@ def main(args):
     """
     # Unpack.
     host = args.address.split(':')[0]
-    index = int(args.node.split(':')[-1])
-    network=args.node.split(':')[0]
+    index = int(args.node)
+    network = args.network
     port = int(args.address.split(':')[-1])
     typeof = NodeType[args.typeof.upper()]
 
@@ -60,7 +72,7 @@ def main(args):
     cache.infra.set_node(node)
 
     # Notify.
-    utils.log(f"Node {args.node} was successfully registered")
+    utils.log(f"Node {args.network}:{args.node} was successfully registered")
 
 
 # Entry point.
