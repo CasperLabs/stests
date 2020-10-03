@@ -221,8 +221,7 @@ Workload generators are executed from the command line:
 
 - `stests-wg-X --net Y` 
 
-- X = generator ID
-- Y = network-ID, e.g. nctl1
+- X = generator ID, Y = network-ID, e.g. nctl1
 
 For **some** workload generators the following set of **default** parameters are defineable:
 
