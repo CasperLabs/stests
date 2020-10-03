@@ -31,7 +31,7 @@ class Arguments:
 
 
 # Set command line arguments.
-ARGS = get_argparser(f"Executes pure transfers per second generator.")
+ARGS = get_argparser(f"Wasm based transfers generator - wasm is dispatched with each transfer.")
 
 # CLI argument: # transfers to dispatch.
 ARGS.add_argument(

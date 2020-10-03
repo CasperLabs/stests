@@ -71,84 +71,76 @@ Deletes infrastructure related cache data.  **Execution of this command requires
 
 ## Cache Querying
 
-#### `stests-cache-view-contracts --net XXX`
+#### `stests-cache-view-bonding-key --net X --node Y`
 
-Displays information related to all smart contracts registered with stests & stored on-chain.
+Displays a node's bonding asymmetric ECC key pair.
+
+#### `stests-cache-view-contracts --net X`
+
+Displays information related to test smart contracts registered with stests & stored on-chain.
+
+#### `stests-cache-view-faucet-key --net X`
+
+Displays a network's faucet account ECC key pair.
 
 #### `stests-cache-view-networks`
 
 Displays information related to the set of networks registered with stests.
 
-#### `stests-cache-view-network-faucet-key --net XXX`
-
-Displays a network's faucet account ECC key pair.
-
 #### `stests-cache-view-nodes`
 
 Displays set of nodes registered with stests for a particular network.
 
-#### `stests-cache-view-node-bonding-key`
-
-Displays a node's bonding ECC key pair.
-
-#### `stests-cache-view-run`
+#### `stests-cache-view-run --net X --type Y --run Z`
 
 Displays summary information related to a workload generator run.  The information is broken down into the various phases/steps that a generator may pass through in it's lifetime.
 
-#### `stests-cache-view-run-deploys`
+#### `stests-cache-view-run-deploys --net X --type Y --run Z`
 
 Displays information about each deploy dispatched during the course of a workload generator run.
 
-#### `stests-cache-view-runs`
+#### `stests-cache-view-runs --net X --type Y --run Z`
 
 Displays summary information regarding workload generator runs.  Such information includes number of dispatched deploys plus execution stats & status. 
 
-
-
-
-
-
-
-
 ## Cache Updating
 
-#### `stests-set-contracts`
-
-Registers various smart contracts used by workload generators.  Contracts are installed on-chain.
-
-#### `stests-cache-set-network`
-
-Registers a network for testing.
-
-#### `stests-cache-set-faucet-key`
-
-Registers a network's faucet key.
-
-#### `stests-cache-set-network-status`
-
-Updates the operational status of a registered network.
-
-#### `stests-set-node`
-
-Registers a network node.  When registering the node's mode must be specified as this will affect how stests will interact with the node.
-
-#### `stests-set-node-bonding-key`
+#### `stests-set-bonding-key --net X --node Y --path Z`
 
 Registers a node's bonding key for use in Proof-of-Stake related scenarios.
 
-#### `stests-set-node-status`
+#### `stests-cache-set-faucet-key --net X --path Y`
+
+Registers a network's faucet key.
+
+#### `stests-cache-set-network --net X`
+
+Registers a network for testing.
+
+#### `stests-cache-set-network-status --net X --status Y`
+
+Updates the operational status of a registered network.
+
+#### `stests-set-node --net X --node Y --address Z --type ZZ`
+
+Registers a network node.  When registering the node's mode must be specified as this will affect how stests will interact with the node.
+
+#### `stests-set-node-status --net X --node Y --staus Z`
 
 Updates the operational status of a registered node.
 
 ## Launching Workload Generators
 
-The stests application can be used to dispatch various workloads to a target network.  Such workloads may test scenarios pertaining to accounts, smart-contracts, and/or network infrastructure.    Workloads are executed from the command line:
+The stests library can be used to dispatch various **workloads** to target networks.  Workloads test scenarios pertaining to accounts, smart-contracts, and/or network infrastructure.  
 
-- `stests-wg-XXX YYY` 
-- XXX = generator ID
-- YYY = network-ID
+Workload generators are executed from the command line:  
 
-For each workload generator a set of default parameters may be defined:
+- `stests-wg-X Y` 
+
+- X = generator ID
+- Y = network-ID
+
+For **some** workload generators the following set of **default** parameters are defineable:
 
 - `--deploys-per-second`
 	- Max. number of deploys to dispatch per second.
@@ -158,46 +150,24 @@ For each workload generator a set of default parameters may be defined:
 	- If a generator is launched in sequential mode AND is instructed to loop N times, then run N+1 will only be launched if run N successfully completed.
 	- If a generator is launched in periodical mode AND is instructed to loop N times, then run N+1 will be scheduled for launch when run N starts.  Thus even if run N fails, run N+1 will be started.
 
-- `--node`
-	- Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.
-
 - `--loop`
 	- Number of times to loop when running the generator multiple times.
 
 - `--loop-interval`
 	- Interval in seconds between loops.
 
+- `--node`
+	- Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.
+
 - `--parallel`
-	- "Number of runs to launch in parallel.
-
-#### `stests-wg-004`
-
-Disconnects or reconnects a node from/to a network.  Does this by executing RunDeck API within underlying SRE infrastructure.
+	- Number of runs to launch in parallel.
 
 #### `stests-wg-100`
 
 Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer a WASM file will be dispatched to the network as part of the deploy.
 
-#### `stests-wg-110`
+- `--key-algorithm`
+	- Elliptic Curve Cryptography algorithm used when creating accounts.
 
-Launches a workload generator that will perform a sequence of on-chain balance transfers.  For each transfer an on-chain WASM contract is referenced via it's hash.
-
-## Viewing On-Chain Information
-
-On-chain information can be queried, the query result is formatted and is displayed in the user's terminal session.  Binary information such as public keys, block hashes ...etc, are displayed in hexadecimal format.
-
-#### `stests-view-balance`
-
-Displays an account's on-chain balance or zero if the chain does not exist.
-
-#### `stests-view-block-info`
-
-Display information pertaining to a block.
-
-#### `stests-view-deploy-info`
-
-Display information pertaining to a deploy.
-
-##### `stests-view-faucet-balance`
-
-Displays a network's faucet account balance.
+- `--transfers`
+	- Number of runs to launch in parallel.

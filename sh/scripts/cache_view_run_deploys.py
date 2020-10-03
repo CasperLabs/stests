@@ -26,7 +26,7 @@ ARGS.add_argument(
 
 # CLI argument: run type.
 ARGS.add_argument(
-    "--run-type",
+    "--type",
     dest="run_type",
     help="Generator type - e.g. wg-100.",
     type=args_validator.validate_run_type,

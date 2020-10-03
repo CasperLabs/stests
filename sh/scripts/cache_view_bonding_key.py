@@ -9,7 +9,7 @@ from stests.core.utils import cli as utils
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser(f"Displays a node's bonding asymmetric key pair.")
+ARGS = argparse.ArgumentParser("Displays a node's bonding asymmetric ECC key pair.")
 
 # CLI argument: network name.
 ARGS.add_argument(

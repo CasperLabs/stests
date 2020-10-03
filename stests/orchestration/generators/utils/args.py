@@ -38,7 +38,11 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
     args.add_argument(
         "--execution-mode",
         dest="execution_mode",
-        help="Generator execution mode - sequential | periodic.",
+        help="""Generator execution mode - sequential | periodic.  
+        
+        If execution mode = sequential AND loop > 0, then run N+1 will only be launched if run N successfully completed.
+        If execution mode = periodical AND loop > 0, then run N+1 will be scheduled for launch when run N starts (thus even if run N fails, run N+1 will be started).
+        """,
         type=args_validator.validate_execution_mode,
         default=ExecutionMode.SEQUENTIAL.name.lower(),
         )

@@ -1,7 +1,7 @@
 stests
 ===============
 
-Casper Labs System Test Platform
+Casper Network System Test Platform
 
 
 What is stests ?
@@ -13,7 +13,7 @@ The stests library is a CSPR network system testing tool.
 Why stests ?
 --------------------------------------
 
-Launching a blockchain network within a hostile permission-less setting is non-trivial & risk laden.  The elevated risk profile demands sophistication in respect of system testing.  One pillar of such testing is a test platform, i.e. stests, whose underlying strategic objective is to progressively constrain network behaviour to that of a successful production setting, i.e. main net.
+Launching a blockchain network within a hostile permission-less setting is non-trivial.  The elevated risk burden demands a multi-faceted and sophisticated approach in respect of system testing.  One pillar of such system testing is stests, a library desiged to support progressively constraining network behaviour to that of a successful production setting, i.e. main net.
 
 
 Who uses stests ?
