@@ -125,15 +125,14 @@ function notify()
 	echo "      source ./activate"
 	echo ""
 	echo "3. Register a network & node:"
-	echo "      stests-cache-set-network loc1"
-	echo "      stests-cache-set-node loc1:1 localhost:40400 full"
+	echo "      stests-cache-set-network --net poc1"
+	echo "      stests-cache-set-node --net poc1 --node 1 --address localhost:40400 --type full"
 	echo ""
 	echo "4. Run workers"
-	echo "      stests-workers-run"
+	echo "      stests-workers"
 	echo ""
 	echo "4. Run workload generator"
-	echo "      stests-wg-100 --network loc1 --run 1 --user-accounts 10"
-	echo "      stests-wg-200 --network loc1 --run 1 --user-accounts 10"
+	echo "      stests-wg-100 --net poc1 --transfers 100 --amount 100000000"
 	log_banner
 }
 
