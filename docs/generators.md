@@ -12,9 +12,6 @@ The stests tool is used to dispatch workloads to a target test network.  Workloa
 
 Depending upon the type of generator being executed the following set of **default** parameters are defineable:
 
-- `--net`
-	- Network name {type}{id}, e.g. nctl1.
-
 - `--deploys-per-second`
 	- Max. number of deploys to dispatch per second.
 
@@ -32,6 +29,9 @@ Depending upon the type of generator being executed the following set of **defau
 - `--loop-interval`
 	- Interval in seconds between loops.
 
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
 - `--node`
 	- Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.
 
@@ -42,7 +42,7 @@ Depending upon the type of generator being executed the following set of **defau
 
 - `stests-wg-100 --net X --transfers Y --amount Z` 
 
-Launches a workload generator that will perform a sequence of **wasm-less** on-chain balance transfers.
+Launches a workload generator that will perform a sequence of **wasm-less** on-chain balance transfers.  Also see default parameters above.
 
 - `--net`
 	- Network name {type}{id}, e.g. nctl1.
@@ -58,7 +58,7 @@ Launches a workload generator that will perform a sequence of **wasm-less** on-c
 
 - `stests-wg-110 --net X --transfers Y --amount Z` 
 
-Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy.
+Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy.  Also see default parameters above.
 
 - `--net`
 	- Network name {type}{id}, e.g. nctl1.
