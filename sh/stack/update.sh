@@ -39,7 +39,7 @@ update_env_vars()
 # Update virtual environment.
 update_venv()
 {
-    log "stack update :: updating python venv"
+    log "stack update :: updating python3 venv"
     cd $STESTS_HOME
     pipenv sync
 }

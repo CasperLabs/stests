@@ -13,7 +13,7 @@ function main()
     source $STESTS_PATH_SH/cache/flush_infra.sh
 
     pushd $STESTS_HOME
-    pipenv run python $STESTS_PATH_SH_SCRIPTS/cache_register_nctl.py
+    pipenv run python3 $STESTS_PATH_SH_SCRIPTS/cache_register_nctl.py
     popd -1    
 
     log "nctl :: registered assets"

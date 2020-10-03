@@ -11,7 +11,7 @@ function _exec_cmd()
 
     # Execute script.
     pushd $STESTS_HOME
-    pipenv run python $s_path $s_args
+    pipenv run python3 $s_path $s_args
     popd -1
 }
 

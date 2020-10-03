@@ -56,7 +56,7 @@ def _get_faucet(path_assets: pathlib.Path) -> typing.Tuple[str, crypto.KeyAlgori
     """Returns faucet information.
     
     """
-    path_sk_pem = path_assets / faucet / "secret_key.pem"
+    path_sk_pem = path_assets / "faucet" / "secret_key.pem"
     if not path_sk_pem.exists():
         raise ValueError(f"faucet secret_key.pem file not found: {path_sk_pem}")
 
