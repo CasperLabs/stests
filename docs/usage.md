@@ -9,21 +9,21 @@ Prior to interacting with a test network one must register the network infrastru
 1.  Register network + faucet key:
 
     ```
-    stests-cache-set-network poc1
-    stests-cache-set-faucet-key poc1 path-to-faucet-private-key-pem-file
+    stests-cache-set-network --net poc1
+    stests-cache-set-faucet-key --net poc1 --path PATH_TO_SECRET_KEY
     ```
 
 2.  Register nodes + node bonding keys:
 
     ```
-    stests-set-node poc1:1 {host}:{port} full
-    stests-set-node-bonding-key poc1:1 path-to-validator-private-key-pem-file
+    stests-cache-set-node --net poc1 --node 1 --address {host}:{port} --type full
+    stests-cache-set-bonding-key --net poc1 --node 1 --path PATH_TO_SECRET_KEY
 
-    stests-set-node poc1:2 {host}:{port} full
-    stests-set-node-bonding-key poc1:2 path-to-validator-private-key-pem-file
+    stests-cache-set-node --net poc1 --node 2 --address {host}:{port} --type full
+    stests-cache-set-bonding-key --net poc1 --node 2 --path PATH_TO_SECRET_KEY
 
-    stests-set-node poc1:3 {host}:{port} full
-    stests-set-node-bonding-key poc1:3 path-to-validator-private-key-pem-file
+    stests-cache-set-node --net poc1 --node 3 --address {host}:{port} --type full
+    stests-cache-set-bonding-key --net poc1 --node 3 --path PATH_TO_SECRET_KEY
     ```
 
 ## Launching Workers
@@ -36,7 +36,7 @@ Once the network is registered you can launch stests monitoring & orchestration 
 	stests-workers
 	```
 
-2.  From time to time it is a good idea to restart the workers so that the stests cache resources can be reset.
+2.  From time to time it is a good idea to restart the workers so that stests cache resources can be reset.
 
 	```
 	stests-workers-restart
@@ -56,30 +56,4 @@ Once the network is registered you can launch stests monitoring & orchestration 
 
 ## Launching Workload Generators
 
-Once the network is registered and workers are up & running, you can proceed to run workload generators.  Each generator is numbered and can be executed as follows:
-
-- `stests-wg-XXX YYY` 
-- XXX = generator ID
-- YYY = network-ID
-
-Whilst each workload generator is associated with it's own set of parameters, each generator is also associated with a default set of parameters:
-
-- `--deploys-per-second`
-	- Max. number of deploys to dispatch per second.
-
-- `--execution-mode`
-	- Generator execution mode - sequential | periodical
-	- If a generator is launched in sequential mode AND is instructed to loop N times, then run N+1 will only be launched if run N successfully completed.
-	- If a generator is launched in periodical mode AND is instructed to loop N times, then run N+1 will be scheduled for launch when run N starts.  Thus even if run N fails, run N+1 will be started.
-
-- `--node`
-	- Node index - must be between 1 and 999. If specified deploys are dispatched to this node only, otherwise deploys are dispatched to random nodes.
-
-- `--loop`
-	- Number of times to loop when running the generator multiple times.
-
-- `--loop-interval`
-	- Interval in seconds between loops.
-
-- `--parallel`
-	- "Number of runs to launch in parallel.
+Workload generator commands are documented [here](generators.md).
