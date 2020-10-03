@@ -17,11 +17,11 @@ Upon successful installation a set of stests commands are available for executio
 
 #### `stests-stack-view-vars`
 
-Displays in terminal fulls set of sests environment variables.
+Displays in terminal full set of sests environment variables.
 
 #### `stests-stack-update`
 
-Updates the locally installed stests stack by:
+Updates installed stests stack by:
 
 - pulling latest changes from stests GitHub repo;
 - updating environment variables;
@@ -33,41 +33,29 @@ The stests worker processes can be run in daemon mode.  Process behaviour can be
 
 - `$HOME/.casperlabs-stests/ops/config/supervisord.conf`
 
+#### `stests-interactive`
+
+Runs worker processes in a single interactive session.  Interactive mode is useful in development & smokescreen scenarios.
+
 #### `stests-workers` | `stests-workers-start`
 
-Starts stests processes in daemon mode.  
+Starts stests worker processes in daemon mode.  
 
 #### `stests-workers-reload`
 
-Stops stests processes, pauses for 3 seconds, and then restarts processes.  **Does not flush cache**.  
+Stops stests worker processes, pauses for 3 seconds, and then restarts processes.  **Does not flush cache**.  
 
 #### `stests-workers-restart`
 
-Stops stests processes, pauses for 3 seconds, flushes cache, and then restarts processes. 
+Stops stests worker processes, pauses for 3 seconds, flushes cache, and then restarts processes. 
 
 #### `stests-workers-status`
 
-Displays in terminal the current status of stests processes.
+Displays in terminal current status of stests processes.
 
 #### `stests-workers-stop`
 
-Stops all stests processes currently running in daemon mode.
-
-## Controlling Interactive Sessions
-
-Running orchestration & monitoring processes in interactive mode is useful in development & smokescreen scenarios.
-
-#### `stests-interactive`
-
-Runs both monitoring & orchestration processes in a single interactive session.
-
-#### `stests-interactive-monitoring`
-
-Runs monitoring process in a single interactive session. 
-
-#### `stests-interactive-orchestration`
-
-Runs orchestration process in a single interactive session.
+Stops all stests worker processes currently running in daemon mode.
 
 ## Cache Housekeeping
 
