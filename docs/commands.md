@@ -59,7 +59,7 @@ Stops all stests worker processes currently running in daemon mode.
 
 ## Cache Housekeeping
 
-The stests cache is implemented using Redis.  It is partitioned into 3 sub-caches: orchestration, monitoring & infrastructure.  The cache size will grow in proportion to the amount of time a target network is monitored and the number of workload generators that have been executed.  Some management commands exist to simplify cache housekeeping.   
+The stests cache is implemented using Redis.  It is partitioned into sub-caches: orchestration, monitoring & infrastructure.  The cache size grows in proportion to the amount of time a target network is monitored and the number of executed workload generators.  The following commands simplify cache housekeeping.   
 
 #### `stests-cache-flush`
 
@@ -67,7 +67,7 @@ Deletes orchestration & monitoring related cache data.
 
 #### `stests-cache-flush-infra`
 
-Deletes infrastructure related cache data.  Execution of this command requires subsequent re-registration of network infrastructure.
+Deletes infrastructure related cache data.  **Execution of this command requires subsequent re-registration of network infrastructure**.
 
 ## Cache Querying
 
