@@ -13,11 +13,12 @@ ARGS = argparse.ArgumentParser("Lists a network's client side contracts.")
 
 # CLI argument: network name.
 ARGS.add_argument(
-    "network",
-    help="Network name {type}{id}, e.g. lrt1.",
-    type=args_validator.validate_network
+    "--net",
+    default="nctl1",
+    dest="network",
+    help="Network name {type}{id}, e.g. nctl1.",
+    type=args_validator.validate_network,
     )
-
 
 # Table columns.
 COLS = [

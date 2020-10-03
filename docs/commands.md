@@ -47,7 +47,7 @@ Stops stests worker processes, pauses for 3 seconds, and then restarts processes
 
 #### `stests-workers-restart`
 
-Stops stests worker processes, pauses for 3 seconds, flushes cache, and then restarts processes. 
+Stops stests worker processes, pauses for 3 seconds, **flushes cache**, and then restarts processes. 
 
 #### `stests-workers-status`
 
@@ -71,11 +71,15 @@ Deletes infrastructure related cache data.  **Execution of this command requires
 
 ## Cache Querying
 
+#### `stests-cache-view-contracts --net XXX`
+
+Displays information related to all smart contracts registered with stests & stored on-chain.
+
 #### `stests-cache-view-networks`
 
 Displays information related to the set of networks registered with stests.
 
-#### `stests-cache-view-network-faucet-key`
+#### `stests-cache-view-network-faucet-key --net XXX`
 
 Displays a network's faucet account ECC key pair.
 
@@ -102,9 +106,6 @@ Displays summary information regarding workload generator runs.  Such informatio
 
 
 
-#### `stests-cache-view-contracts`
-
-Displays information related to all smart contracts registered with stests & stored on-chain.
 
 
 

@@ -33,7 +33,7 @@ def main(args):
 
     balance = clx.get_account_balance(network_id, network.faucet.account_id)
 
-    utils.log(f"""NETWORK: {network.name} -> faucet balance = {balance}""")
+    utils.log(f"NETWORK: {network.name} -> faucet balance = {balance}")
 
 
 # Entry point.
