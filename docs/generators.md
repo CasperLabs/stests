@@ -44,6 +44,9 @@ Depending upon the type of generator being executed the following set of **defau
 
 Launches a workload generator that will perform a sequence of **wasm-less** on-chain balance transfers.
 
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+	
 - `--transfers`
 	- Number of transfers to dispatch. Default=100.
 
@@ -56,6 +59,9 @@ Launches a workload generator that will perform a sequence of **wasm-less** on-c
 - `stests-wg-110 --net X --transfers Y --amount Z` 
 
 Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
 
 - `--transfers`
 	- Number of transfers to dispatch. Default=100.
