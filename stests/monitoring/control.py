@@ -33,9 +33,7 @@ def do_start_monitoring():
     """Starts monitoring of registered networks.
     
     """
-    # Escape if node implementation being tested is rust.
-    if get_var("NODE_IMPLEMENTATION", "SCALA") != "SCALA":
-        return
+    raise NotImplementedError("Rust node event strrream is not at present being consumed")
     
     # TODO: reduce number of instantiated monitors.
     for network in cache.infra.get_networks():
