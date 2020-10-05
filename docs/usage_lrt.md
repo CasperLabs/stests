@@ -77,4 +77,4 @@ stests-wg-110 \
 
 ## ELK integration
 
-The stests library emits various [events](../stests/events.py) of interest, some of which are related to the internal dynamics of stests itself, whilst others are related to chain activity.  The stests logging events are emitted as JSON blobs & are comsumable by logstash.  To instruct stests to push logs to logstash you can edit the `STESTS_LOGGING_LOGSTASH` prefixed stests environment variables file (see `$HOME/.casperlabs-stests/vars`).  This assumes that you have corectly setup the local logstash daemon.
+The stests library emits various [events](../stests/events.py#L11-L63) of interest, some of which are related to the internal dynamics of stests itself, whilst others are related to chain activity.  The stests logging events are emitted as JSON blobs & are comsumable by logstash.  To instruct stests to push logs to logstash you can edit the `STESTS_LOGGING_LOGSTASH` prefixed stests environment variables file (see `$HOME/.casperlabs-stests/vars`).  This assumes that you have corectly setup the local logstash daemon.
