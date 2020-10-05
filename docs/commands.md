@@ -15,6 +15,22 @@ Upon successful installation a set of stests commands are available for executio
 
 Listed below are the full set of supported commands with the exception of workload generator commands which are documented [here](generators.md).
 
+## Registering Assets
+
+Prior to interacting with a test network one must register various network assets infrastructure with stests, i.e. registering the network itself plus it's associated set of nodes.  Registration is supported within 2 operational contexts: 
+
+- when running stests alongside nctl;
+
+- when running stests within a Casper Labs SRE setting. 
+
+#### `stests-register-nctl`
+
+Registers Casper Labs NCTL network assets.  
+
+#### `stests-register-lrt`
+
+Registers Casper Labs LRT network assets.  See (LRT usage)[usage_lrt.md] for further details.
+
 ## Updating Stack
 
 #### `stests-stack-vars`

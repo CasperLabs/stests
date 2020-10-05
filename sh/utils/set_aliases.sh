@@ -63,7 +63,7 @@ alias stests-cache-set-node='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_node.py
 alias stests-cache-set-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_node_status.py'
 
 alias stests-cache-view-bonding-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_bonding_key.py'
-alias stests-cache-view-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_contracts.py'
+# alias stests-cache-view-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_contracts.py'                     # TODO: reinstate when client is updated
 alias stests-cache-view-faucet-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_faucet_key.py'
 alias stests-cache-view-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_networks.py'
 alias stests-cache-view-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_nodes.py'

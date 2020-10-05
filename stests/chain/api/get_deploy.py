@@ -5,6 +5,7 @@ from stests.chain import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Node
 from stests.core.types.infra import Network
+from stests.core.utils import paths
 
 
 
@@ -22,8 +23,10 @@ def execute(network: Network, node: Node, deploy_hash: str) -> str:
     :returns: Hexadecimal representation of dispatched transaction hash.
 
     """
+    binary_path = paths.get_path_to_client(network)
+
     response = subprocess.run([
-        constants.PATH_TO_BINARY, _CLIENT_METHOD,
+        binary_path, _CLIENT_METHOD,
         deploy_hash,
         "--node-address", f"http://{node.address}",
         ],

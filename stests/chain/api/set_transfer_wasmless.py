@@ -6,6 +6,7 @@ from stests.chain import utils
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
+from stests.core.utils import paths
 from stests.events import EventType
 
 
@@ -39,8 +40,10 @@ def execute(
     :returns: 3 member tuple -> (deploy_hash, dispatch_duration, dispatch_attempts)
 
     """
+    binary_path = paths.get_path_to_client(network)
+
     cli_response = subprocess.run([
-        constants.PATH_TO_BINARY, _CLIENT_METHOD,
+        binary_path, _CLIENT_METHOD,
         "--amount", str(amount),
         "--chain-name", network.chain_name,
         "--gas-price", str(tx_gas_price),
