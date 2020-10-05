@@ -50,7 +50,7 @@ configs/{NODE-IP}/secret_key.pem
 faucet/secret_key.pem
 ```
 
-Once the network assets arre in place then simply run the `stests-register-lrt` command.  This will reset the stests infrastructure cache and [process the assets accordingly](../sh/scripts/cache_register_lrt.py).
+Once the network assets are in place then simply run the `stests-register-lrt` command.  This will reset the stests infrastructure cache and [process the assets accordingly](../sh/scripts/cache_register_lrt.py).
 
 ## Post Registration
 
@@ -66,7 +66,7 @@ stests-wg-100 \
 	--transfers 1000 \
 	--deploys-per-second 0.01
 
-# Run wasm based trransfers (wasm file perr transfer).
+# Run wasm based transfers (wasm file per transfer).
 stests-wg-110 \
 	--net lrtX \
 	--transfers 1000 \
@@ -77,4 +77,4 @@ stests-wg-110 \
 
 ## ELK integration
 
-The stests library emits various [events](../stests/events.py) of interest, some of which are related to the internal dynamics of stests itself, whilst others are related to chain activity.  The stests logging events are emitted as JSON blobs & are comsumable by logstash.  To instrruct stests to push logs to logstash you can edit the `STESTS_LOGGING_LOGSTASH` prefixed stests environment variables file (see `$HOME/.casperlabs-stests/vars`).  This assumes that you have correctly setup the local logstash daemon.
+The stests library emits various [events](../stests/events.py) of interest, some of which are related to the internal dynamics of stests itself, whilst others are related to chain activity.  The stests logging events are emitted as JSON blobs & are comsumable by logstash.  To instruct stests to push logs to logstash you can edit the `STESTS_LOGGING_LOGSTASH` prefixed stests environment variables file (see `$HOME/.casperlabs-stests/vars`).  This assumes that you have corectly setup the local logstash daemon.
