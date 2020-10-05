@@ -12,7 +12,7 @@ Within a Casper Labs LRT setting it is assumed that each LRT is associated with 
 
 ### Installation
 
-Once pre-requisites are in place then stests can be installed via the (installer)[../installer]:
+Once pre-requisites are in place then stests can be installed via the [installer](../installer):
 
 ```
 curl https://raw.githubusercontent.com/CasperLabs/stests/master/installer | bash
@@ -23,13 +23,13 @@ The side effects of running the installer are as follows:
 - stests repo cloned to:
 	- `$HOME/casperlabs/stests`
 
-- stests (default environment variables file)[../resources/stests_vars.sh] copied to:
+- stests [default environment variables file](../resources/stests_vars.sh) copied to:
 	- `$HOME/.casperlabs-stests/vars`
 
-- stests (default supervisord config file)[../resources/stests_vars.sh] copied to:
+- stests [default supervisord config file](../resources/stests_vars.sh) copied to:
 	- `$HOME/.casperlabs-stests/ops/config`
 
-- `$HOME/bashrc` file updated so as to activate stests (commands)[commands.md] within terminal sessions. 
+- `$HOME/bashrc` file updated so as to activate stests [commands](commands.md) within terminal sessions. 
 
 - stests python virtual environment crerated using pipenv.
 
@@ -50,7 +50,7 @@ configs/{NODE-IP}/secret_key.pem
 faucet/secret_key.pem
 ```
 
-Once the network assets arre in place then simply run the `stests-register-lrt` command.  This will reset the stests infrastructure cache and (process the assets accordingly)[../sh/scripts/cache_register_lrt.py].
+Once the network assets arre in place then simply run the `stests-register-lrt` command.  This will reset the stests infrastructure cache and [process the assets accordingly](../sh/scripts/cache_register_lrt.py).
 
 ## Post Registration
 
@@ -77,4 +77,4 @@ stests-wg-110 \
 
 ## ELK integration
 
-The stests library emits various (events)[../stests/events.py] of interest, some of which are related to the internal dynamics of stests itself, whilst others are related to chain activity.  The stests logging events are emitted as JSON blobs & are comsumable by logstash.  To instrruct stests to push logs to logstash you can edit the `STESTS_LOGGING_LOGSTASH` prefixed stests environment variables file (see `$HOME/.casperlabs-stests/vars`).  This assumes that you have correctly setup the local logstash daemon.
+The stests library emits various [events](../stests/events.py) of interest, some of which are related to the internal dynamics of stests itself, whilst others are related to chain activity.  The stests logging events are emitted as JSON blobs & are comsumable by logstash.  To instrruct stests to push logs to logstash you can edit the `STESTS_LOGGING_LOGSTASH` prefixed stests environment variables file (see `$HOME/.casperlabs-stests/vars`).  This assumes that you have correctly setup the local logstash daemon.
