@@ -1,6 +1,6 @@
-# STESTS Usage For SRE
+# STESTS Usage For LRT
 
-Once stests has been installed stests commands can be used to interact with the target test network.  Whilst there are many supported commands, a few subsets typically form the vast majority of user workflows.  
+Within a Casper Labs LRT setting it is assumed that each LRT is associated with a **dedicated** stests box.  This document details pocess of setting up such such a box.  
 
 ## Step 0: Install stests library
 
