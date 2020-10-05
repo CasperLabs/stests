@@ -7,7 +7,7 @@ Within a Casper Labs LRT setting it is assumed that each LRT is associated with 
 ### Pre-requisites
 
 - [git](https://www.atlassian.com/git/tutorials/install-git)
-- [python3](https://www.python.org/downloads)
+- [python3 3.8+](https://www.python.org/downloads)
 - [pipenv](https://pipenv.kennethreitz.org/en/latest/install/#installing-pipenv)
 
 ### Installation
