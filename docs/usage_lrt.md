@@ -26,7 +26,7 @@ The side effects of running the installer are as follows:
 - stests [default environment variables file](../resources/stests_vars.sh) copied to:
 	- `$HOME/.casperlabs-stests/vars`
 
-- stests [default supervisord config file](../resources/stests_vars.sh) copied to:
+- stests [default supervisord config file](../resources/supervisord.conf) copied to:
 	- `$HOME/.casperlabs-stests/ops/config`
 
 - `$HOME/bashrc` file updated so as to activate stests [commands](commands.md) within terminal sessions. 
