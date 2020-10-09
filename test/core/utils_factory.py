@@ -98,7 +98,8 @@ def create_named_key() -> types.chain.NamedKey:
 
 def create_network() -> types.infra.Network:
     return factory.create_network(
-        f"{types.infra.NetworkType.LOC.name}-{str(1).zfill(2)}"
+        f"{types.infra.NetworkType.LOC.name}-{str(1).zfill(2)}",
+        types.infra.NetworkType.LOC.name
     )
 
 

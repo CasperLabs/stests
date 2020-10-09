@@ -3,6 +3,8 @@ import os
 import pathlib
 import typing
 
+import toml
+
 from stests.core import cache
 from stests.core import crypto
 from stests.core import factory
@@ -24,9 +26,9 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    for network_id, faucet, nodeset in _yield_assets():
+    for network_id, chain_name, faucet, nodeset in _yield_assets():
         # Register network.
-        network = _register_network(network_id)
+        network = _register_network(network_id, chain_name)
 
         # Register faucet.
         _register_faucet(network, faucet)
@@ -48,8 +50,29 @@ def _yield_assets() -> typing.Tuple[str, typing.List, typing.List]:
         path_assets = path / network_id
         yield \
             network_id, \
+            _get_chain_name(path_assets), \
             _get_faucet(path_assets), \
             _get_nodeset(path_assets)
+
+
+def _get_chain_name(path_assets: pathlib.Path) -> str:
+    """Returns chain name as specified within chainspec.
+    
+    """
+    chainspec = _get_chainspec(path_assets)
+
+    return chainspec['genesis']['name']
+
+
+def _get_chainspec(path_assets: pathlib.Path) -> str:
+    """Returns decoded chainspec.
+    
+    """
+    path_chainspec = path_assets / "chainspec.toml"
+    if not path_chainspec.exists():
+        raise ValueError(f"chainspec.toml file not found: {path_chainspec}")
+
+    return toml.load(path_chainspec)
 
 
 def _get_faucet(path_assets: pathlib.Path) -> typing.Tuple[str, crypto.KeyAlgorithm]:
@@ -91,11 +114,11 @@ def _get_node(path_assets: pathlib.Path, info):
     return (host, int(port), int(weight), path_sk_pem)
 
 
-def _register_network(network_id: str):
+def _register_network(network_id: str, chain_name: str):
     """Register a network.
     
     """
-    network = factory.create_network(network_id)
+    network = factory.create_network(network_id, chain_name)
     cache.infra.set_network(network)
 
     # Inform.

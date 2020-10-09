@@ -1,4 +1,3 @@
-from stests.core.types.chain.constants import DEFAULT_CHAIN_NAME
 from stests.core.types.chain.account import Account
 from stests.core.types.chain.account import AccountIdentifier
 from stests.core.types.chain.block import Block
