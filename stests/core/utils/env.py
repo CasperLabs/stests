@@ -48,3 +48,14 @@ def get_network_id(default="LOC-01") -> str:
 
     """
     return get_var("CONFIG_NETWORK_ID", default)
+
+
+def get_network_name(default="nctl1") -> str:
+    """Returns name of network being tested.
+
+    :param default: Network name default value.
+
+    :returns: Network identifier.
+
+    """
+    return get_var("NET", default)

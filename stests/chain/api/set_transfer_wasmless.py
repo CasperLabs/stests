@@ -1,3 +1,4 @@
+import json
 import subprocess
 import typing
 
@@ -56,4 +57,4 @@ def execute(
         stdout=subprocess.PIPE,
         )
 
-    return str(cli_response.stdout.split(b'\n')[1])
+    return json.loads(cli_response.stdout)['deploy_hash']
