@@ -5,6 +5,7 @@ import typing
 from stests.core import clx
 from stests.core import factory
 from stests.core.utils import args_validator
+from stests.core.utils import env
 
 
 
@@ -14,7 +15,7 @@ ARGS = argparse.ArgumentParser("Displays block information returned by a chain q
 # CLI argument: network name.
 ARGS.add_argument(
     "--net",
-    default="nctl1",
+    default=env.get_network_name(),
     dest="network",
     help="Network name {type}{id}, e.g. nctl1.",
     type=args_validator.validate_network,

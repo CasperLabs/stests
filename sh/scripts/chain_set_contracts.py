@@ -8,6 +8,7 @@ from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
+from stests.core.utils import env
 
 
 
@@ -17,7 +18,7 @@ ARGS = argparse.ArgumentParser("Uploads smart contracts used in testing to both 
 # CLI argument: network name.
 ARGS.add_argument(
     "--net",
-    default="nctl1",
+    default=env.get_network_name(),
     dest="network",
     help="Network name {type}{id}, e.g. nctl1.",
     type=args_validator.validate_network,

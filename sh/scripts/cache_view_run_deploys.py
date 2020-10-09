@@ -9,6 +9,7 @@ from stests.core.types.chain import DeployStatus
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
+from stests.core.utils import env
 
 
 
@@ -18,7 +19,7 @@ ARGS = argparse.ArgumentParser("Displays summary information for a run.")
 # CLI argument: network name.
 ARGS.add_argument(
     "--net",
-    default="nctl1",
+    default=env.get_network_name(),
     dest="network",
     help="Network name {type}{id}, e.g. nctl1.",
     type=args_validator.validate_network,
