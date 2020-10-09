@@ -50,6 +50,8 @@ configs/{NODE-IP}/secret_key.pem
 faucet/secret_key.pem
 ```
 
+NOTE - the contents of nodes.csv includes each node's HTTP server ip address & port.
+
 Once the network assets are in place then simply run the `stests-register-lrt` command.  This will reset the stests infrastructure cache and [process the assets accordingly](../sh/scripts/cache_register_lrt.py).
 
 ## Post Registration
