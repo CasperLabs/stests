@@ -1,17 +1,16 @@
 import typing
-import datetime 
 import dramatiq
 
-from stests.core.types.infra import NodeIdentifier
+from stests.core.types.chain import TransferType
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils import constants
 from stests.orchestration.generators.utils import verification
-from stests.orchestration.generators.utils.accounts import do_transfer_wasmless as do_transfer
+from stests.orchestration.generators.utils.accounts import do_transfer
 
 
 
 # Step label.
-LABEL = "fund-run-accounts"
+LABEL = "do-transfers"
 
 
 def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
@@ -29,6 +28,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
                 constants.ACC_NETWORK_FAUCET,
                 account_index,
                 ctx.args.amount,
+                TransferType.WASMLESS,
             )
 
     return do_transfer, ctx.args.transfers, _yield_parameterizations

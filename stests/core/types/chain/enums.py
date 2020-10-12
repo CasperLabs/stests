@@ -68,6 +68,14 @@ class TransferStatus(enum.Flag):
     COMPLETE = enum.auto()
 
 
+class TransferType(enum.Flag):
+    """Flag over set of transfer types.
+    
+    """
+    WASMLESS = enum.auto()
+    WASM_PER_DEPLOY = enum.auto()
+
+
 # Full set of enums.
 ENUM_SET = {
     AccountType,    
@@ -76,4 +84,5 @@ ENUM_SET = {
     DeployStatus,
     DeployType,
     TransferStatus,
+    TransferType,
 }

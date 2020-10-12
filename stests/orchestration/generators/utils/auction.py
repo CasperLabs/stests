@@ -12,7 +12,6 @@ from stests.core.types.infra import Network
 from stests.core.types.infra import Node
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
-
 from stests.orchestration.generators.utils.accounts import get_account
 from stests.orchestration.generators.utils.infra import get_network_node
 
