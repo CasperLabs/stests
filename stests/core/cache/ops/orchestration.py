@@ -257,6 +257,17 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
     )
 
 
+def increment_deploy_counts(ctx: ExecutionContext):
+    """Increments (atomically) count of run deploys.
+
+    :param ctx: Execution context information.
+
+    """
+    increment_deploy_count(ctx, ExecutionAspect.RUN)
+    increment_deploy_count(ctx, ExecutionAspect.PHASE)
+    increment_deploy_count(ctx, ExecutionAspect.STEP)
+
+
 @cache_op(_PARTITION, StoreOperation.COUNTER_INCR)
 def increment_generator_run_count(network: str, generator_type: str) -> CountIncrementKey:
     """Increments (atomically) count of generator runs.

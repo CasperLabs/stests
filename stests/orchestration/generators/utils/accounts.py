@@ -79,9 +79,7 @@ def do_transfer_wasm(
     
     # Increment deploy counts.
     # Note: this is temporary until we can increment during deploy finalisation.
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.RUN)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.PHASE)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.STEP)
+    cache.orchestration.increment_deploy_counts(ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -140,9 +138,7 @@ def do_transfer_wasmless(
     
     # Increment deploy counts.
     # Note: this is temporary until we can increment during deploy finalisation.
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.RUN)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.PHASE)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.STEP)
+    cache.orchestration.increment_deploy_counts(ctx)
 
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:

@@ -16,7 +16,7 @@ from stests.events import EventType
 _CLIENT_METHOD = "put-deploy"
 
 # Name of smart contract to dispatch & invoke.
-_CONTRACT_FNAME = "add_bid.wasm"
+_CONTRACT_FNAME = "withdraw_bid.wasm"
 
 
 @utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
@@ -25,7 +25,6 @@ def execute(
     node: Node,
     validator: Account,
     amount: int,
-    delegation_rate: int,
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
     tx_fee=constants.DEFAULT_TX_FEE,
     tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
@@ -34,9 +33,8 @@ def execute(
 
     :param network: Network to which transfer is being dispatched.
     :param node: Node to which transfer is being dispatched.
-    :param validator: Account information of validator submitting an auction bid.
-    :param amount: Amount to submit to auction bid (motes).
-    :param delegation_rate: Percentage (i.e. rate) of POS reward alloocated to delegators.
+    :param validator: Account information of validator withdrawing an auction bid.
+    :param amount: Amount to withdraw from auction bid (motes).
     :param tx_ttl: Time to live before transaction processing is aborted.
     :param tx_fee: Transaction network fee.
     :param tx_gas_price: Network gas price.
@@ -51,6 +49,5 @@ def execute(
         _CONTRACT_FNAME,
         [
             "--session-arg", f"amount:u512='{amount}'",
-            "--session-arg", f"delegation_rate:u64='{delegation_rate}'",
         ]
     )

@@ -4,10 +4,10 @@ import typing
 
 from stests.chain import constants
 from stests.chain import utils
+from stests.chain.api import set_deploy
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
-from stests.core.utils import paths
 from stests.events import EventType
 
 
@@ -44,22 +44,13 @@ def execute(
     :returns: 3 member tuple -> (deploy_hash, dispatch_duration, dispatch_attempts)
 
     """
-    binary_path = paths.get_path_to_client(network)
-    session_path = paths.get_path_to_contract(network, _CONTRACT_FNAME)
-
-    cli_response = subprocess.run([
-        binary_path, _CLIENT_METHOD,
-        "--chain-name", network.chain_name,
-        "--gas-price", str(tx_gas_price),
-        "--node-address", f"http://{node.address}",
-        "--payment-amount", str(tx_fee),
-        "--secret-key", cp1.get_private_key_pem_filepath(),
-        "--session-arg", "amount:u512='1000000'",
-        "--session-arg", f"target:account_hash='account-hash-{cp2.account_hash}'",
-        "--session-path", session_path,
-        "--ttl", str(tx_ttl),
-        ],
-        stdout=subprocess.PIPE,
-        )
-
-    return json.loads(cli_response.stdout)['deploy_hash']
+    return set_deploy.execute(
+        network,
+        node,
+        cp1,
+        _CONTRACT_FNAME,
+        [
+            "--session-arg", "amount:u512='1000000'",
+            "--session-arg", f"target:account_hash='account-hash-{cp2.account_hash}'",
+        ]
+    )

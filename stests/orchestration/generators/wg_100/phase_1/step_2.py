@@ -22,20 +22,16 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     :returns: 3 member tuple -> actor, message count, message arg factory.
 
     """
-    return do_transfer, ctx.args.transfers, lambda: _yield_parameterizations(ctx)
+    def _yield_parameterizations() -> typing.Generator:
+        for account_index in range(ctx.args.transfers):
+            yield (
+                ctx,
+                constants.ACC_NETWORK_FAUCET,
+                account_index,
+                ctx.args.amount,
+            )
 
-
-def _yield_parameterizations(ctx: ExecutionContext) -> typing.Generator:
-    """Yields parameterizations to be dispatched to actor via a message queue.
-    
-    """
-    for account_index in range(ctx.args.transfers):
-        yield (
-            ctx,
-            constants.ACC_NETWORK_FAUCET,
-            account_index,
-            ctx.args.amount,
-        )
+    return do_transfer, ctx.args.transfers, _yield_parameterizations
 
 
 def verify(ctx: ExecutionContext):

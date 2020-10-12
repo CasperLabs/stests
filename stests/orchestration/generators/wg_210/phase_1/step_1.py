@@ -1,5 +1,3 @@
-import typing
-
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils import verification
 from stests.orchestration.generators.utils import auction
@@ -7,7 +5,7 @@ from stests.orchestration.generators.utils import auction
 
 
 # Step label.
-LABEL = "auction-bid-submit"
+LABEL = "auction-bid-withdraw"
 
 
 def execute(ctx: ExecutionContext):
@@ -16,7 +14,7 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    auction.do_bid_submit(ctx, 1, ctx.args.amount, ctx.args.delegation_rate)
+    auction.do_bid_withdraw(ctx, 1, ctx.args.amount)
 
 
 def verify(ctx: ExecutionContext):

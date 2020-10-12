@@ -14,6 +14,7 @@ from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 
 from stests.orchestration.generators.utils.accounts import get_account
+from stests.orchestration.generators.utils.infra import get_network_node
 
 
 # Queue to which messages will be dispatched.
@@ -21,7 +22,7 @@ _QUEUE = "orchestration.generators.auction"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def do_submit_bid(
+def do_bid_submit(
     ctx: ExecutionContext,
     account_index: int,
     amount: int,
@@ -36,12 +37,12 @@ def do_submit_bid(
     
     """
     # Set target network / node.
-    network_id = factory.create_network_id(ctx.network)
-    network = cache.infra.get_network(network_id)
-    node = cache.infra.get_node_by_network(network)
+    network, node = get_network_node(ctx)
 
+    # Set validator account.
     validator = get_account(ctx, network, 0)
 
+    # Submit auction bid.
     deploy_hash, dispatch_duration, dispatch_attempts = chain.set_auction_bid_submit(
         network,
         node,
@@ -62,7 +63,48 @@ def do_submit_bid(
         ))
     
     # Increment deploy counts.
-    # Note: this is temporary until we can increment during deploy finalisation.
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.RUN)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.PHASE)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.STEP)
+    # Note: this is temporary until incremented during deploy finalisation.
+    cache.orchestration.increment_deploy_counts(ctx)
+
+
+@dramatiq.actor(queue_name=_QUEUE)
+def do_bid_withdraw(
+    ctx: ExecutionContext,
+    account_index: int,
+    amount: int,
+    ):
+    """Executes a wasm-vased account token transfer between counter-parties.
+
+    :param ctx: Execution context information.
+    :param account_index: Account index of bidder.
+    :param bid_amount: Bid amount (in motes).
+    
+    """
+    # Set target network / node.
+    network, node = get_network_node(ctx)
+
+    # Set validator account.
+    validator = get_account(ctx, network, 0)
+
+    # Withdraw auction bid.
+    deploy_hash, dispatch_duration, dispatch_attempts = chain.set_auction_bid_withdraw(
+        network,
+        node,
+        validator,
+        amount=amount,
+    )
+
+    # Update cache: deploy.
+    cache.state.set_deploy(factory.create_deploy_for_run(
+        ctx=ctx, 
+        account=validator,
+        node=node, 
+        deploy_hash=deploy_hash, 
+        dispatch_attempts=dispatch_attempts,
+        dispatch_duration=dispatch_duration,
+        typeof=DeployType.AUCTION_BID
+        ))
+    
+    # Increment deploy counts.
+    # Note: this is temporary until incremented during deploy finalisation.
+    cache.orchestration.increment_deploy_counts(ctx)
