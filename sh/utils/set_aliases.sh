@@ -104,3 +104,6 @@ alias stests-wg-100='_exec_generator 100'
 
 # WG-110: Token transfer - wasm dispatched per deploy.
 alias stests-wg-110='_exec_generator 110'
+
+# WG-200: Auction submit bid.
+alias stests-wg-200='_exec_generator 200'

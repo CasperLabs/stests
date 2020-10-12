@@ -44,8 +44,8 @@ def do_transfer_wasm(
     node = cache.infra.get_node_by_network(network)
     
     # Set counterparties.
-    cp1 = _get_account(ctx, network, cp1_index)
-    cp2 = _get_account(ctx, network, cp2_index)
+    cp1 = get_account(ctx, network, cp1_index)
+    cp2 = get_account(ctx, network, cp2_index)
 
     # Dispatch tx -> chain.
     deploy_hash, dispatch_duration, dispatch_attempts = chain.set_transfer_wasm(
@@ -105,8 +105,8 @@ def do_transfer_wasmless(
     node = cache.infra.get_node_by_network(network)
     
     # Set counterparties.
-    cp1 = _get_account(ctx, network, cp1_index)
-    cp2 = _get_account(ctx, network, cp2_index)
+    cp1 = get_account(ctx, network, cp1_index)
+    cp2 = get_account(ctx, network, cp2_index)
 
     # Dispatch tx -> chain.
     deploy_hash, dispatch_duration, dispatch_attempts = chain.set_transfer_wasmless(
@@ -145,7 +145,7 @@ def do_transfer_wasmless(
     cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.STEP)
 
 
-def _get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
+def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
     """Pulls & returns a cached account.
     
     """
