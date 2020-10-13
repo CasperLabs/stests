@@ -1,9 +1,6 @@
-from stests.chain import constants
-from stests.chain import utils
 from stests.chain.api import set_deploy
-from stests.core.types.chain import Account
-from stests.core.types.infra import Network
-from stests.core.types.infra import Node
+from stests.chain.utils import execute_cli
+from stests.chain.utils import DeployDispatchInfo
 from stests.events import EventType
 
 
@@ -15,36 +12,21 @@ _CLIENT_METHOD = "put-deploy"
 _CONTRACT_FNAME = "add_bid.wasm"
 
 
-@utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
-def execute(
-    network: Network,
-    node: Node,
-    bidder: Account,
-    amount: int,
-    delegation_rate: int,
-    tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
-    tx_fee=constants.DEFAULT_TX_FEE,
-    tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
-    ) -> str:
-    """Submits a bid to network's auction validator slot contract.
+@execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
+def execute(info: DeployDispatchInfo, amount: int, delegation_rate: int) -> str:
+    """Submits a bid to network's validator slot auction contract.
 
-    :param bidder: Account information of bidder submitting an auction bid.
+    :param info: Information required when dispatching a deploy.
     :param amount: Amount to submit to auction bid (motes).
     :param delegation_rate: Percentage (i.e. rate) of POS reward alloocated to delegators.
-
-    :param network: Network to which transfer is being dispatched.
-    :param node: Node to which transfer is being dispatched.
-    :param tx_ttl: Time to live before transaction processing is aborted.
-    :param tx_fee: Transaction network fee.
-    :param tx_gas_price: Network gas price.
 
     :returns: Deploy hash.
 
     """
     return set_deploy.execute(
-        network,
-        node,
-        bidder,
+        info.network,
+        info.node,
+        info.dispatcher,
         _CONTRACT_FNAME,
         [
             "--session-arg", f"amount:u512='{amount}'",

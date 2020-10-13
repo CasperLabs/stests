@@ -1,6 +1,6 @@
+from stests.chain.api import set_deploy
 from stests.chain.utils import execute_cli
 from stests.chain.utils import DeployDispatchInfo
-from stests.chain.api import set_deploy
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node

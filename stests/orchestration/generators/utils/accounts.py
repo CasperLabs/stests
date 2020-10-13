@@ -1,5 +1,3 @@
-import typing
-
 import dramatiq
 
 from stests import chain
@@ -7,12 +5,9 @@ from stests.chain.utils import DeployDispatchInfo
 from stests.core import cache
 from stests.core import factory
 from stests.core.types.chain import Account
-from stests.core.types.chain import ContractType
 from stests.core.types.chain import DeployType
 from stests.core.types.chain import TransferType
 from stests.core.types.infra import Network
-from stests.core.types.infra import Node
-from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils.infra import get_network_node
 

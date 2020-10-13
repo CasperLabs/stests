@@ -1,16 +1,10 @@
-import typing
-
 import dramatiq
 
 from stests import chain
+from stests.chain.utils import DeployDispatchInfo
 from stests.core import cache
 from stests.core import factory
-from stests.core.types.chain import Account
-from stests.core.types.chain import ContractType
 from stests.core.types.chain import DeployType
-from stests.core.types.infra import Network
-from stests.core.types.infra import Node
-from stests.core.types.orchestration import ExecutionAspect
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils.accounts import get_account
 from stests.orchestration.generators.utils.infra import get_network_node
@@ -42,13 +36,9 @@ def do_bid_submit(
     validator = get_account(ctx, network, 0)
 
     # Submit auction bid.
-    deploy_hash, dispatch_duration, dispatch_attempts = chain.set_auction_bid_submit(
-        network,
-        node,
-        validator,
-        amount=amount,
-        delegation_rate=delegation_rate,
-    )
+    dispatch_info = DeployDispatchInfo(validator, network, node)
+    deploy_hash, dispatch_duration, dispatch_attempts = \
+        chain.set_auction_bid_submit(dispatch_info, amount, delegation_rate)
 
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
@@ -58,7 +48,7 @@ def do_bid_submit(
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
-        typeof=DeployType.AUCTION_BID
+        typeof=DeployType.AUCTION_BID_SUBMIT
         ))
     
     # Increment deploy counts.
@@ -86,12 +76,9 @@ def do_bid_withdraw(
     validator = get_account(ctx, network, 0)
 
     # Withdraw auction bid.
-    deploy_hash, dispatch_duration, dispatch_attempts = chain.set_auction_bid_withdraw(
-        network,
-        node,
-        validator,
-        amount=amount,
-    )
+    dispatch_info = DeployDispatchInfo(validator, network, node)
+    deploy_hash, dispatch_duration, dispatch_attempts = \
+        chain.set_auction_bid_withdraw(dispatch_info, amount)
 
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
@@ -101,7 +88,7 @@ def do_bid_withdraw(
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
-        typeof=DeployType.AUCTION_BID
+        typeof=DeployType.AUCTION_BID_WITHDRAW
         ))
     
     # Increment deploy counts.
