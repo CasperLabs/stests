@@ -26,7 +26,7 @@ def execute(node: Node, event_callback: typing.Callable):
             event_type,
             block_hash,
             deploy_hash,
-        ))
+        ), payload)
 
 
 def _yield_events(node: Node):
@@ -53,6 +53,9 @@ def _parse_event_payload(node: Node, obj: dict) -> typing.Tuple[dict, EventType,
     """Parses raw event data for upstream processing.
     
     """
+    if 'ApiVersion' in obj:
+        return
+
     if 'BlockAdded' in obj:
         return \
             obj, \
@@ -73,9 +76,10 @@ def _parse_event_payload(node: Node, obj: dict) -> typing.Tuple[dict, EventType,
             EventType.MONIT_DEPLOY_PROCESSED, \
             None, \
             None
-
+    
     log_event(
         EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,
         f"event skipped as type is unsupported :: node={node.address}",
         node
         )
+    print(obj)
