@@ -1,7 +1,3 @@
-import json
-import subprocess
-import typing
-
 from stests.chain import constants
 from stests.chain import utils
 from stests.chain.api import set_deploy
@@ -23,31 +19,32 @@ _CONTRACT_FNAME = "add_bid.wasm"
 def execute(
     network: Network,
     node: Node,
-    validator: Account,
+    bidder: Account,
     amount: int,
     delegation_rate: int,
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
     tx_fee=constants.DEFAULT_TX_FEE,
     tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
     ) -> str:
-    """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
+    """Submits a bid to network's auction validator slot contract.
+
+    :param bidder: Account information of bidder submitting an auction bid.
+    :param amount: Amount to submit to auction bid (motes).
+    :param delegation_rate: Percentage (i.e. rate) of POS reward alloocated to delegators.
 
     :param network: Network to which transfer is being dispatched.
     :param node: Node to which transfer is being dispatched.
-    :param validator: Account information of validator submitting an auction bid.
-    :param amount: Amount to submit to auction bid (motes).
-    :param delegation_rate: Percentage (i.e. rate) of POS reward alloocated to delegators.
     :param tx_ttl: Time to live before transaction processing is aborted.
     :param tx_fee: Transaction network fee.
     :param tx_gas_price: Network gas price.
 
-    :returns: 3 member tuple -> (deploy_hash, dispatch_duration, dispatch_attempts)
+    :returns: Deploy hash.
 
     """
     return set_deploy.execute(
         network,
         node,
-        validator,
+        bidder,
         _CONTRACT_FNAME,
         [
             "--session-arg", f"amount:u512='{amount}'",

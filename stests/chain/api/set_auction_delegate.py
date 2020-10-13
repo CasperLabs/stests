@@ -1,26 +1,28 @@
-import json
-import subprocess
+import typing
 
 from stests.chain import constants
 from stests.chain import utils
+from stests.chain.api import set_deploy
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
-from stests.core.utils import paths
 from stests.events import EventType
 
 
 
 # Method upon client to be invoked.
-_CLIENT_METHOD = "transfer"
+_CLIENT_METHOD = "put-deploy"
+
+# Name of smart contract to dispatch & invoke.
+_CONTRACT_FNAME = "delegate.wasm"
 
 
 @utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
 def execute(
     network: Network,
     node: Node,
-    cp1: Account,
-    cp2: Account,
+    delegator: Account,
+    validator: Account,
     amount: int,
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
     tx_fee=constants.DEFAULT_TX_FEE,
@@ -28,9 +30,9 @@ def execute(
     ) -> str:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
-    :param cp1: Account information of counter party 1.
-    :param cp2: Account information of counter party 2.
-    :param amount: Amount in motes to be transferred.
+    :param delegator: Account information of entity delegating stake to a validator.
+    :param validator: Account information of validator to whom a user is delegating stake.
+    :param amount: Amount to submit to auction bid (motes).
 
     :param network: Network to which transfer is being dispatched.
     :param node: Node to which transfer is being dispatched.
@@ -41,20 +43,13 @@ def execute(
     :returns: Deploy hash.
 
     """
-    binary_path = paths.get_path_to_client(network)
-
-    cli_response = subprocess.run([
-        binary_path, _CLIENT_METHOD,
-        "--amount", str(amount),
-        "--chain-name", network.chain_name,
-        "--gas-price", str(tx_gas_price),
-        "--node-address", f"http://{node.address}",
-        "--payment-amount", str(tx_fee),
-        "--secret-key", cp1.get_private_key_pem_filepath(),
-        "--target-account", cp2.account_id,
-        "--ttl", str(tx_ttl),
-        ],
-        stdout=subprocess.PIPE,
-        )
-
-    return json.loads(cli_response.stdout)['deploy_hash']
+    return set_deploy.execute(
+        network,
+        node,
+        delegator,
+        _CONTRACT_FNAME,
+        [
+            "--session-arg", f"amount:u512='{amount}'",
+            "--session-arg", f"validator:public_key='{validator.account_id}'",
+        ]
+    )

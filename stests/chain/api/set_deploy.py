@@ -1,6 +1,5 @@
 import json
 import subprocess
-import typing
 
 from stests.chain import constants
 from stests.chain import utils
@@ -25,18 +24,19 @@ def execute(
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
     tx_fee=constants.DEFAULT_TX_FEE,
     tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
-    ) -> typing.Tuple[str, float, int]:
-    """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
+    ) -> str:
+    """Dispatches a signed deploy to target test network.
+
+    :param dispatchee: Account information of entity dispatching a deploy.
+    :param contract_fname: Smart contract file name being dispatched.
 
     :param network: Network to which transfer is being dispatched.
     :param node: Node to which transfer is being dispatched.
-    :param validator: Account information of validator submitting an auction bid.
-    :param amount: Amount in motes to be transferred.
     :param tx_ttl: Time to live before transaction processing is aborted.
     :param tx_fee: Transaction network fee.
     :param tx_gas_price: Network gas price.
 
-    :returns: 3 member tuple -> (deploy_hash, dispatch_duration, dispatch_attempts)
+    :returns: Deploy hash.
 
     """
     binary_path = paths.get_path_to_client(network)
