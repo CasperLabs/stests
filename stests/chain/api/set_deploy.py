@@ -18,7 +18,7 @@ _CLIENT_METHOD = "put-deploy"
 def execute(
     network: Network,
     node: Node,
-    dispatchee: Account,
+    dispatcher: Account,
     contract_fname: str, 
     session_args: list=[],
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
@@ -27,7 +27,7 @@ def execute(
     ) -> str:
     """Dispatches a signed deploy to target test network.
 
-    :param dispatchee: Account information of entity dispatching a deploy.
+    :param dispatcher: Account information of entity dispatching a deploy.
     :param contract_fname: Smart contract file name being dispatched.
 
     :param network: Network to which transfer is being dispatched.
@@ -48,7 +48,7 @@ def execute(
         "--gas-price", str(tx_gas_price),
         "--node-address", f"http://{node.address}",
         "--payment-amount", str(tx_fee),
-        "--secret-key", dispatchee.get_private_key_pem_filepath(),
+        "--secret-key", dispatcher.get_private_key_pem_filepath(),
         "--session-path", session_path,
         "--ttl", str(tx_ttl),
         ] + session_args,

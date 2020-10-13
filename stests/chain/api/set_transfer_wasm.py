@@ -1,5 +1,5 @@
-from stests.chain import constants
-from stests.chain import utils
+from stests.chain.utils import execute_cli
+from stests.chain.utils import DeployDispatchInfo
 from stests.chain.api import set_deploy
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
@@ -15,36 +15,21 @@ _CLIENT_METHOD = "put-deploy"
 _CONTRACT_FNAME = "transfer_to_account_u512.wasm"
 
 
-@utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
-def execute(
-    network: Network,
-    node: Node,
-    cp1: Account,
-    cp2: Account,
-    amount: int,
-    tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
-    tx_fee=constants.DEFAULT_TX_FEE,
-    tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
-    ) -> str:
+@execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
+def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
     """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
 
-    :param cp1: Account information of counter party 1.
+    :param info: Information required when dispatching a deploy.
     :param cp2: Account information of counter party 2.
     :param amount: Amount in motes to be transferred.
-
-    :param network: Network to which transfer is being dispatched.
-    :param node: Node to which transfer is being dispatched.
-    :param tx_ttl: Time to live before transaction processing is aborted.
-    :param tx_fee: Transaction network fee.
-    :param tx_gas_price: Network gas price.
 
     :returns: Deploy hash.
 
     """
     return set_deploy.execute(
-        network,
-        node,
-        cp1,
+        info.network,
+        info.node,
+        info.dispatcher,
         _CONTRACT_FNAME,
         [
             "--session-arg", "amount:u512='1000000'",

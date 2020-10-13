@@ -2,9 +2,37 @@ import functools
 import time
 import typing
 
+from stests.chain import constants
 from stests.core.utils.misc import Timer
+from stests.core.types.chain import Account
+from stests.core.types.infra import Network
+from stests.core.types.infra import Node
 from stests.events import EventType
 
+
+
+class DeployDispatchInfo():
+    """Encapsulates information required when dispatching a deploy.
+    
+    """
+    def __init__(self,
+        dispatcher: Account,
+        network: Network,
+        node: Node, 
+        time_to_live: str = constants.DEFAULT_TX_TIME_TO_LIVE,
+        fee: str = constants.DEFAULT_TX_FEE,
+        gas_price: int = constants.DEFAULT_TX_GAS_PRICE,
+        ):
+        """Instance constructor.
+        
+        """
+        self.dispatcher = dispatcher
+        self.network = network
+        self.node = node
+        self.node_address = f"http://{node.address}"
+        self.time_to_live = time_to_live
+        self.fee = fee
+        self.gas_price = gas_price
 
 
 class CLI_Exception(Exception):
@@ -37,12 +65,7 @@ class CLI_Exception(Exception):
         return u"STESTS CLI EXCEPTION : {0}".format(repr(self.message))
 
 
-def execute_cli(
-    command: str,
-    on_failure_event: EventType, 
-    max_attempts: int = 5,
-    retry_delay: float = 1.0,
-    ) -> typing.Callable:
+def execute_cli(command: str, on_failure_event: EventType,  max_attempts: int = 5, retry_delay: float = 1.0) -> typing.Callable:
     """Decorator to orthoganally execute a CLI operation.
 
     :param command: CLI command being executed.

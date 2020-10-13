@@ -3,6 +3,7 @@ import typing
 import dramatiq
 
 from stests import chain
+from stests.chain.utils import DeployDispatchInfo
 from stests.core import cache
 from stests.core import factory
 from stests.core.types.chain import Account
@@ -55,13 +56,9 @@ def do_transfer(
     cp2 = get_account(ctx, network, cp2_index)
 
     # Dispatch tx -> chain.
-    deploy_hash, dispatch_duration, dispatch_attempts = TFR_TYPE_TO_TFR_FN[TransferType[transfer_type]](
-        network,
-        node,
-        cp1,
-        cp2,
-        amount,
-    )
+    dispatch_fn = TFR_TYPE_TO_TFR_FN[TransferType[transfer_type]]
+    dispatch_info = DeployDispatchInfo(cp1, network, node)
+    deploy_hash, dispatch_duration, dispatch_attempts = dispatch_fn(dispatch_info, cp2, amount)
 
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
