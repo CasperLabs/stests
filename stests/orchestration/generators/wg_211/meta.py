@@ -1,6 +1,6 @@
 from stests.core.types.orchestration import ExecutionContext
-from stests.orchestration.generators.wg_210 import args
-from stests.orchestration.generators.wg_210 import phase_1
+from stests.orchestration.generators.wg_211 import args
+from stests.orchestration.generators.wg_211 import phase_1
 
 
 
@@ -19,7 +19,7 @@ PHASES = (
 )
 
 # Workload type.
-TYPE = "WG-210"
+TYPE = "WG-211"
 
 # Workload typeset - registered with encoder.
 TYPE_SET = {

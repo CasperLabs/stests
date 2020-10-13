@@ -1,6 +1,6 @@
 from stests.core.types.orchestration import ExecutionContext
-from stests.orchestration.generators.wg_210 import args
-from stests.orchestration.generators.wg_210 import phase_1
+from stests.orchestration.generators.wg_201 import args
+from stests.orchestration.generators.wg_201 import phase_1
 
 
 
@@ -11,7 +11,7 @@ Arguments = args.Arguments
 ARGS = args.ARGS
 
 # Workload description.
-DESCRIPTION = "Submits a deploy delegating an amount of tokens (in motes) to a validator for staking purposes."
+DESCRIPTION = "Dispatches an auction withdraw bid deploy."
 
 # Set of workflow phases.
 PHASES = (
@@ -19,7 +19,7 @@ PHASES = (
 )
 
 # Workload type.
-TYPE = "WG-210"
+TYPE = "WG-201"
 
 # Workload typeset - registered with encoder.
 TYPE_SET = {

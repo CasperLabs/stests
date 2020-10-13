@@ -27,12 +27,12 @@ class Arguments:
 
 
 # Set command line arguments.
-ARGS = get_argparser(f"Submits a deploy delegating an amount of tokens (in motes) to a validator for staking purposes.")
+ARGS = get_argparser(f"Submits a deploy withdrawing tokens previously delegated to a validator for staking purposes.")
 
 # CLI argument: bid amount (motes).
 ARGS.add_argument(
     "--amount",
-    help="Amount to delegate (motes).  Default=1,000,000.",
+    help="Amount to undelegate (motes).  Default=1,000,000.",
     dest="amount",
     type=int,
     default=int(1e6)

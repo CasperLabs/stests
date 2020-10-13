@@ -99,14 +99,12 @@ function _exec_generator()
     _exec_cmd $STESTS_PATH_GENERATORS/wg_$g_type $g_args
 }
 
-# WG-100: Token transfer - invoked directly, i.e. wasm-less.
-alias stests-wg-100='_exec_generator 100'
+# WG-1xx: Token transfers:
+alias stests-wg-100='_exec_generator 100'       # wasm-less
+alias stests-wg-110='_exec_generator 110'       # wasm per deploy
 
-# WG-110: Token transfer - wasm dispatched per deploy.
-alias stests-wg-110='_exec_generator 110'
-
-# WG-200: Auction: bid submit.
-alias stests-wg-200='_exec_generator 200'
-
-# WG-210: Auction: bid withdraw.
-alias stests-wg-210='_exec_generator 210'
+# WG-2xx: Auction:
+alias stests-wg-200='_exec_generator 200'       # validator slot bid submit
+alias stests-wg-201='_exec_generator 201'       # validator slot bid withdraw
+alias stests-wg-210='_exec_generator 210'       # delegation submit
+alias stests-wg-211='_exec_generator 211'       # delegation withdraw

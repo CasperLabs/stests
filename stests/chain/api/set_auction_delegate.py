@@ -1,11 +1,7 @@
-import typing
-
-from stests.chain import constants
-from stests.chain import utils
 from stests.chain.api import set_deploy
+from stests.chain.utils import execute_cli
+from stests.chain.utils import DeployDispatchInfo
 from stests.core.types.chain import Account
-from stests.core.types.infra import Network
-from stests.core.types.infra import Node
 from stests.events import EventType
 
 
@@ -17,36 +13,21 @@ _CLIENT_METHOD = "put-deploy"
 _CONTRACT_FNAME = "delegate.wasm"
 
 
-@utils.execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
-def execute(
-    network: Network,
-    node: Node,
-    delegator: Account,
-    validator: Account,
-    amount: int,
-    tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
-    tx_fee=constants.DEFAULT_TX_FEE,
-    tx_gas_price=constants.DEFAULT_TX_GAS_PRICE,
-    ) -> str:
-    """Executes a transfer between 2 counter-parties & returns resulting deploy hash.
+@execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
+def execute(info: DeployDispatchInfo, validator: Account, amount: int) -> str:
+    """Submits a deploy delegating an amount of tokens (in motes) to a validator for staking purposes.
 
-    :param delegator: Account information of entity delegating stake to a validator.
+    :param info: Information required when dispatching a deploy.
     :param validator: Account information of validator to whom a user is delegating stake.
     :param amount: Amount to submit to auction bid (motes).
-
-    :param network: Network to which transfer is being dispatched.
-    :param node: Node to which transfer is being dispatched.
-    :param tx_ttl: Time to live before transaction processing is aborted.
-    :param tx_fee: Transaction network fee.
-    :param tx_gas_price: Network gas price.
 
     :returns: Deploy hash.
 
     """
     return set_deploy.execute(
-        network,
-        node,
-        delegator,
+        info.network,
+        info.node,
+        info.dispatcher,
         _CONTRACT_FNAME,
         [
             "--session-arg", f"amount:u512='{amount}'",

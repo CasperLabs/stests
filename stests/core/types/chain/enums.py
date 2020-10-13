@@ -52,6 +52,8 @@ class DeployType(enum.Flag):
     NULL = enum.auto()
     AUCTION_BID_SUBMIT = enum.auto()
     AUCTION_BID_WITHDRAW = enum.auto()
+    AUCTION_DELEGATE = enum.auto()
+    AUCTION_UNDELEGATE = enum.auto()
     CONTRACT_INSTALL = enum.auto()
     COUNTER_DEFINE = enum.auto()
     TRANSFER = enum.auto()
