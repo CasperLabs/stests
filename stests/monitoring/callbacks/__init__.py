@@ -1,0 +1,3 @@
+from stests.monitoring.callbacks.block_added import on_block_added
+from stests.monitoring.callbacks.block_finalized import on_block_finalized
+from stests.monitoring.callbacks.deploy_processed import on_deploy_processed

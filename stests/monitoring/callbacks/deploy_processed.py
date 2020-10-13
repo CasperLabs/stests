@@ -17,4 +17,4 @@ def on_deploy_processed(node_id: NodeIdentifier, event_info: NodeEventInfo):
     :param event_info: Node event information.
 
     """
-    pass
+    print(_QUEUE)

@@ -8,6 +8,7 @@ from stests.chain.api import set_auction_delegate
 from stests.chain.api import set_auction_undelegate
 from stests.chain.api import set_transfer_wasm
 from stests.chain.api import set_transfer_wasmless
+from stests.chain.api import stream_events
 
 from stests.chain.constants import DEFAULT_TX_FEE
 from stests.chain.constants import DEFAULT_TX_GAS_PRICE

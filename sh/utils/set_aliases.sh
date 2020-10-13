@@ -27,8 +27,8 @@ alias stests-stack-vars=$STESTS_PATH_SH/stack/view_vars.sh
 # ###############################################################
 
 alias stests-interactive='$STESTS_PATH_SH/workers/interactive.sh unified'
-# alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh monitoring'               # TODO: reinstate when monitoring is reactivated
-# alias stests-interactive-orchestration='$STESTS_PATH_SH/workers/interactive.sh orchestration'         # TODO: reinstate when monitoring is reactivated
+alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh monitoring'               
+alias stests-interactive-orchestration='$STESTS_PATH_SH/workers/interactive.sh orchestration'         
 
 # ###############################################################
 # ALIASES: workers

@@ -27,6 +27,7 @@ requests = "*"
 pyblake2 = "*"
 ecdsa = "*"
 toml = "*"
+sseclient-py = "*"
 
 [requires]
 python_version = "3.8"

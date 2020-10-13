@@ -44,6 +44,10 @@ class Node:
         return f"{self.host}:{self.port}"
 
     @property
+    def address_stream(self):
+        return f"{self.address}/events"
+
+    @property
     def label_index(self):
         return f"N-{str(self.index).zfill(4)}"
 

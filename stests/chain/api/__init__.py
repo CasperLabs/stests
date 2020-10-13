@@ -8,4 +8,4 @@ from stests.chain.api.set_auction_delegate import execute as set_auction_delegat
 from stests.chain.api.set_auction_undelegate import execute as set_auction_undelegate
 from stests.chain.api.set_transfer_wasm import execute as set_transfer_wasm
 from stests.chain.api.set_transfer_wasmless import execute as set_transfer_wasmless
-
+from stests.chain.api.stream_events import execute as stream_events

@@ -3,7 +3,6 @@ from datetime import datetime
 import dramatiq
 
 from stests.core import cache
-from stests.core import clx
 from stests.core.utils import encoder
 from stests.core import factory
 from stests.core.logging import log_event
@@ -28,45 +27,46 @@ def on_deploy_finalized(node_id: NodeIdentifier, info: NodeEventInfo):
     :param info: Node event information.
 
     """
-    # Escape if on-chain block info not found.
-    block_info = clx.get_block_info(node_id, info.block_hash, parse=False)
-    if block_info is None:
-        log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, node_id, block_hash=info.block_hash)
-        return
+    pass
+    # # Escape if on-chain block info not found.
+    # block_info = clx.get_block_info(node_id, info.block_hash, parse=False)
+    # if block_info is None:
+    #     log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, node_id, block_hash=info.block_hash)
+    #     return
 
-    # Escape if on-chain deploy info not found.
-    deploy_info = clx.get_deploy_info(node_id, info.deploy_hash, wait_for_processed=False, parse=True)
-    if deploy_info is None:
-        log_event(EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND, None, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
-        return
+    # # Escape if on-chain deploy info not found.
+    # deploy_info = clx.get_deploy_info(node_id, info.deploy_hash, wait_for_processed=False, parse=True)
+    # if deploy_info is None:
+    #     log_event(EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND, None, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
+    #     return
     
-    # Exception if deploy was finalized but is in error.
-    deploy_err = deploy_info['processingResults'][0].get('errorMessage')
-    if deploy_err:
-        log_event(EventType.MONIT_DEPLOY_EXECUTION_ERROR, deploy_err, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
-        return
+    # # Exception if deploy was finalized but is in error.
+    # deploy_err = deploy_info['processingResults'][0].get('errorMessage')
+    # if deploy_err:
+    #     log_event(EventType.MONIT_DEPLOY_EXECUTION_ERROR, deploy_err, node_id, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
+    #     return
 
-    # Escape if event already processed.
-    if _already_processed(info):
-        return
+    # # Escape if event already processed.
+    # if _already_processed(info):
+    #     return
 
-    # Emit event.
-    log_event(EventType.CHAIN_FINALIZED_DEPLOY, f"{info.block_hash}.{info.deploy_hash}", info)
+    # # Emit event.
+    # log_event(EventType.CHAIN_FINALIZED_DEPLOY, f"{info.block_hash}.{info.deploy_hash}", info)
 
-    # Escape if deploy cannot be correlated to a workflow.
-    correlated_deploy = cache.state.get_deploy_on_finalisation(info.network_name, info.deploy_hash)
-    if not correlated_deploy:
-        return
+    # # Escape if deploy cannot be correlated to a workflow.
+    # correlated_deploy = cache.state.get_deploy_on_finalisation(info.network_name, info.deploy_hash)
+    # if not correlated_deploy:
+    #     return
 
-    # Process correlated - i.e. deploys previously dispatched by a generator.
-    _process_correlated(
-        node_id,
-        info,
-        datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
-        correlated_deploy,
-        deploy_info['processingResults'][0].get('cost', 0),
-        block_info.summary.header.round_id
-        )
+    # # Process correlated - i.e. deploys previously dispatched by a generator.
+    # _process_correlated(
+    #     node_id,
+    #     info,
+    #     datetime.fromtimestamp(block_info.summary.header.timestamp / 1000.0),
+    #     correlated_deploy,
+    #     deploy_info['processingResults'][0].get('cost', 0),
+    #     block_info.summary.header.round_id
+    #     )
 
 
 def _already_processed(info: NodeEventInfo) -> bool:

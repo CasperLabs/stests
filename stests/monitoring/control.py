@@ -1,3 +1,4 @@
+import random
 import time
 
 import dramatiq
@@ -33,17 +34,16 @@ def do_start_monitoring():
     """Starts monitoring of registered networks.
     
     """
-    raise NotImplementedError("Rust node event strrream is not at present being consumed")
-    
     # TODO: reduce number of instantiated monitors.
     for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
-        nodeset = cache.infra.get_nodes_for_monitoring(network_id)
+        nodeset = cache.infra.get_nodes_for_monitoring(network_id, 3)
         for node in nodeset:
-            # We want to stagger the monitors so as to enhance system resilience.
             if node != nodeset[0]:
-                time.sleep(float(2))
-            do_monitor_node.send(factory.create_node_id(network_id, node.index))
+                time.sleep(float(1))
+            do_monitor_node.send(
+                factory.create_node_id(network_id, node.index)
+                )
 
 
 @dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True, time_limit=_30_MINUTES_IN_MS)
@@ -67,7 +67,9 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Monitor node by listening to & processing node events.
     try:
-        listener.bind_to_stream(node_id)
+        listener.bind_to_stream(
+            cache.infra.get_node_by_identifier(node_id)
+            )
 
     # Exception: actor timeout.
     except TimeLimitExceeded:

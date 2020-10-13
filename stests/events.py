@@ -27,13 +27,8 @@ class EventType(enum.Enum):
     # Monitoring sub-system.
     MONIT_BLOCK_ADD = enum.auto()
     MONIT_BLOCK_FINALIZED = enum.auto()
-    MONIT_DEPLOY_ADDED = enum.auto()
-    MONIT_DEPLOY_DISCARDED = enum.auto()
     MONIT_DEPLOY_EXECUTION_ERROR = enum.auto()
-    MONIT_DEPLOY_FINALIZED = enum.auto()
-    MONIT_DEPLOY_ORPHANED = enum.auto()
     MONIT_DEPLOY_PROCESSED = enum.auto()
-    MONIT_DEPLOY_REQUEUED = enum.auto()    
     MONIT_STREAM_BIND_ERROR = enum.auto()
     MONIT_STREAM_EVENT_TYPE_UNKNOWN = enum.auto()
     MONIT_STREAM_OPENING = enum.auto()
@@ -67,9 +62,7 @@ EVENTS_DEBUG = (
     EventType.CORE_BROKER_CONNECTION_ESTABLISHED,
     EventType.MONIT_BLOCK_ADD,
     EventType.MONIT_BLOCK_FINALIZED,
-    EventType.MONIT_DEPLOY_ADDED,
     EventType.MONIT_DEPLOY_PROCESSED,
-    EventType.MONIT_DEPLOY_FINALIZED,
 )
 
 # Set of error events.
@@ -90,10 +83,7 @@ EVENTS_ERROR = (
 EVENTS_WARN = (
     EventType.CORE_ENCODING_FAILURE,
     EventType.CHAIN_QUERY_BALANCE_NOT_FOUND,
-    EventType.MONIT_DEPLOY_DISCARDED,
     EventType.WFLOW_DEPLOY_DISPATCH_FAILURE,
-    EventType.MONIT_DEPLOY_ORPHANED,
-    EventType.MONIT_DEPLOY_REQUEUED,
     EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,
     EventType.WFLOW_RUN_ABORT,
     EventType.WFLOW_PHASE_ABORT,

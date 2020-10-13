@@ -216,7 +216,7 @@ def get_nodes_for_dispatch(network: typing.Union[NetworkIdentifier, Network]) ->
     return list(nodeset.values())
 
 
-def get_nodes_for_monitoring(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
+def get_nodes_for_monitoring(network: typing.Union[NetworkIdentifier, Network], sample_size: int = None) -> typing.List[Node]:
     """Decaches domain objects: Node (if monitorable).
 
     :param network: A pointer to either a network or network identifier.
@@ -225,8 +225,9 @@ def get_nodes_for_monitoring(network: typing.Union[NetworkIdentifier, Network]) 
     
     """
     nodeset = {i.address: i for i in get_nodes(network) if i.is_monitorable}
+    nodeset = list(nodeset.values())
 
-    return list(nodeset.values())
+    return nodeset if sample_size is None else random.sample(nodeset, sample_size)
 
 
 def get_nodes_for_querying(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
