@@ -139,7 +139,7 @@ def _do_delegate_action(ctx: ExecutionContext, account_index: int, amount: int, 
     # Withdraw auction bid.
     dispatch_fn = DEPLOY_TYPE_TO_FN[deploy_type]
     dispatch_info = DeployDispatchInfo(validator, network, node)
-    deploy_hash, dispatch_duration, dispatch_attempts = dispatch_fn(dispatch_info, amount)
+    deploy_hash, dispatch_duration, dispatch_attempts = dispatch_fn(dispatch_info, validator, amount)
 
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(

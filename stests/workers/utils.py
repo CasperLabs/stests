@@ -26,10 +26,10 @@ def _setup(output_mode: OutputMode):
     # Initialise logging.
     logging.initialise(output_mode)
 
-    # Initialise broker.
+    # Initialise message broker.
     mq.initialise()
 
-    # Initialise encoder.
+    # Initialise message encoder.
     encoder.initialise()    
 
 

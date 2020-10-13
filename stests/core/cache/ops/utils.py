@@ -183,7 +183,7 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # JIT initialise encoder so as to ensure that all types are registered.
+            # JIT extend encoder so as to ensure that all types are registered.
             encoder.initialise()
 
             # Set store - use context manager to auto close connection.

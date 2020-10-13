@@ -3,7 +3,7 @@ import stests.orchestration.generators.wg_110.meta as wg_110
 import stests.orchestration.generators.wg_200.meta as wg_200
 import stests.orchestration.generators.wg_201.meta as wg_201
 import stests.orchestration.generators.wg_210.meta as wg_210
-import stests.orchestration.generators.wg_210.meta as wg_211
+import stests.orchestration.generators.wg_211.meta as wg_211
 
 
 

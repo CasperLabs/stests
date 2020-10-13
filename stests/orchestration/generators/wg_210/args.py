@@ -37,4 +37,3 @@ ARGS.add_argument(
     type=int,
     default=int(1e6)
     )
-
