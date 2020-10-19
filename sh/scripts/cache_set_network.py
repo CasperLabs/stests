@@ -19,6 +19,15 @@ ARGS.add_argument(
     type=args_validator.validate_network,
     )
 
+# CLI argument: network name.
+ARGS.add_argument(
+    "--chain",
+    default="casperlabs-example",
+    dest="chain",
+    help="Chain name, e.g. cspr-001.",
+    type=str,
+    )
+
 
 def main(args):
     """Entry point.
@@ -27,7 +36,7 @@ def main(args):
 
     """
     # Instantiate.
-    network = factory.create_network(args.network)
+    network = factory.create_network(args.network, args.chain)
 
     # Push.
     cache.infra.set_network(network)

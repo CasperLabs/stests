@@ -9,7 +9,7 @@ Prior to interacting with a test network one must register the network infrastru
 1.  Register network + faucet key:
 
     ```
-    stests-cache-set-network --net poc1
+    stests-cache-set-network --net poc1 --chain cspr-poc-chain
     stests-cache-set-faucet-key --net poc1 --path PATH_TO_SECRET_KEY
     ```
 
