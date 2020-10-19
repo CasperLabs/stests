@@ -28,7 +28,7 @@ Prior to interacting with a test network one must register the network infrastru
 
 ## Launching Workers
 
-Once the network is registered you can launch stests monitoring & orchestration worker processes.  These processes run in daemon mode, i.e. in the background, and are controlled from the command line.
+Once the network is registered you can launch stests monitoring & orchestration worker processes.  These processes run in daemon mode, i.e. in the background, and are controlled from the command line.  Prior to launching the workers ensure that the casper-node client binary + client side wasm files have been copied to a directory made availabel via the `CSPR_BIN` environment variable.
 
 1.  Start workers.
 
