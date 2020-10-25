@@ -43,5 +43,5 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
         ],
         stdout=subprocess.PIPE,
         )
-
-    return json.loads(cli_response.stdout)['deploy_hash']
+    
+    return json.loads(cli_response.stdout)['result']['deploy_hash']
