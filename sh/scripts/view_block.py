@@ -1,16 +1,15 @@
 import argparse
 import json
-import typing
 
-from stests.core import clx
-from stests.core import factory
+from stests import chain
 from stests.core.utils import args_validator
 from stests.core.utils import env
+from utils import get_network_node
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays block information returned by a chain query.")
+ARGS = argparse.ArgumentParser("Renders on-chain block information.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -21,9 +20,18 @@ ARGS.add_argument(
     type=args_validator.validate_network,
     )
 
+# CLI argument: node index.
+ARGS.add_argument(
+    "--node",
+    default=1,
+    dest="node",
+    help="Node index, e.g. 1.",
+    type=args_validator.validate_node_index
+    )
+
 # CLI argument: block hash.
 ARGS.add_argument(
-    "--block-hash",
+    "--block",
     dest="block_hash",
     help="Block hash.",
     type=str,
@@ -36,22 +44,12 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    _render(clx.get_block_info(
-        factory.create_network_id(args.network),
-        args.block_hash
-        ))
-
-
-def _render(info: typing.Dict[str, typing.Union[str, int]]):
-    """Renders on-chain deploy information.
-    
-    """
-    print("--------------------------------------------------------------------------------------------")
-    if info:
-        print(json.dumps(info, indent=4))
+    network, node = get_network_node(args)
+    block = chain.get_block(network, node, args.block_hash)
+    if block:
+        print(json.dumps(block, indent=4))
     else:
         print("Chain query returned null - is the block hash correct ?")
-    print("--------------------------------------------------------------------------------------------")
 
 
 # Entry point.

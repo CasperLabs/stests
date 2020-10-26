@@ -1,11 +1,10 @@
 import argparse
 
-from stests.core import cache
-from stests.core import clx
-from stests.core import factory
+from stests import chain
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
+from utils import get_network_node
 
 
 
@@ -21,6 +20,15 @@ ARGS.add_argument(
     type=args_validator.validate_network,
     )
 
+# CLI argument: node index.
+ARGS.add_argument(
+    "--node",
+    default=1,
+    dest="node",
+    help="Node index, e.g. 1.",
+    type=args_validator.validate_node_index
+    )
+
 
 def main(args):
     """Entry point.
@@ -28,15 +36,11 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network_id=factory.create_network_id(args.network)
-    network = cache.infra.get_network(network_id)
-    if network is None:
-        utils.log_warning(f"Network {args.network} is unregistered.")
-        return
-
-    balance = clx.get_account_balance(network_id, network.faucet.account_id)
-
-    utils.log(f"NETWORK: {network.name} -> faucet balance = {balance}")
+    network, node = get_network_node(args)
+    account = chain.get_account(network, node, node.account.account_hash)
+    purse_uref = account['Account']['main_purse']
+    balance = chain.get_account_balance(network, node, purse_uref)
+    utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
 
 
 # Entry point.

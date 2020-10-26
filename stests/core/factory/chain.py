@@ -42,7 +42,7 @@ def create_account(
             crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
 
     return Account(
-        account_hash=crypto.get_account_hash(key_algo, public_key),
+        account_hash=crypto.get_account_hash_from_public_key(key_algo, public_key),
         account_id=crypto.get_account_id(key_algo, public_key),
         key_algo=key_algo.name,
         index=index if index is not None else 1,

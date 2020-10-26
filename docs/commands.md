@@ -87,11 +87,11 @@ Deletes orchestration & monitoring related cache data.
 
 Deletes infrastructure related cache data.  **Execution of this command requires subsequent re-registration of network infrastructure**.
 
-## Cache Querying
+## Viewing Information
 
-#### `stests-cache-view-bonding-key --net X --node Y`
+#### `stests-view-account --net X --node Y --acount Z`
 
-Displays a node's bonding asymmetric ECC key pair.
+Displays on-chain account information.
 
 - `--net`
 	- Network name {type}{id}, e.g. nctl1.
@@ -99,29 +99,94 @@ Displays a node's bonding asymmetric ECC key pair.
 - `--node`
 	- Node index, e.g. 1.
 
-#### `stests-cache-view-contracts --net X`
+- `--account`
+	- Either a 33 byte account id (hex format) or a 32 byte account hash (hex format).
 
-Displays information related to test smart contracts registered with stests & stored on-chain.
+#### `stests-view-account-balance --net X --node Y --acount Z`
 
-- `--net`
-	- Network name {type}{id}, e.g. nctl1.
-
-#### `stests-cache-view-faucet-key --net X`
-
-Displays a network's faucet account ECC key pair.
+Displays an on-chain account balance.
 
 - `--net`
 	- Network name {type}{id}, e.g. nctl1.
 
-#### `stests-cache-view-networks`
+- `--node`
+	- Node index, e.g. 1.
+
+- `--account`
+	- Either a 33 byte account id (hex format) or a 32 byte account hash (hex format).
+
+#### `stests-view-account-hash --acount X`
+
+Displays an on-chain account hash.
+
+- `--account`
+	- A 33 byte account id (hex format), i.e. a key algo type + public key.
+
+#### `stests-view-block --net X --node Y --block Z`
+
+Displays on-chain block information.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+- `--block`
+	- 32 byte block hash (hex format).
+
+#### `stests-view-deploy --net X --node Y --block Z`
+
+Displays on-chain deploy information.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+- `--deploy`
+	- 32 byte deploy hash (hex format).
+
+#### `stests-view-faucet-account --net X --node Y`
+
+Displays on-chain faucet account information.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+#### `stests-view-faucet-account-balance --net X --node Y`
+
+Displays on-chain faucet account balance information.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+#### `stests-view-faucet-account-keys --net X --node Y`
+
+Displays keys associated with a network faucet.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+#### `stests-view-networks`
 
 Displays information related to the set of networks registered with stests.
 
-#### `stests-cache-view-nodes`
+#### `stests-view-nodes`
 
 Displays set of nodes registered with stests for a particular network.
 
-#### `stests-cache-view-run --net X --type Y --run Z`
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+#### `stests-view-run --net X --type Y --run Z`
 
 Displays summary information related to a workload generator run.  The information is broken down into the various phases/steps that a generator may pass through in it's lifetime.
 
@@ -134,7 +199,7 @@ Displays summary information related to a workload generator run.  The informati
 - `--run`
 	- Run identifier, e.g. 1.
 
-#### `stests-cache-view-run-deploys --net X --type Y --run Z`
+#### `stests-view-run-deploys --net X --type Y --run Z`
 
 Displays information about each deploy dispatched during the course of a workload generator run.
 
@@ -147,7 +212,7 @@ Displays information about each deploy dispatched during the course of a workloa
 - `--run`
 	- Run identifier, e.g. 1.
 
-#### `stests-cache-view-runs --net X --type Y --status Z`
+#### `stests-view-runs --net X --type Y --status Z`
 
 Displays summary information regarding workload generator runs.  Such information includes number of dispatched deploys plus execution stats & status. 
 
@@ -158,9 +223,56 @@ Displays summary information regarding workload generator runs.  Such informatio
 	- Run type, e.g. wg-100.
 	
 - `--status`
-	- Run status - e.g. complete.  
+	- Run status - e.g. complete. 
 
-## Cache Updating
+#### `stests-view-state-root-hash --net X --type Y`
+
+Displays a node's current state root hash. 
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+#### `stests-cache-view-bonding-key --net X --node Y`
+
+Displays a node's bonding asymmetric ECC key pair.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+#### `stests-view-validator-account --net X --node Y`
+
+Displays on-chain validator account information.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+#### `stests-view-validator-account-balance --net X --node Y`
+
+Displays on-chain validator account balance information.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--node`
+	- Node index, e.g. 1.
+
+#### `stests-view-validator-account-keys --net X --node Y`
+
+Displays keys associated with a network validator.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+ ## Cache Updating
 
 #### `stests-cache-set-bonding-key --net X --node Y --path Z`
 

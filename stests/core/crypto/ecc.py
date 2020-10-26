@@ -15,6 +15,22 @@ ALGOS = {
 }
 
 
+def get_key_algo(key: str) -> KeyAlgorithm:
+    """Returns algorithm of an account key.
+
+    :param key: An account key from which an algorithm can be derived.
+
+    :returns: A supported key algorithm.
+
+    """
+    if key.startswith('01'):
+        return KeyAlgorithm.ED25519
+    if key.startswith('02'):
+        return KeyAlgorithm.SECP256K1
+
+    raise ValueError("Unsupported key type.")
+
+
 def get_key_pair(algo: KeyAlgorithm, encoding: KeyEncoding = KeyEncoding.BYTES) -> typing.Tuple[bytes, bytes]:
     """Returns an ECC key pair, each key is a 32 byte array.
 

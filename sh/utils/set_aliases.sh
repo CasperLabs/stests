@@ -16,14 +16,14 @@ function _exec_cmd()
 }
 
 # ###############################################################
-# ALIASES: stack 
+# ALIASES: Stack 
 # ###############################################################
 
 alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh                                             
 alias stests-stack-vars=$STESTS_PATH_SH/stack/view_vars.sh
 
 # ###############################################################
-# ALIASES: interactive
+# ALIASES: Interactive
 # ###############################################################
 
 alias stests-interactive='$STESTS_PATH_SH/workers/interactive.sh unified'
@@ -31,7 +31,7 @@ alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh moni
 alias stests-interactive-orchestration='$STESTS_PATH_SH/workers/interactive.sh orchestration'         
 
 # ###############################################################
-# ALIASES: workers
+# ALIASES: Workers
 # ###############################################################
 
 alias stests-workers=$STESTS_PATH_SH/workers/start.sh
@@ -42,19 +42,19 @@ alias stests-workers-status=$STESTS_PATH_SH/workers/status.sh
 alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 
 # ###############################################################
-# ALIASES: registration
+# ALIASES: Registration
 # ###############################################################
 
 alias stests-register-lrt='$STESTS_PATH_SH/cache/register_lrt.sh'
 alias stests-register-nctl='$STESTS_PATH_SH/cache/register_nctl.sh'
 
 # ###############################################################
-# ALIASES: cache
+# ALIASES: Cache management
 # ###############################################################
 
 alias stests-cache-flush='$STESTS_PATH_SH/cache/flush.sh'
 alias stests-cache-flush-infra='$STESTS_PATH_SH/cache/flush_infra.sh'
-
+# alias stests-chain-set-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_set_contracts.py'                       # TODO: reinstate when client is updated
 alias stests-cache-set-bonding-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_bonding_key.py'
 alias stests-cache-set-faucet-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_faucet_key.py'
 alias stests-cache-set-network='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_network.py'
@@ -62,29 +62,42 @@ alias stests-cache-set-network-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_s
 alias stests-cache-set-node='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_node.py'
 alias stests-cache-set-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_node_status.py'
 
-alias stests-cache-view-bonding-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_bonding_key.py'
-# alias stests-cache-view-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_contracts.py'                     # TODO: reinstate when client is updated
-alias stests-cache-view-faucet-key='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_faucet_key.py'
-alias stests-cache-view-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_networks.py'
-alias stests-cache-view-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_nodes.py'
-alias stests-cache-view-run='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_run.py'
-alias stests-cache-view-run-deploys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_run_deploys.py'
-alias stests-cache-view-runs='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_view_runs.py'
-
 # ###############################################################
-# ALIASES: chain
+# ALIASES: Views
 # ###############################################################
 
-# alias stests-chain-set-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_set_contracts.py'                       # TODO: reinstate when client is updated
-# alias stests-chain-view-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_view_account_balance.py'         # TODO: reinstate when client is updated
-# alias stests-chain-view-account-id='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_view_account_id.py'                   # TODO: reinstate when client is updated
-# alias stests-chain-view-account-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_view_account_info.py'               # TODO: reinstate when client is updated
-# alias stests-chain-view-block-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_view_block_info.py'                   # TODO: reinstate when client is updated
-# alias stests-chain-view-deploy-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_view_deploy_info.py'                 # TODO: reinstate when client is updated
-# alias stests-chain-view-faucet-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/chain_view_faucet_balance.py'           # TODO: reinstate when client is updated
+# Infra information.
+alias stests-view-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_networks.py'
+alias stests-view-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_nodes.py'
+
+# Account information.
+alias stests-view-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account.py'
+alias stests-view-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_balance.py'
+alias stests-view-account-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_hash.py'
+
+# Faucet information.
+alias stests-view-faucet-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account.py'
+alias stests-view-faucet-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account_balance.py'
+alias stests-view-faucet-account-keys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account_keys.py'
+
+# State information.
+alias stests-view-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_block.py'
+alias stests-view-deploy='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_deploy.py'
+alias stests-view-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_state_root_hash.py'
+# alias stests-view-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_contracts.py'                                 # TODO: reinstate when client is updated
+
+# Validator information.
+alias stests-view-validator-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_validator_account.py'
+alias stests-view-validator-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_validator_account_balance.py'
+alias stests-view-validator-account-keys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_validator_account_keys.py'
+
+# Generator information.
+alias stests-view-run='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_run.py'
+alias stests-view-run-deploys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_run_deploys.py'
+alias stests-view-runs='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_runs.py'
 
 # ###############################################################
-# ALIASES: generators
+# ALIASES: Generators
 # ###############################################################
 
 function _exec_generator()

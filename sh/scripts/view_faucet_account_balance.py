@@ -1,15 +1,15 @@
 import argparse
 
-from stests.core import clx
-from stests.core import factory
+from stests import chain
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
+from utils import get_network_node
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays an on-chain account balance.")
+ARGS = argparse.ArgumentParser("Displays a network's faucet balance.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -20,13 +20,15 @@ ARGS.add_argument(
     type=args_validator.validate_network,
     )
 
-# CLI argument: account identifer.
+# CLI argument: node index.
 ARGS.add_argument(
-    "--account",
-    dest="account_id",
-    help="Network account id (hex format), e.g. 78d38ce2ffab138bfa972f1d69e3aad7327fc0b1bcf89a5b0ca89475c2f49f43.",
-    type=str
+    "--node",
+    default=1,
+    dest="node",
+    help="Node index, e.g. 1.",
+    type=args_validator.validate_node_index
     )
+
 
 
 def main(args):
@@ -35,16 +37,10 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    _render(clx.get_account_balance(
-        factory.create_network_id(args.network),
-        args.account_id
-        ))
-
-
-def _render(balance: int):
-    """Renders on-chain deploy information.
-    
-    """
+    network, node = get_network_node(args)
+    account = chain.get_account(network, node, network.faucet.account_hash)
+    purse_uref = account['Account']['main_purse']
+    balance = chain.get_account_balance(network, node, purse_uref)
     utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
 
 

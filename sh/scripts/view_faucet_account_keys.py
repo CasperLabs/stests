@@ -5,11 +5,12 @@ from stests.core import factory
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
+from utils import get_network
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays a network's faucet asymmetric key pair.")
+ARGS = argparse.ArgumentParser("Displays a keys asssociated with a network's faucet account.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -27,16 +28,12 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network_id=factory.create_network_id(args.network)
-    network = cache.infra.get_network(network_id)
-    if network is None:
-        utils.log_warning(f"Network {args.network} is unregistered.")
-        return
-
+    network = get_network(args)
     utils.log(f"NETWORK: {network.name} -> faucet account-hash = {network.faucet.account_hash}")
     utils.log(f"NETWORK: {network.name} -> faucet account-id = {network.faucet.account_id}")
     utils.log(f"NETWORK: {network.name} -> faucet private-key = {network.faucet.private_key}")
     utils.log(f"NETWORK: {network.name} -> faucet public-key = {network.faucet.public_key}")
+
 
 # Entry point.
 if __name__ == '__main__':

@@ -44,6 +44,10 @@ class Node:
         return f"{self.host}:{self.port}"
 
     @property
+    def address_rpc(self):
+        return f"{self.host}:{self.port}/rpc"
+
+    @property
     def address_stream(self):
         return f"{self.address}/events"
 
@@ -70,6 +74,10 @@ class Node:
     @property
     def network_name(self):
         return self.network
+
+    @property
+    def url_rpc(self):
+        return f"http://{self.host}:{self.port}/rpc"
 
 
 @dataclasses.dataclass

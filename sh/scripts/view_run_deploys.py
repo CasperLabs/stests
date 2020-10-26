@@ -28,6 +28,7 @@ ARGS.add_argument(
 # CLI argument: run type.
 ARGS.add_argument(
     "--type",
+    default="wg-100",
     dest="run_type",
     help="Generator type - e.g. wg-100.",
     type=args_validator.validate_run_type,
@@ -36,6 +37,7 @@ ARGS.add_argument(
 # CLI argument: run index.
 ARGS.add_argument(
     "--run",
+    default=1,
     dest="run_index",
     help="Run identifier.",
     type=args_validator.validate_run_index,
@@ -45,14 +47,14 @@ ARGS.add_argument(
 # Table columns.
 COLS = [
     ("#", BeautifulTable.ALIGN_LEFT),
-    ("Dispatch Timestamp", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Node", BeautifulTable.ALIGN_LEFT),
-    ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
-    ("Type", BeautifulTable.ALIGN_LEFT),
-    ("Status", BeautifulTable.ALIGN_LEFT),
+    ("Dispatch Timestamp", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Account", BeautifulTable.ALIGN_LEFT),
+    ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
+    ("Deploy Type", BeautifulTable.ALIGN_LEFT),
+    ("Deploy Status", BeautifulTable.ALIGN_LEFT),
     ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
-    ("Round ID", BeautifulTable.ALIGN_RIGHT),
+    ("Consensus Round ID", BeautifulTable.ALIGN_RIGHT),
     ("Block Hash", BeautifulTable.ALIGN_RIGHT),
 ]
 
@@ -79,16 +81,19 @@ def _render_table(args, network_id, data):
     # Sort data.
     data = sorted(data, key=lambda i: i.dispatch_timestamp)
 
+    for i in data:
+        print(i.dispatch_timestamp)
+
     # Set table cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         data.index(i) + 1,
-        i.dispatch_timestamp,
         i.dispatch_node,
+        str(i.dispatch_timestamp),
+        i.account,
         i.deploy_hash,      
         i.typeof.name,
         i.status.name,      
-        i.account,
         i.label_finalization_duration,
         i.round_id or "--",
         i.block_hash or "--"
