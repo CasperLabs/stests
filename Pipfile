@@ -28,6 +28,7 @@ pyblake2 = "*"
 ecdsa = "*"
 toml = "*"
 sseclient-py = "*"
+jsonrpcclient = "*"
 
 [requires]
 python_version = "3.8"
