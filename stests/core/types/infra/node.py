@@ -85,6 +85,10 @@ class Node:
     def url_rpc(self):
         return f"http://{self.address_rpc}"
 
+    @property
+    def url_stream(self):
+        return f"http://{self.address_stream}"
+
 
 @dataclasses.dataclass
 class NodeEventInfo:

@@ -33,7 +33,7 @@ def _yield_events(node: Node):
     """Yields events streaming from node.
 
     """
-    stream = requests.get(f"http://{node.address_stream}", stream=True)
+    stream = requests.get(node.url_stream, stream=True)
     client = sseclient.SSEClient(stream)
     try:
         for event in client.events():
