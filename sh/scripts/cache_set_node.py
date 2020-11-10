@@ -50,7 +50,7 @@ ARGS.add_argument(
 
 def main(args):
     """Entry point.
-    
+
     :param args: Parsed CLI arguments.
 
     """
@@ -64,7 +64,7 @@ def main(args):
     # Instantiate.
     node = factory.create_node(
         host=host,
-        index=index,  
+        index=index,
         network_id=factory.create_network_id(network),
         port=port,
         typeof=typeof

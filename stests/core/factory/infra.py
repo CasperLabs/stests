@@ -16,7 +16,7 @@ from stests.events import EventType
 
 def create_network(name_raw: str, chain_name: str) -> Network:
     """Returns a domain object instance: Network.
-    
+
     """
     identifier = create_network_id(name_raw)
 
@@ -33,7 +33,7 @@ def create_network(name_raw: str, chain_name: str) -> Network:
 
 def create_network_id(name_raw: str) -> NetworkIdentifier:
     """Returns a cache identifier: NetworkIdentifier.
-    
+
     """
     # If name has already been parsed.
     if name_raw.upper() == name_raw:
@@ -61,7 +61,7 @@ def create_node(
     weight=0,
     ) -> Node:
     """Returns a domain object instance: Node.
-    
+
     """
     return Node(
         account=None,
@@ -77,14 +77,14 @@ def create_node(
 
 def create_node_id(network_id: NetworkIdentifier, index: int) -> NodeIdentifier:
     """Returns a cache identifier: NodeIdentifier.
-    
+
     """
     return NodeIdentifier(network_id, index)
 
 
 def create_node_monitoring_lock(node_id: NodeIdentifier, lock_index: int) -> NodeMonitoringLock:
     """Returns a domain object instance: NodeMonitoringLock.
-    
+
     """
     return NodeMonitoringLock(
         network=node_id.network.name,
@@ -101,7 +101,7 @@ def create_node_event_info(
     deploy_hash: str = None,
     ) -> NodeEventInfo:
     """Returns a domain object instance: NodeEventInfo.
-    
+
     """
     return NodeEventInfo(
         block_hash=block_hash,
@@ -110,6 +110,6 @@ def create_node_event_info(
         event_timestamp=datetime.now(),
         event_type=event_type,
         network=node.network,
-        node_address=node.address,
+        node_address=node.address_rpc,
         node_index=node.index,
         )

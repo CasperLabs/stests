@@ -22,7 +22,7 @@ ARGS = argparse.ArgumentParser("Register an LRT network with stests.")
 
 def main(args):
     """Entry point.
-    
+
     :param args: Parsed CLI arguments.
 
     """
@@ -40,7 +40,7 @@ def main(args):
 
 def _yield_assets() -> typing.Tuple[str, typing.List, typing.List]:
     """Yields relevant assets from each sub-directory within $HOME/.casperlabs-stests/nets.
-    
+
     """
     path = pathlib.Path(os.path.expanduser("~/.casperlabs-stests/nets"))
     if not path.exists or not path.is_dir:
@@ -57,7 +57,7 @@ def _yield_assets() -> typing.Tuple[str, typing.List, typing.List]:
 
 def _get_chain_name(path_assets: pathlib.Path) -> str:
     """Returns chain name as specified within chainspec.
-    
+
     """
     chainspec = _get_chainspec(path_assets)
 
@@ -66,7 +66,7 @@ def _get_chain_name(path_assets: pathlib.Path) -> str:
 
 def _get_chainspec(path_assets: pathlib.Path) -> str:
     """Returns decoded chainspec.
-    
+
     """
     path_chainspec = path_assets / "chainspec.toml"
     if not path_chainspec.exists():
@@ -77,7 +77,7 @@ def _get_chainspec(path_assets: pathlib.Path) -> str:
 
 def _get_faucet(path_assets: pathlib.Path) -> typing.Tuple[str, crypto.KeyAlgorithm]:
     """Returns faucet information.
-    
+
     """
     path_sk_pem = path_assets / "faucet" / "secret_key.pem"
     if not path_sk_pem.exists():
@@ -88,7 +88,7 @@ def _get_faucet(path_assets: pathlib.Path) -> typing.Tuple[str, crypto.KeyAlgori
 
 def _get_nodeset(path_assets: pathlib.Path) -> typing.List[typing.Tuple[str, int, int, str]]:
     """Returns nodeset information.
-    
+
     """
     # Read node.csv.
     path = path_assets / "nodes.csv"
@@ -102,7 +102,7 @@ def _get_nodeset(path_assets: pathlib.Path) -> typing.List[typing.Tuple[str, int
 
 def _get_node(path_assets: pathlib.Path, info):
     """Returns node information.
-    
+
     """
     host, port, _, weight = info
 
@@ -116,7 +116,7 @@ def _get_node(path_assets: pathlib.Path, info):
 
 def _register_network(network_id: str, chain_name: str):
     """Register a network.
-    
+
     """
     network = factory.create_network(network_id, chain_name)
     cache.infra.set_network(network)
@@ -129,7 +129,7 @@ def _register_network(network_id: str, chain_name: str):
 
 def _register_faucet(network: Network, info: typing.Tuple[str, crypto.KeyAlgorithm]):
     """Register a network's faucet account.
-    
+
     """
     # Set key pair.
     path_secret_key_pem, secret_key_algo = info
@@ -159,7 +159,7 @@ def _register_node(
     info: typing.Tuple[str, int, int, pathlib.Path]
     ):
     """Register a network node.
-    
+
     """
     # Destructure node info.
     host, port, weight, path_sk_pem = info
@@ -167,7 +167,7 @@ def _register_node(
     # Set node.
     node = factory.create_node(
         host=host,
-        index=index,  
+        index=index,
         network_id=factory.create_network_id(network.name_raw),
         port=port,
         typeof=NodeType.FULL if weight > 1000 else NodeType.READ_ONLY,
@@ -189,13 +189,13 @@ def _register_node(
         key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=private_key,
         public_key=public_key,
-    )    
+    )
 
     # Push.
     cache.infra.set_node(node)
 
     # Inform.
-    utils.log(f"registered {network.name_raw} - {node.address} : {node.typeof.name}")
+    utils.log(f"registered {network.name_raw} - {node.address_rpc} : {node.typeof.name}")
 
 
 # Entry point.

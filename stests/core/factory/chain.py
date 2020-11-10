@@ -35,7 +35,7 @@ def create_account(
     public_key: str = None,
     ) -> Account:
     """Returns a domain object instance: Account.
-    
+
     """
     if private_key is None:
         private_key, public_key = \
@@ -61,7 +61,7 @@ def create_account_for_run(
     index: int = 1,
     ) -> Account:
     """Returns a domain object instance: Account.
-    
+
     """
     try:
         key_algo = crypto.KeyAlgorithm[ctx.key_algorithm]
@@ -87,7 +87,7 @@ def create_account_id(
     run_type: int,
     ) -> AccountIdentifier:
     """Returns a cache identifier: AccountIdentifier.
-    
+
     """
     network_id = create_network_id(network)
 
@@ -101,7 +101,7 @@ def create_block_on_finalisation(
     node_id: NodeIdentifier,
     block_hash: str,
     deploy_cost_total: int,
-    deploy_count: int, 
+    deploy_count: int,
     deploy_gas_price_avg: int,
     j_rank: int,
     m_rank: int,
@@ -110,12 +110,12 @@ def create_block_on_finalisation(
     validator_id: str
     ) -> Block:
     """Returns a domain object instance: Block.
-    
+
     """
     return Block(
         block_hash=block_hash,
         deploy_cost_total=deploy_cost_total,
-        deploy_count=deploy_count, 
+        deploy_count=deploy_count,
         deploy_gas_price_avg=deploy_gas_price_avg,
         j_rank=j_rank,
         m_rank=m_rank,
@@ -145,7 +145,7 @@ def create_block_statistics_on_finalization(
     validator_id: str,
     ) -> BlockStatistics:
     """Returns a domain object instance: BlockStatistics.
-    
+
     """
     return BlockStatistics(
         block_hash=block_hash,
@@ -168,7 +168,7 @@ def create_block_statistics_on_finalization(
 
 def create_block_summary_on_finalisation(info: NodeEventInfo) -> BlockSummary:
     """Returns a domain object instance: BlockSummary.
-    
+
     """
     return BlockSummary(
         block_hash=info.block_hash,
@@ -197,7 +197,7 @@ def create_deploy_for_run(
         deploy_hash=deploy_hash,
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
-        dispatch_node=node.address,
+        dispatch_node=node.address_rpc,
         dispatch_timestamp=datetime.now(),
         finalization_duration=None,
         finalization_node=None,
@@ -206,7 +206,7 @@ def create_deploy_for_run(
         phase_index=ctx.phase_index,
         round_id=None,
         run_index=ctx.run_index,
-        run_type=ctx.run_type,        
+        run_type=ctx.run_type,
         status=DeployStatus.DISPATCHED,
         step_index=ctx.step_index,
         step_label=ctx.step_label,
@@ -216,7 +216,7 @@ def create_deploy_for_run(
 
 def create_deploy_summary_on_finalisation(info: NodeEventInfo) -> DeploySummary:
     """Returns a domain object instance: DeploySummary.
-    
+
     """
     return DeploySummary(
         block_hash=info.block_hash,
@@ -233,7 +233,7 @@ def create_named_key(
     hash: str,
     ) -> NamedKey:
     """Returns a domain object instance: NamedKey.
-    
+
     """
     return NamedKey(
         account_id=account.account_id,
@@ -257,7 +257,7 @@ def create_transfer(
     status=TransferStatus.PENDING
     ) -> Transfer:
     """Returns a domain object instance: Transfer.
-    
+
     """
     return Transfer(
         amount=amount,

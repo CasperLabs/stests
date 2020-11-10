@@ -31,7 +31,7 @@ def execute(node: Node, event_callback: typing.Callable):
 
 def _yield_events(node: Node):
     """Yields events streaming from node.
-    
+
     """
     stream = requests.get(f"http://{node.address_stream}", stream=True)
     client = sseclient.SSEClient(stream)
@@ -51,7 +51,7 @@ def _yield_events(node: Node):
 
 def _parse_event_payload(node: Node, obj: dict) -> typing.Tuple[dict, EventType, typing.Optional[str], typing.Optional[str]]:
     """Parses raw event data for upstream processing.
-    
+
     """
     if 'ApiVersion' in obj:
         return
@@ -76,10 +76,10 @@ def _parse_event_payload(node: Node, obj: dict) -> typing.Tuple[dict, EventType,
             EventType.MONIT_DEPLOY_PROCESSED, \
             None, \
             None
-    
+
     log_event(
         EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,
-        f"event skipped as type is unsupported :: node={node.address}",
+        f"event skipped as type is unsupported :: node={node.address_rpc}",
         node
         )
     print(obj)

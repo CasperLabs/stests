@@ -34,7 +34,7 @@ def get_named_key(network: str, contract_type: ContractType, name: str) -> ItemK
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
-    
+
     """
     return ItemKey(
         paths=[
@@ -56,7 +56,7 @@ def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> Se
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
-    
+
     """
     try:
         network = network.name
@@ -66,7 +66,7 @@ def get_named_keys(network: typing.Union[NetworkIdentifier, Network, str]) -> Se
     return SearchKey(
         paths=[
             network,
-            COL_NAMED_KEY,            
+            COL_NAMED_KEY,
         ]
     )
 
@@ -78,7 +78,7 @@ def get_network(network_id: NetworkIdentifier) -> ItemKey:
     :param network_id: A network identifier.
 
     :returns: A registered network.
-    
+
     """
     return ItemKey(
         paths=[
@@ -95,7 +95,7 @@ def get_networks() -> SearchKey:
     """Decaches domain objects: Network.
 
     :returns: List of registered networks.
-    
+
     """
     return SearchKey(
         paths=[
@@ -108,7 +108,7 @@ def get_networks() -> SearchKey:
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_node_by_identifier(node_id: NodeIdentifier) -> ItemKey:
     """Decaches domain object: Node.
-    
+
     :param node_id: A node identifier.
 
     :returns: A registered node.
@@ -127,14 +127,14 @@ def get_node_by_identifier(node_id: NodeIdentifier) -> ItemKey:
 
 def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> Node:
     """Decaches domain object: Node.
-    
+
     :param network: A network.
 
     :returns: A registered node selected at random from a network's nodeset.
 
     """
     # Pull operational nodeset.
-    nodeset = get_nodes_for_dispatch(network) 
+    nodeset = get_nodes_for_dispatch(network)
     if not nodeset:
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
@@ -144,7 +144,7 @@ def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> No
 
 def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int = None) -> Node:
     """Decaches domain object: Node.
-    
+
     :param network_id: A network identifier.
     :param node_index: A node index (1 based).
 
@@ -155,7 +155,7 @@ def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int =
     nodeset = get_nodes_for_dispatch(network_id)
     if not nodeset:
         raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
-    
+
     # Select random if node index unspecified.
     if node_index is None or node_index <= 0:
         return random.choice(nodeset)
@@ -169,7 +169,7 @@ def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int =
 
 def get_node_by_port(network: typing.Union[Network, NetworkIdentifier], port: int) -> Node:
     """Decaches domain object: Node.
-    
+
     :param network: A network.
     :param port: Identifier of port to be mapped to a node.
 
@@ -177,7 +177,7 @@ def get_node_by_port(network: typing.Union[Network, NetworkIdentifier], port: in
 
     """
     # Pull operational nodeset.
-    nodeset = get_nodes_for_dispatch(network) 
+    nodeset = get_nodes_for_dispatch(network)
     if not nodeset:
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
@@ -193,14 +193,14 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> SearchK
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
-    
+
     """
     return SearchKey(
         paths=[
             "*" if network is None else network.name,
             COL_NODE,
         ]
-    )     
+    )
 
 
 def get_nodes_for_dispatch(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
@@ -209,9 +209,9 @@ def get_nodes_for_dispatch(network: typing.Union[NetworkIdentifier, Network]) ->
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
-    
+
     """
-    nodeset = {i.address: i for i in get_nodes(network) if i.is_dispatchable}
+    nodeset = {i.address_rpc: i for i in get_nodes(network) if i.is_dispatchable}
 
     return list(nodeset.values())
 
@@ -222,9 +222,9 @@ def get_nodes_for_monitoring(network: typing.Union[NetworkIdentifier, Network], 
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
-    
+
     """
-    nodeset = {i.address: i for i in get_nodes(network) if i.is_monitorable}
+    nodeset = {i.address_rpc: i for i in get_nodes(network) if i.is_monitorable}
     nodeset = list(nodeset.values())
 
     return nodeset if sample_size is None else random.sample(nodeset, sample_size)
@@ -236,9 +236,9 @@ def get_nodes_for_querying(network: typing.Union[NetworkIdentifier, Network]) ->
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
-    
+
     """
-    nodeset = {i.address: i for i in get_nodes(network) if i.is_queryable}
+    nodeset = {i.address_rpc: i for i in get_nodes(network) if i.is_queryable}
 
     return list(nodeset.values())
 
@@ -248,7 +248,7 @@ def set_named_key(named_key: NamedKey) -> Item:
     """Encaches domain object: NamedKey.
 
     :param network: NamedKey domain object instance to be cached.
-    
+
     :returns: Keypath + domain object instance.
 
     """
@@ -273,7 +273,7 @@ def set_network(network: Network) -> Item:
     """Encaches domain object: Network.
 
     :param network: Network domain object instance to be cached.
-    
+
     :returns: Keypath + domain object instance.
 
     """
@@ -293,7 +293,7 @@ def set_network(network: Network) -> Item:
 @cache_op(_PARTITION, StoreOperation.SET_ONE)
 def set_node(node: Node) -> Item:
     """Encaches domain object: Node.
-    
+
     :param node: Node domain object instance to be cached.
 
     :returns: Keypath + domain object instance.

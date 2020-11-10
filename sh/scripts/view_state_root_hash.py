@@ -32,13 +32,13 @@ ARGS.add_argument(
 
 def main(args):
     """Entry point.
-    
+
     :param args: Parsed CLI arguments.
 
     """
     network, node = get_network_node(args)
     state_root_hash = chain.get_state_root_hash(network, node)
-    utils.log(f"STATE ROOT HASH @ {node.address} = {state_root_hash or 'N/A'}")
+    utils.log(f"STATE ROOT HASH @ {node.address_rpc} = {state_root_hash or 'N/A'}")
 
 
 # Entry point.
