@@ -30,7 +30,7 @@ class Node:
     # Node's external facing RPC port.
     port_rpc: int
 
-    # # Node's external facing JSON port.
+    # Node's external facing JSON port.
     # port_json: int
 
     # Node's external facing event stream port.
@@ -48,6 +48,10 @@ class Node:
     @property
     def address_rpc(self):
         return f"{self.host}:{self.port_rpc}"
+
+    # @property
+    # def address_json(self):
+    #     return f"{self.host}:{self.port_json}"
 
     @property
     def address_stream(self):
@@ -79,7 +83,6 @@ class Node:
 
     @property
     def url_rpc(self):
-        # return f"http://{self.host}:{self.port}/rpc"
         return f"http://{self.address_rpc}"
 
 
