@@ -156,20 +156,21 @@ def _register_faucet(network: Network, info: typing.Tuple[str, crypto.KeyAlgorit
 def _register_node(
     network: Network,
     index: int,
-    info: typing.Tuple[str, int, int, pathlib.Path]
+    info: typing.Tuple[str, int, int, int, pathlib.Path]
     ):
     """Register a network node.
 
     """
     # Destructure node info.
-    host, port, weight, path_sk_pem = info
+    host, port_rpc, port_event, weight, path_sk_pem = info
 
     # Set node.
     node = factory.create_node(
         host=host,
         index=index,
         network_id=factory.create_network_id(network.name_raw),
-        port=port,
+        port_rpc=port_rpc,
+        port_event=port_event,
         typeof=NodeType.FULL if weight > 1000 else NodeType.READ_ONLY,
         weight=weight,
     )

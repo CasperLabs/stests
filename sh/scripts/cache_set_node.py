@@ -29,13 +29,29 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
-# Set CLI argument: node address.
+# Set CLI argument: node hostname.
 ARGS.add_argument(
-    "--address",
+    "--hostname",
     default="localhost",
-    dest="address",
-    help="Node public network address: {host}:{port}.",
-    type=args_validator.validate_node_address
+    dest="hostname",
+    help="Node public hostname: {host}.",
+    type=args_validator.validate_host
+    )
+
+# Set CLI argument: node RPC port.
+ARGS.add_argument(
+    "--rpc-port",
+    dest="port_rpc",
+    help="Node RPC port: {port}.",
+    type=args_validator.validate_port
+    )
+
+# Set CLI argument: node event stream port.
+ARGS.add_argument(
+    "--event-port",
+    dest="port_event",
+    help="Node event stream port: {port}.",
+    type=args_validator.validate_port
     )
 
 # Set CLI argument: node type.
@@ -55,10 +71,11 @@ def main(args):
 
     """
     # Unpack.
-    host = args.address.split(':')[0]
+    host = args.hostname
     index = int(args.node)
     network = args.network
-    port = int(args.address.split(':')[-1])
+    port_rpc = int(args.port_rpc)
+    port_event = int(args.port_event)
     typeof = NodeType[args.typeof.upper()]
 
     # Instantiate.
@@ -66,7 +83,9 @@ def main(args):
         host=host,
         index=index,
         network_id=factory.create_network_id(network),
-        port=port,
+        port_rpc=port_rpc,
+        port_event=port_event,
+        port_event=None, # TODO: Figure out what to have here.
         typeof=typeof
     )
 

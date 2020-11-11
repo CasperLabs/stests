@@ -221,17 +221,21 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
     # Get staking weight from entry in accounts.csv.
     _, _, _, stake_weight = _get_account(accounts, public_key, crypto.DEFAULT_KEY_ALGO)
 
-    # Destructure node host & port.
-    node_address = cfg['http_server']['address']
-    node_host = node_address.split(":")[0]
-    node_port = int(node_address.split(":")[1])
+    # Destructure node hosts & ports.
+    node_address_rpc = cfg['rpc_server']['address']
+    node_host_rpc = node_address_rpc.split(":")[0]
+    node_port_rpc = int(node_address_rpc.split(":")[1])
+    node_address_event = cfg['event_stream_server']['address']
+    node_host_event = node_address_event.split(":")[0]
+    node_port_event = int(node_address_event.split(":")[1])
 
     # Set node.
     node = factory.create_node(
         host=node_host,
         index=index,
         network_id=factory.create_network_id(network.name_raw),
-        port=node_port,
+        port_rpc=node_port_rpc,
+        port_event=node_port_event,
         typeof=NodeType.FULL if stake_weight > 256 else NodeType.READ_ONLY,
         weight=stake_weight,
     )
