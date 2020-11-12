@@ -182,7 +182,7 @@ def get_node_by_port(network: typing.Union[Network, NetworkIdentifier], port: in
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
     for node in nodeset:
-        if node.port == port:
+        if node.port_rpc == port:
             return node
 
 

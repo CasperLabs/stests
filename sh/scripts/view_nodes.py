@@ -31,7 +31,7 @@ COLS = [
 
 def main(args):
     """Entry point.
-    
+
     :param args: Parsed CLI arguments.
 
     """
@@ -50,7 +50,7 @@ def main(args):
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         i.label_index,
-        f"{i.host}:{i.port}",
+        f"{i.host}:{i.port_rpc}",
         i.typeof.name,
         i.status.name,
     ], sorted(data, key=lambda i: i.index))
@@ -60,7 +60,7 @@ def main(args):
 
     # Set table alignments.
     for key, aligmnent in COLS:
-        t.column_alignments[key] = aligmnent    
+        t.column_alignments[key] = aligmnent
 
     # Render.
     print(t)
