@@ -97,6 +97,7 @@ def _get_nodeset(path_assets: pathlib.Path) -> typing.List[typing.Tuple[str, int
     with open(path, 'r') as fstream:
         data = fstream.readlines()
 
+    # TODO: Need to add extra column for event stream port in 'nodes.csv'.
     return [_get_node(path_assets, i.split(",")) for i in data]
 
 
@@ -104,14 +105,14 @@ def _get_node(path_assets: pathlib.Path, info):
     """Returns node information.
 
     """
-    host, port, _, weight = info
+    host, port_rpc, port_event, _, weight = info
 
     # Set path to secret key.
     path_sk_pem = path_assets / "configs" / host / "secret_key.pem"
     if not path_sk_pem.exists():
         raise ValueError(f"node secret_key.pem file not found: {path_sk_pem}")
 
-    return (host, int(port), int(weight), path_sk_pem)
+    return (host, int(port_rpc), int(port_event), int(weight), path_sk_pem)
 
 
 def _register_network(network_id: str, chain_name: str):

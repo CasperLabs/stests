@@ -85,7 +85,6 @@ def main(args):
         network_id=factory.create_network_id(network),
         port_rpc=port_rpc,
         port_event=port_event,
-        port_event=None, # TODO: Figure out what to have here.
         typeof=typeof
     )
 
