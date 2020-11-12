@@ -229,6 +229,12 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
     node_host_event = node_address_event.split(":")[0]
     node_port_event = int(node_address_event.split(":")[1])
 
+    # For now, just assert that the RPC and the event stream hosts match.
+    # We can refactor this as distinct hostnames (RPC, event stream)
+    # another time.
+    assert node_host_rpc == node_host_event, "RPC and event stream hostnames do not match"
+    node_host = node_host_rpc
+
     # Set node.
     node = factory.create_node(
         host=node_host,
