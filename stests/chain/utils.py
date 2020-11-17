@@ -13,23 +13,23 @@ from stests.events import EventType
 
 class DeployDispatchInfo():
     """Encapsulates information required when dispatching a deploy.
-    
+
     """
     def __init__(self,
         dispatcher: Account,
         network: Network,
-        node: Node, 
+        node: Node,
         time_to_live: str = constants.DEFAULT_TX_TIME_TO_LIVE,
         fee: str = constants.DEFAULT_TX_FEE,
         gas_price: int = constants.DEFAULT_TX_GAS_PRICE,
         ):
         """Instance constructor.
-        
+
         """
         self.dispatcher = dispatcher
         self.network = network
         self.node = node
-        self.node_address = f"http://{node.address}"
+        self.node_address = node.url_rpc
         self.time_to_live = time_to_live
         self.fee = fee
         self.gas_price = gas_price
@@ -74,7 +74,7 @@ def execute_cli(command: str, on_failure_event: EventType,  max_attempts: int = 
     :param retry_delay: Retry delay.
 
     :returns: Decorated function with it's result augmented with execution stats.
-    
+
     """
     def decorator(func):
         @functools.wraps(func)

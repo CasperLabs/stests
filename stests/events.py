@@ -177,7 +177,7 @@ def _get_event_info_monitoring(
     """
     data = {
         'network': node.network_name,
-        'node': node.address if hasattr(node, "address") else node.label_index,
+        'node': node.address_rpc if hasattr(node, "address_rpc") else node.label_index,
     }
     if block_hash:
         data['block_hash'] = block_hash

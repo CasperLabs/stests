@@ -135,8 +135,8 @@ def validate_node_address(value):
     parts = address.split(":")
     if len(parts) != 2:
         raise argparse.ArgumentError("Invalid node address")
-    _validate_host(parts[0])
-    _validate_port(parts[1])
+    validate_host(parts[0])
+    validate_port(parts[1])
 
     return address
 
@@ -184,7 +184,7 @@ def validate_run_type(value):
     return str(value).upper()
 
 
-def _validate_host(value):
+def validate_host(value):
     """Argument verifier: host.
 
     """
@@ -192,7 +192,7 @@ def _validate_host(value):
     pass
 
 
-def _validate_port(value):
+def validate_port(value):
     """Argument verifier: port.
 
     """
