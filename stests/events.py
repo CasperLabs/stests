@@ -6,12 +6,12 @@ from datetime import datetime
 
 class EventType(enum.Enum):
     """Enum over set of system events.
-    
+
     """
     # Core sub-system.
     CORE_BROKER_CONNECTION_ESTABLISHED = enum.auto()
     CORE_ENCODING_FAILURE = enum.auto()
-    CORE_ACTOR_ERROR = enum.auto()    
+    CORE_ACTOR_ERROR = enum.auto()
 
     # Chain info reporting sub-system.
     CHAIN_FINALIZED_BLOCK = enum.auto()
@@ -95,7 +95,7 @@ EVENTS_WARN = (
 @dataclasses.dataclass
 class EventInfo():
     """Encapsulates information pertaining to the application.
-    
+
     """
     # Event data.
     data: dict
@@ -125,7 +125,7 @@ class EventInfo():
 
 def get_event_info(event_type: EventType, message: typing.Union[BaseException, str], *args, **kwargs) -> EventInfo:
     """Returns sub-system event information.
-    
+
     """
     event_name = "_".join(event_type.name.split('_')[1:])
     sub_system = event_type.name.split('_')[0]
@@ -159,7 +159,7 @@ def _get_event_info_chaininfo(
     info: typing.Any,
     ) -> typing.Tuple[int, dict]:
     """Returns monitoring sub-system event information.
-    
+
     """
     return event_type.value, message, info
 
@@ -173,7 +173,7 @@ def _get_event_info_monitoring(
     deploy_hash: str = None,
     ) -> typing.Tuple[int, dict]:
     """Returns monitoring sub-system event information.
-    
+
     """
     data = {
         'network': node.network_name,
@@ -193,7 +193,7 @@ def _get_event_info_workflow(
     ctx: typing.Any,
     ) -> typing.Tuple[int, dict]:
     """Returns workflow sub-system event information.
-    
+
     """
     return event_type.value, message, {
         'network': ctx.network,
@@ -201,5 +201,5 @@ def _get_event_info_workflow(
         'run_index': ctx.run_index,
         'run_type': ctx.run_type,
         'step_index': ctx.step_index,
-        'step_label': ctx.step_label,  
+        'step_label': ctx.step_label,
     }

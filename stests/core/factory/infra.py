@@ -16,7 +16,7 @@ from stests.events import EventType
 
 def create_network(name_raw: str, chain_name: str) -> Network:
     """Returns a domain object instance: Network.
-    
+
     """
     identifier = create_network_id(name_raw)
 
@@ -33,7 +33,7 @@ def create_network(name_raw: str, chain_name: str) -> Network:
 
 def create_network_id(name_raw: str) -> NetworkIdentifier:
     """Returns a cache identifier: NetworkIdentifier.
-    
+
     """
     # If name has already been parsed.
     if name_raw.upper() == name_raw:
@@ -41,10 +41,11 @@ def create_network_id(name_raw: str) -> NetworkIdentifier:
 
     # Parse raw name.
     name_raw = name_raw.lower()
-    for network_type in [i.name.lower() for i in NetworkType]:
-        if name_raw.startswith(network_type):
-            index=int(name_raw[len(network_type):])
-            typeof=name_raw[:len(network_type)].upper()
+    network_type_names = (i.name.lower() for i in NetworkType)
+    for network_type_name in network_type_names:
+        if name_raw.startswith(network_type_name):
+            index = int(name_raw[len(network_type_name):])
+            typeof = name_raw[:len(network_type_name)].upper()
             name = f"{typeof}-{str(index).zfill(2)}"
             return NetworkIdentifier(name=name)
 
@@ -61,7 +62,7 @@ def create_node(
     weight=0,
     ) -> Node:
     """Returns a domain object instance: Node.
-    
+
     """
     return Node(
         account=None,
@@ -77,14 +78,14 @@ def create_node(
 
 def create_node_id(network_id: NetworkIdentifier, index: int) -> NodeIdentifier:
     """Returns a cache identifier: NodeIdentifier.
-    
+
     """
     return NodeIdentifier(network_id, index)
 
 
 def create_node_monitoring_lock(node_id: NodeIdentifier, lock_index: int) -> NodeMonitoringLock:
     """Returns a domain object instance: NodeMonitoringLock.
-    
+
     """
     return NodeMonitoringLock(
         network=node_id.network.name,
@@ -101,7 +102,7 @@ def create_node_event_info(
     deploy_hash: str = None,
     ) -> NodeEventInfo:
     """Returns a domain object instance: NodeEventInfo.
-    
+
     """
     return NodeEventInfo(
         block_hash=block_hash,
