@@ -13,7 +13,7 @@ from stests.events import EventType
 @dataclasses.dataclass
 class Node:
     """Encapsulates information pertaining to a node within a target network.
-    
+
     """
     # Bonding account associated with node.
     account: typing.Optional[Account]
@@ -27,8 +27,14 @@ class Node:
     # Network with which node is associated.
     network: str
 
-    # Node's external facing GRPC port.
-    port: int
+    # Node's external facing RPC port.
+    port_rpc: int
+
+    # Node's external facing JSON port.
+    # port_json: int
+
+    # Node's external facing event stream port.
+    port_event: int
 
     # Current node status.
     status: NodeStatus
@@ -38,18 +44,18 @@ class Node:
 
     # POS weight.
     weight: typing.Optional[int]
-    
-    @property
-    def address(self):
-        return f"{self.host}:{self.port}"
 
     @property
     def address_rpc(self):
-        return f"{self.host}:{self.port}/rpc"
+        return f"{self.host}:{self.port_rpc}"
+
+    # @property
+    # def address_json(self):
+    #     return f"{self.host}:{self.port_json}"
 
     @property
     def address_stream(self):
-        return f"{self.address}/events"
+        return f"{self.host}:{self.port_event}"
 
     @property
     def label_index(self):
@@ -77,13 +83,17 @@ class Node:
 
     @property
     def url_rpc(self):
-        return f"http://{self.host}:{self.port}/rpc"
+        return f"http://{self.address_rpc}"
+
+    @property
+    def url_stream(self):
+        return f"http://{self.address_stream}"
 
 
 @dataclasses.dataclass
 class NodeEventInfo:
     """Encapsulates information pertaining to a node event.
-    
+
     """
     # Hash of block associated with event.
     block_hash: str
@@ -138,14 +148,14 @@ class NodeEventInfo:
 @dataclasses.dataclass
 class NodeIdentifier:
     """Encapsulates information required to disambiguate between nodes.
-    
-    """ 
+
+    """
     # Associated network identifer.
     network: NetworkIdentifier
 
     # Node index.
     index: int
- 
+
     @property
     def label_index(self):
         return f"N-{str(self.index).zfill(4)}"
@@ -162,7 +172,7 @@ class NodeIdentifier:
 @dataclasses.dataclass
 class NodeMonitoringLock:
     """Encapsulates information used to lock monitoring of a node.
-    
+
     """
     # Numerical index to distinguish between nodes upon the same network.
     index: int

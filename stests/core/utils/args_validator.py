@@ -42,14 +42,14 @@ PARALLEL_COUNT_MAX = 511
 
 def validate_deploys_per_second(value):
     """Argument verifier: generator run index.
-    
+
     """
     return _validate_int(value, DEPLOYS_PER_SECOND_MIN, DEPLOYS_PER_SECOND_MAX, "Deploys per second")
 
 
 def validate_key_algorithm(value):
     """Argument verifier: key algorithm.
-    
+
     """
     name = str(value).upper()
     if name == "ANY":
@@ -65,7 +65,7 @@ def validate_key_algorithm(value):
 
 def validate_execution_mode(value):
     """Argument verifier: generator execution mode.
-    
+
     """
     name = str(value)
 
@@ -79,7 +79,7 @@ def validate_execution_mode(value):
 
 def validate_filepath(value):
     """Argument verifier: a file path.
-    
+
     """
     path = pathlib.Path(value)
     if not path.exists():
@@ -90,21 +90,21 @@ def validate_filepath(value):
 
 def validate_loop_interval(value):
     """Argument verifier: loop interval.
-    
+
     """
     return _validate_int(value, LOOP_INTERVAL_MIN, LOOP_INTERVAL_MAX, "Loop interval")
 
 
 def validate_loop_count(value):
     """Argument verifier: loop count.
-    
+
     """
     return _validate_int(value, LOOP_COUNT_MIN, LOOP_COUNT_MAX, "Loop count")
 
 
 def validate_network(value):
     """Argument verifier: network name.
-    
+
     """
     name = str(value)
 
@@ -121,35 +121,35 @@ def validate_network(value):
 
 def validate_network_index(value):
     """Argument verifier: network index.
-    
+
     """
     return _validate_int(value, NETWORK_INDEX_MIN, NETWORK_INDEX_MAX, "Network")
 
 
 def validate_node_address(value):
     """Argument verifier: node address.
-    
+
     """
     address = str(value)
     parts = address.split(":")
     if len(parts) != 2:
         raise argparse.ArgumentError("Invalid node address")
-    _validate_host(parts[0])
-    _validate_port(parts[1])
+    validate_host(parts[0])
+    validate_port(parts[1])
 
     return address
 
 
 def validate_node_index(value):
     """Argument verifier: node index.
-    
+
     """
     return _validate_int(value, NODE_INDEX_MIN, NODE_INDEX_MAX, "Node")
 
 
 def validate_node_name(value):
     """Argument verifier: node name.
-    
+
     """
     name = str(value)
     parts = name.split(":")
@@ -163,44 +163,44 @@ def validate_node_name(value):
 
 def validate_parallel_count(value):
     """Argument verifier: parallel count.
-    
+
     """
     return _validate_int(value, PARALLEL_COUNT_MIN, PARALLEL_COUNT_MAX, "Parallel count")
 
 
 def validate_run_index(value):
     """Argument verifier: generator run index.
-    
+
     """
     return _validate_int(value, RUN_INDEX_MIN, RUN_INDEX_MAX, "Generator run index")
 
 
 def validate_run_type(value):
     """Argument verifier: generator run type.
-    
+
     """
     # TODO
     return str(value).upper()
 
 
-def _validate_host(value):
+def validate_host(value):
     """Argument verifier: host.
-    
+
     """
     # TODO: validate against a regex or 3rd party lib.
     pass
 
 
-def _validate_port(value):
+def validate_port(value):
     """Argument verifier: port.
-    
+
     """
     return _validate_int(value, PORT_MIN, PORT_MAX, "Port")
 
 
 def _validate_enum(value, enum_type, type):
     """Validates a constrained integer value.
-    
+
     """
     try:
         enum_type[value]
@@ -211,7 +211,7 @@ def _validate_enum(value, enum_type, type):
 
 def _validate_int(value, min, max, type):
     """Validates a constrained integer value.
-    
+
     """
     try:
         ivalue = int(value)
@@ -223,5 +223,5 @@ def _validate_int(value, min, max, type):
         if min and max:
             err += f" between {min} and {max}"
         raise argparse.ArgumentTypeError(err)
-        
+
     return ivalue

@@ -12,7 +12,7 @@ from stests.core.types.logging import LogMessage
 
 def create_account() -> types.chain.Account:
     return factory.create_account(
-        network="lrt1",        
+        network="lrt1",
         typeof=random.choice(list(types.chain.AccountType)),
     )
 
@@ -37,7 +37,7 @@ def create_block() -> types.chain.Block:
         m_rank=1,
         size_bytes=int(1e8),
         timestamp=dt.now().timestamp(),
-        validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",        
+        validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",
     )
 
 
@@ -56,13 +56,13 @@ def create_block_statistics() -> types.chain.BlockStatistics:
         round_id=120,
         size_bytes=int(1e8),
         timestamp=dt.now().timestamp(),
-        validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",        
+        validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",
     )
 
-    
+
 def create_block_summary() -> types.chain.BlockSummary:
     """Returns a domain object instance: BlockSummary.
-    
+
     """
     return factory.create_block_summary_on_finalisation(
         info=create_node_event_info()
@@ -112,7 +112,8 @@ def create_node() -> types.infra.Node:
         host="localhost",
         index=1,
         network_id=create_network_id(),
-        port=40401,
+        port_rpc=40401,
+        port_event=60601,
         typeof=random.choice(list(types.infra.NodeType)),
         status=random.choice(list(types.infra.NodeStatus)),
     )
@@ -124,7 +125,7 @@ def create_node_event_info() -> types.infra.NodeEventInfo:
         event_id=1001,
         event_type=random.choice(list(events.EventType)),
         block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
-        deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",        
+        deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
     )
 
 
@@ -155,7 +156,7 @@ def create_execution_context() -> types.orchestration.ExecutionContext:
     return factory.create_execution_context(
         args=None,
         deploys_per_second=100,
-        key_algorithm="ED25519",        
+        key_algorithm="ED25519",
         loop_count=10,
         loop_interval_ms=1000,
         execution_mode="periodic",
