@@ -41,10 +41,11 @@ def create_network_id(name_raw: str) -> NetworkIdentifier:
 
     # Parse raw name.
     name_raw = name_raw.lower()
-    for network_type in [i.name.lower() for i in NetworkType]:
-        if name_raw.startswith(network_type):
-            index=int(name_raw[len(network_type):])
-            typeof=name_raw[:len(network_type)].upper()
+    for network_type in NetworkType:
+        network_type_name = network_type.name.lower()
+        if name_raw.startswith(network_type_name):
+            index = int(name_raw[len(network_type_name):])
+            typeof = name_raw[:len(network_type_name)].upper()
             name = f"{typeof}-{str(index).zfill(2)}"
             return NetworkIdentifier(name=name)
 

@@ -4,7 +4,7 @@ import enum
 
 class NetworkStatus(enum.Flag):
     """Flag over set of network states.
-    
+
     """
     NULL = enum.auto()
     GENESIS = enum.auto()
@@ -17,7 +17,7 @@ class NetworkStatus(enum.Flag):
 
 class NetworkType(enum.Enum):
     """Enumeration over set of network types.
-    
+
     """
     NCTL = enum.auto()
     DEV = enum.auto()
@@ -27,11 +27,12 @@ class NetworkType(enum.Enum):
     POC = enum.auto()
     TEST = enum.auto()
     MAIN = enum.auto()
+    LRTNET = enum.auto()
 
 
 class NodeStatus(enum.Flag):
     """Flag over set of node states.
-    
+
     """
     NULL = enum.auto()
     GENESIS = enum.auto()
@@ -44,7 +45,7 @@ class NodeStatus(enum.Flag):
 
 class NodeType(enum.Enum):
     """Enumeration over set of node types.
-    
+
     """
     FULL = enum.auto()
     READ_ONLY = enum.auto()

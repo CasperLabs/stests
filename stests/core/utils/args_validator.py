@@ -109,14 +109,14 @@ def validate_network(value):
     name = str(value)
 
     # Validate network type.
-    network_types = [i for i in NetworkType if name.startswith(i.name.lower())]
-    if not network_types:
-        raise argparse.ArgumentError("Invalid network name")
+    for network_type in NetworkType:
+        if name.startswith(network_type.name.lower()):
+            # Validate network index.
+            validate_network_index(name[len(network_type.name):])
+            return name
 
-    # Validate network index.
-    validate_network_index(name[len(network_types[0].name):])
-
-    return name
+    # No network types matched, raise.
+    raise argparse.ArgumentError("Invalid network name")
 
 
 def validate_network_index(value):
