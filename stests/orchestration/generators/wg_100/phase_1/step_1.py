@@ -1,37 +1,43 @@
 import typing
+import dramatiq
 
-from stests.core import cache
-from stests.core import factory
-from stests.core.types.chain import AccountType
+from stests.core.types.chain import DeployType
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils import constants
+from stests.orchestration.generators.utils import verification
+from stests.orchestration.generators.utils.accounts import do_transfer
 
 
 
 # Step label.
-LABEL = "create-accounts"
+LABEL = "do-transfers"
 
 
-def execute(ctx: ExecutionContext):
+def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
     """Step entry point.
     
     :param ctx: Execution context information.
 
+    :returns: 3 member tuple -> actor, message count, message arg factory.
+
     """
-    for account_index in range(ctx.args.transfers):
-        cache.state.set_account(factory.create_account_for_run(
-            ctx,
-            index=account_index,
-            typeof=AccountType.USER,
-        ))
+    def _yield_parameterizations() -> typing.Generator:
+        for account_index in range(1, ctx.args.transfers + 1):
+            yield (
+                ctx,
+                constants.ACC_NETWORK_FAUCET,
+                account_index,
+                ctx.args.amount,
+                DeployType.TRANSFER_WASMLESS,
+            )
+
+    return do_transfer, ctx.args.transfers, _yield_parameterizations
 
 
 def verify(ctx: ExecutionContext):
-    """Step execution verifier.
+    """Step verifier.
     
     :param ctx: Execution context information.
 
     """
-    cached = cache.state.get_account_count(ctx)
-    expected = ctx.args.transfers
-    assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."
+    verification.verify_deploy_count(ctx, ctx.args.transfers) 

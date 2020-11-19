@@ -18,6 +18,12 @@ class Deploy:
     # Index of account with which the deploy is associated.
     account_index: int
 
+    # An account associated with the deploy - e.g. transfer target.
+    associated_account: typing.Optional[str]
+
+    # Index of account associated with the deploy - e.g. transfer target.
+    associated_account_index: typing.Optional[int]
+
     # Associated block hash in event of finalization. 
     block_hash: typing.Optional[str]
 

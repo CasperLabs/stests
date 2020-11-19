@@ -75,6 +75,21 @@ def get_key_pair_from_pvk_pem_file(fpath: str, algo: KeyAlgorithm, encoding: Key
     return (pvk.hex(), pbk.hex()) if encoding == KeyEncoding.HEX else (pvk, pbk)
 
 
+def get_key_pair_from_seed(seed: bytes, algo: KeyAlgorithm, encoding: KeyEncoding = KeyEncoding.BYTES):
+    """Returns an ED25519 key pair derived from a seed.
+
+    :param seed: Seed from which a key pair will be generated.
+    :param algo: Type of ECC algo used to generate private key.
+    :param encoding: Key pair encoding type.
+
+    :returns : 2 member tuple: (private key, public key)
+    
+    """
+    pvk, pbk = ALGOS[algo].get_key_pair_from_seed(seed)
+
+    return (pvk.hex(), pbk.hex()) if encoding == KeyEncoding.HEX else (pvk, pbk)
+
+
 def get_pvk_pem_from_bytes(pvk: bytes, algo: KeyAlgorithm) -> bytes:
     """Returns an ECC private key in PEM format.
 

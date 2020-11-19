@@ -58,7 +58,7 @@ def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block
     if verify_user_accounts_only and account_index < ACC_RUN_USERS:
         return
     
-    account = cache.state.get_account_by_index(ctx, account_index)
+    account = cache.state.get_account_of_user_by_index(ctx, account_index)
     assert account, f"account {account_index} could not be retrieved"
 
     expected = cache.state.get_account_balance(account)

@@ -20,7 +20,7 @@ def get_key_pair() -> typing.Tuple[bytes, bytes]:
     return _get_key_pair_from_sk(ed25519.Ed25519PrivateKey.generate())
 
 
-def get_key_pair_from_pvk_b64(pvk_b64: str):
+def get_key_pair_from_pvk_b64(pvk_b64: str) -> typing.Tuple[bytes, bytes]:
     """Returns an ED25519 key pair derived from a previously base 64 private key.
 
     :param pvk_b64: Base64 encoded private key.
@@ -50,6 +50,19 @@ def get_key_pair_from_pvk_pem_file(fpath: str) -> typing.Tuple[bytes, bytes]:
         )
 
 
+def get_key_pair_from_seed(seed: bytes) -> typing.Tuple[bytes, bytes]:
+    """Returns an ED25519 key pair derived from a seed.
+
+    :param seed: A seed used as input to deterministic key pair generation.
+
+    :returns : 2 member tuple: (private key, public key)
+    
+    """
+    sk = ed25519.Ed25519PrivateKey.from_private_bytes(seed)
+
+    return _get_key_pair_from_sk(sk)
+
+
 def get_pvk_pem_from_bytes(pvk: bytes) -> bytes:
     """Returns ED25519 private key (pem) from bytes.
     
@@ -77,13 +90,15 @@ def _get_key_pair_from_sk(sk: ed25519.Ed25519PrivateKey) -> typing.Tuple[bytes, 
     """Returns key pair from a signing key.
     
     """
+    pk = sk.public_key()
+
     return \
         sk.private_bytes(
             encoding=serialization.Encoding.Raw,
             format=serialization.PrivateFormat.Raw,
             encryption_algorithm=serialization.NoEncryption()
         ), \
-        sk.public_key().public_bytes(
+        pk.public_bytes(
             encoding=serialization.Encoding.Raw,
             format=serialization.PublicFormat.Raw
         )

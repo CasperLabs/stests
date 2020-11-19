@@ -57,16 +57,9 @@ class DeployType(enum.Flag):
     CONTRACT_INSTALL = enum.auto()
     COUNTER_DEFINE = enum.auto()
     TRANSFER = enum.auto()
-    TRANSFER_REFUND = enum.auto()
+    TRANSFER_WASM = enum.auto()
+    TRANSFER_WASMLESS = enum.auto()
 
-
-
-class TransferType(enum.Flag):
-    """Flag over set of transfer types.
-    
-    """
-    WASM = enum.auto()
-    WASMLESS = enum.auto()
 
 
 # Full set of enums.
@@ -76,5 +69,4 @@ ENUM_SET = {
     ContractType,
     DeployStatus,
     DeployType,
-    TransferType,
 }

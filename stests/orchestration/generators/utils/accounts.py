@@ -5,8 +5,8 @@ from stests.chain.utils import DeployDispatchInfo
 from stests.core import cache
 from stests.core import factory
 from stests.core.types.chain import Account
+from stests.core.types.chain import AccountType
 from stests.core.types.chain import DeployType
-from stests.core.types.chain import TransferType
 from stests.core.types.infra import Network
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils.infra import get_network_node
@@ -21,8 +21,8 @@ ACC_NETWORK_FAUCET_INDEX = 0
 
 # Map of transfer types to handling functions.
 TFR_TYPE_TO_TFR_FN = {
-    TransferType.WASM: chain.set_transfer_wasm,
-    TransferType.WASMLESS: chain.set_transfer_wasmless,
+    DeployType.TRANSFER_WASM: chain.set_transfer_wasm,
+    DeployType.TRANSFER_WASMLESS: chain.set_transfer_wasmless,
 }
 
 
@@ -40,7 +40,7 @@ def do_transfer(
     :param cp1_index: Account index of counter-party 1.
     :param cp2_index: Account index of counter-party 1.
     :param amount: Amount (in motes) to transfer.
-    :param chain_transfer_fn: Target chain transfer function.
+    :param transfer_type: Type of transfer to dispatch.
     
     """
     # Set target network / node.
@@ -51,7 +51,8 @@ def do_transfer(
     cp2 = get_account(ctx, network, cp2_index)
 
     # Dispatch tx -> chain.
-    dispatch_fn = TFR_TYPE_TO_TFR_FN[TransferType[transfer_type]]
+    deploy_type = DeployType[transfer_type]
+    dispatch_fn = TFR_TYPE_TO_TFR_FN[deploy_type]
     dispatch_info = DeployDispatchInfo(cp1, network, node)
     deploy_hash, dispatch_duration, dispatch_attempts = dispatch_fn(dispatch_info, cp2, amount)
 
@@ -59,11 +60,12 @@ def do_transfer(
     cache.state.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
         account=cp1,
+        associated_account=cp2,
         node=node, 
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
-        typeof=DeployType.TRANSFER
+        typeof=deploy_type
         ))
     
     # Increment deploy counts.
@@ -72,12 +74,14 @@ def do_transfer(
 
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
-    """Pulls & returns a cached account.
+    """Returns either a faucet account or a user account.
     
     """
+    # Faucet accounts.
     if account_index == ACC_NETWORK_FAUCET_INDEX:
         if not network.faucet:
             raise ValueError("Network faucet account does not exist.")
         return network.faucet
-    else:
-        return cache.state.get_account_by_index(ctx, account_index)   
+
+    # User accounts.
+    return factory.create_account_for_run(ctx, AccountType.USER, account_index)    

@@ -73,6 +73,7 @@ def create_deploy() -> types.chain.Deploy:
     return factory.create_deploy_for_run(
         ctx=create_execution_context(),
         account=create_account(),
+        associated_account=create_account(),
         node=create_node(),
         deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
         dispatch_attempts=1,

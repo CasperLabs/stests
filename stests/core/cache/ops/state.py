@@ -127,7 +127,7 @@ def get_account_balance(account: Account) -> ItemKey:
     )
 
 
-def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
+def get_account_of_user_by_index(ctx: ExecutionContext, index: int) -> Account:
     """Decaches domain object: Account.
     
     :param ctx: Execution context information.

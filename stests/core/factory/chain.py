@@ -23,7 +23,6 @@ from stests.core.factory.orchestration import create_execution_id
 from stests.core.types.orchestration import ExecutionContext
 
 
-
 def create_account(
     network: str,
     typeof: AccountType,
@@ -31,13 +30,25 @@ def create_account(
     key_algo = crypto.KeyAlgorithm.ED25519,
     private_key: str = None,
     public_key: str = None,
+    run_index=None,
+    run_type=None,
     ) -> Account:
     """Returns a domain object instance: Account.
 
     """
+    # Derive a key pair (if required).
     if private_key is None:
-        private_key, public_key = \
-            crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+        # ... user account key pairs are derived deterministically.
+        if typeof == AccountType.USER:
+            seed = f"{key_algo.name}-{network}-{run_type}-{run_index}-{typeof.name}-{index}"
+            seed = seed.upper().encode("utf-8")
+            seed = crypto.get_hash(seed, encoding=crypto.HashEncoding.BYTES)
+            private_key, public_key = \
+                crypto.get_key_pair_from_seed(seed, crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.HEX)
+        # ... other account key pairs are derived randomly.
+        else:
+            private_key, public_key = \
+                crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
 
     return Account(
         account_hash=crypto.get_account_hash_from_public_key(key_algo, public_key),
@@ -47,8 +58,8 @@ def create_account(
         network=network,
         private_key=private_key,
         public_key=public_key,
-        run_index=None,
-        run_type=None,
+        run_index=run_index,
+        run_type=run_type,
         typeof=typeof
         )
 
@@ -66,16 +77,14 @@ def create_account_for_run(
     except KeyError:
         key_algo = random.choice(list(crypto.KeyAlgorithm))
 
-    account = create_account(
+    return create_account(
         ctx.network,
         typeof,
         index=index,
         key_algo=key_algo,
+        run_index=ctx.run_index,
+        run_type=ctx.run_type,
         )
-    account.run_index = ctx.run_index
-    account.run_type = ctx.run_type
-
-    return account
 
 
 def create_account_key(
@@ -182,7 +191,8 @@ def create_deploy_for_run(
     deploy_hash: str,
     dispatch_attempts: int,
     dispatch_duration: float,
-    typeof: DeployType
+    typeof: DeployType,
+    associated_account: Account = None,
     ) -> Deploy:
     """Returns a domain object instance: Deploy.
 
@@ -190,6 +200,8 @@ def create_deploy_for_run(
     return Deploy(
         account=account.account_key,
         account_index=account.index,
+        associated_account=associated_account.account_key if associated_account else None,
+        associated_account_index=associated_account.index if associated_account else None,
         block_hash=None,
         deploy_cost=None,
         deploy_hash=deploy_hash,
