@@ -9,7 +9,7 @@ _KEY_ALGO_PREFIX = {
 }
 
 
-def get_account_id(key_algo: KeyAlgorithm, public_key: str) -> str:
+def get_account_key(key_algo: KeyAlgorithm, public_key: str) -> str:
     """Returns an on-chain account identifier.
 
     :param key_algo: Algorithm used to generate public key.

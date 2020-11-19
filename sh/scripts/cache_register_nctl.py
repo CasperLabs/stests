@@ -208,6 +208,7 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
     """Register a network node.
 
     """
+    
     # Destructure node info.
     index, cfg, path_pvk_pem = info
 
@@ -221,17 +222,24 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
     # Get staking weight from entry in accounts.csv.
     _, _, _, stake_weight = _get_account(accounts, public_key, crypto.DEFAULT_KEY_ALGO)
 
-    # Destructure node hosts & ports.
+    
+    # Set node addrress.
+    node_address_rest = cfg['rest_server']['address']
     node_address_rpc = cfg['rpc_server']['address']
-    node_host_rpc = node_address_rpc.split(":")[0]
-    node_port_rpc = int(node_address_rpc.split(":")[1])
     node_address_event = cfg['event_stream_server']['address']
+
+    # Set node host.
+    node_host_rest = node_address_rest.split(":")[0]
+    node_host_rpc = node_address_rpc.split(":")[0]
     node_host_event = node_address_event.split(":")[0]
-    node_port_event = int(node_address_event.split(":")[1])
+
+    # Set node ports - derived.
+    node_port_rpc = _get_node_port("rpc", network.index, index)
+    node_port_rest = _get_node_port("rest", network.index, index)
+    node_port_event = _get_node_port("event", network.index, index)
 
     # For now, just assert that the RPC and the event stream hosts match.
-    # We can refactor this as distinct hostnames (RPC, event stream)
-    # another time.
+    # We can refactor this as distinct hostnames (RPC, event stream) another time.
     assert node_host_rpc == node_host_event, "RPC and event stream hostnames do not match"
     node_host = node_host_rpc
 
@@ -240,6 +248,7 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
         host=node_host,
         index=index,
         network_id=factory.create_network_id(network.name_raw),
+        port_rest=node_port_rest,
         port_rpc=node_port_rpc,
         port_event=node_port_event,
         typeof=NodeType.FULL if stake_weight > 256 else NodeType.READ_ONLY,
@@ -261,6 +270,18 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
 
     # Inform.
     utils.log(f"Registered {network.name} - {node.address_rpc} : {node.typeof.name}")
+
+
+def _get_node_port(port_type:str, net_index: int, node_index: int) -> int:
+    """Returns a node port.
+    
+    """    
+    if port_type == "rpc":
+        return 40000 + (net_index * 100) + node_index
+    if port_type == "rest":
+        return 50000 + (net_index * 100) + node_index
+    if port_type == "event":
+        return 60000 + (net_index * 100) + node_index
 
 
 # Entry point.

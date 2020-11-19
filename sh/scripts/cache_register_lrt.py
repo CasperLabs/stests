@@ -165,11 +165,15 @@ def _register_node(
     # Destructure node info.
     host, port_rpc, port_event, weight, path_sk_pem = info
 
+    # TODO: set rest port
+    port_rest = port_rpc
+
     # Set node.
     node = factory.create_node(
         host=host,
         index=index,
         network_id=factory.create_network_id(network.name_raw),
+        port_rest=port_rest,
         port_rpc=port_rpc,
         port_event=port_event,
         typeof=NodeType.FULL if weight > 1000 else NodeType.READ_ONLY,

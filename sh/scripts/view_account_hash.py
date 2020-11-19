@@ -11,7 +11,7 @@ ARGS = argparse.ArgumentParser("Displays derived chain account identifier.")
 # CLI argument: network name.
 ARGS.add_argument(
     "--account",
-    dest="account_id",
+    dest="account_key",
     help="An on-chain account identifier.",
     type=str
     )
@@ -23,7 +23,7 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    account_hash = crypto.get_account_hash(args.account_id)
+    account_hash = crypto.get_account_hash(args.account_key)
     utils.log(f"ACCOUNT HASH = {account_hash or 'N/A'}")
 
 

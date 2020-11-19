@@ -28,7 +28,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
                 constants.ACC_NETWORK_FAUCET,
                 account_index,
                 ctx.args.amount,
-                TransferType.WASM_PER_DEPLOY,
+                TransferType.WASM,
             )
 
     return do_transfer, ctx.args.transfers, _yield_parameterizations

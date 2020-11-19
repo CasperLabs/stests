@@ -32,7 +32,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
 
     cli_response = subprocess.run([
         binary_path, _CLIENT_METHOD,
-        "--target-account", cp2.account_id,
+        "--target-account", cp2.account_key,
         "--amount", str(amount),
         "--chain-name", info.network.chain_name,
         "--gas-price", str(info.gas_price),

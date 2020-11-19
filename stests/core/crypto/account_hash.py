@@ -1,4 +1,4 @@
-from stests.core.crypto.account_id import get_account_id
+from stests.core.crypto.account_key import get_account_key
 from stests.core.crypto.ecc import get_key_algo
 from stests.core.crypto.enums import HashAlgorithm
 from stests.core.crypto.enums import HashEncoding
@@ -7,17 +7,17 @@ from stests.core.crypto.hashifier import get_hash
 
 
 
-def get_account_hash(account_id: str) -> str:
+def get_account_hash(account_key: str) -> str:
     """Returns an on-chain account hash as derived from an account identifier.
 
-    :param account_id: An on-chain account identifier.
+    :param account_key: An on-chain account identifier.
 
     :returns: An on-chain account hash.
 
     """ 
     return get_account_hash_from_public_key(
-        get_key_algo(account_id),
-        account_id[2:]
+        get_key_algo(account_key),
+        account_key[2:]
         )
 
 

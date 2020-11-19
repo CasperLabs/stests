@@ -5,8 +5,6 @@ from stests.core.types.chain import DeployStatus
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionAspect
-from stests.core.types.chain import Transfer
-from stests.core.types.chain import TransferStatus
 from stests.core.utils.exceptions import IgnoreableAssertionError
 from stests.orchestration.generators.utils.constants import ACC_RUN_USERS
 
@@ -41,16 +39,15 @@ def verify_deploy_count(ctx: ExecutionContext, expected: int, aspect: ExecutionA
     assert count == expected, IgnoreableAssertionError(f"deploy count mismatch: actual={count}, expected={expected}")
 
 
-def verify_transfer(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str) -> Transfer:
-    """Verifies that a transfer between counter-parties completed.
+# def verify_transfer(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str) -> Transfer:
+#     """Verifies that a transfer between counter-parties completed.
     
-    """
-    transfer = cache.state.get_transfer_by_ctx(ctx, deploy_hash)
-    assert transfer, "transfer could not be retrieved"
-    assert transfer.status == TransferStatus.COMPLETE, "transfer is not COMPLETE"
+#     """
+#     transfer = cache.state.get_transfer_by_ctx(ctx, deploy_hash)
+#     assert transfer, "transfer could not be retrieved"
 
-    verify_account_balance(ctx, node_id, block_hash, transfer.cp1_index)
-    verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index)
+#     verify_account_balance(ctx, node_id, block_hash, transfer.cp1_index)
+#     verify_account_balance(ctx, node_id, block_hash, transfer.cp2_index)
 
 
 def verify_account_balance(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, account_index: int, verify_user_accounts_only: bool = True) -> Account:

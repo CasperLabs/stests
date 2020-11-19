@@ -18,8 +18,6 @@ from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
-from stests.core.types.chain import Transfer
-from stests.core.types.chain import TransferStatus
 from stests.core.factory.infra import create_network_id
 from stests.core.factory.orchestration import create_execution_id
 from stests.core.types.orchestration import ExecutionContext
@@ -43,7 +41,7 @@ def create_account(
 
     return Account(
         account_hash=crypto.get_account_hash_from_public_key(key_algo, public_key),
-        account_id=crypto.get_account_id(key_algo, public_key),
+        account_key=crypto.get_account_key(key_algo, public_key),
         key_algo=key_algo.name,
         index=index if index is not None else 1,
         network=network,
@@ -80,7 +78,7 @@ def create_account_for_run(
     return account
 
 
-def create_account_id(
+def create_account_key(
     index: int,
     network: str,
     run_index: int,
@@ -190,7 +188,7 @@ def create_deploy_for_run(
 
     """
     return Deploy(
-        account=account.account_id,
+        account=account.account_key,
         account_index=account.index,
         block_hash=None,
         deploy_cost=None,
@@ -236,7 +234,7 @@ def create_named_key(
 
     """
     return NamedKey(
-        account_id=account.account_id,
+        account_key=account.account_key,
         account_index=account.index,
         contract_type=contract_type,
         hash=hash,
@@ -244,34 +242,4 @@ def create_named_key(
         network=account.network,
         run_index=account.run_index,
         run_type=account.run_type,
-    )
-
-
-def create_transfer(
-    ctx: ExecutionContext,
-    amount: int,
-    asset: str,
-    cp1: Account,
-    cp2: Account,
-    deploy_hash: str,
-    status=TransferStatus.PENDING
-    ) -> Transfer:
-    """Returns a domain object instance: Transfer.
-
-    """
-    return Transfer(
-        amount=amount,
-        asset=asset or "CSPR",
-        cp1_index=cp1.index,
-        cp2_index=cp2.index,
-        deploy_hash=deploy_hash,
-        dispatch_timestamp=datetime.now(),
-        network=ctx.network,
-        node=ctx.node_index,
-        phase_index=ctx.phase_index,
-        run_index=ctx.run_index,
-        run_type=ctx.run_type,
-        step_index=ctx.step_index,
-        step_label=ctx.step_label,
-        status=status
     )

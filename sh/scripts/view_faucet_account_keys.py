@@ -29,8 +29,8 @@ def main(args):
 
     """
     network = get_network(args)
+    utils.log(f"NETWORK: {network.name} -> faucet account-key = {network.faucet.account_key}")
     utils.log(f"NETWORK: {network.name} -> faucet account-hash = {network.faucet.account_hash}")
-    utils.log(f"NETWORK: {network.name} -> faucet account-id = {network.faucet.account_id}")
     utils.log(f"NETWORK: {network.name} -> faucet private-key = {network.faucet.private_key}")
     utils.log(f"NETWORK: {network.name} -> faucet public-key = {network.faucet.public_key}")
 

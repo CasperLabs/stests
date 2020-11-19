@@ -10,11 +10,9 @@ from stests.core.types.chain.enums import BlockStatus
 from stests.core.types.chain.enums import ContractType
 from stests.core.types.chain.enums import DeployStatus
 from stests.core.types.chain.enums import DeployType
-from stests.core.types.chain.enums import TransferStatus
 from stests.core.types.chain.enums import TransferType
 from stests.core.types.chain.enums import ENUM_SET
 from stests.core.types.chain.named_key import NamedKey
-from stests.core.types.chain.transfer import Transfer
 
 
 
@@ -27,5 +25,4 @@ TYPE_SET = {
     Deploy,
     DeploySummary,
     NamedKey,
-    Transfer,    
 } | ENUM_SET

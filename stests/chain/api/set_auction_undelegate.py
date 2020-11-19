@@ -31,6 +31,6 @@ def execute(info: DeployDispatchInfo, validator: Account, amount: int) -> str:
         _CONTRACT_FNAME,
         [
             "--session-arg", f"amount:u512='{amount}'",
-            "--session-arg", f"validator:public_key='{validator.account_id}'",
+            "--session-arg", f"validator:public_key='{validator.account_key}'",
         ]
     )

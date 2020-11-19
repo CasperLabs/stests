@@ -18,7 +18,7 @@ def execute(node: Node, event_callback: typing.Callable):
     :param event_callback: Callback to invoke whenever an event of relevant type is received.
 
     """
-    log_event(EventType.MONIT_STREAM_OPENING, node.address_stream, node)
+    log_event(EventType.MONIT_STREAM_OPENING, node.address_event, node)
     for payload, event_type, block_hash, deploy_hash in _yield_events(node):
         event_callback(node, factory.create_node_event_info(
             node,
@@ -33,7 +33,7 @@ def _yield_events(node: Node):
     """Yields events streaming from node.
 
     """
-    stream = requests.get(node.url_stream, stream=True)
+    stream = requests.get(node.url_event, stream=True)
     client = sseclient.SSEClient(stream)
     try:
         for event in client.events():

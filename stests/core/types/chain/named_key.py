@@ -11,7 +11,7 @@ class NamedKey:
     
     """
     # On-chain account identifier.
-    account_id: str
+    account_key: str
 
     # Numerical index to distinguish between multiple accounts.
     account_index: int

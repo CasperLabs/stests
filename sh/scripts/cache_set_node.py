@@ -40,6 +40,14 @@ ARGS.add_argument(
 
 # Set CLI argument: node RPC port.
 ARGS.add_argument(
+    "--rest-port",
+    dest="port_rest",
+    help="Node REST port: {port}.",
+    type=args_validator.validate_port
+    )
+
+# Set CLI argument: node RPC port.
+ARGS.add_argument(
     "--rpc-port",
     dest="port_rpc",
     help="Node RPC port: {port}.",
@@ -74,6 +82,7 @@ def main(args):
     host = args.hostname
     index = int(args.node)
     network = args.network
+    port_rest = int(args.port_rest)
     port_rpc = int(args.port_rpc)
     port_event = int(args.port_event)
     typeof = NodeType[args.typeof.upper()]
@@ -83,6 +92,7 @@ def main(args):
         host=host,
         index=index,
         network_id=factory.create_network_id(network),
+        port_rest=port_rest,
         port_rpc=port_rpc,
         port_event=port_event,
         typeof=typeof

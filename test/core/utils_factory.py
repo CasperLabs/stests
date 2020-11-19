@@ -17,8 +17,8 @@ def create_account() -> types.chain.Account:
     )
 
 
-def create_account_id() -> types.chain.AccountIdentifier:
-    return factory.create_account_id(
+def create_account_key() -> types.chain.AccountIdentifier:
+    return factory.create_account_key(
         index=1,
         network="lrt1",
         run_index=1,
@@ -112,8 +112,9 @@ def create_node() -> types.infra.Node:
         host="localhost",
         index=1,
         network_id=create_network_id(),
-        port_rpc=40401,
-        port_event=60601,
+        port_rest=50101,
+        port_rpc=40101,
+        port_event=60101,
         typeof=random.choice(list(types.infra.NodeType)),
         status=random.choice(list(types.infra.NodeStatus)),
     )
@@ -137,18 +138,6 @@ def create_node_monitoring_lock() -> types.infra.NodeMonitoringLock:
     return factory.create_node_monitoring_lock(
         node_id=create_node_id(),
         lock_index=1
-    )
-
-
-def create_transfer() -> types.chain.Transfer:
-    return factory.create_transfer(
-        ctx=create_execution_context(),
-        amount=int(1e7),
-        asset="XXX",
-        cp1=create_account(),
-        cp2=create_account(),
-        deploy_hash="02c74421666866809a2343f95229af960077a9bfed56b31bc9f231d108958eeb",
-        status=random.choice(list(types.chain.TransferStatus)),
     )
 
 
@@ -233,14 +222,13 @@ def create_log_process_info() -> types.logging.ProcessInfo:
 FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     # Chain types.
     types.chain.Account: create_account,
-    types.chain.AccountIdentifier: create_account_id,
+    types.chain.AccountIdentifier: create_account_key,
     types.chain.Block: create_block,
     types.chain.BlockStatistics: create_block_statistics,
     types.chain.BlockSummary: create_block_summary,
     types.chain.Deploy: create_deploy,
     types.chain.DeploySummary: create_deploy_summary,
     types.chain.NamedKey: create_named_key,
-    types.chain.Transfer: create_transfer,
 
     # Infra types.
     types.infra.Network: create_network,

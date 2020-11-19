@@ -27,14 +27,14 @@ class Node:
     # Network with which node is associated.
     network: str
 
-    # Node's external facing RPC port.
-    port_rpc: int
-
-    # Node's external facing JSON port.
-    # port_json: int
-
     # Node's external facing event stream port.
     port_event: int
+
+    # Node's external facing RPC port.
+    port_rest: int
+
+    # Node's external facing RPC port.
+    port_rpc: int
 
     # Current node status.
     status: NodeStatus
@@ -46,16 +46,16 @@ class Node:
     weight: typing.Optional[int]
 
     @property
-    def address_rpc(self):
-        return f"{self.host}:{self.port_rpc}"
-
-    # @property
-    # def address_json(self):
-    #     return f"{self.host}:{self.port_json}"
+    def address_event(self):
+        return f"{self.host}:{self.port_event}"
 
     @property
-    def address_stream(self):
-        return f"{self.host}:{self.port_event}"
+    def address_rest(self):
+        return f"{self.host}:{self.port_rest}"
+
+    @property
+    def address_rpc(self):
+        return f"{self.host}:{self.port_rpc}"
 
     @property
     def label_index(self):
@@ -82,12 +82,17 @@ class Node:
         return self.network
 
     @property
+    def url_event(self):
+        return f"http://{self.address_event}"
+
+    @property
+    def url_rest(self):
+        return f"http://{self.address_rest}"
+
+    @property
     def url_rpc(self):
         return f"http://{self.address_rpc}"
 
-    @property
-    def url_stream(self):
-        return f"http://{self.address_stream}"
 
 
 @dataclasses.dataclass

@@ -40,7 +40,7 @@ def main(args):
     """
     _, node = get_network_node(args)
     utils.log(f"NETWORK: {node.network} :: NODE: {node.index} -> bonding account-hash = {node.account.account_hash}")
-    utils.log(f"NETWORK: {node.network} :: NODE: {node.index} -> bonding account-id = {node.account.account_id}")
+    utils.log(f"NETWORK: {node.network} :: NODE: {node.index} -> bonding account-id = {node.account.account_key}")
     utils.log(f"NETWORK: {node.network} :: NODE: {node.index} -> bonding private-key = {node.account.private_key}")
     utils.log(f"NETWORK: {node.network} :: NODE: {node.index} -> bonding public-key = {node.account.public_key}")
 

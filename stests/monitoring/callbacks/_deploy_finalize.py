@@ -8,7 +8,6 @@ from stests.core import factory
 from stests.core.logging import log_event
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeployStatus
-from stests.core.types.chain import TransferStatus
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
 from stests.events import EventType
@@ -106,12 +105,6 @@ def _process_correlated(
     # Update cache: account balance.
     if deploy_cost > 0:
         cache.state.decrement_account_balance_on_deploy_finalisation(deploy, deploy_cost)
-
-    # Update cache: transfer.
-    transfer = cache.state.get_transfer_by_deploy(deploy)
-    if transfer:
-        transfer.status = TransferStatus.COMPLETE
-        cache.state.set_transfer(transfer)
 
     # Enqueue message for processing by orchestrator.
     _enqueue_correlated(node_id, deploy)

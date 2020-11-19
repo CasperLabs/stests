@@ -15,7 +15,7 @@ class Account:
     account_hash: str
 
     # On-chain account identifier.
-    account_id: str
+    account_key: str
 
     # Numerical index to distinguish between multiple accounts within same run.
     key_algo: str
@@ -42,8 +42,8 @@ class Account:
     typeof: AccountType
 
     @property
-    def account_id_as_bytes(self):
-        return bytes.fromhex(self.account_id)
+    def account_key_as_bytes(self):
+        return bytes.fromhex(self.account_key)
 
     @property
     def is_run_account(self):

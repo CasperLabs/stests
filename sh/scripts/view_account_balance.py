@@ -33,7 +33,7 @@ ARGS.add_argument(
 # CLI argument: account identifer.
 ARGS.add_argument(
     "--account",
-    dest="account_id",
+    dest="account_key",
     help="Either a 33 byte account id (hex format) or a 32 byte account hash (hex format).",
     type=str
     )
@@ -46,8 +46,8 @@ def main(args):
 
     """
     network, node = get_network_node(args)
-    account_hash = args.account_id if len(args.account_id) == 64 else \
-                   crypto.get_account_hash(args.account_id)
+    account_hash = args.account_key if len(args.account_key) == 64 else \
+                   crypto.get_account_hash(args.account_key)
     account = chain.get_account(network, node, account_hash)
     purse_uref = account['Account']['main_purse']
     balance = chain.get_account_balance(network, node, purse_uref)

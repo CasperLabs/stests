@@ -13,7 +13,7 @@ FIXTURES = {
     'HashEncoding',
     'KeyAlgorithm',
     'KeyEncoding',
-    'get_account_id',
+    'get_account_key',
     'get_hash',
     'get_key_pair',
     'get_key_pair_from_pvk_pem_file',
@@ -66,8 +66,8 @@ def test_03(algo):
 
 @pytest.mark.parametrize("algo", list(crypto.KeyAlgorithm))
 def test_04(algo):
-    """Test function: crypto.get_account_id."""
+    """Test function: crypto.get_account_key."""
     _, pbk = crypto.get_key_pair(algo, crypto.KeyEncoding.HEX)
-    account_id = crypto.get_account_id(algo, pbk)
-    assert isinstance(account_id, str)
-    assert len(account_id) == 64
+    account_key = crypto.get_account_key(algo, pbk)
+    assert isinstance(account_key, str)
+    assert len(account_key) == 64

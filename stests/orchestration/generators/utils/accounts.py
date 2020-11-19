@@ -21,7 +21,7 @@ ACC_NETWORK_FAUCET_INDEX = 0
 
 # Map of transfer types to handling functions.
 TFR_TYPE_TO_TFR_FN = {
-    TransferType.WASM_PER_DEPLOY: chain.set_transfer_wasm,
+    TransferType.WASM: chain.set_transfer_wasm,
     TransferType.WASMLESS: chain.set_transfer_wasmless,
 }
 
@@ -64,16 +64,6 @@ def do_transfer(
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
         typeof=DeployType.TRANSFER
-        ))
-
-    # Update cache: transfer.
-    cache.state.set_transfer(factory.create_transfer(
-        ctx=ctx,
-        amount=amount,
-        asset="CSPR",
-        cp1=cp1,
-        cp2=cp2,
-        deploy_hash=deploy_hash,
         ))
     
     # Increment deploy counts.

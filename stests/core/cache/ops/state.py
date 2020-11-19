@@ -17,7 +17,6 @@ from stests.core.types.chain import AccountIdentifier
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import NamedKey
-from stests.core.types.chain import Transfer
 from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.orchestration import ExecutionContext
@@ -85,23 +84,23 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy, cost: int) 
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_account(account_id: AccountIdentifier) -> ItemKey:
+def get_account(account_key: AccountIdentifier) -> ItemKey:
     """Decaches domain object: Account.
 
-    :param account_id: An account identifier.
+    :param account_key: An account identifier.
 
     :returns: Cache item key.
 
     """
     return ItemKey(
         paths=[
-            account_id.run.network.name,
-            account_id.run.type,
-            f"R-{str(account_id.run.index).zfill(3)}",
+            account_key.run.network.name,
+            account_key.run.type,
+            f"R-{str(account_key.run.index).zfill(3)}",
             COL_ACCOUNT,
         ],
         names=[
-            account_id.label_index,
+            account_key.label_index,
         ]
     )
 
@@ -137,7 +136,7 @@ def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
     :returns: A cached account.
 
     """
-    return get_account(factory.create_account_id(
+    return get_account(factory.create_account_key(
         index,
         ctx.network,
         ctx.run_index,
@@ -257,52 +256,6 @@ def get_named_keys(ctx: ExecutionContext, account: Account, contract_type: Contr
     )
 
 
-@cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_transfer_by_deploy(deploy: Deploy, asset: str="CSPR") -> ItemKey:
-    """Decaches domain object: Transfer.
-    
-    :param deploy_hash: A deploy hash.
-
-    :returns: Cache item key.
-
-    """
-    return ItemKey(
-        paths=[
-            deploy.network,
-            deploy.run_type,
-            deploy.label_run_index,
-            COL_TRANSFER,
-            asset.lower(),
-        ],
-        names=[
-            deploy.deploy_hash,
-        ],
-    )
-
-
-@cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_transfer_by_ctx(ctx: ExecutionContext, deploy_hash: str, asset: str="CSPR") -> ItemKey:
-    """Decaches domain object: Transfer.
-    
-    :param deploy_hash: A deploy hash.
-
-    :returns: Cache item key.
-
-    """
-    return ItemKey(
-        paths=[
-            ctx.network,
-            ctx.run_type,
-            ctx.label_run_index,
-            COL_TRANSFER,
-            asset.lower(),
-        ],
-        names=[
-            deploy_hash,
-        ],
-    )    
-
-
 @cache_op(_PARTITION, StoreOperation.COUNTER_INCR)
 def increment_account_balance(account: Account, amount: int) -> CountIncrementKey:
     """Updates (atomically) an account's (theoretical) balance.
@@ -401,32 +354,6 @@ def set_named_key(ctx: ExecutionContext, named_key: NamedKey) -> Item:
             ],
             names=[
                 named_key.name,
-            ]
-        )
-    )
-
-
-@cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_transfer(transfer: Transfer) -> Item:
-    """Encaches domain object: Transfer.
-    
-    :param transfer: Transfer domain object instance to be cached.
-
-    :returns: Cache item.
-
-    """
-    return Item(
-        data=transfer,
-        item_key=ItemKey(
-            paths=[
-                transfer.network,
-                transfer.run_type,
-                transfer.label_run_index,
-                COL_TRANSFER,
-                transfer.asset.lower(),
-            ],
-            names=[
-                transfer.deploy_hash,
             ]
         )
     )
