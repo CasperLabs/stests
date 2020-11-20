@@ -5,9 +5,9 @@ from stests.core.logging import log_event
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
 from stests.events import EventType
-from stests.monitoring.callbacks import on_block_added
-from stests.monitoring.callbacks import on_block_finalized
-from stests.monitoring.callbacks import on_deploy_processed
+from stests.monitoring import on_block_added
+from stests.monitoring import on_block_finalized
+from stests.monitoring import on_deploy_processed
 
 
 
