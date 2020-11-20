@@ -51,6 +51,16 @@ def log(msg: str = None, level: str = LOG_LEVEL_INFO):
     print(_get_message(msg, level))
 
 
+def log_line():
+    """Outputs a message to log.
+
+    :param str msg: Message to be written to log.
+    :param str level: Message level (e.g. INFO).
+
+    """
+    print("------------------------------------------------------------------------------------------------------------------------------------")
+
+
 def log_warning(err: typing.Union[str, Exception]):
     """Logs a runtime warning.
 

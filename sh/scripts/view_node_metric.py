@@ -1,8 +1,7 @@
 import argparse
+import json
 
-from stests.core import cache
-from stests.core import factory
-from stests.core.types.chain import AccountType
+from stests import chain
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
@@ -10,9 +9,8 @@ from arg_utils import get_network_node
 from arg_utils import get_network_nodeset
 
 
-
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays a node's bonding asymmetric ECC key pair.")
+ARGS = argparse.ArgumentParser("Renders node metrics information.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -31,6 +29,15 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
+# CLI argument: metric of interest.
+ARGS.add_argument(
+    "--metric",
+    default="*",
+    dest="metric",
+    help="Specific metric to view.",
+    type=str
+    )
+
 
 def main(args):
     """Entry point.
@@ -39,18 +46,17 @@ def main(args):
 
     """
     if args.node:
-        _, node = get_network_node(args)
+        network, node = get_network_node(args)
         nodeset = [node]
     else:
-        _, nodeset = get_network_nodeset(args)
+        network, nodeset = get_network_nodeset(args)
 
     for node in nodeset:
         utils.log_line()
-        utils.log(f"VALIDATOR ACCOUNT KEYS @ NODE {node.index} ({node.address}) :")
-        utils.log(f"NETWORK: {node.network} :: validator account-hash = {node.account.account_hash}")
-        utils.log(f"NETWORK: {node.network} :: validator account-id = {node.account.account_key}")
-        utils.log(f"NETWORK: {node.network} :: validator private-key = {node.account.private_key}")
-        utils.log(f"NETWORK: {node.network} :: validator public-key = {node.account.public_key}")
+        utils.log(f"NODE METRICS @ NODE {node.index} :: {node.address_rpc}:")
+        for metric in chain.get_node_metrics(network, node).split("\n"):
+            if args.metric == "*" or metric.startswith(args.metric):
+                print(metric)
 
     utils.log_line()
 

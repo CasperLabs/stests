@@ -76,14 +76,20 @@ alias stests-view-chain-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_bloc
 alias stests-view-chain-deploy='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_deploy.py'
 alias stests-view-chain-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_state_root_hash.py'
 
-# alias nctl-view-chain-spec='source $NCTL/sh/views/view_chain_spec.sh'
-# alias nctl-view-chain-spec-accounts='source $NCTL/sh/views/view_chain_spec_accounts.sh'
-
-
+# Node information.
+alias stests-view-node-metric='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py'
+alias stests-view-node-metric-deploy-gossiper='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric deploy_gossiper'
+alias stests-view-node-metric-contract-runtime='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric contract_runtime'
+alias stests-view-node-metric-finalised-block-count='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric amount_of_blocks'
+alias stests-view-node-metric-memory='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric mem_'
+alias stests-view-node-metric-pending-deploy-count='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric pending_deploy'
+alias stests-view-node-metric-scheduler-queue='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric scheduler_queue'
+alias stests-view-node-peers='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_peers.py'
+alias stests-view-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_status.py'
 
 # Infra information.
-alias stests-view-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_networks.py'
-alias stests-view-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_nodes.py'
+alias stests-view-infra-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_infra_networks.py'
+alias stests-view-infra-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_infra_nodes.py'
 
 # Faucet information.
 alias stests-view-faucet-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account.py'

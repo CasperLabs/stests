@@ -16,7 +16,6 @@ ARGS = argparse.ArgumentParser("Displays set of registered networks.")
 COLS = [
     ("Name", BeautifulTable.ALIGN_LEFT),
     ("Type", BeautifulTable.ALIGN_LEFT),
-    ("Status", BeautifulTable.ALIGN_RIGHT),
 ]
 
 
@@ -34,7 +33,6 @@ def main(args):
     rows = map(lambda i: [
         i.name,
         i.typeof.name,
-        i.status.name,
     ], sorted(data, key=lambda i: i.index))
 
     # Set table.

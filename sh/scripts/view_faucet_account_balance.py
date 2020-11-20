@@ -38,10 +38,9 @@ def main(args):
 
     """
     network, node = get_network_node(args)
-    account = chain.get_account(network, node, network.faucet.account_hash)
-    purse_uref = account['Account']['main_purse']
+    purse_uref = chain.get_account_main_purse_uref(network, node, network.faucet.account_key)
     balance = chain.get_account_balance(network, node, purse_uref)
-    utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
+    utils.log(f"FAUCET ACCOUNT BALANCE = {balance or 'N/A'}")
 
 
 # Entry point.

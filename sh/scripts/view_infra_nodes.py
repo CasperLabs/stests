@@ -26,7 +26,6 @@ COLS = [
     ("ID", BeautifulTable.ALIGN_LEFT),
     ("Host:Port", BeautifulTable.ALIGN_LEFT),
     ("Type", BeautifulTable.ALIGN_LEFT),
-    ("Status", BeautifulTable.ALIGN_RIGHT),
 ]
 
 def main(args):
@@ -52,7 +51,6 @@ def main(args):
         i.label_index,
         f"{i.host}:{i.port_rpc}",
         i.typeof.name,
-        i.status.name,
     ], sorted(data, key=lambda i: i.index))
 
     # Set table.

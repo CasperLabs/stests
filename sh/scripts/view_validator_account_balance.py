@@ -5,6 +5,7 @@ from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
 from arg_utils import get_network_node
+from arg_utils import get_network_nodeset
 
 
 
@@ -23,7 +24,6 @@ ARGS.add_argument(
 # CLI argument: node index.
 ARGS.add_argument(
     "--node",
-    default=1,
     dest="node",
     help="Node index, e.g. 1.",
     type=args_validator.validate_node_index
@@ -36,11 +36,16 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network, node = get_network_node(args)
-    account = chain.get_account(network, node, node.account.account_hash)
-    purse_uref = account['Account']['main_purse']
-    balance = chain.get_account_balance(network, node, purse_uref)
-    utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
+    if args.node:
+        network, node = get_network_node(args)
+        nodeset = [node]
+    else:
+        network, nodeset = get_network_nodeset(args)
+
+    for node in nodeset:
+        purse_uref = chain.get_account_main_purse_uref(network, node, node.account.account_key)
+        balance = chain.get_account_balance(network, node, purse_uref)
+        utils.log(f"VALIDATOR ACCOUNT BALANCE @ NODE #{node.index} ({node.address}) = {balance or 'N/A'}")
 
 
 # Entry point.

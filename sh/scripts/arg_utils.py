@@ -1,9 +1,13 @@
+import typing
+
 from stests.core import cache
 from stests.core import factory
+from stests.core.types.infra import Network
+from stests.core.types.infra import Node
 
 
 
-def get_network(args):
+def get_network(args) -> Network:
     """Maps input args to a target network node.
     
     """
@@ -15,7 +19,7 @@ def get_network(args):
     return network
 
 
-def get_network_node(args):
+def get_network_node(args) -> typing.Tuple[Network, Node]:
     """Maps input args to a target network node.
     
     """
@@ -32,7 +36,7 @@ def get_network_node(args):
     return network, node
 
 
-def get_network_nodeset(args):
+def get_network_nodeset(args) -> typing.Tuple[Network, typing.List[Node]]:
     """Maps input args to a target network node.
     
     """
@@ -45,4 +49,4 @@ def get_network_nodeset(args):
     if nodeset is None or len(nodeset) == 0:
         raise ValueError("Unregistered nodeset.")
 
-    return network, nodeset
+    return network, sorted(nodeset, key=lambda i: i.index)

@@ -60,12 +60,15 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    # Pull data.
+    # Set run data.
     network_id = factory.create_network_id(args.network)
     data = cache.orchestration.get_info_list(network_id, args.run_type, args.run_index)
     if not data:
         utils.log("No run information found.")
         return
+
+    # Set sorted data.
+    data = sorted(data, key=lambda i: i.label_index)
 
     # Set deploy counts.
     keys, counts = cache.orchestration.get_deploy_count_list(network_id, args.run_type, args.run_index)
@@ -73,17 +76,11 @@ def main(args):
     keys = [f"{i[3]}.{i[5]}" if i[5] != "-" else i[3] for i in keys]
     counts = dict(zip(keys, counts))
 
-    # Sort data.
-    data = sorted(data, key=lambda i: i.label_index)
-
-    # Set cols/rows.
-    cols = [i for i, _ in COLS]
-    rows = map(lambda i: _get_row(i, counts), data)
-
     # Set table.
-    t = utils.get_table(cols, rows)
-
-    # Set table alignments.
+    t = utils.get_table(
+        [i for i, _ in COLS], 
+        map(lambda i: _get_row(i, counts), data),
+        )
     for key, aligmnent in COLS:
         t.column_alignments[key] = aligmnent    
 

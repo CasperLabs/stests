@@ -46,6 +46,10 @@ class Node:
     weight: typing.Optional[int]
 
     @property
+    def address(self):
+        return f"{self.host}:{self.port_rpc}"
+
+    @property
     def address_event(self):
         return f"{self.host}:{self.port_event}"
 
@@ -91,7 +95,7 @@ class Node:
 
     @property
     def url_rpc(self):
-        return f"http://{self.address_rpc}"
+        return f"http://{self.address_rpc}/rpc"
 
 
 

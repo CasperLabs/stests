@@ -5,8 +5,6 @@ from beautifultable import BeautifulTable
 
 from stests.core import cache
 from stests.core import factory
-from stests.core.types.chain import DeployStatus
-from stests.core.types.orchestration import ExecutionAspect
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
@@ -49,7 +47,7 @@ COLS = [
     ("#", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Node", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Timestamp", BeautifulTable.ALIGN_LEFT),
-    ("Dispatch Account", BeautifulTable.ALIGN_LEFT),
+    ("Dispatch Account Key", BeautifulTable.ALIGN_LEFT),
     ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
     ("Deploy Type", BeautifulTable.ALIGN_LEFT),
     ("Deploy Status", BeautifulTable.ALIGN_LEFT),
@@ -72,24 +70,24 @@ def main(args):
         utils.log("No run deploys found.")
         return
 
+    # Sort data.
+    data = sorted(data, key=lambda i: i.dispatch_timestamp)
+
     # Render views.
     _render_table(args, network_id, data)
     _render_finalization_stats(data)
 
 
 def _render_table(args, network_id, data):
-    # Sort data.
-    data = sorted(data, key=lambda i: i.dispatch_timestamp)
-
-    for i in data:
-        print(i.dispatch_timestamp)
-
+    """Renders table of deploys.
+    
+    """
     # Set table cols/rows.
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         data.index(i) + 1,
         i.dispatch_node,
-        str(i.dispatch_timestamp),
+        i.dispatch_timestamp.isoformat(),
         i.account,
         i.deploy_hash,      
         i.typeof.name,
@@ -101,8 +99,6 @@ def _render_table(args, network_id, data):
 
     # Set table.
     t = utils.get_table(cols, rows)
-
-    # Set table alignments.
     for key, aligmnent in COLS:
         t.column_alignments[key] = aligmnent    
 
@@ -127,6 +123,7 @@ def _render_finalization_stats(data):
 
     # print(f"Finalized = {len(times)} :: %={int((len(times) / len(data)) * 100)} :: Avg={format(avg, '.3f')}s :: Max={format(maxima, '.3f')}s :: Min={format(minima, '.3f')}s :: Variance={variance}s :: Std Dev= {format(stdev, '.3f')}s")
     print(f"Finalized = {len(times)} :: %={int((len(times) / len(data)) * 100)} :: Avg={format(avg, '.3f')}s :: Max={format(maxima, '.3f')}s :: Min={format(minima, '.3f')}s :: Std Dev= {format(stdev, '.3f')}s")
+
 
 # Entry point.
 if __name__ == '__main__':
