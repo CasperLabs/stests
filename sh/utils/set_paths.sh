@@ -7,7 +7,7 @@ export STESTS_PATH_OPS=$STESTS_PATH_ROOT/ops
 export STESTS_PATH_SH=$STESTS_HOME/sh
 export STESTS_PATH_SH_SCRIPTS=$STESTS_HOME/sh/scripts
 export STESTS_PATH_SRC=$STESTS_HOME/stests
-export STESTS_PATH_GENERATORS=$STESTS_HOME/stests/orchestration/generators
+export STESTS_PATH_GENERATORS=$STESTS_HOME/stests/generators
 export STESTS_PATH_MONITORING=$STESTS_HOME/stests/monitoring
 export STESTS_PATH_TEMPLATES=$STESTS_HOME/templates
 

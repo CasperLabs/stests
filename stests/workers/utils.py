@@ -38,13 +38,13 @@ def start_orchestration():
     
     """
     # JIT import actors: generators.
-    import stests.orchestration.generators.wg_100.meta
-    import stests.orchestration.generators.wg_110.meta
+    import stests.generators.wg_100.meta
+    import stests.generators.wg_110.meta
 
     # JIT import actors: orchestration.
-    import stests.orchestration.engine.run
-    import stests.orchestration.engine.phase
-    import stests.orchestration.engine.step
+    import stests.core.orchestration.run
+    import stests.core.orchestration.phase
+    import stests.core.orchestration.step
 
 
 def start_monitoring():
