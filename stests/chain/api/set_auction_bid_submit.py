@@ -31,5 +31,6 @@ def execute(info: DeployDispatchInfo, amount: int, delegation_rate: int) -> str:
         [
             "--session-arg", f"amount:u512='{amount}'",
             "--session-arg", f"delegation_rate:u64='{delegation_rate}'",
+            "--session-arg", f"public_key:public_key='{info.dispatcher.account_key}'",
         ]
     )

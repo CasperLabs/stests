@@ -1,14 +1,15 @@
-from jsonrpcclient import request
+import json
+import subprocess
 
 from stests.chain.api.get_state_root_hash import execute as get_state_root_hash
-from stests.core.types.chain import Account
-from stests.core.types.infra import Node
 from stests.core.types.infra import Network
+from stests.core.types.infra import Node
+from stests.core.utils import paths
 
 
 
 # Method upon client to be invoked.
-_RPC_METHOD = "state_get_balance"
+_CLIENT_METHOD = "get-balance"
 
 
 def execute(
@@ -27,11 +28,16 @@ def execute(
     :returns: Account balance.
 
     """
+    binary_path = paths.get_path_to_client(network)
     state_root_hash = state_root_hash or get_state_root_hash(network, node)
-    response = request(node.url_rpc, _RPC_METHOD, 
-        state_root_hash=state_root_hash,
-        purse_uref=purse_uref,
-        path=[]
-        )
 
-    return response.data.result['balance_value']
+    cli_response = subprocess.run([
+        binary_path, _CLIENT_METHOD,
+        "--node-address", node.url_rpc,
+        "--state-root-hash", state_root_hash,
+        "--purse-uref", purse_uref
+        ],
+        stdout=subprocess.PIPE,
+        )    
+
+    return json.loads(cli_response.stdout)['result']['balance_value']

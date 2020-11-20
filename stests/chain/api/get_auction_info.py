@@ -8,21 +8,19 @@ from stests.core.utils import paths
 
 
 # Method upon client to be invoked.
-_CLIENT_METHOD = "get-deploy"
+_CLIENT_METHOD = "get-auction-info"
 
 
 def execute(
     network: Network,
     node: Node,
-    deploy_hash: str = None,
-    ) -> str:
-    """Queries a node for a deploy.
+    ) -> int:
+    """Queries account balance at a certain block height | hash.
 
     :param network: Target network being tested.
     :param node: Target node being tested.
-    :param deploy_hash: Hash of deploy being pulled.
 
-    :returns: Representation of a deploy within a node's state.
+    :returns: On-chain auction information.
 
     """
     binary_path = paths.get_path_to_client(network)
@@ -30,7 +28,6 @@ def execute(
     cli_response = subprocess.run([
         binary_path, _CLIENT_METHOD,
         "--node-address", node.url_rpc,
-        deploy_hash,
         ],
         stdout=subprocess.PIPE,
         )    

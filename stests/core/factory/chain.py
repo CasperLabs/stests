@@ -68,6 +68,7 @@ def create_account_for_run(
     ctx: ExecutionContext,
     typeof: AccountType,
     index: int = 1,
+    run_type: str = None,
     ) -> Account:
     """Returns a domain object instance: Account.
 
@@ -83,7 +84,7 @@ def create_account_for_run(
         index=index,
         key_algo=key_algo,
         run_index=ctx.run_index,
-        run_type=ctx.run_type,
+        run_type=run_type or ctx.run_type,
         )
 
 

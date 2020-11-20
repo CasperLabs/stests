@@ -225,7 +225,7 @@ Displays summary information regarding workload generator runs.  Such informatio
 - `--status`
 	- Run status - e.g. complete. 
 
-#### `stests-view-state-root-hash --net X --type Y`
+#### `stests-view-chain-state-root-hash --net X --type Y`
 
 Displays a node's current state root hash. 
 

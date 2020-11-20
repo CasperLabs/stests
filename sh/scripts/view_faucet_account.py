@@ -6,7 +6,7 @@ from stests import chain
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
-from utils import get_network_node
+from arg_utils import get_network_node
 
 
 

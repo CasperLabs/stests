@@ -1,15 +1,14 @@
 import argparse
+import json
 
 from stests import chain
 from stests.core.utils import args_validator
-from stests.core.utils import cli as utils
 from stests.core.utils import env
 from arg_utils import get_network_node
 
 
-
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays a network's faucet balance.")
+ARGS = argparse.ArgumentParser("Renders on-chain deploy information.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -29,6 +28,13 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
+# CLI argument: deploy hash.
+ARGS.add_argument(
+    "--deploy",
+    dest="deploy_hash",
+    help="Deploy hash.",
+    type=str,
+    )
 
 
 def main(args):
@@ -38,10 +44,11 @@ def main(args):
 
     """
     network, node = get_network_node(args)
-    account = chain.get_account(network, node, network.faucet.account_hash)
-    purse_uref = account['Account']['main_purse']
-    balance = chain.get_account_balance(network, node, purse_uref)
-    utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
+    deploy = chain.get_deploy(network, node, args.deploy_hash)
+    if deploy:
+        print(json.dumps(deploy, indent=4))
+    else:
+        print("Chain query returned null - is the deploy hash correct ?")
 
 
 # Entry point.

@@ -4,9 +4,11 @@ from stests import chain
 from stests.chain.utils import DeployDispatchInfo
 from stests.core import cache
 from stests.core import factory
+from stests.core.types.chain import Account
+from stests.core.types.chain import AccountType
 from stests.core.types.chain import DeployType
+from stests.core.types.infra import Network
 from stests.core.types.orchestration import ExecutionContext
-from stests.orchestration.generators.utils.accounts import get_account
 from stests.orchestration.generators.utils.infra import get_network_node
 
 
@@ -15,7 +17,6 @@ from stests.orchestration.generators.utils.infra import get_network_node
 _QUEUE = "orchestration.generators.auction"
 
 
-@dramatiq.actor(queue_name=_QUEUE)
 def do_bid_submit(
     ctx: ExecutionContext,
     account_index: int,
@@ -34,7 +35,7 @@ def do_bid_submit(
     network, node = get_network_node(ctx)
 
     # Set validator account.
-    validator = get_account(ctx, network, 0)
+    validator = factory.create_account_for_run(ctx, AccountType.USER, account_index)
 
     # Submit deploy.
     dispatch_info = DeployDispatchInfo(validator, network, node)
@@ -74,7 +75,7 @@ def do_bid_withdraw(
     network, node = get_network_node(ctx)
 
     # Set validator account.
-    validator = get_account(ctx, network, 0)
+    validator = factory.create_account_for_run(ctx, AccountType.USER, account_index, "WG-200")
 
     # Submit deploy.
     dispatch_info = DeployDispatchInfo(validator, network, node)
@@ -133,7 +134,7 @@ def _do_delegate_action(ctx: ExecutionContext, account_index: int, amount: int, 
     network, node = get_network_node(ctx)
 
     # Set validator account.
-    user = get_account(ctx, network, account_index)
+    user = _get_account(ctx, network, account_index)
     validator = node.account
 
     # Withdraw auction bid.
@@ -155,3 +156,17 @@ def _do_delegate_action(ctx: ExecutionContext, account_index: int, amount: int, 
     # Update cache: deploy counts.
     # Note: this is temporary until incremented during deploy finalisation.
     cache.orchestration.increment_deploy_counts(ctx)
+
+
+def _get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
+    """Returns either a faucet account or a user account.
+    
+    """
+    # Faucet accounts.
+    if account_index == ACC_NETWORK_FAUCET_INDEX:
+        if not network.faucet:
+            raise ValueError("Network faucet account does not exist.")
+        return network.faucet
+
+    # User accounts.
+    return factory.create_account_for_run(ctx, AccountType.USER, account_index)    

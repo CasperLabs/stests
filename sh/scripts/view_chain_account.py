@@ -1,16 +1,16 @@
 import argparse
+import json
 
 from stests import chain
 from stests.core import crypto
 from stests.core.utils import args_validator
-from stests.core.utils import cli as utils
 from stests.core.utils import env
-from utils import get_network_node
+from arg_utils import get_network_node
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays an on-chain account balance.")
+ARGS = argparse.ArgumentParser("Displays on-chain account information.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -34,7 +34,7 @@ ARGS.add_argument(
 ARGS.add_argument(
     "--account",
     dest="account_key",
-    help="Either a 33 byte account id (hex format) or a 32 byte account hash (hex format).",
+    help="A 33 byte account key: a public key prefixed by a single byte to inidcate key type.",
     type=str
     )
 
@@ -46,12 +46,12 @@ def main(args):
 
     """
     network, node = get_network_node(args)
-    account_hash = args.account_key if len(args.account_key) == 64 else \
-                   crypto.get_account_hash(args.account_key)
-    account = chain.get_account(network, node, account_hash)
-    purse_uref = account['Account']['main_purse']
-    balance = chain.get_account_balance(network, node, purse_uref)
-    utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
+    account = chain.get_account(network, node, args.account_key)
+
+    if account:
+        print(json.dumps(account, indent=4))
+    else:
+        print("Chain query returned null - is the account key correct ?")
 
 
 # Entry point.

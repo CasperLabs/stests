@@ -30,3 +30,19 @@ def get_network_node(args):
         raise ValueError("Unregistered node.")
 
     return network, node
+
+
+def get_network_nodeset(args):
+    """Maps input args to a target network node.
+    
+    """
+    network_id = factory.create_network_id(args.network)
+    network = cache.infra.get_network(network_id)
+    if network is None:
+        raise ValueError("Unregistered network.")
+
+    nodeset = cache.infra.get_nodes_for_dispatch(network)
+    if nodeset is None or len(nodeset) == 0:
+        raise ValueError("Unregistered nodeset.")
+
+    return network, nodeset

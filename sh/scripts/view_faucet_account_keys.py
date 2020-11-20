@@ -5,7 +5,7 @@ from stests.core import factory
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
-from utils import get_network
+from arg_utils import get_network
 
 
 

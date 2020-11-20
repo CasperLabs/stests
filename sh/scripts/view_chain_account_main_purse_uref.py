@@ -1,15 +1,16 @@
 import argparse
-import json
 
 from stests import chain
+from stests.core import crypto
 from stests.core.utils import args_validator
+from stests.core.utils import cli as utils
 from stests.core.utils import env
-from utils import get_network_node
+from arg_utils import get_network_node
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Renders on-chain block information.")
+ARGS = argparse.ArgumentParser("Displays an on-chain account main purse uref.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -29,12 +30,12 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
-# CLI argument: block hash.
+# CLI argument: account identifer.
 ARGS.add_argument(
-    "--block",
-    dest="block_hash",
-    help="Block hash.",
-    type=str,
+    "--account",
+    dest="account_key",
+    help="A 33 byte account key: a public key prefixed by a single byte to inidcate key type.",
+    type=str
     )
 
 
@@ -45,11 +46,9 @@ def main(args):
 
     """
     network, node = get_network_node(args)
-    block = chain.get_block(network, node, args.block_hash)
-    if block:
-        print(json.dumps(block, indent=4))
-    else:
-        print("Chain query returned null - is the block hash correct ?")
+    purse_uref = chain.get_account_main_purse_uref(network, node, args.account_key)
+
+    utils.log(f"ACCOUNT MAIN PURSE UREF = {purse_uref or 'N/A'}")
 
 
 # Entry point.

@@ -1,20 +1,22 @@
-from jsonrpcclient import request
+import json
+import subprocess
 
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
+from stests.core.utils import paths
 
 
 
 # Method upon client to be invoked.
-_RPC_METHOD = "chain_get_block"
+_CLIENT_METHOD = "get-block"
 
 
 def execute(
     network: Network,
     node: Node,
-    block_hash: str,
+    block_hash: str = None,
     ) -> str:
-    """Queries a node for a block.
+    """Queries a node for a block - returns latest block if hash is not provided.
 
     :param network: Target network being tested.
     :param node: Target node being tested.
@@ -23,6 +25,22 @@ def execute(
     :returns: Representation of a block within a node's state.
 
     """
-    response = request(node.url_rpc, _RPC_METHOD, block_hash=block_hash)
+    binary_path = paths.get_path_to_client(network)
 
-    return response.data.result['block']
+    if block_hash:
+        cli_response = subprocess.run([
+            binary_path, _CLIENT_METHOD,
+            "--node-address", node.url_rpc,
+            "--block-identifier", block_hash,
+            ],
+            stdout=subprocess.PIPE,
+            )  
+    else:
+        cli_response = subprocess.run([
+            binary_path, _CLIENT_METHOD,
+            "--node-address", node.url_rpc,
+            ],
+            stdout=subprocess.PIPE,
+            )  
+
+    return json.loads(cli_response.stdout)['result']['block']

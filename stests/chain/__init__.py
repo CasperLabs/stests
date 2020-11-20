@@ -1,5 +1,7 @@
 from stests.chain.api import get_account
 from stests.chain.api import get_account_balance
+from stests.chain.api import get_account_main_purse_uref
+from stests.chain.api import get_auction_info
 from stests.chain.api import get_block
 from stests.chain.api import get_deploy
 from stests.chain.api import get_state
@@ -15,3 +17,5 @@ from stests.chain.api import stream_events
 from stests.chain.constants import DEFAULT_TX_FEE
 from stests.chain.constants import DEFAULT_TX_GAS_PRICE
 from stests.chain.constants import DEFAULT_TX_TIME_TO_LIVE
+
+from stests.chain.utils import DeployDispatchInfo

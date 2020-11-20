@@ -2,15 +2,14 @@ import argparse
 import json
 
 from stests import chain
-from stests.core import crypto
 from stests.core.utils import args_validator
 from stests.core.utils import env
-from utils import get_network_node
+from arg_utils import get_network_node
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays on-chain account information.")
+ARGS = argparse.ArgumentParser("Renders on-chain block information.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -30,12 +29,12 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
-# CLI argument: account identifer.
+# CLI argument: block hash.
 ARGS.add_argument(
-    "--account",
-    dest="account_key",
-    help="Either a 33 byte account id (hex format) or a 32 byte account hash (hex format).",
-    type=str
+    "--block",
+    dest="block_hash",
+    help="Block hash.",
+    type=str,
     )
 
 
@@ -46,13 +45,12 @@ def main(args):
 
     """
     network, node = get_network_node(args)
-    account_hash = args.account_key if len(args.account_key) == 64 else \
-                   crypto.get_account_hash(args.account_key)
-    account = chain.get_account(network, node, account_hash)
-    if account:
-        print(json.dumps(account, indent=4))
+    block = chain.get_block(network, node, args.block_hash)
+
+    if block:
+        print(json.dumps(block, indent=4))
     else:
-        print("Chain query returned null - is the account key correct ?")
+        print("Chain query returned null - is the block hash correct ?")
 
 
 # Entry point.

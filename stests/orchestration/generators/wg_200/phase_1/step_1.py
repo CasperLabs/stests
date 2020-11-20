@@ -1,13 +1,19 @@
-import typing
-
+from stests import chain
+from stests.core import cache
+from stests.core import factory
+from stests.core.types.chain import AccountType
+from stests.core.types.chain import DeployType
 from stests.core.types.orchestration import ExecutionContext
 from stests.orchestration.generators.utils import verification
-from stests.orchestration.generators.utils import auction
+from stests.orchestration.generators.utils.infra import get_network_node
 
 
 
 # Step label.
 LABEL = "auction-bid-submit"
+
+# Account index of user dispatching bid submission.
+_USER_ACCOUNT_INDEX = 1
 
 
 def execute(ctx: ExecutionContext):
@@ -16,7 +22,35 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    auction.do_bid_submit(ctx, 1, ctx.args.amount, ctx.args.delegation_rate)
+    # Set target network / node.
+    network, node = get_network_node(ctx)
+
+    # Set validator account.
+    validator = factory.create_account_for_run(ctx, AccountType.USER, _USER_ACCOUNT_INDEX)
+
+    # Submit deploy.
+    dispatch_info = chain.DeployDispatchInfo(validator, network, node)
+    deploy_hash, dispatch_duration, dispatch_attempts = \
+        chain.set_auction_bid_submit(
+            dispatch_info,
+            ctx.args.amount,
+            ctx.args.delegation_rate
+            )
+
+    # Update cache: deploy.
+    cache.state.set_deploy(factory.create_deploy_for_run(
+        ctx=ctx, 
+        account=validator,
+        node=node, 
+        deploy_hash=deploy_hash, 
+        dispatch_attempts=dispatch_attempts,
+        dispatch_duration=dispatch_duration,
+        typeof=DeployType.AUCTION_BID_SUBMIT
+        ))
+    
+    # Update cache: deploy counts.
+    # Note: this is temporary until incremented during deploy finalisation.
+    cache.orchestration.increment_deploy_counts(ctx)    
 
 
 def verify(ctx: ExecutionContext):
@@ -26,6 +60,3 @@ def verify(ctx: ExecutionContext):
 
     """
     verification.verify_deploy_count(ctx, 1) 
-
-
-# TODO: when event stream is hooked up then: 1. Listen to events;  2. Asynchronously correlate run deploy.  3. Continue next phase of workflow.

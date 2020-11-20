@@ -22,6 +22,8 @@ def execute(info: DeployDispatchInfo, amount: int) -> str:
     :returns: Deploy hash.
 
     """
+    main_purse_uref = "TODO"
+
     return set_deploy.execute(
         info.network,
         info.node,
@@ -29,5 +31,7 @@ def execute(info: DeployDispatchInfo, amount: int) -> str:
         _CONTRACT_FNAME,
         [
             "--session-arg", f"amount:u512='{amount}'",
+            "--session-arg", f"public_key:public_key='{info.dispatcher.account_key}'",
+            "--session-arg", f"unbond_purse:uref='{main_purse_uref}'",
         ]
     )

@@ -66,14 +66,24 @@ alias stests-cache-set-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/cache_set_
 # ALIASES: Views
 # ###############################################################
 
+# Views #1: chain.
+alias stests-view-chain-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_account.py'
+alias stests-view-chain-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_account_balance.py'
+alias stests-view-chain-account-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_account_hash.py'
+alias stests-view-chain-account-main-purse-uref='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_account_main_purse_uref.py'
+alias stests-view-chain-auction-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_auction_info.py'
+alias stests-view-chain-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_block.py'
+alias stests-view-chain-deploy='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_deploy.py'
+alias stests-view-chain-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_state_root_hash.py'
+
+# alias nctl-view-chain-spec='source $NCTL/sh/views/view_chain_spec.sh'
+# alias nctl-view-chain-spec-accounts='source $NCTL/sh/views/view_chain_spec_accounts.sh'
+
+
+
 # Infra information.
 alias stests-view-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_networks.py'
 alias stests-view-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_nodes.py'
-
-# Account information.
-alias stests-view-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account.py'
-alias stests-view-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_balance.py'
-alias stests-view-account-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_account_hash.py'
 
 # Faucet information.
 alias stests-view-faucet-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account.py'
@@ -81,9 +91,6 @@ alias stests-view-faucet-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view
 alias stests-view-faucet-account-keys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account_keys.py'
 
 # State information.
-alias stests-view-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_block.py'
-alias stests-view-deploy='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_deploy.py'
-alias stests-view-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_state_root_hash.py'
 # alias stests-view-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_contracts.py'                                 # TODO: reinstate when client is updated
 
 # Validator information.

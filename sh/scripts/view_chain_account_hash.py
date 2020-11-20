@@ -24,6 +24,7 @@ def main(args):
 
     """
     account_hash = crypto.get_account_hash(args.account_key)
+
     utils.log(f"ACCOUNT HASH = {account_hash or 'N/A'}")
 
 

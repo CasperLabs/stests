@@ -1,5 +1,7 @@
 from stests.chain.api.get_account import execute as get_account
 from stests.chain.api.get_account_balance import execute as get_account_balance
+from stests.chain.api.get_account_main_purse_uref import execute as get_account_main_purse_uref
+from stests.chain.api.get_auction_info import execute as get_auction_info
 from stests.chain.api.get_block import execute as get_block
 from stests.chain.api.get_deploy import execute as get_deploy
 from stests.chain.api.get_state import execute as get_state
