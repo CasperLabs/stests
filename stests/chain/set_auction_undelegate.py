@@ -1,6 +1,7 @@
-from stests.chain.api import set_deploy
+from stests.chain import set_deploy
 from stests.chain.utils import execute_cli
 from stests.chain.utils import DeployDispatchInfo
+from stests.core.types.chain import Account
 from stests.events import EventType
 
 
@@ -9,16 +10,16 @@ from stests.events import EventType
 _CLIENT_METHOD = "put-deploy"
 
 # Name of smart contract to dispatch & invoke.
-_CONTRACT_FNAME = "add_bid.wasm"
+_CONTRACT_FNAME = "undelegate.wasm"
 
 
 @execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
-def execute(info: DeployDispatchInfo, amount: int, delegation_rate: int) -> str:
-    """Submits a bid to network's validator slot auction contract.
+def execute(info: DeployDispatchInfo, validator: Account, amount: int) -> str:
+    """Submits a deploy revoking the delegation of an amount of tokens (in motes) from a validator.
 
     :param info: Information required when dispatching a deploy.
+    :param validator: Account information of validator to whom a user is delegating stake.
     :param amount: Amount to submit to auction bid (motes).
-    :param delegation_rate: Percentage (i.e. rate) of POS reward alloocated to delegators.
 
     :returns: Deploy hash.
 
@@ -30,7 +31,6 @@ def execute(info: DeployDispatchInfo, amount: int, delegation_rate: int) -> str:
         _CONTRACT_FNAME,
         [
             "--session-arg", f"amount:u512='{amount}'",
-            "--session-arg", f"delegation_rate:u64='{delegation_rate}'",
-            "--session-arg", f"public_key:public_key='{info.dispatcher.account_key}'",
+            "--session-arg", f"validator:public_key='{validator.account_key}'",
         ]
     )

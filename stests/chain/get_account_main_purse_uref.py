@@ -1,4 +1,4 @@
-from stests.chain.api.get_account import execute as get_account
+from stests.chain.get_account import execute as get_account
 from stests.core.types.infra import Node
 from stests.core.types.infra import Network
 

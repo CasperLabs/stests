@@ -1,7 +1,7 @@
 import json
 import subprocess
 
-from stests.chain.api.get_state_root_hash import execute as get_state_root_hash
+from stests.chain.get_state_root_hash import execute as get_state_root_hash
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
 from stests.core.utils import paths
