@@ -11,11 +11,11 @@ from stests.monitoring import on_deploy_processed
 
 
 
-# Map: event type -> handler.
-HANDLERS = {
-    EventType.MONIT_BLOCK_ADD: on_block_added,
-    EventType.MONIT_BLOCK_FINALIZED: on_block_finalized,
-    EventType.MONIT_DEPLOY_PROCESSED: on_deploy_processed,
+# Map: event type -> callback.
+CALLBACKS = {
+    EventType.MONIT_BLOCK_ADD: on_block_added.callback,
+    EventType.MONIT_BLOCK_FINALIZED: on_block_finalized.callback,
+    EventType.MONIT_DEPLOY_PROCESSED: on_deploy_processed.callback,
 }
 
 
@@ -29,10 +29,8 @@ def bind_to_stream(node: Node):
         """Event callback.
         
         """
-        # Set handler.
-        handler = HANDLERS[info.event_type]
-
         # Escape if event already processed - happens if > 1 monitor per node.
+        # NOTE: node software at present does not emit event identifiers.
         if info.event_id:
             _, was_lock_acquired = cache.monitoring.set_node_event_info(info)
             if not was_lock_acquired:
@@ -48,8 +46,8 @@ def bind_to_stream(node: Node):
             deploy_hash=info.deploy_hash
             )
 
-        # Dispatch message to actor for further processing.
-        handler.send(node, info)
+        # Dispatch message to callback actor for further processing.
+        CALLBACKS[info.event_type].send(node, info)
 
     # Bind to a node's stream-events endpoint & dispatch a message to relevant actor.
     stream_events(node, _on_node_event)

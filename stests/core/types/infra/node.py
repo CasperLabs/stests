@@ -87,7 +87,7 @@ class Node:
 
     @property
     def url_event(self):
-        return f"http://{self.address_event}"
+        return f"http://{self.address_event}/events"
 
     @property
     def url_rest(self):

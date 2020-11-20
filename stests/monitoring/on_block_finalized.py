@@ -16,7 +16,7 @@ _QUEUE = "monitoring.events.block.finalized"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_block_finalized(node_id: NodeIdentifier, event_info: NodeEventInfo):   
+def callback(node_id: NodeIdentifier, event_info: NodeEventInfo):   
     """Event: raised whenever a block is finalized.
 
     :param node_id: Identifier of node from which event was streamed.

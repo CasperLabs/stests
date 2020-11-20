@@ -10,7 +10,7 @@ _QUEUE = "monitoring.events.block.added"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_block_added(node: Node, event_info: NodeEventInfo):   
+def callback(node: Node, event_info: NodeEventInfo):   
     """Event: raised whenever a block is added.
 
     :param node_id: Identifier of node from which event was streamed.

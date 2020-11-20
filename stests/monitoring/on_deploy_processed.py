@@ -10,7 +10,7 @@ _QUEUE = "monitoring.events.deploy.processed"
 
 
 @dramatiq.actor(queue_name=_QUEUE)
-def on_deploy_processed(node_id: NodeIdentifier, event_info: NodeEventInfo):   
+def callback(node_id: NodeIdentifier, event_info: NodeEventInfo):   
     """Event: raised whenever a deploy is processed.
 
     :param node_id: Identifier of node from which event was streamed.

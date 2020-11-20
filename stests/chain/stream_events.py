@@ -19,14 +19,20 @@ def execute(node: Node, event_callback: typing.Callable):
 
     """
     log_event(EventType.MONIT_STREAM_OPENING, node.address_event, node)
+
+    # Iterate events.
     for payload, event_type, block_hash, deploy_hash in _yield_events(node):
-        event_callback(node, factory.create_node_event_info(
+        # Set event information for upstream.
+        event_info = factory.create_node_event_info(
             node,
             0,    # TODO: get event identifier from payload
             event_type,
             block_hash,
             deploy_hash,
-        ), payload)
+        )
+
+        # Invoke callback.
+        event_callback(node, event_info, payload)
 
 
 def _yield_events(node: Node):
@@ -53,6 +59,8 @@ def _parse_event_payload(node: Node, obj: dict) -> typing.Tuple[dict, EventType,
     """Parses raw event data for upstream processing.
 
     """
+    print(obj)
+
     if 'ApiVersion' in obj:
         return
 
@@ -82,4 +90,3 @@ def _parse_event_payload(node: Node, obj: dict) -> typing.Tuple[dict, EventType,
         f"event skipped as type is unsupported :: node={node.address_rpc}",
         node
         )
-    print(obj)

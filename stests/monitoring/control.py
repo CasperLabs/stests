@@ -39,11 +39,10 @@ def do_start_monitoring():
         network_id = factory.create_network_id(network.name)
         nodeset = cache.infra.get_nodes_for_monitoring(network_id, 3)
         for node in nodeset:
-            if node != nodeset[0]:
+            node_id = factory.create_node_id(network_id, node.index)
+            do_monitor_node.send(node_id)
+            if node != nodeset[-1]:
                 time.sleep(float(1))
-            do_monitor_node.send(
-                factory.create_node_id(network_id, node.index)
-                )
 
 
 @dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True, time_limit=_30_MINUTES_IN_MS)
@@ -53,7 +52,7 @@ def do_monitor_node(node_id: NodeIdentifier):
     :node_id: Identifier of node to be monitored.
 
     """
-    # Attempt to obtain a lock.
+    # Set lock.
     locked = False
     for i in range(_MONITORS_PER_NODE):
         lock = factory.create_node_monitoring_lock(node_id, i + 1)
@@ -67,9 +66,8 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Monitor node by listening to & processing node events.
     try:
-        listener.bind_to_stream(
-            cache.infra.get_node_by_identifier(node_id)
-            )
+        node = cache.infra.get_node_by_identifier(node_id)
+        listener.bind_to_stream(node)
 
     # Exception: actor timeout.
     except TimeLimitExceeded:
