@@ -40,6 +40,10 @@ def start_orchestration():
     # JIT import actors: generators.
     import stests.generators.wg_100.meta
     import stests.generators.wg_110.meta
+    import stests.generators.wg_200.meta
+    import stests.generators.wg_201.meta
+    import stests.generators.wg_210.meta
+    import stests.generators.wg_211.meta
 
     # JIT import actors: orchestration.
     import stests.core.orchestration.run
@@ -54,6 +58,7 @@ def start_monitoring():
     # JIT import actors: monitoring.
     import stests.monitoring.control
     import stests.monitoring.listener
+
 
     # Start monitoring.
     from stests.monitoring.control import do_start_monitoring

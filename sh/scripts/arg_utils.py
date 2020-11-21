@@ -29,7 +29,7 @@ def get_network_node(args) -> typing.Tuple[Network, Node]:
         raise ValueError("Unregistered network.")
 
     node_id = factory.create_node_id(network_id, int(args.node))
-    node = cache.infra.get_node_by_identifier(node_id)
+    node = cache.infra.get_node(node_id)
     if node is None:
         raise ValueError("Unregistered node.")
 

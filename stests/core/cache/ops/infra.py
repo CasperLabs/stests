@@ -106,7 +106,7 @@ def get_networks() -> SearchKey:
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_node_by_identifier(node_id: NodeIdentifier) -> ItemKey:
+def get_node(node_id: NodeIdentifier) -> ItemKey:
     """Decaches domain object: Node.
 
     :param node_id: A node identifier.

@@ -21,11 +21,11 @@ def execute(node: Node, event_callback: typing.Callable):
     log_event(EventType.MONIT_STREAM_OPENING, node.address_event, node)
 
     # Iterate events.
-    for payload, event_type, block_hash, deploy_hash in _yield_events(node):
+    for event_type, event_id, payload, block_hash, deploy_hash in _yield_events(node):
         # Set event information for upstream.
         event_info = factory.create_node_event_info(
             node,
-            0,    # TODO: get event identifier from payload
+            event_id,
             event_type,
             block_hash,
             deploy_hash,
@@ -39,13 +39,18 @@ def _yield_events(node: Node):
     """Yields events streaming from node.
 
     """
+    # Set client.
     stream = requests.get(node.url_event, stream=True)
     client = sseclient.SSEClient(stream)
+    
+    # Bind to stream & yield parsed events.
     try:
         for event in client.events():
-            parsed = _parse_event_payload(node, json.loads(event.data))
+            parsed = _parse_event(node, event.id, json.loads(event.data))
             if parsed:
                 yield parsed
+
+    # On stream error close & re-raise.
     except Exception as err:
         try:
             client.close()
@@ -55,35 +60,36 @@ def _yield_events(node: Node):
             raise err
 
 
-def _parse_event_payload(node: Node, obj: dict) -> typing.Tuple[dict, EventType, typing.Optional[str], typing.Optional[str]]:
+def _parse_event(node: Node, event_id: int, payload: dict) -> typing.Tuple[EventType, int, dict, typing.Optional[str], typing.Optional[str]]:
     """Parses raw event data for upstream processing.
 
     """
-    print(obj)
-
-    if 'ApiVersion' in obj:
+    if 'ApiVersion' in payload:
         return
 
-    if 'BlockAdded' in obj:
+    elif 'BlockAdded' in payload:
         return \
-            obj, \
-            EventType.MONIT_BLOCK_ADD, \
-            obj['BlockAdded']['block_hash'], \
+            EventType.MONIT_BLOCK_ADDED, \
+            event_id, \
+            payload, \
+            payload['BlockAdded']['block_hash'], \
             None
 
-    if 'BlockFinalized' in obj:
+    elif 'BlockFinalized' in payload:
         return \
-            obj, \
             EventType.MONIT_BLOCK_FINALIZED, \
-            obj['BlockFinalized']['proto_block']['hash'], \
+            event_id, \
+            payload, \
+            payload['BlockFinalized']['proto_block']['hash'], \
             None
 
-    if 'DeployProcessed' in obj:
+    elif 'DeployProcessed' in payload:
         return \
-            obj, \
             EventType.MONIT_DEPLOY_PROCESSED, \
-            None, \
-            None
+            event_id, \
+            payload, \
+            payload['DeployProcessed']['block_hash'], \
+            payload['DeployProcessed']['deploy_hash']
 
     log_event(
         EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,

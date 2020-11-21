@@ -66,7 +66,7 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Monitor node by listening to & processing node events.
     try:
-        node = cache.infra.get_node_by_identifier(node_id)
+        node = cache.infra.get_node(node_id)
         listener.bind_to_stream(node)
 
     # Exception: actor timeout.

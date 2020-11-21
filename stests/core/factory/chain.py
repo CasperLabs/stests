@@ -174,14 +174,14 @@ def create_block_statistics_on_finalization(
     )
 
 
-def create_block_summary_on_finalisation(info: NodeEventInfo) -> BlockSummary:
+def create_block_summary(info: NodeEventInfo, status: BlockStatus) -> BlockSummary:
     """Returns a domain object instance: BlockSummary.
 
     """
     return BlockSummary(
         block_hash=info.block_hash,
         network=info.network,
-        status=BlockStatus.FINALIZED,
+        status=status,
     )
 
 
@@ -225,7 +225,7 @@ def create_deploy_for_run(
     )
 
 
-def create_deploy_summary_on_finalisation(info: NodeEventInfo) -> DeploySummary:
+def create_deploy_summary(info: NodeEventInfo, status: DeployStatus) -> DeploySummary:
     """Returns a domain object instance: DeploySummary.
 
     """
@@ -233,7 +233,7 @@ def create_deploy_summary_on_finalisation(info: NodeEventInfo) -> DeploySummary:
         block_hash=info.block_hash,
         deploy_hash=info.deploy_hash,
         network=info.network,
-        status=DeployStatus.FINALIZED,
+        status=status,
     )
 
 

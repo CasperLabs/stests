@@ -32,6 +32,7 @@ def set_block_summary(summary: BlockSummary) -> Item:
             paths=[
                 summary.network,
                 COL_BLOCK_SUMMARY,
+                summary.status.name,
             ],
             names=[
                 summary.block_hash,
@@ -66,10 +67,10 @@ def set_deploy_summary(summary: DeploySummary) -> Item:
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
-def set_node_event_info(lock: NodeEventInfo) -> Item:
+def set_node_event_info(info: NodeEventInfo) -> Item:
     """Encaches an item.
     
-    :param lock: Lock instance to be cached.
+    :param info: Node event information.
 
     :returns: Item to be cached.
 
@@ -77,14 +78,14 @@ def set_node_event_info(lock: NodeEventInfo) -> Item:
     return Item(
         item_key=ItemKey(
             paths=[
-                lock.network,
+                info.network,
                 COL_EVENT,
-                lock.label_node_index,
+                info.label_node_index,
             ],
             names=[
-                lock.label_event_id,
-                lock.label_event_type,
+                info.label_event_id,
+                info.label_event_type,
             ],
         ),
-        data=lock
+        data=info
     )

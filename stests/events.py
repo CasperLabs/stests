@@ -15,6 +15,7 @@ class EventType(enum.Enum):
 
     # Chain info reporting sub-system.
     CHAIN_FINALIZED_BLOCK = enum.auto()
+    CHAIN_FINALIZED_BLOCK_EMPTY = enum.auto()
     CHAIN_FINALIZED_DEPLOY = enum.auto()
     CHAIN_QUERY_BALANCE = enum.auto()
     CHAIN_QUERY_BALANCE_NOT_FOUND = enum.auto()
@@ -25,7 +26,7 @@ class EventType(enum.Enum):
     CHAIN_QUERY_STATE = enum.auto()
 
     # Monitoring sub-system.
-    MONIT_BLOCK_ADD = enum.auto()
+    MONIT_BLOCK_ADDED = enum.auto()
     MONIT_BLOCK_FINALIZED = enum.auto()
     MONIT_DEPLOY_EXECUTION_ERROR = enum.auto()
     MONIT_DEPLOY_PROCESSED = enum.auto()
@@ -60,7 +61,7 @@ class EventType(enum.Enum):
 # Set of debug events.
 EVENTS_DEBUG = (
     EventType.CORE_BROKER_CONNECTION_ESTABLISHED,
-    EventType.MONIT_BLOCK_ADD,
+    EventType.MONIT_BLOCK_ADDED,
     EventType.MONIT_BLOCK_FINALIZED,
     EventType.MONIT_DEPLOY_PROCESSED,
 )
