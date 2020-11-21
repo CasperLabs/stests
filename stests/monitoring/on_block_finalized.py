@@ -14,6 +14,8 @@ from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
 from stests.events import EventType
 
+from stests.core.types.chain import Deploy
+from stests.core.types.infra import NodeIdentifier
 
 
 # Queue to which messages will be dispatched.
@@ -28,8 +30,8 @@ def on_block_finalized(info: NodeEventInfo):
 
     """
     # Escape if already processed.
-    if _is_block_processed(info):
-        return
+    # if _is_block_processed(info):
+    #     return
 
     # Set network / node.
     network_id = factory.create_network_id(info.network)
@@ -78,34 +80,35 @@ def _process_block(info: NodeEventInfo, network: Network, node: Node):
         return
 
     # Set deploy hashes - escape if not found.
-    if not block['header']['deploy_hashes']:
-        log_event(EventType.CHAIN_FINALIZED_BLOCK_EMPTY, None, info.block_hash)
-        return
+    # if not block['header']['deploy_hashes']:
+    #     log_event(EventType.CHAIN_FINALIZED_BLOCK_EMPTY, None, info.block_hash)
+    #     return
     
     # Set stats.
     block_stats = factory.create_block_statistics_on_finalization(
-        block_hash=info.block_hash,
-        chain_name=block_info['summary']['header']['chainName'],
-        deploy_cost_total=block_info['status']['stats'].get('deployCostTotal'),
-        deploy_count=deploy_count,
-        deploy_gas_price_avg=block_info['status']['stats'].get('deployGasPriceAvg'),
-        j_rank=block_info['summary']['header']['jRank'],
-        m_rank=block_info['summary']['header']['mainRank'],
-        magic_bit=block_info['summary']['header'].get('magicBit'),
-        message_role=block_info['summary']['header']['messageRole'],
-        network=node_id.network_name,
-        round_id=block_info['summary']['header']['roundId'],
-        size_bytes=block_info['status']['stats']['blockSizeBytes'],
-        timestamp=datetime.fromtimestamp(block_info['summary']['header']['timestamp'] / 1000.0),
-        validator_id=block_info['summary']['header']['validatorPublicKey'],        
+        block_hash = block['hash'],
+        block_hash_parent = block['header']['parent_hash'],
+        chain_name = network.chain_name,
+        deploy_cost_total = None,
+        deploy_count = len(block['header']['deploy_hashes']),
+        deploy_gas_price_avg = None,
+        era_id = block['header']['era_id'],
+        height = block['header']['height'],
+        is_switch_block = block['header']['era_end'] is not None,
+        network = network.name,
+        size_bytes = None,
+        state_root_hash = block['header']['state_root_hash'],
+        status = BlockStatus.FINALIZED.name,
+        timestamp = datetime.fromtimestamp(block['header']['timestamp']),
+        proposer_account_key = block['header']['proposer'],      
     )
 
     # Emit event: CHAIN_FINALIZED_BLOCK.
     log_event(EventType.CHAIN_FINALIZED_BLOCK, f"{info.block_hash}", block_stats)
 
     # Process deploys.
-    for deploy_hash in block['header']['deploy_hashes']:
-        _process_deploy(info, network, node, deploy_hash)
+    # for deploy_hash in block['header']['deploy_hashes']:
+    #     _process_deploy(info, network, node, deploy_hash)
 
 
 def _process_deploy(info: NodeEventInfo, network: Network, node: Node, deploy_hash: str):

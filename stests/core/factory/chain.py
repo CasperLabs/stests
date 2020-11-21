@@ -136,41 +136,88 @@ def create_block_on_finalisation(
         )
 
 
+    # Block hash (blake2b) identifier.
+    block_hash: str
+
+    # Block hash (blake2b) identifier of parent block.
+    block_hash_parent: str
+
+    # Name of chain emitting block.
+    chain_name: str
+
+    # Motes spent during block processing.
+    deploy_cost_total: int
+
+    # Number of deploys within block.
+    deploy_count: str
+
+    # Average price of deploys.
+    deploy_gas_price_avg: int
+
+    # Consensus era identifier.
+    era_id: int
+
+    # Height of block within liner chain.
+    height: int
+
+    # Flag indicating whether this block signals end of an era.
+    is_switch_block: bool
+
+    # Associated network.
+    network: str
+
+    # Size in bytes of block.
+    size_bytes: int
+
+    # Root hash of chain state at point of block proposal.
+    state_root_hash: str
+
+    # Block consensus status, e.g. ADDED | FINALIZED ... etc.
+    status: BlockStatus
+
+    # Block processing timestamp.
+    timestamp: datetime
+
+    # ID of validator that proposed block.
+    proposer_account_key: str
+
+
 def create_block_statistics_on_finalization(
     block_hash: str,
+    block_hash_parent: str,
     chain_name: str,
     deploy_cost_total: int,
     deploy_count: int,
     deploy_gas_price_avg: int,
-    j_rank: int,
-    m_rank: int,
-    magic_bit: int,
-    message_role: str,
+    era_id: int,
+    height: int,
+    is_switch_block: bool,
     network: str,
-    round_id: int,
-    size_bytes: int,
+    size_bytes: str,
+    state_root_hash: str,
+    status: int,
     timestamp: datetime,
-    validator_id: str,
+    proposer_account_key: str,
     ) -> BlockStatistics:
     """Returns a domain object instance: BlockStatistics.
 
     """
     return BlockStatistics(
-        block_hash=block_hash,
-        chain_name=chain_name,
-        deploy_cost_total=deploy_cost_total,
-        deploy_count=deploy_count,
-        deploy_gas_price_avg=deploy_gas_price_avg,
-        j_rank=j_rank,
-        m_rank=m_rank,
-        magic_bit=magic_bit,
-        message_role=message_role,
-        network=network,
-        round_id=round_id,
-        size_bytes=size_bytes,
-        status=BlockStatus.FINALIZED,
-        timestamp=timestamp,
-        validator_id=validator_id,
+        block_hash = block_hash,
+        block_hash_parent = block_hash_parent,
+        chain_name = chain_name,
+        deploy_cost_total = deploy_cost_total,
+        deploy_count = deploy_count,
+        deploy_gas_price_avg = deploy_gas_price_avg,
+        era_id = era_id,
+        height = height,
+        is_switch_block = is_switch_block,
+        network = network,
+        size_bytes = size_bytes,
+        state_root_hash = state_root_hash,
+        status = status,
+        timestamp = timestamp,
+        proposer_account_key = proposer_account_key,
     )
 
 

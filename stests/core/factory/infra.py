@@ -115,6 +115,6 @@ def create_node_event_info(
         event_timestamp=datetime.now(),
         event_type=event_type,
         network=node.network,
-        node_address=node.address_rpc,
+        node_address=node.address_event,
         node_index=node.index,
         )

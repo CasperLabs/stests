@@ -68,11 +68,14 @@ class BlockStatistics:
     # Block hash (blake2b) identifier.
     block_hash: str
 
+    # Block hash (blake2b) identifier of parent block.
+    block_hash_parent: str
+
     # Name of chain emitting block.
     chain_name: str
 
     # Motes spent during block processing.
-    deploy_cost_total: str
+    deploy_cost_total: int
 
     # Number of deploys within block.
     deploy_count: str
@@ -80,26 +83,23 @@ class BlockStatistics:
     # Average price of deploys.
     deploy_gas_price_avg: int
 
-    # J-rank.
-    j_rank: int
+    # Consensus era identifier.
+    era_id: int
 
-    # Main rank.
-    m_rank: int
+    # Height of block within liner chain.
+    height: int
 
-    # A random bit set by the creator of the block which is goes towards the leader seed.
-    magic_bit: int
-
-    # Highway specific role of a message.
-    message_role: str
+    # Flag indicating whether this block signals end of an era.
+    is_switch_block: bool
 
     # Associated network.
     network: str
 
-    # Identifier of consensus round during which block was finalized.
-    round_id: typing.Optional[int]
-
     # Size in bytes of block.
     size_bytes: int
+
+    # Root hash of chain state at point of block proposal.
+    state_root_hash: str
 
     # Block consensus status, e.g. ADDED | FINALIZED ... etc.
     status: BlockStatus
@@ -108,7 +108,7 @@ class BlockStatistics:
     timestamp: datetime
 
     # ID of validator that proposed block.
-    validator_id: str
+    proposer_account_key: str
 
 
 @dataclasses.dataclass

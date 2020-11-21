@@ -11,17 +11,18 @@ from stests.events import EventType
 
 
 
-def execute(node: Node, event_callback: typing.Callable):
+def execute(node: Node, event_callback: typing.Callable, event_id: int = 0):
     """Hooks upto a node's event stream invoking passed callback for each event.
 
     :param node: The node to which to bind.
     :param event_callback: Callback to invoke whenever an event of relevant type is received.
+    :param event_id: Identifer of event from which to start stream.
 
     """
     log_event(EventType.MONIT_STREAM_OPENING, node.address_event, node)
 
     # Iterate events.
-    for event_type, event_id, payload, block_hash, deploy_hash in _yield_events(node):
+    for event_type, event_id, payload, block_hash, deploy_hash in _yield_events(node, event_id):
         # Set event information for upstream.
         event_info = factory.create_node_event_info(
             node,
@@ -35,12 +36,17 @@ def execute(node: Node, event_callback: typing.Callable):
         event_callback(node, event_info, payload)
 
 
-def _yield_events(node: Node):
+def _yield_events(node: Node, event_id: int):
     """Yields events streaming from node.
 
     """
+    # Set url.
+    url = node.url_event
+    if event_id:
+        url = f"{url}?start_from={event_id}"
+
     # Set client.
-    stream = requests.get(node.url_event, stream=True)
+    stream = requests.get(url, stream=True)
     client = sseclient.SSEClient(stream)
     
     # Bind to stream & yield parsed events.

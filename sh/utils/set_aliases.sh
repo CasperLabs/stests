@@ -77,6 +77,7 @@ alias stests-view-chain-deploy='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_dep
 alias stests-view-chain-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_state_root_hash.py'
 
 # Node information.
+alias stests-view-node-events='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_events.py'
 alias stests-view-node-metric='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py'
 alias stests-view-node-metric-deploy-gossiper='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric deploy_gossiper'
 alias stests-view-node-metric-contract-runtime='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric contract_runtime'
