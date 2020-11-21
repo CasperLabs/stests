@@ -45,7 +45,7 @@ ARGS.add_argument(
 # Table columns.
 COLS = [
     ("#", BeautifulTable.ALIGN_LEFT),
-    ("Dispatch Node", BeautifulTable.ALIGN_LEFT),
+    ("Dispatch Node ID", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Timestamp", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Account Key", BeautifulTable.ALIGN_LEFT),
     ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
@@ -86,7 +86,7 @@ def _render_table(args, network_id, data):
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         data.index(i) + 1,
-        i.dispatch_node,
+        f"# {i.dispatch_node_index}",
         i.dispatch_timestamp.isoformat(),
         i.account,
         i.deploy_hash,      

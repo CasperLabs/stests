@@ -37,12 +37,13 @@ class DeployStatus(enum.Flag):
     """Flag over set of deploy states.
     
     """
-    DISPATCHED = 0
-    PENDING = 1
-    PROCESSED = 2
-    FINALIZED = 3
-    DISCARDED = 4
-    REJECTED = 5
+    DISPATCHED = enum.auto()
+    PENDING = enum.auto()
+    PROCESSED = enum.auto()
+    ADDED = enum.auto()
+    FINALIZED = enum.auto()
+    DISCARDED = enum.auto()
+    REJECTED = enum.auto()
 
 
 class DeployType(enum.Flag):

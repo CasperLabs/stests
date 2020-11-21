@@ -36,11 +36,11 @@ class Deploy:
     # Number of times dispatcher had to try before deploy dispatch suceeded.
     dispatch_attempts: int
 
-    # Address of node to which deploy was dispatched.
-    dispatch_node: str
-
     # Time taken to dispatch deploy.
     dispatch_duration: float
+
+    # Index of node to which deploy was dispatched.
+    dispatch_node_index: str
 
     # Moment in time when deploy dispatched to CSPR network.
     dispatch_timestamp: datetime
@@ -48,8 +48,8 @@ class Deploy:
     # Time between dispatch & deploy finality.
     finalization_duration: typing.Optional[float]
 
-    # Address of node which emitted finalization event of the block in which deploy was included.
-    finalization_node: typing.Optional[str]
+    # Index of node which emitted finalization event of the block in which deploy was included.
+    finalization_node_index: typing.Optional[str]
     
     # Moment in time when deploy was finalized by CSPR network.
     finalization_timestamp: typing.Optional[datetime]    

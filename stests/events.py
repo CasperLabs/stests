@@ -14,9 +14,14 @@ class EventType(enum.Enum):
     CORE_ACTOR_ERROR = enum.auto()
 
     # Chain info reporting sub-system.
+    CHAIN_ADDED_BLOCK = enum.auto()
+    CHAIN_ADDED_BLOCK_EMPTY = enum.auto()
+    CHAIN_ADDED_DEPLOY = enum.auto()
+
     CHAIN_FINALIZED_BLOCK = enum.auto()
     CHAIN_FINALIZED_BLOCK_EMPTY = enum.auto()
     CHAIN_FINALIZED_DEPLOY = enum.auto()
+
     CHAIN_QUERY_BALANCE = enum.auto()
     CHAIN_QUERY_BALANCE_NOT_FOUND = enum.auto()
     CHAIN_QUERY_BLOCK = enum.auto()

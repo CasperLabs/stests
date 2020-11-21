@@ -21,4 +21,4 @@ def on_deploy_processed(info: NodeEventInfo):
     :param info: Node event information.
 
     """
-    print(f"{_QUEUE} :: {info}")
+    return

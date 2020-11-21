@@ -19,10 +19,11 @@ _ACTORS = {
 }
 
 
-def bind_to_stream(node: Node):
+def bind_to_stream(node: Node, event_id: int = 0):
     """Binds to a node's event stream.
 
     :node: Node being monitored.
+    :param event_id: Identifer of event from which to start stream.
     
     """
     # Bind to a node's events endpoint & invoke callback upon event receipt.
@@ -52,6 +53,5 @@ def _on_node_event(node: Node, info: NodeEventInfo, payload: dict):
         )
 
     # Dispatch message to actor for further processing.
-    print(f"{info.event_id} :: {info.node_address} :: {info.event_type} :: {info.block_hash} :: {info.deploy_hash}")
     actor = _ACTORS[info.event_type]
     actor.send(info)
