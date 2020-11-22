@@ -46,11 +46,7 @@ def execute(ctx: ExecutionContext):
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
         typeof=DeployType.AUCTION_BID_SUBMIT
-        ))
-    
-    # Update cache: deploy counts.
-    # Note: this is temporary until incremented during deploy finalisation.
-    cache.orchestration.increment_deploy_counts(ctx)    
+        ))  
 
 
 def verify(ctx: ExecutionContext):

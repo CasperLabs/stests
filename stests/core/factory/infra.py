@@ -1,3 +1,4 @@
+import typing
 from datetime import datetime
 
 from stests.core.types.infra import Network
@@ -80,11 +81,14 @@ def create_node(
     )
 
 
-def create_node_id(network_id: NetworkIdentifier, index: int) -> NodeIdentifier:
+def create_node_id(network_id: typing.Union[str, NetworkIdentifier], index: int) -> NodeIdentifier:
     """Returns a cache identifier: NodeIdentifier.
 
     """
+    network_id = network_id if isinstance(network_id, NetworkIdentifier) else create_network_id(network_id)
+
     return NodeIdentifier(network_id, index)
+    
 
 
 def create_node_monitoring_lock(node_id: NodeIdentifier, lock_index: int) -> NodeMonitoringLock:
@@ -112,7 +116,7 @@ def create_node_event_info(
         block_hash=block_hash,
         deploy_hash=deploy_hash,
         event_id=event_id,
-        event_timestamp=datetime.now(),
+        event_timestamp=datetime.utcnow(),
         event_type=event_type,
         network=node.network,
         node_address=node.address_event,

@@ -105,7 +105,7 @@ def create_account_key(
     )
 
 
-def create_block_on_finalisation(
+def create_block_on_addition(
     node_id: NodeIdentifier,
     block_hash: str,
     deploy_cost_total: int,
@@ -136,60 +136,14 @@ def create_block_on_finalisation(
         )
 
 
-    # Block hash (blake2b) identifier.
-    block_hash: str
-
-    # Block hash (blake2b) identifier of parent block.
-    block_hash_parent: str
-
-    # Name of chain emitting block.
-    chain_name: str
-
-    # Motes spent during block processing.
-    deploy_cost_total: int
-
-    # Number of deploys within block.
-    deploy_count: str
-
-    # Average price of deploys.
-    deploy_gas_price_avg: int
-
-    # Consensus era identifier.
-    era_id: int
-
-    # Height of block within liner chain.
-    height: int
-
-    # Flag indicating whether this block signals end of an era.
-    is_switch_block: bool
-
-    # Associated network.
-    network: str
-
-    # Size in bytes of block.
-    size_bytes: int
-
-    # Root hash of chain state at point of block proposal.
-    state_root_hash: str
-
-    # Block consensus status, e.g. ADDED | FINALIZED ... etc.
-    status: BlockStatus
-
-    # Block processing timestamp.
-    timestamp: datetime
-
-    # ID of validator that proposed block.
-    proposer_account_key: str
-
-
-def create_block_statistics_on_finalization(
+def create_block_statistics_on_addition(
     block_hash: str,
     block_hash_parent: str,
     chain_name: str,
+    consensus_era_id: int,
     deploy_cost_total: int,
     deploy_count: int,
     deploy_gas_price_avg: int,
-    era_id: int,
     height: int,
     is_switch_block: bool,
     network: str,
@@ -197,7 +151,7 @@ def create_block_statistics_on_finalization(
     state_root_hash: str,
     status: int,
     timestamp: datetime,
-    proposer_account_key: str,
+    proposer: str,
     ) -> BlockStatistics:
     """Returns a domain object instance: BlockStatistics.
 
@@ -206,10 +160,10 @@ def create_block_statistics_on_finalization(
         block_hash = block_hash,
         block_hash_parent = block_hash_parent,
         chain_name = chain_name,
+        consensus_era_id = consensus_era_id,
         deploy_cost_total = deploy_cost_total,
         deploy_count = deploy_count,
         deploy_gas_price_avg = deploy_gas_price_avg,
-        era_id = era_id,
         height = height,
         is_switch_block = is_switch_block,
         network = network,
@@ -217,17 +171,17 @@ def create_block_statistics_on_finalization(
         state_root_hash = state_root_hash,
         status = status,
         timestamp = timestamp,
-        proposer_account_key = proposer_account_key,
+        proposer = proposer,
     )
 
 
-def create_block_summary(info: NodeEventInfo, status: BlockStatus) -> BlockSummary:
+def create_block_summary(network: str, block_hash: str, status: BlockStatus) -> BlockSummary:
     """Returns a domain object instance: BlockSummary.
 
     """
     return BlockSummary(
-        block_hash=info.block_hash,
-        network=info.network,
+        block_hash=block_hash,
+        network=network,
         status=status,
     )
 
@@ -251,18 +205,19 @@ def create_deploy_for_run(
         associated_account=associated_account.account_key if associated_account else None,
         associated_account_index=associated_account.index if associated_account else None,
         block_hash=None,
+        consensus_era_id=None,
+        consensus_round_id=None,
         deploy_cost=None,
         deploy_hash=deploy_hash,
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
         dispatch_node_index=node.index,
-        dispatch_timestamp=datetime.now(),
+        dispatch_timestamp=datetime.utcnow(),
         finalization_duration=None,
         finalization_node_index=None,
         finalization_timestamp=None,
         network=ctx.network,
         phase_index=ctx.phase_index,
-        round_id=None,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
         status=DeployStatus.DISPATCHED,
@@ -272,14 +227,14 @@ def create_deploy_for_run(
     )
 
 
-def create_deploy_summary(info: NodeEventInfo, status: DeployStatus) -> DeploySummary:
+def create_deploy_summary(network: str, block_hash: str, deploy_hash: str, status: DeployStatus) -> DeploySummary:
     """Returns a domain object instance: DeploySummary.
 
     """
     return DeploySummary(
-        block_hash=info.block_hash,
-        deploy_hash=info.deploy_hash,
-        network=info.network,
+        block_hash=block_hash,
+        deploy_hash=deploy_hash,
+        network=network,
         status=status,
     )
 

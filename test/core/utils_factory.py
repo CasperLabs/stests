@@ -27,7 +27,7 @@ def create_account_key() -> types.chain.AccountIdentifier:
 
 
 def create_block() -> types.chain.Block:
-    return factory.create_block_on_finalisation(
+    return factory.create_block_on_addition(
         node_id=create_node_id(),
         block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
         deploy_cost_total=int(1e7),
@@ -36,15 +36,17 @@ def create_block() -> types.chain.Block:
         j_rank=1,
         m_rank=1,
         size_bytes=int(1e8),
-        timestamp=dt.now().timestamp(),
+        timestamp=dt.utcnow().timestamp(),
         validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",
     )
 
 
 def create_block_statistics() -> types.chain.BlockStatistics:
-    return factory.create_block_statistics_on_finalization(
+    return factory.create_block_statistics_on_addition(
         block_hash="9dbc064574aafcba8cadbd20aa6ef5b396e64ba970d829c188734ac09ae34f64",
         chain_name="main",
+        consensus_era_id=42,
+        consensus_round_id=12,
         deploy_cost_total=int(1e7),
         deploy_count=1,
         deploy_gas_price_avg=10,
@@ -53,9 +55,8 @@ def create_block_statistics() -> types.chain.BlockStatistics:
         magic_bit=1,
         message_role="a-role",
         network="lrt1",
-        round_id=120,
         size_bytes=int(1e8),
-        timestamp=dt.now().timestamp(),
+        timestamp=dt.utcnow().timestamp(),
         validator_id="dca0025bfb03f7be74c47371ca74883b47587f3630becb0e7b46b7c9ae6e8500",
     )
 
@@ -64,7 +65,7 @@ def create_block_summary() -> types.chain.BlockSummary:
     """Returns a domain object instance: BlockSummary.
 
     """
-    return factory.create_block_summary_on_finalisation(
+    return factory.create_block_summary(
         info=create_node_event_info()
     )
 
@@ -83,7 +84,7 @@ def create_deploy() -> types.chain.Deploy:
 
 
 def create_deploy_summary() -> types.chain.DeploySummary:
-    return factory.create_deploy_summary_on_finalisation(
+    return factory.create_deploy_summary(
         info=create_node_event_info(),
     )
 
@@ -196,7 +197,7 @@ def create_log_event_info() -> types.logging.EventInfo:
         id="1234",
         level=types.logging.Level.DEBUG,
         priority=1,
-        timestamp=dt.now().timestamp(),
+        timestamp=dt.utcnow().timestamp(),
         type="UNIT_TEST",
     )
 

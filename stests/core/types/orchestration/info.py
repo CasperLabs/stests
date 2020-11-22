@@ -59,7 +59,7 @@ class ExecutionInfo:
     def tp_elapsed(self):
         if self.status in (ExecutionStatus.COMPLETE, ExecutionStatus.ERROR):
             return self.tp_duration
-        return datetime.now().timestamp() - self.ts_start.timestamp()
+        return datetime.utcnow().timestamp() - self.ts_start.timestamp()
 
     @property
     def label_tp_duration(self):
@@ -117,6 +117,6 @@ class ExecutionInfo:
         """
         self.error = error
         self.status = status
-        self.ts_end = datetime.now()
+        self.ts_end = datetime.utcnow()
         self.tp_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
 

@@ -27,6 +27,12 @@ class Deploy:
     # Associated block hash in event of finalization. 
     block_hash: typing.Optional[str]
 
+    # Consensus era identifier.
+    consensus_era_id: int
+
+    # Consensus round identifier.
+    consensus_round_id: int
+
     # Cost of deploy (in motes).
     deploy_cost: typing.Optional[int]    
 
@@ -86,9 +92,6 @@ class Deploy:
 
     # Associated network.
     network: str
-
-    # Identifier of consensus round during which deploy was finalized.
-    round_id: typing.Optional[int]    
 
     # Deploy's processing status.
     status: DeployStatus

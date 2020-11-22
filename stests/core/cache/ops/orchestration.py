@@ -263,6 +263,7 @@ def increment_deploy_counts(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
+    # TODO: increment as a batch.
     increment_deploy_count(ctx, ExecutionAspect.RUN)
     increment_deploy_count(ctx, ExecutionAspect.PHASE)
     increment_deploy_count(ctx, ExecutionAspect.STEP)

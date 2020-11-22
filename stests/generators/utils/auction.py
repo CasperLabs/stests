@@ -71,10 +71,6 @@ def _do_delegate_action(ctx: ExecutionContext, account_index: int, amount: int, 
         dispatch_duration=dispatch_duration,
         typeof=DeployType.AUCTION_UNDELEGATE
         ))
-    
-    # Update cache: deploy counts.
-    # Note: this is temporary until incremented during deploy finalisation.
-    cache.orchestration.increment_deploy_counts(ctx)
 
 
 def _get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:

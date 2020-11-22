@@ -2,6 +2,7 @@ import typing
 import dramatiq
 
 from stests.core.types.chain import DeployType
+from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.generators.utils import constants
 from stests.generators.utils import verification
@@ -34,10 +35,15 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     return do_transfer, ctx.args.transfers, _yield_parameterizations
 
 
-def verify(ctx: ExecutionContext):
-    """Step verifier.
+def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
+    """Step deploy verifier.
     
     :param ctx: Execution context information.
+    :param node_id: Identifier of node that emitted finalization event.
+    :param block_hash: Hash of a finalized block.
+    :param deploy_hash: Hash of a finalized deploy.
 
     """
-    verification.verify_deploy_count(ctx, ctx.args.transfers) 
+    verification.verify_deploy(ctx, block_hash, deploy_hash)
+    # verification.verify_transfer(ctx, node_id, block_hash, deploy_hash)
+

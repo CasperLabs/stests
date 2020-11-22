@@ -67,10 +67,6 @@ def do_transfer(
         dispatch_duration=dispatch_duration,
         typeof=deploy_type
         ))
-    
-    # Increment deploy counts.
-    # Note: this is temporary until we can increment during deploy finalisation.
-    cache.orchestration.increment_deploy_counts(ctx)
 
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:

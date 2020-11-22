@@ -72,7 +72,7 @@ def create_execution_info(aspect: ExecutionAspect, ctx: ExecutionContext) -> Exe
         step_index=None,
         step_label=None,
         tp_duration=None,
-        ts_start=datetime.now(),
+        ts_start=datetime.utcnow(),
         ts_end=None,
     )
 

@@ -52,6 +52,7 @@ COLS = [
     ("Deploy Type", BeautifulTable.ALIGN_LEFT),
     ("Deploy Status", BeautifulTable.ALIGN_LEFT),
     ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
+    ("Consensus Era ID", BeautifulTable.ALIGN_RIGHT),
     ("Consensus Round ID", BeautifulTable.ALIGN_RIGHT),
     ("Block Hash", BeautifulTable.ALIGN_RIGHT),
 ]
@@ -93,7 +94,8 @@ def _render_table(args, network_id, data):
         i.typeof.name,
         i.status.name,      
         i.label_finalization_duration,
-        i.round_id or "--",
+        i.consensus_era_id or "--",
+        i.consensus_round_id or "--",
         i.block_hash or "--"
     ], data)
 

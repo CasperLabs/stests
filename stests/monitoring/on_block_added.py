@@ -15,12 +15,36 @@ from stests.core.types.infra import Network
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeIdentifier
+from stests.core.utils import encoder
 from stests.events import EventType
 
 
 
 # Queue to which messages will be dispatched.
 _QUEUE = "monitoring.events.block.added"
+
+
+class _Context():
+    """Contextual information passed along chain of execution.
+    
+    """
+    def __init__(self, info: NodeEventInfo):
+        self.block = None
+        self.block_hash = info.block_hash
+        self.deploy = None
+        self.deploy_hashes = []
+        self.info = info
+        self.network_id = factory.create_network_id(info.network)
+        self.network = cache.infra.get_network(self.network_id)
+        self.node_id = factory.create_node_id(self.network_id, info.node_index)
+        self.node = cache.infra.get_node(self.node_id)
+        self.on_chain_block = None
+        self.on_chain_deploy = None
+    
+    @property
+    def deploy_execution_ctx(self):
+        """Returns workload generated execution context."""
+        return cache.orchestration.get_context(self.deploy.network, self.deploy.run_index, self.deploy.run_type)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -34,14 +58,15 @@ def on_block_added(info: NodeEventInfo):
     if _is_block_processed(info):
         return
 
-    # Set network / node.
-    network_id = factory.create_network_id(info.network)
-    network = cache.infra.get_network(network_id)
-    node_id = factory.create_node_id(network_id, info.node_index)
-    node = cache.infra.get_node(node_id)
+    # Set context.
+    ctx = _Context(info)
 
-    # Process block.
-    _process_block(info, network, node)
+    # Process block & deploys.
+    _process_block(ctx)
+    for deploy_hash in ctx.deploy_hashes:
+        ctx.deploy_hash = deploy_hash
+        if not _is_deploy_processed(ctx):
+            _process_deploy(ctx)
 
 
 def _is_block_processed(info: NodeEventInfo) -> bool:
@@ -49,139 +74,132 @@ def _is_block_processed(info: NodeEventInfo) -> bool:
 
     """
     # Set summary information.
-    summary = factory.create_block_summary(info, BlockStatus.ADDED)
+    summary = factory.create_block_summary(info.network, info.block_hash, BlockStatus.ADDED)
     
     # Attempt to cache.
     _, encached = cache.monitoring.set_block_summary(summary)
 
-    # Return flag indicating whether block has eefectively already been processed.
+    # Return flag indicating whether block has effectively already been processed.
     return not encached
 
 
-def _is_deploy_processed(info: NodeEventInfo) -> bool:
+def _is_deploy_processed(ctx: _Context) -> bool:
     """Returns flag indicating whether finalised deploy event has already been processed.
 
     """
-    summary = factory.create_deploy_summary(info, DeployStatus.ADDED)
+    summary = factory.create_deploy_summary(ctx.network.name, ctx.block_hash, ctx.deploy_hash, DeployStatus.ADDED)
     
     _, encached = cache.monitoring.set_deploy_summary(summary)
 
     return not encached
 
 
-def _process_block(info: NodeEventInfo, network: Network, node: Node):
+def _process_block(ctx: _Context):
     """Processes a finalised block.
     
     """
     # Escape if block not found.
     try:
-        block = chain.get_block(network, node, info.block_hash)
+        on_chain_block = chain.get_block(ctx.network, ctx.node, ctx.block_hash)
     except Exception as err:
-        log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, info.block_hash)
+        log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, ctx.block_hash)
         return
 
     # Escape if block empty.
-    if not block['header']['deploy_hashes']:
-        log_event(EventType.CHAIN_ADDED_BLOCK_EMPTY, None, info.block_hash)
+    if not on_chain_block['header']['deploy_hashes']:
+        log_event(EventType.CHAIN_ADDED_BLOCK_EMPTY, None, ctx.block_hash)
         return
     
     # Set stats.
-    block_stats = factory.create_block_statistics_on_finalization(
-        block_hash = block['hash'],
-        block_hash_parent = block['header']['parent_hash'],
-        chain_name = network.chain_name,
+    ctx.block = factory.create_block_statistics_on_addition(
+        block_hash = on_chain_block['hash'],
+        block_hash_parent = on_chain_block['header']['parent_hash'],
+        chain_name = ctx.network.chain_name,
+        consensus_era_id = on_chain_block['header']['era_id'],
         deploy_cost_total = None,
-        deploy_count = len(block['header']['deploy_hashes']),
+        deploy_count = len(on_chain_block['header']['deploy_hashes']),
         deploy_gas_price_avg = None,
-        era_id = block['header']['era_id'],
-        height = block['header']['height'],
-        is_switch_block = block['header']['era_end'] is not None,
-        network = network.name,
+        height = on_chain_block['header']['height'],
+        is_switch_block = on_chain_block['header']['era_end'] is not None,
+        network = ctx.network.name,
+        proposer = on_chain_block['header']['proposer'],      
         size_bytes = None,
-        state_root_hash = block['header']['state_root_hash'],
+        state_root_hash = on_chain_block['header']['state_root_hash'],
         status = BlockStatus.FINALIZED.name,
-        timestamp = datetime.strptime(block['header']['timestamp'], "%Y-%m-%dT%H:%M:%S.%fZ"),
-        proposer_account_key = block['header']['proposer'],      
+        timestamp = datetime.strptime(on_chain_block['header']['timestamp'], "%Y-%m-%dT%H:%M:%S.%fZ"),
     )
 
-    # Process deploys.
-    for deploy_hash in block['header']['deploy_hashes']:
-        info.deploy_hash = deploy_hash
-        _process_deploy(info, network, node, block_stats)
+    # Set deploy hashes for subsequent processing.
+    ctx.deploy_hashes = on_chain_block['header']['deploy_hashes']
 
     # Emit event.
-    log_event(EventType.CHAIN_ADDED_BLOCK, f"{info.block_hash}", block_stats)
+    log_event(EventType.CHAIN_ADDED_BLOCK, f"{ctx.block_hash}", ctx.block)
 
 
-def _process_deploy(info: NodeEventInfo, network: Network, node: Node, block_stats: BlockStatistics):
+def _process_deploy(ctx: _Context):
     """Processes a finalised deploy.
     
     """    
-    # Escape if already processed.
-    if _is_deploy_processed(info):
-        return    
 
     # Set deploy - escape if not found.
     try:
-        on_chain_deploy = chain.get_deploy(network, node, info.deploy_hash)
+        ctx.on_chain_deploy = chain.get_deploy(ctx.network, ctx.node, ctx.deploy_hash)
     except Exception as err:
-        log_event(EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND, None, info.deploy_hash)
+        log_event(EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND, None, ctx.deploy_hash)
         return
     
     # Emit event.
-    log_event(EventType.CHAIN_ADDED_DEPLOY, f"{info.block_hash}.{info.deploy_hash}", info)
+    log_event(EventType.CHAIN_ADDED_DEPLOY, f"{ctx.block_hash}.{ctx.deploy_hash}", ctx.info)
 
     # Escape if deploy cannot be correlated to a workflow.
-    correlated_deploy = cache.state.get_deploy_on_finalisation(info.network_name, info.deploy_hash)
-    if not correlated_deploy:
+    ctx.deploy = cache.state.get_deploy_on_finalisation(ctx.network.name, ctx.deploy_hash)
+    if not ctx.deploy:
         return
 
     # Process correlated - i.e. deploys previously dispatched by a generator.
-    _process_deploy_correlated(info, network, node, block_stats, on_chain_deploy, correlated_deploy)
+    _process_deploy_correlated(ctx)
 
 
-def _process_deploy_correlated(info: NodeEventInfo, network: Network, node: Node, block_stats: BlockStatistics, on_chain_deploy: dict, correlated_deploy: Deploy):
+def _process_deploy_correlated(ctx: _Context):
     """Process a monitored deploy that was previously dispatched during a generator run.
     
     """
     # Notify.
-    log_event(EventType.WFLOW_DEPLOY_CORRELATED, f"{info.block_hash}.{info.deploy_hash}", node, block_hash=info.block_hash, deploy_hash=info.deploy_hash)
-
-    print(json.dumps(on_chain_deploy, indent=4))
+    log_event(EventType.WFLOW_DEPLOY_CORRELATED, f"{ctx.block_hash}.{ctx.deploy_hash}", ctx.node, block_hash=ctx.block_hash, deploy_hash=ctx.deploy_hash)
 
     # Update cache: deploy.
-    correlated_deploy.block_hash = info.block_hash
-    correlated_deploy.deploy_cost = int(on_chain_deploy["execution_results"][0]["result"]["cost"])
-    # correlated_deploy.finalization_duration = block_timestamp.timestamp() - deploy.dispatch_timestamp.timestamp()    
-    correlated_deploy.finalization_node_index = node.index
-    # correlated_deploy.finalization_timestamp = block_timestamp
-    # correlated_deploy.round_id = round_id
-    correlated_deploy.status = DeployStatus.ADDED
-    cache.state.set_deploy(correlated_deploy)
+    ctx.deploy.block_hash = ctx.block_hash
+    ctx.deploy.deploy_cost = int(ctx.on_chain_deploy["execution_results"][0]["result"]["cost"])
+    # deploy.consensus_round_id = ctx.block.consensus_round_id
+    ctx.deploy.consensus_era_id = ctx.block.consensus_era_id
+    ctx.deploy.finalization_duration = ctx.block.timestamp.timestamp() - ctx.deploy.dispatch_timestamp.timestamp()    
+    ctx.deploy.finalization_node_index = ctx.node.index
+    ctx.deploy.finalization_timestamp = ctx.block.timestamp
+    ctx.deploy.status = DeployStatus.ADDED
+    cache.state.set_deploy(ctx.deploy)
 
     # # Update cache: account balance.
     # if deploy_cost > 0:
-    #     cache.state.decrement_account_balance_on_deploy_finalisation(correlated_deploy, deploy_cost)
+    #     cache.state.decrement_account_balance_on_deploy_finalisation(ctx.deploy, ctx.deploy.deploy_cost)
 
     # # Enqueue message for processing by orchestrator.
-    # _enqueue_correlated(node_id, correlated_deploy)
+    _enqueue_correlated(ctx)
 
 
-# def _enqueue_correlated(node_id: NodeIdentifier, deploy: Deploy):
-#     """Enqueues a correlated deploy for further processing by orchestrator.
+def _enqueue_correlated(ctx: _Context):
+    """Enqueues a correlated deploy for further processing by orchestrator.
     
-#     """
-#     ctx = cache.orchestration.get_context(deploy.network, deploy.run_index, deploy.run_type)
-#     broker = dramatiq.get_broker()
-#     broker.enqueue(dramatiq.Message(
-#         queue_name="orchestration.engine.step",
-#         actor_name="on_step_deploy_finalized",
-#         args=([
-#             encoder.encode(ctx),
-#             encoder.encode(node_id),
-#             deploy.block_hash,
-#             deploy.deploy_hash
-#             ]),
-#         kwargs=dict(),
-#         options=dict(),
-#     ))
+    """
+    broker = dramatiq.get_broker()
+    broker.enqueue(dramatiq.Message(
+        queue_name="orchestration.engine.step",
+        actor_name="on_step_deploy_finalized",
+        args=([
+            encoder.encode(ctx.deploy_execution_ctx),
+            encoder.encode(ctx.node_id),
+            ctx.block_hash,
+            ctx.deploy_hash
+            ]),
+        kwargs=dict(),
+        options=dict(),
+    ))

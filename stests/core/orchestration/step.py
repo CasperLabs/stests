@@ -128,12 +128,9 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
     :param block_hash: Hash of a finalized block.
     :param deploy_hash: Hash of a finalized deploy.
 
-    """
+    """    
     # Increment deploy counts.
-    # TODO: batch cache update.
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.RUN)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.PHASE)
-    cache.orchestration.increment_deploy_count(ctx, ExecutionAspect.STEP)
+    cache.orchestration.increment_deploy_counts(ctx)
 
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
