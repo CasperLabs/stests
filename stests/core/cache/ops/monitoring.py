@@ -5,6 +5,8 @@ from stests.core.cache.model import StorePartition
 from stests.core.cache.ops.utils import cache_op
 from stests.core.types.infra import NodeEventInfo
 from stests.core.types.infra import NodeMonitoringLock
+from stests.events import EventType
+
 
 
 # Cache collections.
@@ -98,17 +100,24 @@ def set_node_event_info(info: NodeEventInfo) -> Item:
     :returns: Item to be cached.
 
     """
+    if info.event_type in (EventType.MONIT_BLOCK_FINALIZED, EventType.MONIT_BLOCK_ADDED):
+        names = [
+            info.block_hash,
+        ]
+    elif info.event_type == EventType.MONIT_DEPLOY_PROCESSED:
+        names = [
+            info.block_hash,
+            info.deploy_hash,
+        ]
+
     return Item(
         item_key=ItemKey(
             paths=[
                 info.network,
                 COL_EVENT,
-                info.label_node_index,
+                info.event_type.name[6:],
             ],
-            names=[
-                info.label_event_id,
-                info.label_event_type,
-            ],
+            names=names,
         ),
         data=info
     )
