@@ -34,7 +34,6 @@ def do_start_monitoring():
     """Starts monitoring of registered networks.
     
     """
-    # TODO: reduce number of instantiated monitors.
     for network in cache.infra.get_networks():
         network_id = factory.create_network_id(network.name)
         nodeset = cache.infra.get_nodes_for_monitoring(network_id, 3)
