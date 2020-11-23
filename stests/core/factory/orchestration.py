@@ -1,6 +1,7 @@
 import os
 import pwd
 import typing
+import uuid
 from datetime import datetime
 
 from stests.core.types.infra import NetworkIdentifier
@@ -47,6 +48,7 @@ def create_execution_context(
         status=ExecutionStatus.IN_PROGRESS,
         step_index=0,
         step_label=None,
+        uid=str(uuid.uuid4()),
     )
     
 

@@ -84,4 +84,4 @@ def _get_account(ctx: ExecutionContext, network: Network, account_index: int) ->
         return network.faucet
 
     # User accounts.
-    return factory.create_account_for_run(ctx, AccountType.USER, account_index)    
+    return factory.create_account_for_run(ctx, account_index)    

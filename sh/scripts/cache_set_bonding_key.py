@@ -63,7 +63,7 @@ def main(args):
     # Set bonding account.
     node.account = factory.create_account(
         network=network_id.name,
-        typeof=AccountType.BOND,
+        typeof=AccountType.VALIDATOR_BOND,
         index=-node_id.index,
         key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=pvk,

@@ -174,6 +174,10 @@ class NodeIdentifier:
         return f"{self.network.name}:{self.label_index}"
 
     @property
+    def network_id(self):
+        return self.network
+
+    @property
     def network_name(self):
         return self.network.name
 

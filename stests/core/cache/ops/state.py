@@ -83,28 +83,6 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy, cost: int) 
     )
 
 
-@cache_op(_PARTITION, StoreOperation.GET_ONE)
-def get_account(account_key: AccountIdentifier) -> ItemKey:
-    """Decaches domain object: Account.
-
-    :param account_key: An account identifier.
-
-    :returns: Cache item key.
-
-    """
-    return ItemKey(
-        paths=[
-            account_key.run.network.name,
-            account_key.run.type,
-            f"R-{str(account_key.run.index).zfill(3)}",
-            COL_ACCOUNT,
-        ],
-        names=[
-            account_key.label_index,
-        ]
-    )
-
-
 @cache_op(_PARTITION, StoreOperation.GET_COUNTER_ONE)
 def get_account_balance(account: Account) -> ItemKey:
     """Returns balance of a test account.
@@ -123,44 +101,6 @@ def get_account_balance(account: Account) -> ItemKey:
         ],
         names=[
             account.label_index,
-        ],
-    )
-
-
-def get_account_of_user_by_index(ctx: ExecutionContext, index: int) -> Account:
-    """Decaches domain object: Account.
-    
-    :param ctx: Execution context information.
-    :param index: Run specific account index. 
-
-    :returns: A cached account.
-
-    """
-    return get_account(factory.create_account_key(
-        index,
-        ctx.network,
-        ctx.run_index,
-        ctx.run_type
-        ))
-
-
-@cache_op(_PARTITION, StoreOperation.GET_COUNT)
-def get_account_count(ctx: ExecutionContext) -> SearchKey:
-    """Returns count of accounts within the scope of an execution aspect.
-
-    :param ctx: Execution context information.
-    :param aspect: Aspect of execution in scope.
-
-    :returns: Cache search key.
-
-    """
-    return SearchKey(
-        paths=[
-            ctx.network,
-            ctx.run_type,
-            ctx.label_run_index,
-            COL_ACCOUNT,
-            "A-",
         ],
     )
 
@@ -277,31 +217,6 @@ def increment_account_balance(account: Account, amount: int) -> CountIncrementKe
             account.label_index,
         ],
         amount=amount,
-    )
-
-
-@cache_op(_PARTITION, StoreOperation.SET_ONE)
-def set_account(account: Account) -> Item:
-    """Encaches domain object: Account.
-    
-    :param account: Account domain object instance to be cached.
-
-    :returns: Cache item.
-
-    """
-    return Item(
-        data=account,
-        item_key=ItemKey(
-            paths=[
-                account.network,
-                account.run_type,
-                f"R-{str(account.run_index).zfill(3)}",
-                COL_ACCOUNT,
-            ],
-            names=[
-                account.label_index,
-            ]
-        )
     )
 
 

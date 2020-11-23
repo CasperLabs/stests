@@ -94,6 +94,21 @@ class WorkflowStep():
         self.container.verify_deploy(ctx, node_id, block_hash, deploy_hash)
 
 
+    def verify_deploy_batch_is_complete(self, ctx: ExecutionContext, deploy_index: int):
+        """Performs step deploy batch is complete verification.
+        
+        :param ctx: Execution context information.
+        :param deploy_index: Index of a finalized deploy in relation to the deploys dispatched during this step.
+
+        """
+        try:
+            self.container.verify_deploy_batch_is_complete
+        except AttributeError:
+            pass
+        else:
+            self.container.verify_deploy_batch_is_complete(ctx, deploy_index)
+
+
 class WorkflowPhase():
     """A phase within a broader workflow.
     

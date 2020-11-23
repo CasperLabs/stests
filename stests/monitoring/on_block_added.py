@@ -73,11 +73,8 @@ def _is_block_processed(info: NodeEventInfo) -> bool:
     """Returns flag indicating whether finalised deploy event has already been processed.
 
     """
-    # Set summary information.
-    summary = factory.create_block_summary(info.network, info.block_hash, BlockStatus.ADDED)
-    
     # Attempt to cache.
-    _, encached = cache.monitoring.set_block_summary(summary)
+    _, encached = cache.monitoring.set_block(info.network, info.block_hash)
 
     # Return flag indicating whether block has effectively already been processed.
     return not encached
@@ -87,9 +84,7 @@ def _is_deploy_processed(ctx: _Context) -> bool:
     """Returns flag indicating whether finalised deploy event has already been processed.
 
     """
-    summary = factory.create_deploy_summary(ctx.network.name, ctx.block_hash, ctx.deploy_hash, DeployStatus.ADDED)
-    
-    _, encached = cache.monitoring.set_deploy_summary(summary)
+    _, encached = cache.monitoring.set_deploy(ctx.network.name, ctx.block_hash, ctx.deploy_hash)
 
     return not encached
 
@@ -175,6 +170,7 @@ def _process_deploy_correlated(ctx: _Context):
     ctx.deploy.finalization_duration = ctx.block.timestamp.timestamp() - ctx.deploy.dispatch_timestamp.timestamp()    
     ctx.deploy.finalization_node_index = ctx.node.index
     ctx.deploy.finalization_timestamp = ctx.block.timestamp
+    ctx.deploy.state_root_hash = ctx.block.state_root_hash
     ctx.deploy.status = DeployStatus.ADDED
     cache.state.set_deploy(ctx.deploy)
 

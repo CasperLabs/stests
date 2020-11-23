@@ -84,6 +84,9 @@ class Deploy:
     # Type of generator, e.g. WG-100 ...etc.
     run_type: typing.Optional[str]    
 
+    # Root hash of chain state at point of block proposal.
+    state_root_hash: typing.Optional[str]
+
     # Numerical index to distinguish between multiple steps within a generator.
     step_index: typing.Optional[int]
 
@@ -118,20 +121,5 @@ class Deploy:
         return f"R-{str(self.run_index).zfill(3)}"
 
 
-@dataclasses.dataclass
-class DeploySummary:
-    """Encapsulates summary information pertaining to a monitored deploy.
-    
-    """
-    # Associated block hash in event of finalization. 
-    block_hash: typing.Optional[str]
 
-    # Deploy's payload signature hash (blake). 
-    deploy_hash: str
-
-    # Associated network.
-    network: str
-
-    # Deploy's processing status.
-    status: DeployStatus
 

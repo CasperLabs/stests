@@ -68,6 +68,12 @@ def do_transfer(
         typeof=deploy_type
         ))
 
+    # Update cache: account balances.
+    if cp1.is_run_account:
+        cache.state.decrement_account_balance(cp1, amount)
+    if cp2.is_run_account:
+        cache.state.increment_account_balance(cp2, amount)
+
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
     """Returns either a faucet account or a user account.
@@ -80,4 +86,11 @@ def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> 
         return network.faucet
 
     # User accounts.
-    return factory.create_account_for_run(ctx, AccountType.USER, account_index)    
+    return get_user_account(ctx, account_index)
+
+
+def get_user_account(ctx: ExecutionContext, account_index: int) -> Account:
+    """Returns either a faucet account or a user account.
+    
+    """
+    return factory.create_account_for_run(ctx, account_index) 

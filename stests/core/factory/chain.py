@@ -8,11 +8,9 @@ from stests.core.types.chain import AccountType
 from stests.core.types.chain import Block
 from stests.core.types.chain import BlockStatistics
 from stests.core.types.chain import BlockStatus
-from stests.core.types.chain import BlockSummary
 from stests.core.types.chain import ContractType
 from stests.core.types.chain import Deploy
 from stests.core.types.chain import DeployStatus
-from stests.core.types.chain import DeploySummary
 from stests.core.types.chain import DeployType
 from stests.core.types.chain import NamedKey
 from stests.core.types.infra import Node
@@ -32,15 +30,16 @@ def create_account(
     public_key: str = None,
     run_index=None,
     run_type=None,
+    run_uid=None,
     ) -> Account:
     """Returns a domain object instance: Account.
 
     """
     # Derive a key pair (if required).
     if private_key is None:
-        # ... user account key pairs are derived deterministically.
-        if typeof == AccountType.USER:
-            seed = f"{key_algo.name}-{network}-{run_type}-{run_index}-{typeof.name}-{index}"
+        # ... run account key pairs are derived deterministically.
+        if typeof == AccountType.GENERATOR_RUN:
+            seed = f"{key_algo.name}-{network}-{run_uid}-{typeof.name}-{index}"
             seed = seed.upper().encode("utf-8")
             seed = crypto.get_hash(seed, encoding=crypto.HashEncoding.BYTES)
             private_key, public_key = \
@@ -60,13 +59,13 @@ def create_account(
         public_key=public_key,
         run_index=run_index,
         run_type=run_type,
+        run_uid=run_uid,
         typeof=typeof
         )
 
 
 def create_account_for_run(
     ctx: ExecutionContext,
-    typeof: AccountType,
     index: int = 1,
     run_type: str = None,
     ) -> Account:
@@ -80,11 +79,12 @@ def create_account_for_run(
 
     return create_account(
         ctx.network,
-        typeof,
+        AccountType.GENERATOR_RUN,
         index=index,
         key_algo=key_algo,
         run_index=ctx.run_index,
         run_type=run_type or ctx.run_type,
+        run_uid=ctx.uid,
         )
 
 
@@ -175,17 +175,6 @@ def create_block_statistics_on_addition(
     )
 
 
-def create_block_summary(network: str, block_hash: str, status: BlockStatus) -> BlockSummary:
-    """Returns a domain object instance: BlockSummary.
-
-    """
-    return BlockSummary(
-        block_hash=block_hash,
-        network=network,
-        status=status,
-    )
-
-
 def create_deploy_for_run(
     ctx: ExecutionContext,
     account: Account,
@@ -220,22 +209,11 @@ def create_deploy_for_run(
         phase_index=ctx.phase_index,
         run_index=ctx.run_index,
         run_type=ctx.run_type,
+        state_root_hash=None,
         status=DeployStatus.DISPATCHED,
         step_index=ctx.step_index,
         step_label=ctx.step_label,
         typeof=typeof,
-    )
-
-
-def create_deploy_summary(network: str, block_hash: str, deploy_hash: str, status: DeployStatus) -> DeploySummary:
-    """Returns a domain object instance: DeploySummary.
-
-    """
-    return DeploySummary(
-        block_hash=block_hash,
-        deploy_hash=deploy_hash,
-        network=network,
-        status=status,
     )
 
 

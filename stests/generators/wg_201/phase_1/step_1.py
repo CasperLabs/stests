@@ -25,7 +25,7 @@ def execute(ctx: ExecutionContext):
     network, node = get_network_node(ctx)
 
     # Set validator account.
-    validator = factory.create_account_for_run(ctx, AccountType.USER, _USER_ACCOUNT_INDEX, "WG-200")
+    validator = factory.create_account_for_run(ctx, _USER_ACCOUNT_INDEX, "WG-200")
 
     # Submit deploy.
     dispatch_info = chain.DeployDispatchInfo(validator, network, node)

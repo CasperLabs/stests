@@ -257,16 +257,18 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
     )
 
 
-def increment_deploy_counts(ctx: ExecutionContext):
+def increment_deploy_counts(ctx: ExecutionContext) -> int:
     """Increments (atomically) count of run deploys.
 
     :param ctx: Execution context information.
 
     """
     # TODO: increment as a batch.
-    increment_deploy_count(ctx, ExecutionAspect.RUN)
-    increment_deploy_count(ctx, ExecutionAspect.PHASE)
-    increment_deploy_count(ctx, ExecutionAspect.STEP)
+    return (
+        increment_deploy_count(ctx, ExecutionAspect.RUN),
+        increment_deploy_count(ctx, ExecutionAspect.PHASE),
+        increment_deploy_count(ctx, ExecutionAspect.STEP)
+    )
 
 
 @cache_op(_PARTITION, StoreOperation.COUNTER_INCR)

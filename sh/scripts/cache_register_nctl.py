@@ -174,7 +174,7 @@ def _register_faucet(network: Network, path_pvk_pem: str):
     # Set faucet.
     network.faucet = factory.create_account(
         network=network.name,
-        typeof=AccountType.FAUCET,
+        typeof=AccountType.NETWORK_FAUCET,
         index=0,
         key_algo=crypto.DEFAULT_KEY_ALGO,
         private_key=private_key,
@@ -258,7 +258,7 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
     # Set bonding account.
     node.account = factory.create_account(
         network=network.name,
-        typeof=AccountType.BOND,
+        typeof=AccountType.VALIDATOR_BOND,
         index=index,
         key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=private_key,

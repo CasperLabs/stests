@@ -15,11 +15,7 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    cache.state.set_account(factory.create_account_for_run(
-        ctx,
-        index=1,
-        typeof=AccountType.USER,
-    ))
+    pass
 
 
 def verify(ctx: ExecutionContext):
@@ -28,5 +24,4 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    cached = cache.state.get_account_count(ctx)
-    assert cached == 1, f"cached account total mismatch: actual={cached}, expected={1}."
+    pass

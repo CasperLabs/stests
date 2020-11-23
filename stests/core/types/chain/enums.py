@@ -6,10 +6,9 @@ class AccountType(enum.Enum):
     """Enumeration over set of account types.
     
     """
-    CONTRACT = enum.auto()
-    FAUCET = enum.auto()
-    USER = enum.auto()
-    BOND = enum.auto()
+    NETWORK_FAUCET = enum.auto()
+    VALIDATOR_BOND = enum.auto()
+    GENERATOR_RUN = enum.auto()
 
 
 class BlockStatus(enum.Flag):

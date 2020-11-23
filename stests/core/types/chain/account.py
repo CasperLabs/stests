@@ -32,13 +32,16 @@ class Account:
     # Hexadecimal representation of public key used primarily in identity & verification scenarios.
     public_key: str
 
-    # Numerical index to distinguish between multiple runs of the same generator.
+    # Generator index - distinguishes between multiple runs of the same generator.
     run_index: typing.Optional[int]
 
-    # Type of generator, e.g. WG-100 ...etc.
+    # Generator type, e.g. WG-100 ...etc.
     run_type: typing.Optional[str]
 
-    # Type of account, e.g. USER | FAUCET | BOND | CONTRACT.
+    # Generator unique identifier.
+    run_uid: typing.Optional[str]
+
+    # Type of account, e.g. NETWORK_FAUCET | VALIDATOR_BOND | GENERATOR_RUN.
     typeof: AccountType
 
     @property

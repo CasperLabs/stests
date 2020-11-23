@@ -48,12 +48,11 @@ COLS = [
     ("Dispatch Node ID", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Timestamp", BeautifulTable.ALIGN_LEFT),
     ("Dispatch Account Key", BeautifulTable.ALIGN_LEFT),
-    ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
-    ("Deploy Type", BeautifulTable.ALIGN_LEFT),
-    ("Deploy Status", BeautifulTable.ALIGN_LEFT),
-    ("Finalization Time", BeautifulTable.ALIGN_RIGHT),
-    ("Consensus Era ID", BeautifulTable.ALIGN_RIGHT),
-    ("Consensus Round ID", BeautifulTable.ALIGN_RIGHT),
+    ("Hash", BeautifulTable.ALIGN_LEFT),
+    ("Type", BeautifulTable.ALIGN_LEFT),
+    ("Status", BeautifulTable.ALIGN_LEFT),
+    ("Time to Finalization (S)", BeautifulTable.ALIGN_RIGHT),
+    ("Consensus", BeautifulTable.ALIGN_RIGHT),
     ("Block Hash", BeautifulTable.ALIGN_RIGHT),
 ]
 
@@ -94,8 +93,7 @@ def _render_table(args, network_id, data):
         i.typeof.name,
         i.status.name,      
         i.label_finalization_duration,
-        i.consensus_era_id or "--",
-        i.consensus_round_id or "--",
+        f"{i.consensus_era_id or '--'}::{i.consensus_round_id or '??'}",
         i.block_hash or "--"
     ], data)
 
@@ -114,7 +112,7 @@ def _render_finalization_stats(data):
     
     """
     times = [i.finalization_duration for i in data if i.finalization_duration]
-    if not times:
+    if not times or len(times) == 1:
         return
 
     maxima = max(times)

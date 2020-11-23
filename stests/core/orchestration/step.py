@@ -37,6 +37,9 @@ def do_step(ctx: ExecutionContext):
 
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index + 1)    
+    if step is None:
+        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        return
 
     # Update ctx.
     ctx.step_index += 1
@@ -64,14 +67,13 @@ def do_step_verification(ctx: ExecutionContext):
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
         log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        return
 
     # Verify step.
-    if step.has_verifer:
+    if step.has_verifer and not step.has_verifer_for_deploy:
         try:
             step.verify(ctx)
         except AssertionError as err:
-            if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
-                return
             log_event(EventType.WFLOW_STEP_FAILURE, "verification failed", ctx)
             return
 
@@ -88,6 +90,9 @@ def on_step_end(ctx: ExecutionContext):
     """
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
+    if step is None:
+        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        return
 
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
@@ -128,35 +133,41 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
     :param block_hash: Hash of a finalized block.
     :param deploy_hash: Hash of a finalized deploy.
 
-    """    
-    # Increment deploy counts.
-    cache.orchestration.increment_deploy_counts(ctx)
-
-    # Set step.
+    """   
+    # Set step - escape if not found.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
         log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        return
 
-    # Verify deploy.
+    # Escape if no deploy verifier.
     if not step.has_verifer_for_deploy:
         log_event(EventType.WFLOW_STEP_FAILURE, "deploy verifier undefined", ctx)
-        return       
-    else:
-        try:
-            step.verify_deploy(ctx, node_id, block_hash, deploy_hash)
-        except AssertionError as err:
-            log_event(EventType.WFLOW_STEP_FAILURE, f"deploy verification failed: {err} :: {deploy_hash}", ctx)
-            return
+        return 
+
+    # Verify deploy.
+    try:
+        step.verify_deploy(ctx, node_id, block_hash, deploy_hash)
+    except AssertionError as err:
+        log_event(EventType.WFLOW_STEP_FAILURE, f"deploy verification failed: {err} :: {deploy_hash}", ctx)
+        return
+
+    # Increment verified deploy counts.
+    _, _, deploy_index = cache.orchestration.increment_deploy_counts(ctx)
+
+    # Verify deploy batch is complete.
+    try:
+        step.verify_deploy_batch_is_complete(ctx, deploy_index)
+    except:
+        return
 
     # Verify step.
     if step.has_verifer:
         try:
             step.verify(ctx)
         except AssertionError as err:
-            if (err.args and isinstance(err.args[0], IgnoreableAssertionError)):
-                return
             log_event(EventType.WFLOW_STEP_FAILURE, f"verification failed", ctx)
-            return
+            return    
 
     # Step verification succeeded therefore signal step end.
     on_step_end.send(ctx)
@@ -236,7 +247,7 @@ def _on_execute_async(ctx: ExecutionContext, step: WorkflowStep):
 
 
 def _on_execute_sync(ctx: ExecutionContext, step: WorkflowStep):
-    """Performs asynchronous step work.
+    """Performs synchronous step work.
         
     """
     # If unit of work is complete then signal step end.

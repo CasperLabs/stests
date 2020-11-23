@@ -1,6 +1,7 @@
 import argparse
 import dataclasses
 
+from stests import chain
 from stests.generators.utils import constants
 from stests.generators.utils.args import get_argparser
 
@@ -16,6 +17,17 @@ class Arguments:
 
     # Motes per transfer to transfer.
     amount: int
+
+    @property
+    def faucet_initial_balance(self):
+        """Initial faucet account CSPR balance."""
+        return  (self.transfers * self.amount) + (((2 * self.transfers) + 1) * chain.DEFAULT_TX_FEE)
+
+    @property
+    def amount_plus_refund_fee(self):
+        """Amount to transfer plus a refund fee."""
+        return self.amount + chain.DEFAULT_TX_FEE
+
 
     @classmethod
     def create(cls, args: argparse.Namespace):

@@ -32,7 +32,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
         info.dispatcher,
         _CONTRACT_FNAME,
         [
-            "--session-arg", "amount:u512='1000000'",
+            "--session-arg", f"amount:u512='{amount}'",
             "--session-arg", f"target:account_hash='account-hash-{cp2.account_hash}'",
         ]
     )

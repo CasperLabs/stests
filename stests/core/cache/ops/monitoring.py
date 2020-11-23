@@ -3,23 +3,40 @@ from stests.core.cache.model import ItemKey
 from stests.core.cache.model import StoreOperation
 from stests.core.cache.model import StorePartition
 from stests.core.cache.ops.utils import cache_op
-from stests.core.types.chain import BlockSummary
-from stests.core.types.chain import DeploySummary
 from stests.core.types.infra import NodeEventInfo
+from stests.core.types.infra import NodeMonitoringLock
 
-
-# Cache partition.
-_PARTITION = StorePartition.MONITORING
 
 # Cache collections.
-COL_BLOCK_SUMMARY = "block-summary"
-COL_DEPLOY_SUMMARY = "deploy-summary"
+COL_BLOCK = "block"
+COL_DEPLOY = "deploy"
 COL_EVENT = "event"
+COL_NODE_LOCK = "node-lock"
 
 
+@cache_op(StorePartition.MONITORING_LOCKS, StoreOperation.DELETE_ONE)
+def delete_node_monitor_lock(lock: NodeMonitoringLock) -> ItemKey:
+    """Deletes a lock over a node monitor.
 
-@cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
-def set_block_summary(summary: BlockSummary) -> Item:
+    :param lock: Lock information.
+
+    :returns: Key of locked item.
+    
+    """
+    return ItemKey(
+        paths=[
+            lock.network,
+            COL_NODE_LOCK,
+            lock.label_node_index,
+        ],
+        names=[
+            lock.lock_index,
+        ],
+    )
+
+
+@cache_op(StorePartition.MONITORING, StoreOperation.SET_ONE_SINGLETON)
+def set_block(network: str, block_hash: str) -> Item:
     """Encaches an item.
     
     :param summary: Block summary instance to be cached.
@@ -30,20 +47,22 @@ def set_block_summary(summary: BlockSummary) -> Item:
     return Item(
         item_key=ItemKey(
             paths=[
-                summary.network,
-                COL_BLOCK_SUMMARY,
-                summary.status.name,
+                network,
+                COL_BLOCK,
             ],
             names=[
-                summary.block_hash,
+                block_hash,
             ],
         ),
-        data=summary
+        data={
+            "block_hash": block_hash,
+            "network": network,
+        }
     )
 
 
-@cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
-def set_deploy_summary(summary: DeploySummary) -> Item:
+@cache_op(StorePartition.MONITORING, StoreOperation.SET_ONE_SINGLETON)
+def set_deploy(network: str, block_hash: str, deploy_hash: str) -> Item:
     """Encaches an item.
     
     :param summary: Deploy summary instance to be cached.
@@ -54,19 +73,23 @@ def set_deploy_summary(summary: DeploySummary) -> Item:
     return Item(
         item_key=ItemKey(
             paths=[
-                summary.network,
-                COL_DEPLOY_SUMMARY,
+                network,
+                COL_DEPLOY,
             ],
             names=[
-                summary.block_hash,
-                summary.deploy_hash,
+                block_hash,
+                deploy_hash,
             ],
         ),
-        data=summary
+        data={
+            "block_hash": block_hash,
+            "deploy_hash": deploy_hash,
+            "network": network,
+        }
     )
 
 
-@cache_op(_PARTITION, StoreOperation.SET_ONE_SINGLETON)
+@cache_op(StorePartition.MONITORING, StoreOperation.SET_ONE_SINGLETON)
 def set_node_event_info(info: NodeEventInfo) -> Item:
     """Encaches an item.
     
@@ -88,4 +111,28 @@ def set_node_event_info(info: NodeEventInfo) -> Item:
             ],
         ),
         data=info
+    )
+
+
+@cache_op(StorePartition.MONITORING_LOCKS, StoreOperation.SET_ONE_SINGLETON)
+def set_node_monitor_lock(lock: NodeMonitoringLock) -> Item:
+    """Encaches an item.
+    
+    :param lock: Lock instance to be cached.
+
+    :returns: Item to be cached.
+
+    """
+    return Item(
+        item_key=ItemKey(
+            paths=[
+                lock.network,
+                COL_NODE_LOCK,
+                lock.label_node_index,
+            ],
+            names=[
+                lock.lock_index,
+            ],
+        ),
+        data=lock
     )

@@ -61,15 +61,6 @@ def create_block_statistics() -> types.chain.BlockStatistics:
     )
 
 
-def create_block_summary() -> types.chain.BlockSummary:
-    """Returns a domain object instance: BlockSummary.
-
-    """
-    return factory.create_block_summary(
-        info=create_node_event_info()
-    )
-
-
 def create_deploy() -> types.chain.Deploy:
     return factory.create_deploy_for_run(
         ctx=create_execution_context(),
@@ -80,12 +71,6 @@ def create_deploy() -> types.chain.Deploy:
         dispatch_attempts=1,
         dispatch_duration=float(2),
         typeof=random.choice(list(types.chain.DeployType)),
-    )
-
-
-def create_deploy_summary() -> types.chain.DeploySummary:
-    return factory.create_deploy_summary(
-        info=create_node_event_info(),
     )
 
 
@@ -227,9 +212,7 @@ FACTORIES: typing.Dict[typing.Type, typing.Callable] = {
     types.chain.AccountIdentifier: create_account_key,
     types.chain.Block: create_block,
     types.chain.BlockStatistics: create_block_statistics,
-    types.chain.BlockSummary: create_block_summary,
     types.chain.Deploy: create_deploy,
-    types.chain.DeploySummary: create_deploy_summary,
     types.chain.NamedKey: create_named_key,
 
     # Infra types.

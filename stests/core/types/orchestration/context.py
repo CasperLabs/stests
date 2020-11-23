@@ -59,6 +59,9 @@ class ExecutionContext:
     # Label to disambiguate a step within the context of a phase.
     step_label: typing.Optional[str]
 
+    # Unique identifier to disambiguate runs.
+    uid: str
+
     @property
     def next_phase_index(self):
         return self.phase_index + 1

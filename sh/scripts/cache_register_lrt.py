@@ -140,7 +140,7 @@ def _register_faucet(network: Network, info: typing.Tuple[str, crypto.KeyAlgorit
     # Set faucet.
     network.faucet = factory.create_account(
         network=network.name,
-        typeof=AccountType.FAUCET,
+        typeof=AccountType.NETWORK_FAUCET,
         index=0,
         key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=private_key,
@@ -190,7 +190,7 @@ def _register_node(
     # Set bonding account.
     node.account = factory.create_account(
         network=network.name,
-        typeof=AccountType.BOND,
+        typeof=AccountType.VALIDATOR_BOND,
         index=index,
         key_algo=crypto.KeyAlgorithm.ED25519,
         private_key=private_key,

@@ -109,18 +109,3 @@ class BlockStatistics:
 
     # ID of validator that proposed block.
     proposer: str
-
-
-@dataclasses.dataclass
-class BlockSummary:
-    """Encapsulates summary information pertaining to an monitored block.
-    
-    """
-    # Associated block hash in event of finalization. 
-    block_hash: typing.Optional[str]
-
-    # Associated network.
-    network: str
-
-    # Block consensus status, e.g. ADDED | FINALIZED ... etc.
-    status: BlockStatus
