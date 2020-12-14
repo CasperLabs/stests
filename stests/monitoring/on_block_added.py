@@ -32,7 +32,6 @@ class _Context():
         self.block = None
         self.block_hash = info.block_hash
         self.deploy = None
-        self.deploy_hashes = []
         self.info = info
         self.network_id = factory.create_network_id(info.network)
         self.network = cache.infra.get_network(self.network_id)
@@ -44,7 +43,19 @@ class _Context():
     @property
     def deploy_execution_ctx(self):
         """Returns workload generated execution context."""
-        return cache.orchestration.get_context(self.deploy.network, self.deploy.run_index, self.deploy.run_type)
+        return cache.orchestration.get_context(
+            self.deploy.network,
+            self.deploy.run_index,
+            self.deploy.run_type,
+            )
+
+    @property
+    def deploy_hashes(self):
+        """Gets set of associated deploy hashes."""
+        try:
+            return self.on_chain_block['header']['deploy_hashes']
+        except (KeyError, TypeError,):
+            return [] 
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -55,29 +66,16 @@ def on_block_added(info: NodeEventInfo):
 
     """
     # Escape if already processed.
-    if _is_block_processed(info):
+    _, encached = cache.monitoring.set_block(info)
+    if not encached:
         return
 
-    # Set context.
     ctx = _Context(info)
-
-    # Process block & deploys.
     _process_block(ctx)
     for deploy_hash in ctx.deploy_hashes:
         ctx.deploy_hash = deploy_hash
         if not _is_deploy_processed(ctx):
             _process_deploy(ctx)
-
-
-def _is_block_processed(info: NodeEventInfo) -> bool:
-    """Returns flag indicating whether finalised deploy event has already been processed.
-
-    """
-    # Attempt to cache.
-    _, encached = cache.monitoring.set_block(info.network, info.block_hash)
-
-    # Return flag indicating whether block has effectively already been processed.
-    return not encached
 
 
 def _is_deploy_processed(ctx: _Context) -> bool:
@@ -107,7 +105,7 @@ def _process_block(ctx: _Context):
     
     # Set stats.
     ctx.block = factory.create_block_statistics_on_addition(
-        block_hash = on_chain_block['hash'],
+        block_hash = ctx.block_hash,
         block_hash_parent = on_chain_block['header']['parent_hash'],
         chain_name = ctx.network.chain_name,
         consensus_era_id = on_chain_block['header']['era_id'],

@@ -15,6 +15,11 @@ COL_DEPLOY = "deploy"
 COL_EVENT = "event"
 COL_NODE_LOCK = "node-lock"
 
+# Cache collection item expiration times.
+EXPIRATION_COL_BLOCK = 300
+EXPIRATION_COL_DEPLOY = 300
+EXPIRATION_COL_EVENT = 300
+
 
 @cache_op(StorePartition.MONITORING_LOCKS, StoreOperation.DELETE_ONE)
 def delete_node_monitor_lock(lock: NodeMonitoringLock) -> ItemKey:
@@ -38,10 +43,10 @@ def delete_node_monitor_lock(lock: NodeMonitoringLock) -> ItemKey:
 
 
 @cache_op(StorePartition.MONITORING, StoreOperation.SET_ONE_SINGLETON)
-def set_block(network: str, block_hash: str) -> Item:
+def set_block(info: NodeEventInfo) -> Item:
     """Encaches an item.
     
-    :param summary: Block summary instance to be cached.
+    :param info: Node event information.
 
     :returns: Item to be cached.
 
@@ -49,17 +54,18 @@ def set_block(network: str, block_hash: str) -> Item:
     return Item(
         item_key=ItemKey(
             paths=[
-                network,
+                info.network,
                 COL_BLOCK,
             ],
             names=[
-                block_hash,
+                info.block_hash,
             ],
         ),
         data={
-            "block_hash": block_hash,
-            "network": network,
-        }
+            "block_hash": info.block_hash,
+            "network": info.network,
+        },
+        expiration=EXPIRATION_COL_BLOCK
     )
 
 
@@ -87,7 +93,8 @@ def set_deploy(network: str, block_hash: str, deploy_hash: str) -> Item:
             "block_hash": block_hash,
             "deploy_hash": deploy_hash,
             "network": network,
-        }
+        },
+        expiration=EXPIRATION_COL_DEPLOY
     )
 
 
@@ -100,7 +107,11 @@ def set_node_event_info(info: NodeEventInfo) -> Item:
     :returns: Item to be cached.
 
     """
-    if info.event_type in (EventType.MONIT_BLOCK_FINALIZED, EventType.MONIT_BLOCK_ADDED):
+    if info.event_type in (
+        EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE,
+        EventType.MONIT_BLOCK_FINALIZED,
+        EventType.MONIT_BLOCK_ADDED,
+        ):
         names = [
             info.block_hash,
         ]
@@ -109,6 +120,8 @@ def set_node_event_info(info: NodeEventInfo) -> Item:
             info.block_hash,
             info.deploy_hash,
         ]
+    else:
+        names=[]
 
     return Item(
         item_key=ItemKey(
@@ -119,7 +132,8 @@ def set_node_event_info(info: NodeEventInfo) -> Item:
             ],
             names=names,
         ),
-        data=info
+        data=info,
+        expiration=EXPIRATION_COL_EVENT
     )
 
 

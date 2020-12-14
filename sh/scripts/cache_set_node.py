@@ -2,6 +2,7 @@ import argparse
 
 from stests.core import cache
 from stests.core import factory
+from stests.core.types.infra import NodeGroup
 from stests.core.types.infra import NodeType
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
@@ -89,6 +90,7 @@ def main(args):
 
     # Instantiate.
     node = factory.create_node(
+        group=NodeGroup.UNKNOWN,
         host=host,
         index=index,
         network_id=factory.create_network_id(network),

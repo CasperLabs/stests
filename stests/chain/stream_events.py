@@ -20,19 +20,15 @@ def execute(node: Node, event_callback: typing.Callable, event_id: int = 0):
 
     """
     log_event(EventType.MONIT_STREAM_OPENING, node.address_event, node)
-
-    # Iterate events.
-    for event_type, event_id, payload, block_hash, deploy_hash in _yield_events(node, event_id):
-        # Set event information for upstream.
+    for event_type, event_id, payload, block_hash, deploy_hash, account_key in _yield_events(node, event_id):
         event_info = factory.create_node_event_info(
             node,
             event_id,
             event_type,
             block_hash,
             deploy_hash,
+            account_key,
         )
-
-        # Invoke callback.
         event_callback(node, event_info, payload)
 
 
@@ -48,7 +44,7 @@ def _yield_events(node: Node, event_id: int):
     # Set client.
     stream = requests.get(url, stream=True)
     client = sseclient.SSEClient(stream)
-    
+
     # Bind to stream & yield parsed events.
     try:
         for event in client.events():
@@ -66,7 +62,18 @@ def _yield_events(node: Node, event_id: int):
             raise err
 
 
-def _parse_event(node: Node, event_id: int, payload: dict) -> typing.Tuple[EventType, int, dict, typing.Optional[str], typing.Optional[str]]:
+def _parse_event(
+    node: Node,
+    event_id: int,
+    payload: dict,
+    ) -> typing.Tuple[
+        EventType,
+        int,                   # event id
+        dict,                  # payload
+        typing.Optional[str],  # block hash
+        typing.Optional[str],  # deploy hash
+        typing.Optional[str],  # account key
+        ]:
     """Parses raw event data for upstream processing.
 
     """
@@ -79,6 +86,7 @@ def _parse_event(node: Node, event_id: int, payload: dict) -> typing.Tuple[Event
             event_id, \
             payload, \
             payload['BlockAdded']['block_hash'], \
+            None, \
             None
 
     elif 'BlockFinalized' in payload:
@@ -87,6 +95,25 @@ def _parse_event(node: Node, event_id: int, payload: dict) -> typing.Tuple[Event
             event_id, \
             payload, \
             payload['BlockFinalized']['proto_block']['hash'], \
+            None, \
+            None
+
+    elif 'FinalitySignature' in payload:
+        return \
+            EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE, \
+            event_id, \
+            payload, \
+            payload['FinalitySignature']['block_hash'], \
+            None, \
+            payload['FinalitySignature']['public_key']
+
+    elif 'Fault' in payload:
+        return \
+            EventType.MONIT_CONSENSUS_FAULT, \
+            event_id, \
+            payload, \
+            payload['Fault']['era_id'], \
+            None, \
             None
 
     elif 'DeployProcessed' in payload:
@@ -95,10 +122,11 @@ def _parse_event(node: Node, event_id: int, payload: dict) -> typing.Tuple[Event
             event_id, \
             payload, \
             payload['DeployProcessed']['block_hash'], \
-            payload['DeployProcessed']['deploy_hash']
+            payload['DeployProcessed']['deploy_hash'], \
+            None
 
     log_event(
         EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,
-        f"event skipped as type is unsupported :: node={node.address_rpc}",
+        f"event skipped as type is unsupported :: node={node.address_rpc} :: event type={list(payload.keys())[0]}",
         node
         )

@@ -33,6 +33,8 @@ class EventType(enum.Enum):
     # Monitoring sub-system.
     MONIT_BLOCK_ADDED = enum.auto()
     MONIT_BLOCK_FINALIZED = enum.auto()
+    MONIT_CONSENSUS_FAULT = enum.auto()
+    MONIT_CONSENSUS_FINALITY_SIGNATURE = enum.auto()
     MONIT_DEPLOY_EXECUTION_ERROR = enum.auto()
     MONIT_DEPLOY_PROCESSED = enum.auto()
     MONIT_STREAM_BIND_ERROR = enum.auto()

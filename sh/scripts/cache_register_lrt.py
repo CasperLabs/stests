@@ -11,6 +11,7 @@ from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
+from stests.core.types.infra import NodeGroup
 from stests.core.types.infra import NodeType
 from stests.core.utils import cli as utils
 
@@ -170,13 +171,14 @@ def _register_node(
 
     # Set node.
     node = factory.create_node(
+        group=NodeGroup.UNKNOWN,
         host=host,
         index=index,
         network_id=factory.create_network_id(network.name_raw),
         port_rest=port_rest,
         port_rpc=port_rpc,
         port_event=port_event,
-        typeof=NodeType.FULL if weight > 1000 else NodeType.READ_ONLY,
+        typeof=NodeType.VALIDATOR,
         weight=weight,
     )
 

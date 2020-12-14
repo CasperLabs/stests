@@ -14,6 +14,12 @@ class Network:
     # Primary faucet associated with network.
     faucet: typing.Optional[typing.Any]
 
+    # Count of bootstrap nodes associated with network.
+    count_of_bootstrap_nodes: typing.Optional[int]
+
+    # Count of genesis nodes associated with network.
+    count_of_genesis_nodes: typing.Optional[int]
+
     # Name of chain associated with network.
     chain_name: typing.Optional[str]
 

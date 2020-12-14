@@ -77,10 +77,10 @@ def _on_event_callback(node: Node, info: NodeEventInfo, payload: dict):
     utils.log_line()
 
     for label, data in (
+        ("Event Emitter", info.node_address),
         ("Event ID", info.event_id),
         ("Event Type", info.event_type.name[6:]),
         ("Event Timestamp", info.event_timestamp.isoformat()),
-        ("Event Emitter", info.node_address),
     ):
         print(f"{label.ljust(20)}: {data}")
 

@@ -8,6 +8,7 @@ from stests.core.types.infra import NetworkType
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.infra import NodeEventInfo
+from stests.core.types.infra import NodeGroup
 from stests.core.types.infra import NodeMonitoringLock
 from stests.core.types.infra import NodeStatus
 from stests.core.types.infra import NodeType
@@ -15,7 +16,12 @@ from stests.events import EventType
 
 
 
-def create_network(name_raw: str, chain_name: str) -> Network:
+def create_network(
+    name_raw: str,
+    chain_name: str,
+    count_of_bootstrap_nodes: int = None,
+    count_of_genesis_nodes: int = None,
+    ) -> Network:
     """Returns a domain object instance: Network.
 
     """
@@ -23,6 +29,8 @@ def create_network(name_raw: str, chain_name: str) -> Network:
 
     return Network(
         chain_name=chain_name,
+        count_of_bootstrap_nodes=count_of_bootstrap_nodes,
+        count_of_genesis_nodes=count_of_genesis_nodes,
         faucet=None,
         index=identifier.index,
         name=identifier.name,
@@ -54,6 +62,7 @@ def create_network_id(name_raw: str) -> NetworkIdentifier:
 
 
 def create_node(
+    group: NodeGroup,
     host: str,
     index: int,
     network_id: NetworkIdentifier,
@@ -61,7 +70,10 @@ def create_node(
     port_rpc: int,
     port_event: int,
     typeof: NodeType,
-    status=NodeStatus.HEALTHY,
+    status: NodeStatus = NodeStatus.HEALTHY,
+    use_to_dispatch: bool = True,
+    use_to_monitor: bool = True,
+    use_to_query: bool = True,
     weight=0,
     ) -> Node:
     """Returns a domain object instance: Node.
@@ -69,6 +81,7 @@ def create_node(
     """
     return Node(
         account=None,
+        group=group,
         host=host,
         index=index,
         network=network_id.name,
@@ -77,6 +90,9 @@ def create_node(
         port_event=port_event,
         status=status,
         typeof=typeof,
+        use_to_dispatch=use_to_dispatch,
+        use_to_monitor=use_to_monitor,
+        use_to_query=use_to_query,
         weight=weight,
     )
 
@@ -108,11 +124,13 @@ def create_node_event_info(
     event_type: EventType,
     block_hash: str = None,
     deploy_hash: str = None,
+    account_key: str = None,
     ) -> NodeEventInfo:
     """Returns a domain object instance: NodeEventInfo.
 
     """
     return NodeEventInfo(
+        account_key=account_key,
         block_hash=block_hash,
         deploy_hash=deploy_hash,
         event_id=event_id,
