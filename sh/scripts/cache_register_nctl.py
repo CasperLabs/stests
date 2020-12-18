@@ -280,8 +280,6 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
     else:
         group = NodeGroup.OTHER
 
-    print(f"{index} :: {group} :: {group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)}")
-
     # Set function flags - initially only interact with genesis nodes.
     use_to_dispatch = use_to_monitor = use_to_query = group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)
 

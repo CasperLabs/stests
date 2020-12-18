@@ -73,9 +73,10 @@ def on_block_added(info: NodeEventInfo):
     ctx = _Context(info)
     _process_block(ctx)
     for deploy_hash in ctx.deploy_hashes:
-        ctx.deploy_hash = deploy_hash
-        if not _is_deploy_processed(ctx):
-            _process_deploy(ctx)
+        print(deploy_hash)
+    #     ctx.deploy_hash = deploy_hash
+    #     if not _is_deploy_processed(ctx):
+    #         _process_deploy(ctx)
 
 
 def _is_deploy_processed(ctx: _Context) -> bool:
@@ -102,6 +103,7 @@ def _process_block(ctx: _Context):
     if not on_chain_block['header']['deploy_hashes']:
         log_event(EventType.CHAIN_ADDED_BLOCK_EMPTY, None, ctx.block_hash)
         return
+    print(on_chain_block['header']['deploy_hashes'])
     
     # Set stats.
     ctx.block = factory.create_block_statistics_on_addition(
@@ -121,9 +123,6 @@ def _process_block(ctx: _Context):
         status = BlockStatus.FINALIZED.name,
         timestamp = datetime.strptime(on_chain_block['header']['timestamp'], "%Y-%m-%dT%H:%M:%S.%fZ"),
     )
-
-    # Set deploy hashes for subsequent processing.
-    ctx.deploy_hashes = on_chain_block['header']['deploy_hashes']
 
     # Emit event.
     log_event(EventType.CHAIN_ADDED_BLOCK, f"{ctx.block_hash}", ctx.block)
