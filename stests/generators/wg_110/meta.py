@@ -1,7 +1,8 @@
 from stests.core.types.orchestration import ExecutionContext
 from stests.generators.wg_110 import args
 from stests.generators.wg_110 import phase_1
-
+from stests.generators.wg_110 import phase_2
+from stests.generators.wg_110 import phase_3
 
 
 # Workload custom args.
@@ -16,6 +17,8 @@ DESCRIPTION = "Dispatches transfers in volume."
 # Set of workflow phases.
 PHASES = (
     phase_1,
+    phase_2,
+    phase_3,    
 )
 
 # Workload type.

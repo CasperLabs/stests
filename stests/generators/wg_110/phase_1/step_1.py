@@ -1,72 +1,44 @@
 import typing
-import dramatiq
 
-from stests.core.types.chain import DeployType
-from stests.core.types.infra import NodeIdentifier
+from stests.core import cache
+from stests.core import factory
 from stests.core.types.orchestration import ExecutionContext
 from stests.generators.utils import constants
 from stests.generators.utils import verification
-from stests.generators.utils.accounts import do_transfer
 
 
 
 # Step label.
-LABEL = "fund-run-faucet"
+LABEL = "create-accounts"
 
 
-def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
+def execute(ctx: ExecutionContext):
     """Step entry point.
     
     :param ctx: Execution context information.
 
-    :returns: 3 member tuple -> actor, message count, message arg factory.
-
     """
-    return do_transfer, (
-        ctx,
-        constants.ACC_NETWORK_FAUCET,
-        constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_balance,
-        DeployType.TRANSFER_WASM,
-    )
+    for account in _yield_accounts(ctx):
+        cache.state.set_account(account)
+
+
+def _yield_accounts(ctx: ExecutionContext) -> typing.Generator:
+    """Yields account information to be persisted to cache.
+    
+    """
+    # Run faucet account.
+    yield factory.create_account_for_run(ctx, constants.ACC_RUN_FAUCET)
+    
+    # User accounts.
+    account_range = range(constants.ACC_RUN_USERS, ctx.args.transfers + constants.ACC_RUN_USERS)
+    for account_index in account_range:
+        yield factory.create_account_for_run(ctx, account_index)
 
 
 def verify(ctx: ExecutionContext):
-    """Step verifier.
+    """Step execution verifier.
     
     :param ctx: Execution context information.
 
     """
-    verification.verify_deploy_count(ctx, 1)
-
-
-def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
-    """Step deploy verifier.
-    
-    :param ctx: Execution context information.
-    :param node_id: Identifier of node emitting chain event.
-    :param block_hash: Hash of block in which deploy was batched.
-    :param deploy_hash: Hash of deploy being processed.
-
-    """
-    # Verify deploy itself.
-    deploy = verification.verify_deploy(ctx, block_hash, deploy_hash)
-    
-    # Verify on-chain account balance.
-    verification.verify_account_balance_on_transfer(
-        ctx,
-        node_id,
-        deploy.state_root_hash,
-        constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_balance,
-        )    
-
-
-def verify_deploy_batch_is_complete(ctx: ExecutionContext, deploy_index: int):
-    """Step deploy batch is complete verifier.
-    
-    :param ctx: Execution context information.
-    :param deploy_index: Index of a finalized deploy in relation to the deploys dispatched during this step.
-
-    """
-    assert deploy_index == 1
+    print("TODO: verify cached account count")

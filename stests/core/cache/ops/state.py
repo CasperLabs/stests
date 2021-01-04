@@ -83,14 +83,30 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy, cost: int) 
     )
 
 
+@cache_op(_PARTITION, StoreOperation.GET_ONE)
+def get_account(account_id: AccountIdentifier) -> ItemKey:
+    """Decaches domain object: Account.
+    :param account_id: An account identifier.
+    :returns: Cache item key.
+    """
+    return ItemKey(
+        paths=[
+            account_id.run.network.name,
+            account_id.run.type,
+            account_id.label_run_index,
+            COL_ACCOUNT,
+        ],
+        names=[
+            account_id.label_index,
+        ]
+    )
+
+
 @cache_op(_PARTITION, StoreOperation.GET_COUNTER_ONE)
 def get_account_balance(account: Account) -> ItemKey:
     """Returns balance of a test account.
-
     :param account: An account.
-
     :returns: Cache item key.
-
     """
     return ItemKey(
         paths=[
@@ -103,6 +119,22 @@ def get_account_balance(account: Account) -> ItemKey:
             account.label_index,
         ],
     )
+
+
+def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
+    """Decaches domain object: Account.
+    
+    :param ctx: Execution context information.
+    :param index: Run specific account index. 
+    :returns: A cached account.
+
+    """
+    return get_account(factory.create_account_id(
+        index,
+        ctx.network,
+        ctx.run_index,
+        ctx.run_type
+        ))
 
 
 @cache_op(_PARTITION, StoreOperation.GET_ONE_FROM_MANY)
@@ -217,6 +249,29 @@ def increment_account_balance(account: Account, amount: int) -> CountIncrementKe
             account.label_index,
         ],
         amount=amount,
+    )
+
+
+@cache_op(_PARTITION, StoreOperation.SET_ONE)
+def set_account(account: Account) -> Item:
+    """Encaches domain object: Account.
+    
+    :param account: Account domain object instance to be cached.
+    :returns: Cache item.
+    """
+    return Item(
+        data=account,
+        item_key=ItemKey(
+            paths=[
+                account.network,
+                account.run_type,
+                account.label_run_index,
+                COL_ACCOUNT,
+            ],
+            names=[
+                account.label_index,
+            ]
+        )
     )
 
 

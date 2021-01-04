@@ -23,11 +23,6 @@ class Arguments:
         """Initial faucet account CSPR balance."""
         return  (self.transfers * self.amount) + (((2 * self.transfers) + 1) * chain.DEFAULT_TX_FEE)
 
-    @property
-    def amount_plus_refund_fee(self):
-        """Amount to transfer plus a refund fee."""
-        return self.amount + chain.DEFAULT_TX_FEE
-
 
     @classmethod
     def create(cls, args: argparse.Namespace):
@@ -43,7 +38,7 @@ class Arguments:
 
 
 # Set command line arguments.
-ARGS = get_argparser(f"Wasmless transfers generator.")
+ARGS = get_argparser(f"Native transfers generator.")
 
 # CLI argument: # transfers to dispatch.
 ARGS.add_argument(
@@ -57,9 +52,8 @@ ARGS.add_argument(
 # CLI argument: motes per transfer.
 ARGS.add_argument(
     "--amount",
-    help="Motes per transfer. Default=100000000",
+    help="Motes per transfer. Default=10000000000",
     dest="amount",
     type=int,
-    default=int(1e8)
+    default=int(1e10)
     )
-

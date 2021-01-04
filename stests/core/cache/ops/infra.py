@@ -217,6 +217,8 @@ def _get_nodes(
 
     """
     nodeset = [i for i in get_nodes(network) if predicate(i)]
+    if sample_size is not None:
+        sample_size = min(sample_size, len(nodeset))
 
     return nodeset if sample_size is None else random.sample(nodeset, sample_size)
 

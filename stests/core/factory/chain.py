@@ -43,7 +43,9 @@ def create_account(
             seed = seed.upper().encode("utf-8")
             seed = crypto.get_hash(seed, encoding=crypto.HashEncoding.BYTES)
             private_key, public_key = \
-                crypto.get_key_pair_from_seed(seed, crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.HEX)
+                crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+            # private_key, public_key = \
+            #     crypto.get_key_pair_from_seed(seed, crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.HEX)
         # ... other account key pairs are derived randomly.
         else:
             private_key, public_key = \
@@ -86,6 +88,23 @@ def create_account_for_run(
         run_type=run_type or ctx.run_type,
         run_uid=ctx.uid,
         )
+
+
+def create_account_id(
+    index: int,
+    network: str,
+    run_index: int,
+    run_type: int,
+    ) -> AccountIdentifier:
+    """Returns a cache identifier: AccountIdentifier.
+    
+    """
+    network_id = create_network_id(network)
+
+    return AccountIdentifier(
+        index=index,
+        run=create_execution_id(network_id, run_index, run_type)
+    )
 
 
 def create_account_key(

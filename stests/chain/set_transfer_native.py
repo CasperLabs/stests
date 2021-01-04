@@ -1,6 +1,7 @@
 import json
 import subprocess
 
+from stests.core.logging import log_event
 from stests.chain.utils import execute_cli
 from stests.chain.utils import DeployDispatchInfo
 from stests.core.types.chain import Account
@@ -8,7 +9,6 @@ from stests.core.types.infra import Network
 from stests.core.types.infra import Node
 from stests.core.utils import paths
 from stests.events import EventType
-
 
 
 # Method upon client to be invoked.
@@ -29,6 +29,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
 
     """
     binary_path = paths.get_path_to_client(info.network)
+    cp1 = info.dispatcher
 
     cli_response = subprocess.run([
         binary_path, _CLIENT_METHOD,
@@ -44,4 +45,13 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
         stdout=subprocess.PIPE,
         )
     
-    return json.loads(cli_response.stdout)['result']['deploy_hash']
+    deploy_hash = json.loads(cli_response.stdout)['result']['deploy_hash']
+    
+    log_event(
+        EventType.WFLOW_DEPLOY_DISPATCHED,
+        f"{info.node.address} :: {deploy_hash} :: transfer (native) :: {amount} CSPR :: from {cp1.account_key[:8]} -> {cp2.account_key[:8]} ",
+        info.node,
+        deploy_hash=deploy_hash,
+        )
+
+    return deploy_hash

@@ -1,6 +1,7 @@
 from stests.chain import set_deploy
 from stests.chain.utils import execute_cli
 from stests.chain.utils import DeployDispatchInfo
+from stests.core.logging import log_event
 from stests.core.types.chain import Account
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
@@ -26,7 +27,9 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
     :returns: Deploy hash.
 
     """
-    return set_deploy.execute(
+    cp1 = info.dispatcher
+
+    deploy_hash = set_deploy.execute(
         info.network,
         info.node,
         info.dispatcher,
@@ -36,3 +39,13 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int) -> str:
             "--session-arg", f"target:account_hash='account-hash-{cp2.account_hash}'",
         ]
     )
+
+    log_event(
+        EventType.WFLOW_DEPLOY_DISPATCHED,
+        f"{info.node.address} :: {deploy_hash} :: transfer (wasm) :: {amount} CSPR :: from {cp1.account_key[:8]} -> {cp2.account_key[:8]} ",
+        info.node,
+        deploy_hash=deploy_hash,
+        )
+
+    return deploy_hash
+

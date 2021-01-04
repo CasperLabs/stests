@@ -48,7 +48,6 @@ def main(args):
     network, node = get_network_node(args)
     purse_uref = chain.get_account_main_purse_uref(network, node, args.account_key)
     balance = chain.get_account_balance(network, node, purse_uref)
-
     utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
 
 
