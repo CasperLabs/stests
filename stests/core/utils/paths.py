@@ -60,4 +60,4 @@ def _get_path_to_binary(network: Network, fname: str):
         if path.exists():
             return path
 
-    raise ValueError(f"Binary file could not be found: {network.name} :: {fname}")
+    raise ValueError(f"Binary file could not be found: {network.name_raw} :: {fname}")
