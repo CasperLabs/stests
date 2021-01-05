@@ -128,7 +128,9 @@ function _exec_generator()
 
 # WG-1xx: Token transfers:
 alias stests-wg-100='_exec_generator 100'       # wasm-less
+alias stests-wg-101='_exec_generator 101'       # wasm-less (fire & forget)
 alias stests-wg-110='_exec_generator 110'       # wasm per deploy
+alias stests-wg-111='_exec_generator 111'       # wasm per deploy (fire & forget)
 
 # WG-2xx: Auction:
 alias stests-wg-200='_exec_generator 200'       # validator slot bid submit

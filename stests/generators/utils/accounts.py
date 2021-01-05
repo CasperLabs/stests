@@ -91,9 +91,8 @@ def do_transfer(
         amount = get_user_account_balance(network, node, cp1) - chain.DEFAULT_TX_FEE
 
     # Dispatch tx -> chain.
-    deploy_type = DeployType[transfer_type]
-    dispatch_fn = TFR_TYPE_TO_TFR_FN[deploy_type]
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
+    dispatch_fn = TFR_TYPE_TO_TFR_FN[DeployType[transfer_type]]
     deploy_hash, dispatch_duration, dispatch_attempts = dispatch_fn(dispatch_info, cp2, amount)
 
     # Update cache: deploy.
@@ -105,7 +104,7 @@ def do_transfer(
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
-        typeof=deploy_type
+        typeof=DeployType[transfer_type]
         ))
 
     # Update cache: account balances.
@@ -113,6 +112,36 @@ def do_transfer(
         cache.state.decrement_account_balance(cp1, amount)
     if cp2.is_run_account:
         cache.state.increment_account_balance(cp2, amount)
+
+
+@dramatiq.actor(queue_name=_QUEUE)
+def do_transfer_fire_forget(
+    ctx: ExecutionContext,
+    cp1_index: int,
+    cp2_index: int,
+    amount: int,
+    transfer_type: str,
+    ):
+    """Executes a fire & forget token transfer between 2 counter-parties.
+
+    :param ctx: Execution context information.
+    :param cp1_index: Account index of counter-party 1.
+    :param cp2_index: Account index of counter-party 1.
+    :param amount: Amount (in motes) to transfer.
+    :param transfer_type: Type of transfer to dispatch.
+    
+    """
+    # Set target network / node.
+    network, node = get_network_node(ctx)
+    
+    # Set counterparties.
+    cp1 = get_account(ctx, network, cp1_index)
+    cp2 = get_account(ctx, network, -cp2_index)
+
+    # Dispatch tx -> chain.
+    dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
+    dispatch_fn = TFR_TYPE_TO_TFR_FN[DeployType[transfer_type]]
+    dispatch_fn(dispatch_info, cp2, amount)
 
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
@@ -125,8 +154,12 @@ def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> 
             raise ValueError("Network faucet account does not exist.")
         return network.faucet
 
-    # User accounts.
-    return cache.state.get_account_by_index(ctx, account_index)  
+    # Cached accounts.
+    if account_index > 0:
+        return cache.state.get_account_by_index(ctx, account_index)  
+
+    # On the fly accounts.
+    return factory.create_account_for_run(ctx, account_index)
 
 
 def get_user_account_balance(network: Network, node: Node, account: Account) -> int:
