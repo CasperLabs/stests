@@ -38,11 +38,28 @@ Depending upon the type of generator being executed the following set of **defau
 - `--parallel`
 	- Number of runs to launch in parallel.
 
-## WG-100 - Balance Transfer (WASM-less)
+
+## WG-100 - Transfer (native)
 
 - `stests-wg-100 --net X --transfers Y --amount Z` 
 
-Launches a workload generator that will perform a sequence of **wasm-less** on-chain balance transfers.  Also see default parameters above.
+Launches a workload generator that will perform a sequence of **native** balance transfers.  Also see default parameters above.
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+	
+- `--transfers`
+	- Number of transfers to dispatch. Default=100.
+
+- `--amount`
+	- Motes per transfer. Default=100000000.
+
+
+## WG-101 - Transfer (native)
+
+- `stests-wg-101 --net X --transfers Y --amount Z` 
+
+Launches a workload generator that performs a sequence of native transfers in a fire & forget fashion - i.e. immediate dispatch with no monitoring.  
 
 - `--net`
 	- Network name {type}{id}, e.g. nctl1.
@@ -58,7 +75,23 @@ Launches a workload generator that will perform a sequence of **wasm-less** on-c
 
 - `stests-wg-110 --net X --transfers Y --amount Z` 
 
-Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy.  Also see default parameters above.
+Launches a workload generator that will perform a sequence of wasm-less on-chain balance transfers.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy. 
+
+- `--net`
+	- Network name {type}{id}, e.g. nctl1.
+
+- `--transfers`
+	- Number of transfers to dispatch. Default=100.
+
+- `--amount`
+	- Motes per transfer. Default=100000000.
+
+
+## WG-111 - Fire & Forget Transfer (WASM based)
+
+- `stests-wg-111 --net X --transfers Y --amount Z` 
+
+Launches a workload generator that performs a sequence of wasm transfers in a fire & forget fashion - i.e. immediate dispatch with no monitoring.  For each transfer **a WASM file will be dispatched** to the network as part of the deploy. 
 
 - `--net`
 	- Network name {type}{id}, e.g. nctl1.

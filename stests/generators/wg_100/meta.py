@@ -8,7 +8,7 @@ from stests.generators.wg_100 import p3s2_refund_faucet
 
 
 
-# Workload custom args.
+# Workload custom args type.
 Arguments = args.Arguments
 
 # Workload command line args.
@@ -17,7 +17,7 @@ ARGS = args.ARGS
 # Workload description.
 DESCRIPTION = "Dispatches transfers in volume."
 
-# Set of workflow phases.
+# Workflow phases/steps.
 PHASES = (
     (p1s1_set_accounts,),
     (p2s1_fund_faucet, p2s2_fund_users,),
@@ -27,7 +27,7 @@ PHASES = (
 # Workload type.
 TYPE = "WG-100"
 
-# Workload typeset - registered with encoder.
+# Workload typeset - registered when encoder.initialise is invoked.
 TYPE_SET = {
     Arguments,
 }

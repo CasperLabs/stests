@@ -4,7 +4,7 @@ from stests.generators.wg_111 import p1s1_do_transfers
 
 
 
-# Workload custom args.
+# Workload custom args type.
 Arguments = args.Arguments
 
 # Workload command line args.
@@ -13,7 +13,7 @@ ARGS = args.ARGS
 # Workload description.
 DESCRIPTION = "Dispatches a set of fire & forget transfers."
 
-# Set of workflow phases.
+# Workflow phases/steps.
 PHASES = (
     (p1s1_do_transfers, ),
     )
@@ -21,7 +21,7 @@ PHASES = (
 # Workload type.
 TYPE = "WG-111"
 
-# Workload typeset - registered with encoder.
+# Workload typeset - registered when encoder.initialise is invoked.
 TYPE_SET = {
     Arguments,
 }

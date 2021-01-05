@@ -143,6 +143,9 @@ def do_transfer_fire_forget(
     dispatch_fn = TFR_TYPE_TO_TFR_FN[DeployType[transfer_type]]
     dispatch_fn(dispatch_info, cp2, amount)
 
+    # Increment deploy counts.
+    cache.orchestration.increment_deploy_counts(ctx)    
+
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
     """Returns either a faucet account or a user account.

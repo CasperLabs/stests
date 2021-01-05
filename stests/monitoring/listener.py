@@ -1,26 +1,16 @@
-
 from stests import chain
 from stests.core import cache
 from stests.core.logging import log_event
 from stests.core.types.infra import Node
 from stests.core.types.infra import NodeEventInfo
 from stests.events import EventType
-from stests.monitoring.on_block_added import on_block_added
-from stests.monitoring.on_block_finalized import on_block_finalized
-from stests.monitoring.on_consensus_fault import on_consensus_fault
 from stests.monitoring.on_consensus_finality_signature import on_consensus_finality_signature
-from stests.monitoring.on_deploy_processed import on_deploy_processed
 
 
 
 # Map: event type -> actor.
 _ACTORS = {
-    # EventType.MONIT_BLOCK_ADDED: on_block_added,
-    # EventType.MONIT_CONSENSUS_FAULT: on_consensus_fault,
     EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE: on_consensus_finality_signature,
-    # NOTE: there appears no logical reason to process these events 
-    # EventType.MONIT_BLOCK_FINALIZED: on_block_finalized,
-    # EventType.MONIT_DEPLOY_PROCESSED: on_deploy_processed,
 }
 
 
