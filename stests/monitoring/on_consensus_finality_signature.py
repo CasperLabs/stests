@@ -45,7 +45,7 @@ class _Context():
         """Gets set of associated deploy hashes."""
         try:
             return self.on_chain_block['header']['deploy_hashes']
-        except KeyError:
+        except (TypeError, KeyError):
             return []            
 
     @property
