@@ -28,7 +28,10 @@ COL_DEPLOY_COUNT = "deploy-count"
 COL_GENERATOR_RUN_COUNT = "generator-run-count"
 COL_INFO = "info"
 COL_LOCK = "lock"
-COL_STATE = "state"
+
+# Cache collection item expiration times.
+EXPIRATION_COL_CONTEXT = 3600
+EXPIRATION_COL_INFO = 3600
 
 
 @cache_op(_PARTITION, StoreOperation.DELETE_MANY)
@@ -341,6 +344,7 @@ def set_context(ctx: ExecutionContext) -> Item:
                 COL_CONTEXT,
             ],
         ),
+        expiration=EXPIRATION_COL_CONTEXT
     )
 
 
@@ -371,6 +375,7 @@ def set_info(info: ExecutionInfo) -> Item:
             ],
             names=names,
         ),
+        expiration=EXPIRATION_COL_INFO
     )    
 
 
@@ -378,15 +383,10 @@ def set_info_update(ctx: ExecutionContext, aspect: ExecutionAspect, status: Exec
     """Updates domain object: ExecutionContext.
     
     :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
+    :param aspect: Aspect of execution in scope.
+    :param status: New execution status.
 
     """
-    # Pull.
     info = get_info(ctx, aspect)
-
-    # Update.
     info.end(status, None)
-
-    # Recache.
     set_info(info)
