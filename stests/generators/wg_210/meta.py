@@ -1,6 +1,7 @@
 from stests.core.types.orchestration import ExecutionContext
 from stests.generators.wg_210 import args
-from stests.generators.wg_210 import phase_1
+from stests.generators.wg_210 import p1s1_set_accounts
+from stests.generators.wg_210 import p1s2_delegate
 
 
 
@@ -15,7 +16,7 @@ DESCRIPTION = "Submits a deploy delegating an amount of tokens (in motes) to a v
 
 # Set of workflow phases.
 PHASES = (
-    phase_1,
+    (p1s1_set_accounts, p1s2_delegate, ),
 )
 
 # Workload type.

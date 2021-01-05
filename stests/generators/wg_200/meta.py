@@ -1,6 +1,6 @@
 from stests.core.types.orchestration import ExecutionContext
 from stests.generators.wg_200 import args
-from stests.generators.wg_200 import phase_1
+from stests.generators.wg_200 import p1s1_submit_bid
 
 
 
@@ -15,7 +15,7 @@ DESCRIPTION = "Dispatches an auction submit bid deploy."
 
 # Set of workflow phases.
 PHASES = (
-    phase_1,
+    (p1s1_submit_bid, ),
 )
 
 # Workload type.
