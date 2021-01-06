@@ -7,7 +7,6 @@ from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
 from stests.core.types.orchestration import ExecutionAspect
 from stests.core.utils.exceptions import IgnoreableAssertionError
-from stests.generators.utils.accounts import get_user_account
 from stests.generators.utils.infra import get_network_node
 from stests.generators.utils.constants import ACC_RUN_USERS
 
@@ -45,7 +44,7 @@ def verify_account_balance_on_transfer(
     
     """
     # Set account.
-    account = get_user_account(ctx, account_index)
+    account = cache.state.get_account_by_index(ctx, account_index)
 
     # Set network / node in readiness for chain interaction.
     network, node = get_network_node(node_id)
@@ -57,7 +56,16 @@ def verify_account_balance_on_transfer(
 
     # Set account balance.
     balance = chain.get_account_balance(network, node, purse_uref, state_root_hash)
-    assert balance == str(expected), \
+    assert balance == expected, \
            f"account balance mismatch: account_index={account_index}, account_key={account.account_key}, expected={expected}, actual={balance}"
 
     return account
+
+
+def verify_account_count(ctx: ExecutionContext) -> Deploy:
+    """Verifies number of created accounts.
+    
+    """
+    cached = cache.state.get_account_count(ctx)
+    expected = ctx.args.user_accounts + 2
+    assert cached == expected, f"cached account total mismatch: actual={cached}, expected={expected}."

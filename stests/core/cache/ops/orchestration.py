@@ -28,7 +28,10 @@ COL_DEPLOY_COUNT = "deploy-count"
 COL_GENERATOR_RUN_COUNT = "generator-run-count"
 COL_INFO = "info"
 COL_LOCK = "lock"
-COL_STATE = "state"
+
+# Cache collection item expiration times.
+EXPIRATION_COL_CONTEXT = 3600
+EXPIRATION_COL_INFO = 3600
 
 
 @cache_op(_PARTITION, StoreOperation.DELETE_MANY)
@@ -231,11 +234,16 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
 
 
 @cache_op(_PARTITION, StoreOperation.COUNTER_INCR)
-def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP) -> CountIncrementKey:
+def increment_deploy_count(
+    ctx: ExecutionContext,
+    aspect: ExecutionAspect = ExecutionAspect.STEP,
+    amount: int = 1,
+    ) -> CountIncrementKey:
     """Increments (atomically) count of run step deploys.
 
     :param ctx: Execution context information.
     :param aspect: Aspect of execution in scope.
+    :param amount: Amount by which to increment counter.
 
     """
     if aspect == ExecutionAspect.RUN:
@@ -253,11 +261,11 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
             COL_DEPLOY_COUNT,
         ],
         names=names,
-        amount=1,
+        amount=amount,
     )
 
 
-def increment_deploy_counts(ctx: ExecutionContext) -> int:
+def increment_deploy_counts(ctx: ExecutionContext, amount: int = 1) -> int:
     """Increments (atomically) count of run deploys.
 
     :param ctx: Execution context information.
@@ -265,9 +273,9 @@ def increment_deploy_counts(ctx: ExecutionContext) -> int:
     """
     # TODO: increment as a batch.
     return (
-        increment_deploy_count(ctx, ExecutionAspect.RUN),
-        increment_deploy_count(ctx, ExecutionAspect.PHASE),
-        increment_deploy_count(ctx, ExecutionAspect.STEP)
+        increment_deploy_count(ctx, ExecutionAspect.RUN, amount),
+        increment_deploy_count(ctx, ExecutionAspect.PHASE, amount),
+        increment_deploy_count(ctx, ExecutionAspect.STEP, amount)
     )
 
 
@@ -341,6 +349,7 @@ def set_context(ctx: ExecutionContext) -> Item:
                 COL_CONTEXT,
             ],
         ),
+        expiration=EXPIRATION_COL_CONTEXT
     )
 
 
@@ -371,6 +380,7 @@ def set_info(info: ExecutionInfo) -> Item:
             ],
             names=names,
         ),
+        expiration=EXPIRATION_COL_INFO
     )    
 
 
@@ -378,15 +388,10 @@ def set_info_update(ctx: ExecutionContext, aspect: ExecutionAspect, status: Exec
     """Updates domain object: ExecutionContext.
     
     :param ctx: Execution context information.
-
-    :returns: Keypath + domain object instance.
+    :param aspect: Aspect of execution in scope.
+    :param status: New execution status.
 
     """
-    # Pull.
     info = get_info(ctx, aspect)
-
-    # Update.
     info.end(status, None)
-
-    # Recache.
     set_info(info)

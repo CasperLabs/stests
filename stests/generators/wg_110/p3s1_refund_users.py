@@ -4,14 +4,14 @@ import dramatiq
 from stests.core.types.chain import DeployType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
+from stests.core.utils.exceptions import IgnoreableAssertionError
+from stests.generators.utils import accounts
 from stests.generators.utils import constants
 from stests.generators.utils import verification
-from stests.generators.utils.accounts import do_transfer
-
 
 
 # Step label.
-LABEL = "fund-run-faucet"
+LABEL = "refund-users"
 
 
 def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.Callable]:
@@ -19,16 +19,20 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     
     :param ctx: Execution context information.
 
-    :returns: 3 member tuple -> actor, message count, message arg factory.
+    :returns: 2 member tuple -> actor, message args.
 
     """
-    return do_transfer, (
-        ctx,
-        constants.ACC_NETWORK_FAUCET,
-        constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_balance,
-        DeployType.TRANSFER_WASMLESS,
-    )
+    def _yield_parameterizations() -> typing.Generator:
+        account_range = range(constants.ACC_RUN_USERS, ctx.args.transfers + constants.ACC_RUN_USERS)
+        for account_index in account_range:
+            yield (
+                ctx,
+                account_index,
+                constants.ACC_NETWORK_FAUCET,
+                DeployType.TRANSFER_WASM,
+            )
+
+    return accounts.do_refund, ctx.args.transfers, _yield_parameterizations
 
 
 def verify(ctx: ExecutionContext):
@@ -37,7 +41,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    verification.verify_deploy_count(ctx, 1)
+    verification.verify_deploy_count(ctx, ctx.args.transfers)
 
 
 def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
@@ -47,19 +51,10 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     :param node_id: Identifier of node emitting chain event.
     :param block_hash: Hash of block in which deploy was batched.
     :param deploy_hash: Hash of deploy being processed.
+    :param deploy_index: Index of a finalized deploy in relation to the deploys dispatched during this step.
 
     """
-    # Verify deploy itself.
-    deploy = verification.verify_deploy(ctx, block_hash, deploy_hash)
-    
-    # Verify on-chain account balance.
-    verification.verify_account_balance_on_transfer(
-        ctx,
-        node_id,
-        deploy.state_root_hash,
-        constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_balance,
-        )    
+    verification.verify_deploy(ctx, block_hash, deploy_hash)
 
 
 def verify_deploy_batch_is_complete(ctx: ExecutionContext, deploy_index: int):
@@ -69,5 +64,4 @@ def verify_deploy_batch_is_complete(ctx: ExecutionContext, deploy_index: int):
     :param deploy_index: Index of a finalized deploy in relation to the deploys dispatched during this step.
 
     """
-    assert deploy_index == 1
-
+    assert deploy_index == ctx.args.transfers

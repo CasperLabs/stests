@@ -40,4 +40,4 @@ def execute(
         stdout=subprocess.PIPE,
         )    
 
-    return json.loads(cli_response.stdout)['result']['balance_value']
+    return int(json.loads(cli_response.stdout)['result']['balance_value'])

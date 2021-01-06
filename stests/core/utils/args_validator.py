@@ -147,6 +147,16 @@ def validate_node_index(value):
     return _validate_int(value, NODE_INDEX_MIN, NODE_INDEX_MAX, "Node")
 
 
+def validate_node_index_optional(value):
+    """Argument verifier: node index.
+
+    """
+    if value in (0, -1):
+        return value
+
+    return _validate_int(value, NODE_INDEX_MIN, NODE_INDEX_MAX, "Node")
+
+
 def validate_node_name(value):
     """Argument verifier: node name.
 

@@ -218,7 +218,13 @@ def initialise():
     from stests.generators.wg_100.args import Arguments
     register_type(Arguments)
 
+    from stests.generators.wg_101.args import Arguments
+    register_type(Arguments)
+
     from stests.generators.wg_110.args import Arguments
+    register_type(Arguments)
+
+    from stests.generators.wg_111.args import Arguments
     register_type(Arguments)
 
     from stests.generators.wg_200.args import Arguments

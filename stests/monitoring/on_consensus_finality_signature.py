@@ -45,7 +45,8 @@ class _Context():
         """Gets set of associated deploy hashes."""
         try:
             return self.on_chain_block['header']['deploy_hashes']
-        except KeyError:
+        except (TypeError, KeyError):
+            print(self.on_chain_block)
             return []            
 
     @property
@@ -65,11 +66,15 @@ def on_consensus_finality_signature(info: NodeEventInfo):
     :param info: Node event information.
 
     """
+    # Escape if already processed.
     if _is_block_processed(info):
         return
 
+    # Process block.
     ctx = _Context(info)
     _process_block(ctx)
+
+    # Process deploys.
     for deploy_hash in ctx.deploy_hashes:
         ctx.deploy_hash = deploy_hash
         if not _is_deploy_processed(ctx):
@@ -80,10 +85,8 @@ def _is_block_processed(info: NodeEventInfo) -> bool:
     """Returns flag indicating whether finalised deploy event has already been processed.
 
     """
-    # Attempt to cache.
     _, encached = cache.monitoring.set_block(info)
 
-    # Return flag indicating whether block has effectively already been processed.
     return not encached
 
 
@@ -173,10 +176,7 @@ def _process_deploy_correlated(ctx: _Context):
         try:
             ctx.deploy.deploy_cost = int(ctx.on_chain_deploy["execution_results"][0]["result"]["cost"])
         except KeyError:
-            print(ctx.on_chain_deploy["execution_results"][0]["result"])
             ctx.deploy.deploy_cost = 0
-
-    # deploy.consensus_round_id = ctx.block.consensus_round_id
     ctx.deploy.consensus_era_id = ctx.block.consensus_era_id
     ctx.deploy.finalization_duration = ctx.block.timestamp.timestamp() - ctx.deploy.dispatch_timestamp.timestamp()    
     ctx.deploy.finalization_node_index = ctx.node.index
@@ -185,11 +185,11 @@ def _process_deploy_correlated(ctx: _Context):
     ctx.deploy.status = DeployStatus.ADDED
     cache.state.set_deploy(ctx.deploy)
 
-    # # Update cache: account balance.
+    # Update cache: account balance.
     if ctx.deploy.deploy_cost > 0:
         cache.state.decrement_account_balance_on_deploy_finalisation(ctx.deploy, ctx.deploy.deploy_cost)
 
-    # # Enqueue message for processing by orchestrator.
+    # Enqueue message for processing by orchestrator.
     _enqueue_correlated(ctx)
 
 

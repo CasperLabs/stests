@@ -113,31 +113,20 @@ def _get_artefacts_faucet(path: pathlib.Path):
     return path
 
 
-def _get_artefacts_count_of_bootstrap_nodes(path: pathlib.Path):
+def _get_artefacts_count_of_bootstrap_nodes(_: pathlib.Path) -> int:
     """Returns number of network bootstrap nodes.
 
     """
-    return int(_get_network_var(path, "NCTL_NET_BOOTSTRAP_COUNT"))
+    return 3
 
 
-def _get_artefacts_count_of_genesis_nodes(path: pathlib.Path):
+def _get_artefacts_count_of_genesis_nodes(path: pathlib.Path) -> int:
     """Returns number of network genesis nodes.
 
     """
-    return int(_get_network_var(path, "NCTL_NET_NODE_COUNT"))
+    path = path / "nodes"
 
-
-def _get_network_var(path: pathlib.Path, var_name: str) -> str:
-    """Returns a setting within network var file.
-    
-    """
-    path = path / "vars"
-    with open(path, 'r') as fstream:
-        data = fstream.readlines()    
-    
-    for line in data:
-        if line.startswith(f"export {var_name}="):
-            return line.split("=")[-1]
+    return int(len(os.listdir(path)) / 2)
 
 
 def _get_artefacts_nodeset(path: pathlib.Path):
@@ -281,7 +270,9 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
         group = NodeGroup.OTHER
 
     # Set function flags - initially only interact with genesis nodes.
-    use_to_dispatch = use_to_monitor = use_to_query = group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)
+    use_to_dispatch = group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)
+    use_to_monitor = group in (NodeGroup.BOOTSTRAP, )
+    use_to_query = group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)
 
     # Set node.
     node = factory.create_node(

@@ -9,6 +9,7 @@ class AccountType(enum.Enum):
     NETWORK_FAUCET = enum.auto()
     VALIDATOR_BOND = enum.auto()
     GENERATOR_RUN = enum.auto()
+    OTHER = enum.auto()
 
 
 class BlockStatus(enum.Flag):
@@ -25,8 +26,6 @@ class ContractType(enum.Enum):
     """Enumeration over set of bundled client contract types.
     
     """
-    COUNTER_DEFINE = enum.auto()
-    COUNTER_DEFINE_STORED = enum.auto()
     TRANSFER_U512 = enum.auto()
     TRANSFER_U512_STORED = enum.auto()
     TRANSFER_U512_WASM = enum.auto()
@@ -55,10 +54,8 @@ class DeployType(enum.Flag):
     AUCTION_DELEGATE = enum.auto()
     AUCTION_UNDELEGATE = enum.auto()
     CONTRACT_INSTALL = enum.auto()
-    COUNTER_DEFINE = enum.auto()
-    TRANSFER = enum.auto()
     TRANSFER_WASM = enum.auto()
-    TRANSFER_WASMLESS = enum.auto()
+    TRANSFER_NATIVE = enum.auto()
 
 
 
