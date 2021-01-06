@@ -74,6 +74,8 @@ alias stests-view-chain-account-main-purse-uref='_exec_cmd $STESTS_PATH_SH_SCRIP
 alias stests-view-chain-auction-info='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_auction_info.py'
 alias stests-view-chain-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_block.py'
 alias stests-view-chain-deploy='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_deploy.py'
+alias stests-view-chain-era='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_era.py'
+alias stests-view-chain-height='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_height.py'
 alias stests-view-chain-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_state_root_hash.py'
 
 # Views #2: node information.
