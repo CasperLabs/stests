@@ -40,4 +40,7 @@ def execute(
         stdout=subprocess.PIPE,
         )    
 
-    return int(json.loads(cli_response.stdout)['result']['balance_value'])
+    try:
+        return int(json.loads(cli_response.stdout)['result']['balance_value'])
+    except json.decoder.JSONDecodeError:
+        return None
