@@ -42,6 +42,7 @@ Prior to interacting with a test network one must register various network asset
 To streamline registration stests provides the `stests-register-lrt` command.  This command assumes that network assets have already been copied to the `$HOME/.casperlabs-stests/nets/lrtX` folder as follows:
 
 ```
+chainspec.toml
 accounts.csv
 nodes.csv
 bin/casper-client

@@ -133,56 +133,28 @@ def get_node_by_network(network: typing.Union[Network, NetworkIdentifier]) -> No
     :returns: A registered node selected at random from a network's nodeset.
 
     """
-    # Pull operational nodeset.
     nodeset = get_nodes_for_dispatch(network)
     if not nodeset:
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
-    # Select random node.
     return random.choice(nodeset)
 
 
-def get_node_by_network_nodeset(network_id: NetworkIdentifier, node_index: int = None) -> Node:
-    """Decaches domain object: Node.
-
-    :param network_id: A network identifier.
-    :param node_index: A node index (1 based).
-
-    :returns: A registered node.
-
-    """
-    # Pull operational nodes.
-    nodeset = get_nodes_for_dispatch(network_id)
-    if not nodeset:
-        raise ValueError(f"Network {network_id.name} has no registered operational nodes.")
-
-    # Select random if node index unspecified.
-    if node_index is None or node_index <= 0:
-        return random.choice(nodeset)
-
-    # Select specific with fallback to random.
-    try:
-        return nodeset[node_index - 1]
-    except IndexError:
-        return random.choice(nodeset)
-
-
-def get_node_by_port(network: typing.Union[Network, NetworkIdentifier], port: int) -> Node:
+def get_node_by_account_key(network: typing.Union[Network, NetworkIdentifier], account_key: str) -> Node:
     """Decaches domain object: Node.
 
     :param network: A network.
-    :param port: Identifier of port to be mapped to a node.
+    :param account_key: Key of account associated with a validator.
 
     :returns: A registered node.
 
     """
-    # Pull operational nodeset.
     nodeset = get_nodes_for_dispatch(network)
     if not nodeset:
         raise ValueError(f"Network {network.name} has no registered operational nodes.")
 
     for node in nodeset:
-        if node.port_rpc == port:
+        if node.account.account_key == account_key:
             return node
 
 
@@ -203,17 +175,15 @@ def get_nodes(network: typing.Union[NetworkIdentifier, Network]=None) -> SearchK
     )
 
 
-def get_nodes_for_dispatch(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
-    """Decaches domain objects: Node (if operational).
+def get_nodes_for_dispatch(network: typing.Union[NetworkIdentifier, Network], sample_size: int = None) -> typing.List[Node]:
+    """Decaches domain objects: Node (if dispatcheable).
 
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
 
     """
-    nodeset = {i.address_rpc: i for i in get_nodes(network) if i.is_dispatchable}
-
-    return list(nodeset.values())
+    return _get_nodes(network, sample_size, lambda i: i.is_dispatchable)
 
 
 def get_nodes_for_monitoring(network: typing.Union[NetworkIdentifier, Network], sample_size: int = None) -> typing.List[Node]:
@@ -224,23 +194,33 @@ def get_nodes_for_monitoring(network: typing.Union[NetworkIdentifier, Network], 
     :returns: Collection of registered nodes.
 
     """
-    nodeset = {i.address_rpc: i for i in get_nodes(network) if i.is_monitorable}
-    nodeset = list(nodeset.values())
-
-    return nodeset if sample_size is None else random.sample(nodeset, sample_size)
+    return _get_nodes(network, sample_size, lambda i: i.is_monitorable)
 
 
-def get_nodes_for_querying(network: typing.Union[NetworkIdentifier, Network]) -> typing.List[Node]:
-    """Decaches domain objects: Node (if operational).
+def get_nodes_for_query(network: typing.Union[NetworkIdentifier, Network], sample_size: int = None) -> typing.List[Node]:
+    """Decaches domain objects: Node (if queryable).
 
     :param network: A pointer to either a network or network identifier.
 
     :returns: Collection of registered nodes.
 
     """
-    nodeset = {i.address_rpc: i for i in get_nodes(network) if i.is_queryable}
+    return _get_nodes(network, sample_size, lambda i: i.is_queryable)
 
-    return list(nodeset.values())
+
+def _get_nodes(
+    network: typing.Union[NetworkIdentifier, Network],
+    sample_size: typing.Optional[int],
+    predicate: typing.Callable,
+    ) -> typing.List[Node]:
+    """Decaches domain objects: Node.
+
+    """
+    nodeset = [i for i in get_nodes(network) if predicate(i)]
+    if sample_size is not None:
+        sample_size = min(sample_size, len(nodeset))
+
+    return nodeset if sample_size is None else random.sample(nodeset, sample_size)
 
 
 @cache_op(_PARTITION, StoreOperation.SET_ONE)

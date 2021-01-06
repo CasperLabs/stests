@@ -4,6 +4,7 @@ from datetime import datetime
 
 from stests.core.types.chain.account import Account
 from stests.core.types.infra.enums import NodeStatus
+from stests.core.types.infra.enums import NodeGroup
 from stests.core.types.infra.enums import NodeType
 from stests.core.types.infra.network import NetworkIdentifier
 from stests.events import EventType
@@ -17,6 +18,9 @@ class Node:
     """
     # Bonding account associated with node.
     account: typing.Optional[Account]
+
+    # Node grouping within network.
+    group: typing.Optional[NodeGroup]
 
     # Node's host address.
     host: str
@@ -41,6 +45,15 @@ class Node:
 
     # Type of node in terms of it's degree of consensus participation.
     typeof: NodeType
+
+    # Flag indicating whether this node is to be used for dispatch purposes.
+    use_to_dispatch: bool
+
+    # Flag indicating whether this node is to be used for monitoring purposes.
+    use_to_monitor: bool
+
+    # Flag indicating whether this node is to be used for querying purposes.
+    use_to_query: bool
 
     # POS weight.
     weight: typing.Optional[int]
@@ -67,19 +80,22 @@ class Node:
 
     @property
     def is_dispatchable(self):
-        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
+        return self.use_to_dispatch and \
+               self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
 
     @property
     def is_monitorable(self):
-        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED) and self.typeof == NodeType.FULL
+        return self.use_to_monitor and \
+               self.status == NodeStatus.HEALTHY
 
     @property
     def is_queryable(self):
-        return self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
+        return self.use_to_query and \
+               self.status in (NodeStatus.HEALTHY, NodeStatus.DISTRESSED)
 
     @property
     def label(self):
-        return f"{self.network}:{self.index}"
+        return f"{self.network}:NODE-{self.index}"
 
     @property
     def network_name(self):
@@ -104,11 +120,14 @@ class NodeEventInfo:
     """Encapsulates information pertaining to a node event.
 
     """
+    # Key of an account associated with event.
+    account_key: typing.Optional[str]
+
     # Hash of block associated with event.
-    block_hash: str
+    block_hash: typing.Optional[str]
 
     # Hash of deploy associated with event.
-    deploy_hash: str
+    deploy_hash: typing.Optional[str]
 
     # Node specific event identifier.
     event_id: int

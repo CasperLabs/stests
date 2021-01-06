@@ -1,16 +1,16 @@
 import argparse
 
 from stests import chain
-from stests.core import crypto
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
 from arg_utils import get_network_node
+from arg_utils import get_network_nodeset
 
 
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays an on-chain account balance.")
+ARGS = argparse.ArgumentParser("Renders era of chain at node(s).")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -24,31 +24,35 @@ ARGS.add_argument(
 # CLI argument: node index.
 ARGS.add_argument(
     "--node",
-    default=1,
     dest="node",
     help="Node index, e.g. 1.",
     type=args_validator.validate_node_index
     )
 
-# CLI argument: account identifer.
-ARGS.add_argument(
-    "--account",
-    dest="account_key",
-    help="A 33 byte account key: a public key prefixed by a single byte to inidcate key type.",
-    type=str
-    )
-
 
 def main(args):
     """Entry point.
-    
+
     :param args: Parsed CLI arguments.
 
     """
-    network, node = get_network_node(args)
-    purse_uref = chain.get_account_main_purse_uref(network, node, args.account_key)
-    balance = chain.get_account_balance(network, node, purse_uref)
-    utils.log(f"ACCOUNT BALANCE = {balance or 'N/A'}")
+    if args.node:
+        network, node = get_network_node(args)
+        nodeset = [node]
+    else:
+        network, nodeset = get_network_nodeset(args)
+    
+    for node in nodeset:
+        block = chain.get_block(network, node)
+        try:
+            era_id = block['header']['era_id']
+        except:
+            era_id = "N/A"
+        try:
+            height = block['header']['height']
+        except:
+            height = "N/A"
+        utils.log(f"ERA::HEIGHT @ {node.address_rpc} = {era_id}::{height}")
 
 
 # Entry point.

@@ -11,6 +11,7 @@ from stests.core import factory
 from stests.core.types.chain import AccountType
 from stests.core.types.infra import Network
 from stests.core.types.infra import Node
+from stests.core.types.infra import NodeGroup
 from stests.core.types.infra import NodeType
 from stests.core.utils import cli as utils
 
@@ -105,14 +106,14 @@ def _get_node(path_assets: pathlib.Path, info):
     """Returns node information.
 
     """
-    host, port_rpc, port_event, _, weight = info
+    host, _, _, _, weight = info
 
     # Set path to secret key.
     path_sk_pem = path_assets / "configs" / host / "secret_key.pem"
     if not path_sk_pem.exists():
         raise ValueError(f"node secret_key.pem file not found: {path_sk_pem}")
 
-    return (host, int(port_rpc), int(port_event), int(weight), path_sk_pem)
+    return (host, int(weight), path_sk_pem)
 
 
 def _register_network(network_id: str, chain_name: str):
@@ -157,26 +158,29 @@ def _register_faucet(network: Network, info: typing.Tuple[str, crypto.KeyAlgorit
 def _register_node(
     network: Network,
     index: int,
-    info: typing.Tuple[str, int, int, int, pathlib.Path]
+    info: typing.Tuple[str, int, pathlib.Path]
     ):
     """Register a network node.
 
     """
     # Destructure node info.
-    host, port_rpc, port_event, weight, path_sk_pem = info
+    host, weight, path_sk_pem = info
 
-    # TODO: set rest port
-    port_rest = port_rpc
+    # Set default ports.
+    port_rpc = 7777
+    port_rest = 8888
+    port_sse = 9999
 
     # Set node.
     node = factory.create_node(
+        group=NodeGroup.UNKNOWN,
         host=host,
         index=index,
         network_id=factory.create_network_id(network.name_raw),
         port_rest=port_rest,
         port_rpc=port_rpc,
-        port_event=port_event,
-        typeof=NodeType.FULL if weight > 1000 else NodeType.READ_ONLY,
+        port_event=port_sse,
+        typeof=NodeType.VALIDATOR,
         weight=weight,
     )
 

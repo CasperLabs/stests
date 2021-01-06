@@ -30,6 +30,16 @@ class NetworkType(enum.Enum):
     LRTNET = enum.auto()
 
 
+class NodeGroup(enum.Enum):
+    """Enumeration over set of node groups.
+
+    """
+    BOOTSTRAP = enum.auto()
+    GENESIS = enum.auto()
+    OTHER = enum.auto()
+    UNKNOWN = enum.auto()
+
+
 class NodeStatus(enum.Flag):
     """Flag over set of node states.
 
@@ -47,7 +57,7 @@ class NodeType(enum.Enum):
     """Enumeration over set of node types.
 
     """
-    FULL = enum.auto()
+    VALIDATOR = enum.auto()
     READ_ONLY = enum.auto()
 
 
@@ -55,6 +65,7 @@ class NodeType(enum.Enum):
 ENUM_SET = {
     NetworkStatus,
     NetworkType,
+    NodeGroup,
     NodeStatus,
     NodeType,
 }

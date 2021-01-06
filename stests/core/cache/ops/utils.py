@@ -1,6 +1,5 @@
 import json
 import typing
-import dataclasses
 import functools
 import time
 
@@ -133,7 +132,7 @@ def _set_one(store: typing.Callable, item: Item) -> str:
     """Set item under a key.
     
     """
-    store.set(item.key, item.data_as_json)
+    store.set(item.key, item.data_as_json, ex=item.expiration)
 
     return item.key
 
@@ -142,7 +141,11 @@ def _set_one_singleton(store: typing.Callable, item: Item) -> typing.Tuple[str, 
     """Sets item under a key if not already cached.
     
     """
-    return item.key, bool(store.setnx(item.key, item.data_as_json))
+    key, was_cached = item.key, bool(store.setnx(item.key, item.data_as_json))
+    if was_cached and item.expiration:
+        store.expire(key, item.expiration)
+
+    return key, was_cached  
 
 
 # Map: operation -> redis command wrapper.
@@ -183,12 +186,12 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # JIT extend encoder so as to ensure that all types are registered.
+            # JIT extend encoder - ensures all types are registered.
             encoder.initialise()
-
-            # Set store - use context manager to auto close connection.
+            
+            
             with stores.get_store(partition) as store:
-                # Invoke inner function - escape if nothing returned as this indicates the function aborted processing.
+                # Invoke inner function.
                 obj = func(*args, **kwargs)
                 if obj is None:
                     return
@@ -197,12 +200,10 @@ def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Cal
                 if partition in _USER_PARTITIONS:
                     obj.apply_key_prefix()
                 
-                # Set handler.
-                handler = _HANDLERS[operation]
-
                 # Invoke operation applying retry semantics in case of broken pipes.
                 # TODO: revisit connection pooling, 
                 attempts = 0
+                handler = _HANDLERS[operation]
                 while attempts < _MAX_OP_ATTEMPTS:
                     try:
                         return handler(store, obj)

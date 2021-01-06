@@ -29,9 +29,10 @@ class Item():
     """An item to be encached alongside it's key.
     
     """
-    def __init__(self, item_key: ItemKey, data: typing.Any):
+    def __init__(self, item_key: ItemKey, data: typing.Any, expiration: int = None):
         self.key = item_key.key
         self.data = data
+        self.expiration = expiration
 
     @property
     def data_as_json(self):

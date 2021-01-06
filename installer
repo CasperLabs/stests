@@ -9,7 +9,7 @@
 # GitHub repo.
 declare _REPO_NAME=stests
 declare _REPO=https://github.com/CasperLabs/$_REPO_NAME.git
-declare _BRANCH=upgrade-pip-3.9.1
+declare _BRANCH=dev
 
 # OS types.
 declare _OS_LINUX="linux"

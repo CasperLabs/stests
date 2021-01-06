@@ -44,7 +44,7 @@ def _get_path_to_binary(network: Network, fname: str):
     """
     # LRT paths.
     if network.name_raw.startswith('lrt'):
-        path = pathlib.Path(os.path.expanduser("~/.casperlabs-stests/nets")) / f"{network.name_raw}{network.index}" / "bin" / fname
+        path = pathlib.Path(os.path.expanduser("~/.casperlabs-stests/nets")) / f"{network.name_raw}" / "bin" / fname
         if path.exists():
             return path
 
@@ -60,4 +60,4 @@ def _get_path_to_binary(network: Network, fname: str):
         if path.exists():
             return path
 
-    raise ValueError(f"Binary file could not be found: {network.name} :: {fname}")
+    raise ValueError(f"Binary file could not be found: {network.name_raw} :: {fname}")
