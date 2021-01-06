@@ -113,38 +113,37 @@ def do_transfer(
     if cp2.is_run_account:
         cache.state.increment_account_balance(cp2, amount)
 
-
-@dramatiq.actor(queue_name=_QUEUE)
+   
 def do_transfer_fire_forget(
     ctx: ExecutionContext,
     cp1_index: int,
-    cp2_index: int,
+    cp2_range: typing.List,
     amount: int,
-    transfer_type: str,
+    transfer_type: DeployType,
     ):
-    """Executes a fire & forget token transfer between 2 counter-parties.
+    """Executes fire & forget token transfers between counter-parties.
 
     :param ctx: Execution context information.
     :param cp1_index: Account index of counter-party 1.
-    :param cp2_index: Account index of counter-party 1.
+    :param cp2_range: Account indexes of counter-party 2.
     :param amount: Amount (in motes) to transfer.
     :param transfer_type: Type of transfer to dispatch.
     
     """
-    # Set target network / node.
     network, node = get_network_node(ctx)
-    
-    # Set counterparties.
     cp1 = get_account(ctx, network, cp1_index)
-    cp2 = get_account(ctx, network, -cp2_index)
-
-    # Dispatch tx -> chain.
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
-    dispatch_fn = TFR_TYPE_TO_TFR_FN[DeployType[transfer_type]]
-    dispatch_fn(dispatch_info, cp2, amount)
+    dispatch_fn = TFR_TYPE_TO_TFR_FN[transfer_type]
+
+    for cp2_index in cp2_range:
+        dispatch_fn(
+            dispatch_info,
+            factory.create_account_for_run(ctx, cp2_index),
+            amount,
+            )
 
     # Increment deploy counts.
-    cache.orchestration.increment_deploy_counts(ctx)    
+    cache.orchestration.increment_deploy_counts(ctx, len(cp2_range))
 
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:

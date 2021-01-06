@@ -1,3 +1,4 @@
+import random
 import typing
 
 from stests.core import cache
@@ -50,3 +51,29 @@ def get_network_nodeset(args) -> typing.Tuple[Network, typing.List[Node]]:
         raise ValueError("Unregistered nodeset.")
 
     return network, sorted(nodeset, key=lambda i: i.index)
+
+
+def get_network_nodeset_by_node(args) -> typing.Tuple[Network, typing.List[Node]]:
+    """Maps input args to a target network nodeset.
+    
+    """
+    network, nodeset = get_network_nodeset(args)    
+
+    # All nodes.
+    if args.node == 0:
+        return network, nodeset
+
+    # A single node chosen at random.
+    if args.node == -1:
+        return network, [random.choice(nodeset)]
+
+    # A specific node.
+    if isinstance(args.node, int):
+        try:
+            nodeset = [next((x for x in nodeset if x.index > args.node))]
+        except StopIteration:
+            raise ValueError("Invalid node index.")
+        else:
+            return network, nodeset
+
+    raise ValueError("Invalid node index.")

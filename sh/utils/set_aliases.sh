@@ -76,7 +76,7 @@ alias stests-view-chain-block='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_bloc
 alias stests-view-chain-deploy='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_deploy.py'
 alias stests-view-chain-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_state_root_hash.py'
 
-# Node information.
+# Views #2: node information.
 alias stests-view-node-events='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_events.py'
 alias stests-view-node-metric='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py'
 alias stests-view-node-metric-deploy-gossiper='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric deploy_gossiper'
@@ -88,11 +88,11 @@ alias stests-view-node-metric-scheduler-queue='_exec_cmd $STESTS_PATH_SH_SCRIPTS
 alias stests-view-node-peers='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_peers.py'
 alias stests-view-node-status='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_status.py'
 
-# Infra information.
+# Views #3: infra information.
 alias stests-view-infra-networks='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_infra_networks.py'
 alias stests-view-infra-nodes='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_infra_nodes.py'
 
-# Faucet information.
+# Views #4: faucet information.
 alias stests-view-faucet-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account.py'
 alias stests-view-faucet-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account_balance.py'
 alias stests-view-faucet-account-keys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_faucet_account_keys.py'
@@ -100,15 +100,22 @@ alias stests-view-faucet-account-keys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_fa
 # State information.
 # alias stests-view-contracts='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_contracts.py'                                 # TODO: reinstate when client is updated
 
-# Validator information.
+# Views #5: validator information.
 alias stests-view-validator-account='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_validator_account.py'
 alias stests-view-validator-account-balance='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_validator_account_balance.py'
 alias stests-view-validator-account-keys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_validator_account_keys.py'
 
-# Generator information.
+# Views #6: generator information.
 alias stests-view-run='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_run.py'
 alias stests-view-run-deploys='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_run_deploys.py'
 alias stests-view-runs='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_runs.py'
+
+# ###############################################################
+# ALIASES: Direct deploys
+# ###############################################################
+
+alias stests-dispatch-transfers-native='_exec_cmd $STESTS_PATH_SH_SCRIPTS/dispatch_transfers_native.py'
+alias stests-dispatch-transfers-wasm='_exec_cmd $STESTS_PATH_SH_SCRIPTS/dispatch_transfers_wasm.py'
 
 # ###############################################################
 # ALIASES: Generators

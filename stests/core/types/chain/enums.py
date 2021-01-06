@@ -9,6 +9,7 @@ class AccountType(enum.Enum):
     NETWORK_FAUCET = enum.auto()
     VALIDATOR_BOND = enum.auto()
     GENERATOR_RUN = enum.auto()
+    OTHER = enum.auto()
 
 
 class BlockStatus(enum.Flag):

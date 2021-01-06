@@ -46,6 +46,7 @@ class _Context():
         try:
             return self.on_chain_block['header']['deploy_hashes']
         except (TypeError, KeyError):
+            print(self.on_chain_block)
             return []            
 
     @property

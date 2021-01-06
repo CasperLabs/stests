@@ -1,4 +1,5 @@
 import random
+import typing
 from datetime import datetime
 
 from stests.core import crypto
@@ -21,6 +22,9 @@ from stests.core.factory.orchestration import create_execution_id
 from stests.core.types.orchestration import ExecutionContext
 
 
+
+
+
 def create_account(
     network: str,
     typeof: AccountType,
@@ -35,21 +39,15 @@ def create_account(
     """Returns a domain object instance: Account.
 
     """
-    # Derive a key pair (if required).
     if private_key is None:
-        # ... run account key pairs are derived deterministically.
-        if typeof == AccountType.GENERATOR_RUN:
-            seed = f"{key_algo.name}-{network}-{run_uid}-{typeof.name}-{index}"
-            seed = seed.upper().encode("utf-8")
-            seed = crypto.get_hash(seed, encoding=crypto.HashEncoding.BYTES)
-            private_key, public_key = \
-                crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
-            # private_key, public_key = \
-            #     crypto.get_key_pair_from_seed(seed, crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.HEX)
-        # ... other account key pairs are derived randomly.
-        else:
-            private_key, public_key = \
-                crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+        private_key, public_key = \
+            _get_account_key_pair(
+                network,
+                typeof,
+                index,
+                key_algo,
+                run_uid,
+                )
 
     return Account(
         account_hash=crypto.get_account_hash_from_public_key(key_algo, public_key),
@@ -255,3 +253,40 @@ def create_named_key(
         run_index=account.run_index,
         run_type=account.run_type,
     )
+
+
+def _get_account_key_pair(
+    network: str,
+    typeof: AccountType,
+    index: int = 1,
+    key_algo = crypto.KeyAlgorithm.ED25519,
+    run_uid = None,
+    ) -> typing.Tuple[str, str]:
+    """Returns an ECC key pair to represent an on-chain account.
+
+    """
+    if typeof == AccountType.NETWORK_FAUCET:
+        private_key, public_key = \
+            crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+
+    elif typeof == AccountType.VALIDATOR_BOND:
+        private_key, public_key = \
+            crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+
+    elif typeof == AccountType.GENERATOR_RUN:
+        # seed = f"{key_algo.name}-{network}-{run_uid}-{typeof.name}-{index}"
+        # seed = seed.upper().encode("utf-8")
+        # seed = crypto.get_hash(seed, encoding=crypto.HashEncoding.BYTES)
+        # private_key, public_key = \
+        #     crypto.get_key_pair_from_seed(seed, crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.HEX)
+        private_key, public_key = \
+            crypto.get_key_pair(key_algo, crypto.KeyEncoding.HEX)
+
+    elif typeof == AccountType.OTHER:
+        seed = f"{key_algo.name}-{network}-{typeof.name}-{index}"
+        seed = seed.upper().encode("utf-8")
+        seed = crypto.get_hash(seed, encoding=crypto.HashEncoding.BYTES)
+        private_key, public_key = \
+            crypto.get_key_pair_from_seed(seed, crypto.KeyAlgorithm.ED25519, crypto.KeyEncoding.HEX)
+
+    return private_key, public_key

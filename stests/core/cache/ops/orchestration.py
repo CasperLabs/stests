@@ -234,11 +234,16 @@ def get_info_list(network_id: NetworkIdentifier, run_type: str, run_index: int =
 
 
 @cache_op(_PARTITION, StoreOperation.COUNTER_INCR)
-def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = ExecutionAspect.STEP) -> CountIncrementKey:
+def increment_deploy_count(
+    ctx: ExecutionContext,
+    aspect: ExecutionAspect = ExecutionAspect.STEP,
+    amount: int = 1,
+    ) -> CountIncrementKey:
     """Increments (atomically) count of run step deploys.
 
     :param ctx: Execution context information.
     :param aspect: Aspect of execution in scope.
+    :param amount: Amount by which to increment counter.
 
     """
     if aspect == ExecutionAspect.RUN:
@@ -256,11 +261,11 @@ def increment_deploy_count(ctx: ExecutionContext, aspect: ExecutionAspect = Exec
             COL_DEPLOY_COUNT,
         ],
         names=names,
-        amount=1,
+        amount=amount,
     )
 
 
-def increment_deploy_counts(ctx: ExecutionContext) -> int:
+def increment_deploy_counts(ctx: ExecutionContext, amount: int = 1) -> int:
     """Increments (atomically) count of run deploys.
 
     :param ctx: Execution context information.
@@ -268,9 +273,9 @@ def increment_deploy_counts(ctx: ExecutionContext) -> int:
     """
     # TODO: increment as a batch.
     return (
-        increment_deploy_count(ctx, ExecutionAspect.RUN),
-        increment_deploy_count(ctx, ExecutionAspect.PHASE),
-        increment_deploy_count(ctx, ExecutionAspect.STEP)
+        increment_deploy_count(ctx, ExecutionAspect.RUN, amount),
+        increment_deploy_count(ctx, ExecutionAspect.PHASE, amount),
+        increment_deploy_count(ctx, ExecutionAspect.STEP, amount)
     )
 
 
