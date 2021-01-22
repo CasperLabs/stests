@@ -46,7 +46,6 @@ class _Context():
         try:
             return self.on_chain_block['header']['deploy_hashes']
         except (TypeError, KeyError):
-            print(self.on_chain_block)
             return []            
 
     @property
@@ -57,6 +56,14 @@ class _Context():
             self.deploy.run_index,
             self.deploy.run_type,
             )
+
+    @property
+    def transfer_hashes(self):
+        """Gets set of associated transfer hashes."""
+        try:
+            return self.on_chain_block['header']['transfer_hashes']
+        except (TypeError, KeyError):
+            return []            
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -74,8 +81,8 @@ def on_consensus_finality_signature(info: NodeEventInfo):
     ctx = _Context(info)
     _process_block(ctx)
 
-    # Process deploys.
-    for deploy_hash in ctx.deploy_hashes:
+    # Process deploys & transfers.
+    for deploy_hash in ctx.deploy_hashes + ctx.transfer_hashes:
         ctx.deploy_hash = deploy_hash
         if not _is_deploy_processed(ctx):
             _process_deploy(ctx)
@@ -111,7 +118,7 @@ def _process_block(ctx: _Context):
         return
     
     # Escape if block empty.
-    if not ctx.deploy_hashes:
+    if not ctx.deploy_hashes and not ctx.transfer_hashes:
         log_event(EventType.CHAIN_ADDED_BLOCK_EMPTY, None, ctx.block_hash)
         return
     
@@ -122,7 +129,7 @@ def _process_block(ctx: _Context):
         chain_name = ctx.network.chain_name,
         consensus_era_id = ctx.on_chain_block['header']['era_id'],
         deploy_cost_total = None,
-        deploy_count = len(ctx.deploy_hashes),
+        deploy_count = len(ctx.deploy_hashes) + len(ctx.transfer_hashes),
         deploy_gas_price_avg = None,
         height = ctx.on_chain_block['header']['height'],
         is_switch_block = ctx.on_chain_block['header']['era_end'] is not None,
@@ -177,6 +184,9 @@ def _process_deploy_correlated(ctx: _Context):
             ctx.deploy.deploy_cost = int(ctx.on_chain_deploy["execution_results"][0]["result"]["cost"])
         except KeyError:
             ctx.deploy.deploy_cost = 0
+
+    print(ctx.block)
+
     ctx.deploy.consensus_era_id = ctx.block.consensus_era_id
     ctx.deploy.finalization_duration = ctx.block.timestamp.timestamp() - ctx.deploy.dispatch_timestamp.timestamp()    
     ctx.deploy.finalization_node_index = ctx.node.index
