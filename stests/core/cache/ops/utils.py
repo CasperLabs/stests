@@ -171,7 +171,7 @@ _USER_PARTITIONS = {
 }
 
 # Max. number of times an operation will be tried.
-_MAX_OP_ATTEMPTS = 3
+_MAX_OP_ATTEMPTS = 5
 
 
 def cache_op(partition: StorePartition, operation: StoreOperation) -> typing.Callable:

@@ -77,8 +77,10 @@ def on_consensus_finality_signature(info: NodeEventInfo):
     if _is_block_processed(info):
         return
 
-    # Process block.
+    # Set processing context info.
     ctx = _Context(info)
+
+    # Process block.
     _process_block(ctx)
 
     # Process deploys & transfers.
@@ -184,8 +186,6 @@ def _process_deploy_correlated(ctx: _Context):
             ctx.deploy.deploy_cost = int(ctx.on_chain_deploy["execution_results"][0]["result"]["cost"])
         except KeyError:
             ctx.deploy.deploy_cost = 0
-
-    print(ctx.block)
 
     ctx.deploy.consensus_era_id = ctx.block.consensus_era_id
     ctx.deploy.finalization_duration = ctx.block.timestamp.timestamp() - ctx.deploy.dispatch_timestamp.timestamp()    

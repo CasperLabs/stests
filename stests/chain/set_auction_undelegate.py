@@ -24,7 +24,9 @@ def execute(info: DeployDispatchInfo, validator: Account, amount: int) -> str:
     :returns: Deploy hash.
 
     """
-    return set_deploy.execute(
+    delegator = info.dispatcher
+    
+    deploy_hash = set_deploy.execute(
         info.network,
         info.node,
         info.dispatcher,
