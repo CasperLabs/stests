@@ -70,7 +70,10 @@ def on_run_end(ctx: ExecutionContext):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.RUN, ExecutionStatus.COMPLETE)
 
     # Locks can now be deleted.
-    cache.orchestration.delete_locks(ctx)    
+    cache.orchestration.delete_locks(ctx)   
+
+    # Cache can now be pruned.
+    cache.orchestration.prune_on_run_completion(ctx)   
 
     # Notify.
     log_event(EventType.WFLOW_RUN_END, None, ctx)

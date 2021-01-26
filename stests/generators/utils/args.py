@@ -92,4 +92,13 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         default="ED25519",
         )
 
+    # auto clean up flag.
+    args.add_argument(
+        "--cleanup",
+        dest="do_cleanup",
+        help="Flag indicating whether the orchestration engine will clean up cached data upon successful run completion.",
+        type=bool,
+        default=True,
+        )
+
     return args

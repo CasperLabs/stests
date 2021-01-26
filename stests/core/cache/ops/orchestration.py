@@ -53,6 +53,55 @@ def delete_locks(ctx: ExecutionContext) -> SearchKey:
     )
 
 
+def prune_on_run_completion(ctx: ExecutionContext) -> SearchKey:
+    """Deletes data cached during the course of a run.
+
+    :param ctx: Execution context information.
+    :returns: Cache search key under which all records will be deleted.
+
+    """
+    _delete_on_run_completion_1(ctx)
+    _delete_on_run_completion_2(ctx)
+
+
+@cache_op(_PARTITION, StoreOperation.DELETE_MANY)
+def _delete_on_run_completion_1(ctx: ExecutionContext) -> SearchKey:
+    """Deletes data cached during the course of a run.
+
+    :param ctx: Execution context information.
+    :returns: Cache search key under which all records will be deleted.
+
+    """
+    return SearchKey(
+        paths=[
+            ctx.network,
+            ctx.run_type,
+            ctx.label_run_index,
+            COL_DEPLOY_COUNT,
+            "P-"
+        ]
+    )
+
+
+@cache_op(_PARTITION, StoreOperation.DELETE_MANY)
+def _delete_on_run_completion_2(ctx: ExecutionContext) -> SearchKey:
+    """Deletes data cached during the course of a run.
+
+    :param ctx: Execution context information.
+    :returns: Cache search key under which all records will be deleted.
+
+    """
+    return SearchKey(
+        paths=[
+            ctx.network,
+            ctx.run_type,
+            ctx.label_run_index,
+            COL_INFO,
+            "P-"
+        ]
+    )
+
+
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_context(network: str, run_index: int, run_type: str) -> ItemKey:
     """Decaches domain object: ExecutionContext.

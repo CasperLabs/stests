@@ -84,7 +84,7 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy, cost: int) 
 
 
 @cache_op(_PARTITION, StoreOperation.DELETE_MANY)
-def delete_by_run(ctx: ExecutionContext) -> SearchKey:
+def delete_on_run_completion(ctx: ExecutionContext) -> SearchKey:
     """Deletes data cached during the course of a run.
 
     :param ctx: Execution context information.

@@ -18,4 +18,4 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    cache.state.delete_by_run(ctx)
+    cache.state.delete_on_run_completion(ctx)
