@@ -83,6 +83,23 @@ def decrement_account_balance_on_deploy_finalisation(deploy: Deploy, cost: int) 
     )
 
 
+@cache_op(_PARTITION, StoreOperation.DELETE_MANY)
+def delete_by_run(ctx: ExecutionContext) -> SearchKey:
+    """Deletes data cached during the course of a run.
+
+    :param ctx: Execution context information.
+    :returns: Cache search key under which all records will be deleted.
+
+    """
+    return SearchKey(
+        paths=[
+            ctx.network,
+            ctx.run_type,
+            ctx.label_run_index,
+        ]
+    )
+
+
 @cache_op(_PARTITION, StoreOperation.GET_ONE)
 def get_account(account_id: AccountIdentifier) -> ItemKey:
     """Decaches domain object: Account.
@@ -140,7 +157,8 @@ def get_account_by_index(ctx: ExecutionContext, index: int) -> Account:
 @cache_op(_PARTITION, StoreOperation.GET_ONE_FROM_MANY)
 def get_deploy(ctx: ExecutionContext, deploy_hash: str) -> ItemKey:
     """Decaches domain object: Deploy.
-    
+
+    :param ctx: Execution context information.    
     :param deploy_hash: A deploy hash.
 
     :returns: Cache item key.

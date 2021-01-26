@@ -45,10 +45,10 @@ ARGS.add_argument(
 # Table columns.
 COLS = [
     ("Phase / Step", BeautifulTable.ALIGN_LEFT),
-    ("Execution Start Time", BeautifulTable.ALIGN_LEFT),
-    ("Execution End Time", BeautifulTable.ALIGN_LEFT),
-    ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
     ("Deploys", BeautifulTable.ALIGN_RIGHT),
+    ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
+    ("Execution Start Time", BeautifulTable.ALIGN_RIGHT),
+    ("Execution End Time", BeautifulTable.ALIGN_RIGHT),
     ("Action", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
 ]
@@ -66,7 +66,7 @@ def main(args):
     if not data:
         utils.log("No run information found.")
         return
-
+    
     # Set sorted data.
     data = sorted(data, key=lambda i: i.label_index)
 
@@ -86,7 +86,9 @@ def main(args):
 
     # Render.
     print(t)
+    print("--------------------------------------------------------------------------------------------------------------------")
     print(f"{network_id.name} - {args.run_type}  - Run {args.run_index}")
+    print("--------------------------------------------------------------------------------------------------------------------")
 
 
 def _get_row(i, counts):
@@ -95,10 +97,10 @@ def _get_row(i, counts):
     """
     return [
         i.label_index,
-        i.ts_start,
-        "--" if not i.ts_end else i.ts_end,
-        i.label_tp_elapsed,
         counts.get(i.label_index.strip(), 0),
+        i.label_tp_elapsed,
+        str(i.ts_start).split(" ")[1],
+        "--" if not i.ts_end else str(i.ts_end).split(" ")[1],
         i.step_label if i.step_label else '--',      
         i.status.name,
     ]

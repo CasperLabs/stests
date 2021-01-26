@@ -56,7 +56,9 @@ def _import_actors():
 
     # Import actors: generators.
     import stests.generators.wg_100.meta
+    import stests.generators.wg_101.meta
     import stests.generators.wg_110.meta
+    import stests.generators.wg_111.meta
     import stests.generators.wg_200.meta
     import stests.generators.wg_201.meta
     import stests.generators.wg_210.meta

@@ -51,7 +51,7 @@ COLS = [
     ("Duration (s)", BeautifulTable.ALIGN_RIGHT),
     ("Deploys", BeautifulTable.ALIGN_RIGHT),
     ("Status", BeautifulTable.ALIGN_RIGHT),
-    ("Step", BeautifulTable.ALIGN_RIGHT),
+    ("Current Step", BeautifulTable.ALIGN_RIGHT),
 ]
 
 
@@ -102,9 +102,10 @@ def main(args):
         t.column_alignments[key] = aligmnent  
 
     # Render.
-    print(f"Network = {args.network}.")
     print(t)
-    print(f"Total runs = {len(data)}.  ")
+    print("----------------------------------------------------------------------------------------------------------------------------")
+    print(f"{network_id.name} - total runs = {len(data)}.")
+    print("----------------------------------------------------------------------------------------------------------------------------")
 
 
 def _get_ctx(i, ctx_list):

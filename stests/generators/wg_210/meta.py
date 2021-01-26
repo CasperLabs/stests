@@ -3,7 +3,7 @@ from stests.generators.wg_210 import args
 from stests.generators.wg_210 import p1s1_set_accounts
 from stests.generators.wg_210 import p1s2_fund_users
 from stests.generators.wg_210 import p2s1_delegate
-
+from stests.generators.wg_210 import p3s1_cleanup
 
 
 # Workload custom args type.
@@ -19,6 +19,7 @@ DESCRIPTION = "Tests the auction contract by submitting batches of delegation re
 PHASES = (
     (p1s1_set_accounts, p1s2_fund_users, ),
     (p2s1_delegate, ),
+    (p3s1_cleanup, ),
 )
 
 # Workload type.
