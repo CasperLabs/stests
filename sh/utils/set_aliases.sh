@@ -16,10 +16,10 @@ function _exec_cmd()
 }
 
 # ###############################################################
-# ALIASES: Stack 
+# ALIASES: Stack
 # ###############################################################
 
-alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh                                             
+alias stests-stack-update=$STESTS_PATH_SH/stack/update.sh
 alias stests-stack-vars=$STESTS_PATH_SH/stack/view_vars.sh
 
 # ###############################################################
@@ -27,8 +27,8 @@ alias stests-stack-vars=$STESTS_PATH_SH/stack/view_vars.sh
 # ###############################################################
 
 alias stests-interactive='$STESTS_PATH_SH/workers/interactive.sh unified'
-alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh monitoring'               
-alias stests-interactive-orchestration='$STESTS_PATH_SH/workers/interactive.sh orchestration'         
+alias stests-interactive-monitoring='$STESTS_PATH_SH/workers/interactive.sh monitoring'
+alias stests-interactive-orchestration='$STESTS_PATH_SH/workers/interactive.sh orchestration'
 
 # ###############################################################
 # ALIASES: Workers
@@ -40,6 +40,12 @@ alias stests-workers-restart=$STESTS_PATH_SH/workers/restart.sh
 alias stests-workers-start=$STESTS_PATH_SH/workers/start.sh
 alias stests-workers-status=$STESTS_PATH_SH/workers/status.sh
 alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
+
+# ###############################################################
+# ALIASES: Nodes
+# ###############################################################
+
+alias stests-node-systemctl='_exec_cmd $STESTS_PATH_SH_SCRIPTS/node_systemctl.py'
 
 # ###############################################################
 # ALIASES: Registration
