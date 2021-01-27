@@ -1,5 +1,6 @@
 import argparse
 import subprocess
+from pathlib import Path
 
 from stests import chain
 from stests.core import crypto
@@ -10,7 +11,7 @@ from arg_utils import get_network_node
 from stests.core.types.infra import Node
 
 # CLI argument parser.
-ARGS = argparse.ArgumentParser("Displays an on-chain account balance.")
+ARGS = argparse.ArgumentParser("Executes a systemctl command to the casper-node service on a node.")
 
 # CLI argument: network name.
 ARGS.add_argument(
@@ -48,7 +49,21 @@ ARGS.add_argument(
     type=str,
     )
 
-def remote_node_systemctl(node: Node, ssh_user: str, command: str):
+# CLI argument: SSH username.
+ARGS.add_argument(
+    "--ssh-key-path",
+    dest="ssh_key_path",
+    help="Path to SSH key.",
+    type=Path,
+    )
+
+def remote_node_systemctl(
+    node: Node,
+    ssh_user: str,
+    command: str,
+    ssh_key_path: Path=None,
+    check_rc: bool=False,
+    ) -> subprocess.CompletedProcess:
     '''Issue a systemctl command to a remote casper-node instance. This is a
     building block for being able to simulate bringing up/down a casper-node in
     a long-running network.
@@ -60,19 +75,37 @@ def remote_node_systemctl(node: Node, ssh_user: str, command: str):
     :param node: The Node to run the command on.
     :param ssh_user: The username to SSH into the remote machine as.
     :param command: The `systemctl` command to run on the casper-node service.
+    :param ssh_key_path: The file path for the SSH key to use (default: `None`).
+    :param check_rc: If `True`, raise an exception if the subprocess returns a
+        non-zero exit code (default: `False`).
 
     :returns None
     '''
 
-    args = (
-        'ssh',
-        f'{ssh_user}@{node.host}',
-        '-i', '~/aws-casperlabs-marklemoine.pem' # Just for testing
-        f'sudo systemctl {command} casper-node.service',
-    )
+    def yield_args():
+        yield 'ssh'
+        yield f'{ssh_user}@{node.host}'
 
-    subprocess.run(args, check=True)
+        if ssh_key_path:
+            yield '-i'
+            yield ssh_key_path
+
+        yield f'sudo systemctl {command} casper-node.service'
+
+    subprocess.run(yield_args(), check=check_rc)
 
 # TODO: Just for testing, remove.
 if __name__ == '__main__':
-    pass
+    # test_node = Node(host='54.212.51.31')
+
+    # Quacks like a `Node` for now.
+    class TestNode:
+        def __init__(self, host):
+            self.host = host
+
+    remote_node_systemctl(
+        node=TestNode('54.212.51.31'),
+        ssh_user='cladmin',
+        command='status',
+        ssh_key_path=Path('/home/mark/aws-casperlabs-marklemoine.pem'),
+    )
