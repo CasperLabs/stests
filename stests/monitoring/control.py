@@ -20,10 +20,10 @@ from stests.events import EventType
 _QUEUE = "monitoring.control"
 
 # Number of monitors to launch per node.
-_MONITORS_PER_NODE = 2
+_MONITORS_PER_NODE = 1
 
 # Time limit for node monitoring actor.
-_30_MINUTES_IN_MS = 1800000
+_60_MINUTES_IN_MS = 3600000
 
 # Maximum number of nodes to monitor.
 _MAX_NODES = 5
@@ -43,7 +43,7 @@ def do_start_monitoring():
             time.sleep(float(1))
 
 
-@dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True, time_limit=_30_MINUTES_IN_MS)
+@dramatiq.actor(queue_name=_QUEUE, notify_shutdown=True, time_limit=_60_MINUTES_IN_MS)
 def do_monitor_node(node_id: NodeIdentifier):   
     """Launches node monitoring.
     

@@ -23,7 +23,6 @@ class Arguments:
         """Initial faucet account CSPR balance."""
         return  (self.transfers * self.amount) + (((2 * self.transfers) + 1) * chain.DEFAULT_TX_FEE)
 
-
     @classmethod
     def create(cls, args: argparse.Namespace):
         """Simple factory method.

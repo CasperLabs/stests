@@ -41,24 +41,6 @@ def do_refund(
     :param transfer_type: Type of transfer to dispatch.
     
     """
-    cp2_balance = 100000
-
-
-@dramatiq.actor(queue_name=_QUEUE)
-def do_refund(
-    ctx: ExecutionContext,
-    cp1_index: int,
-    cp2_index: int,
-    transfer_type: str,
-    ):
-    """Executes a token refund between 2 counter-parties.
-
-    :param ctx: Execution context information.
-    :param cp1_index: Account index of counter-party 1.
-    :param cp2_index: Account index of counter-party 1.
-    :param transfer_type: Type of transfer to dispatch.
-    
-    """
     do_transfer(ctx, cp1_index, cp2_index, None, transfer_type)
 
 
@@ -135,12 +117,23 @@ def do_transfer_fire_forget(
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
     dispatch_fn = TFR_TYPE_TO_TFR_FN[transfer_type]
 
-    for cp2_index in cp2_range:
-        dispatch_fn(
-            dispatch_info,
-            factory.create_account_for_run(ctx, cp2_index),
-            amount,
-            )
+    # Unique account per transfer.
+    if ctx.args.accounts == 0:
+        for cp2_index in cp2_range:
+            dispatch_fn(
+                dispatch_info,
+                factory.create_account_for_run(ctx, cp2_index),
+                amount,
+                )
+    # Single account for all transfers.
+    else:
+        account = factory.create_account_for_run(ctx)
+        for cp2_index in cp2_range:
+            dispatch_fn(
+                dispatch_info,
+                account,
+                amount,
+                )
 
     # Increment deploy counts.
     cache.orchestration.increment_deploy_counts(ctx, len(cp2_range))

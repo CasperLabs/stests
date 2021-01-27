@@ -95,6 +95,7 @@ def _get_context(
     # Set run ctx.
     return factory.create_execution_context(
         args=meta.Arguments.create(args),
+        prune_on_completion=args.prune_on_completion,
         deploys_per_second=args.deploys_per_second,
         execution_mode=args.execution_mode,
         key_algorithm=args.key_algorithm,

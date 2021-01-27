@@ -18,6 +18,9 @@ class Arguments:
     # Motes per transfer to transfer.
     amount: int
 
+    # Controls number of on-the-fly accounts to be generated during the run.
+    accounts: int
+
     @property
     def faucet_initial_balance(self):
         """Initial faucet account CSPR balance."""
@@ -32,13 +35,14 @@ class Arguments:
 
         """
         return cls(
+            accounts='accounts' in args and args.accounts,
             transfers='transfers' in args and args.transfers,
             amount='amount' in args and args.amount,
         )
 
 
 # Set command line arguments.
-ARGS = get_argparser(f"Native transfers generator.")
+ARGS = get_argparser(f"WASM transfers generator.")
 
 # CLI argument: # transfers to dispatch.
 ARGS.add_argument(
@@ -56,4 +60,13 @@ ARGS.add_argument(
     dest="amount",
     type=int,
     default=int(1e10)
+    )
+
+# CLI argument: # transfers to dispatch.
+ARGS.add_argument(
+    "--accounts",
+    help="Number of target accounts to create on the fly. If set to 0 then each target account is unique.  If set to 1 then a single target account is created.",
+    dest="accounts",
+    type=int,
+    default=0
     )

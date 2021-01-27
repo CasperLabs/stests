@@ -14,6 +14,9 @@ class ExecutionContext:
     # Associated run arguments.
     args: typing.Optional[typing.Any]
 
+    # Flag indicating whether post run pruning is automated.
+    prune_on_completion: bool
+
     # Number of deploys to dispatch per second.
     deploys_per_second: int
 

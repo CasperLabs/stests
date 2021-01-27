@@ -73,7 +73,9 @@ def on_run_end(ctx: ExecutionContext):
     cache.orchestration.delete_locks(ctx)   
 
     # Cache can now be pruned.
-    cache.orchestration.prune_on_run_completion(ctx)   
+    if ctx.prune_on_completion == True:
+        cache.orchestration.prune_on_run_completion(ctx)   
+        cache.state.prune_on_run_completion(ctx)
 
     # Notify.
     log_event(EventType.WFLOW_RUN_END, None, ctx)

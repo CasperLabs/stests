@@ -119,4 +119,3 @@ class ExecutionInfo:
         self.status = status
         self.ts_end = datetime.utcnow()
         self.tp_duration = self.ts_end.timestamp() - self.ts_start.timestamp()
-

@@ -1,6 +1,7 @@
 import typing
 import dramatiq
 
+from stests import chain
 from stests.core.types.chain import DeployType
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.orchestration import ExecutionContext
@@ -29,7 +30,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
                 ctx,
                 constants.ACC_RUN_FAUCET,
                 account_index,
-                ctx.args.amount,
+                ctx.args.amount + chain.DEFAULT_TX_FEE_NATIVE_TRANSFER,
                 DeployType.TRANSFER_NATIVE,
             )
 
@@ -62,7 +63,7 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
         node_id,
         deploy.state_root_hash,
         deploy.associated_account_index,
-        ctx.args.amount,
+        ctx.args.amount + chain.DEFAULT_TX_FEE_NATIVE_TRANSFER,
         )
 
 

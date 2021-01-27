@@ -18,6 +18,7 @@ from stests.core.types.orchestration import ExecutionStatus
 
 def create_execution_context(
     args: typing.Any,
+    prune_on_completion: bool,
     deploys_per_second: int,
     key_algorithm: str,
     loop_count: int,
@@ -33,6 +34,7 @@ def create_execution_context(
     """
     return ExecutionContext(
         args=args,
+        prune_on_completion=prune_on_completion,
         deploys_per_second=deploys_per_second,
         execution_mode=ExecutionMode[execution_mode.upper()],
         key_algorithm=key_algorithm,

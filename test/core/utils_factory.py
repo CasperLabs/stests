@@ -131,6 +131,7 @@ def create_node_monitoring_lock() -> types.infra.NodeMonitoringLock:
 def create_execution_context() -> types.orchestration.ExecutionContext:
     return factory.create_execution_context(
         args=None,
+        prune_on_completion=False,
         deploys_per_second=100,
         key_algorithm="ED25519",
         loop_count=10,

@@ -271,7 +271,7 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
 
     # Set function flags - initially only interact with genesis nodes.
     use_to_dispatch = group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)
-    use_to_monitor = group in (NodeGroup.BOOTSTRAP, )
+    use_to_monitor = group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)
     use_to_query = group in (NodeGroup.BOOTSTRAP, NodeGroup.GENESIS)
 
     # Set node.
