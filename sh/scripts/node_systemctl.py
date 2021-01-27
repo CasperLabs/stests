@@ -7,8 +7,8 @@ from stests.core import crypto
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
-from arg_utils import get_network_node
 from stests.core.types.infra import Node
+from arg_utils import get_network_node
 
 # CLI argument parser.
 ARGS = argparse.ArgumentParser("Executes a systemctl command to the casper-node service on a node.")
@@ -34,10 +34,11 @@ ARGS.add_argument(
 # CLI argument: systemctl command.
 ARGS.add_argument(
     "--command",
+    default='status',
     dest="command",
     help="systemctl command to run on node, e.g. stop, start, restart.",
     type=str,
-    choices=('restart', 'start', 'stop'),
+    choices=('restart', 'start', 'status', 'stop'),
     )
 
 # CLI argument: SSH username.
@@ -52,6 +53,7 @@ ARGS.add_argument(
 # CLI argument: SSH username.
 ARGS.add_argument(
     "--ssh-key-path",
+    default=None,
     dest="ssh_key_path",
     help="Path to SSH key.",
     type=Path,
@@ -63,7 +65,7 @@ def remote_node_systemctl(
     command: str,
     ssh_key_path: Path=None,
     check_rc: bool=False,
-    ) -> subprocess.CompletedProcess:
+    ):
     '''Issue a systemctl command to a remote casper-node instance. This is a
     building block for being able to simulate bringing up/down a casper-node in
     a long-running network.
@@ -94,18 +96,24 @@ def remote_node_systemctl(
 
     subprocess.run(yield_args(), check=check_rc)
 
-# TODO: Just for testing, remove.
-if __name__ == '__main__':
-    # test_node = Node(host='54.212.51.31')
+def main(args):
+    """Entry point.
 
-    # Quacks like a `Node` for now.
-    class TestNode:
-        def __init__(self, host):
-            self.host = host
+    :param args: Parsed CLI arguments.
+
+    """
+    utils.log(f"Executing `systemctl {args.command}`:")
+
+    _, node = get_network_node(args)
 
     remote_node_systemctl(
-        node=TestNode('54.212.51.31'),
-        ssh_user='cladmin',
-        command='status',
-        ssh_key_path=Path('/home/mark/aws-casperlabs-marklemoine.pem'),
+        node=node,
+        ssh_user=args.ssh_user,
+        command=args.command,
+        ssh_key_path=args.ssh_key_path,
+        check_rc=False,
     )
+
+# TODO: Just for testing, remove.
+if __name__ == '__main__':
+    main(ARGS.parse_args())
