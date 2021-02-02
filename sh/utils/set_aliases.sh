@@ -45,6 +45,7 @@ alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 # ALIASES: Registration
 # ###############################################################
 
+alias stests-register-dw='$STESTS_PATH_SH/cache/register_dw.sh'
 alias stests-register-lrt='$STESTS_PATH_SH/cache/register_lrt.sh'
 alias stests-register-nctl='$STESTS_PATH_SH/cache/register_nctl.sh'
 
