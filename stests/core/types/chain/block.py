@@ -74,9 +74,6 @@ class BlockStatistics:
     # Name of chain emitting block.
     chain_name: str
 
-    # Consensus era identifier.
-    consensus_era_id: int
-
     # Motes spent during block processing.
     deploy_cost_total: int
 
@@ -85,6 +82,9 @@ class BlockStatistics:
 
     # Average price of deploys.
     deploy_gas_price_avg: int
+
+    # Consensus era identifier.
+    era_id: int
 
     # Height of block within liner chain.
     height: int

@@ -12,19 +12,14 @@ class Arguments:
     """Custom generator arguments passed along chain of execution.
     
     """
-    # Number of transfers to dispatch. Default=1000.
-    transfers: int
+    # Controls number of accounts to be generated during the run.
+    accounts: int
 
     # Motes per transfer to transfer.
     amount: int
 
-    # Controls number of on-the-fly accounts to be generated during the run.
-    accounts: int
-
-    @property
-    def faucet_initial_balance(self):
-        """Initial faucet account CSPR balance."""
-        return  (self.transfers * self.amount) + (((2 * self.transfers) + 1) * chain.DEFAULT_TX_FEE)
+    # Number of transfers to dispatch. Default=1000.
+    transfers: int
 
 
     @classmethod
@@ -42,7 +37,7 @@ class Arguments:
 
 
 # Set command line arguments.
-ARGS = get_argparser(f"Native transfers generator.")
+ARGS = get_argparser(f"Native transfers generator in fire & forget mode.")
 
 # CLI argument: # transfers to dispatch.
 ARGS.add_argument(
@@ -68,5 +63,5 @@ ARGS.add_argument(
     help="Number of target accounts to create on the fly. If set to 0 then each target account is unique.  If set to 1 then a single target account is created.",
     dest="accounts",
     type=int,
-    default=0
+    default=1
     )

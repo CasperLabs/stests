@@ -97,8 +97,8 @@ def get_argparser(description: str) -> argparse.ArgumentParser:
         "--prune",
         dest="prune_on_completion",
         help="Flag indicating whether the orchestration engine will clean up cached data upon successful run completion.",
-        type=bool,
-        default=True,
+        type=int,
+        default=1,
         )
 
     return args

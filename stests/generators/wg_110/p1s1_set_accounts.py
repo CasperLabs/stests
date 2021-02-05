@@ -3,6 +3,7 @@ import typing
 from stests.core import cache
 from stests.core import factory
 from stests.core.types.orchestration import ExecutionContext
+from stests.generators.utils import accounts
 from stests.generators.utils import constants
 from stests.generators.utils import verification
 
@@ -18,27 +19,13 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    for account in _yield_accounts(ctx):
+    def _yield_accounts() -> typing.Generator:
+        yield factory.create_account_for_run(
+            ctx,
+            accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers)
+            )
+        for account_index in accounts.get_account_range(ctx.args.accounts, ctx.args.transfers):
+            yield factory.create_account_for_run(ctx, account_index)
+        
+    for account in _yield_accounts():
         cache.state.set_account(account)
-
-
-def _yield_accounts(ctx: ExecutionContext) -> typing.Generator:
-    """Yields account information to be persisted to cache.
-    
-    """
-    # Run faucet account.
-    yield factory.create_account_for_run(ctx, constants.ACC_RUN_FAUCET)
-    
-    # User accounts.
-    account_range = range(constants.ACC_RUN_USERS, ctx.args.transfers + constants.ACC_RUN_USERS)
-    for account_index in account_range:
-        yield factory.create_account_for_run(ctx, account_index)
-
-
-def verify(ctx: ExecutionContext):
-    """Step execution verifier.
-    
-    :param ctx: Execution context information.
-
-    """
-    print("TODO: verify cached account count")

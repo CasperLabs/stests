@@ -26,7 +26,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
         for account_index in range(1, ctx.args.delegators + 1):
             yield (
                 ctx,
-                constants.ACC_NETWORK_FAUCET,
+                accounts.get_account_idx_for_network_faucet(),
                 account_index,
                 ctx.args.amount_to_fund,
                 DeployType.TRANSFER_NATIVE,

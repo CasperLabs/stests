@@ -10,7 +10,9 @@ from stests.core.types.chain import DeployType
 from stests.core.types.infra import Node
 from stests.core.types.infra import Network
 from stests.core.types.orchestration import ExecutionContext
+from stests.generators.utils import constants
 from stests.generators.utils.infra import get_network_node
+
 
 
 # Queue to which messages will be dispatched.
@@ -70,7 +72,8 @@ def do_transfer(
 
     # Set amount to transfer (in the case of refunds).
     if amount is None:
-        amount = get_user_account_balance(network, node, cp1) - chain.DEFAULT_TX_FEE
+        amount = get_account_balance(network, node, cp1) - chain.DEFAULT_TX_FEE
+        print(amount)
 
     # Dispatch tx -> chain.
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
@@ -99,7 +102,7 @@ def do_transfer(
 def do_transfer_fire_forget(
     ctx: ExecutionContext,
     cp1_index: int,
-    cp2_range: typing.List,
+    cp2_index: int,
     amount: int,
     transfer_type: DeployType,
     ):
@@ -114,29 +117,12 @@ def do_transfer_fire_forget(
     """
     network, node = get_network_node(ctx)
     cp1 = get_account(ctx, network, cp1_index)
+    cp2 = factory.create_account_for_run(ctx, cp2_index)
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
     dispatch_fn = TFR_TYPE_TO_TFR_FN[transfer_type]
+    dispatch_fn(dispatch_info, cp2, amount)
 
-    # Unique account per transfer.
-    if ctx.args.accounts == 0:
-        for cp2_index in cp2_range:
-            dispatch_fn(
-                dispatch_info,
-                factory.create_account_for_run(ctx, cp2_index),
-                amount,
-                )
-    # Single account for all transfers.
-    else:
-        account = factory.create_account_for_run(ctx)
-        for cp2_index in cp2_range:
-            dispatch_fn(
-                dispatch_info,
-                account,
-                amount,
-                )
-
-    # Increment deploy counts.
-    cache.orchestration.increment_deploy_counts(ctx, len(cp2_range))
+    cache.orchestration.increment_deploy_counts(ctx, 1)
 
 
 def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> Account:
@@ -157,10 +143,70 @@ def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> 
     return factory.create_account_for_run(ctx, account_index)
 
 
-def get_user_account_balance(network: Network, node: Node, account: Account) -> int:
+def get_account_balance(network: Network, node: Node, account: Account) -> int:
     """Returns either a faucet account or a user account.
     
     """
     purse_uref = chain.get_account_main_purse_uref(network, node, account.account_key)
 
     return chain.get_account_balance(network, node, purse_uref)
+
+
+def get_account_idx_for_deploy(accounts: int, deploy_idx: int) -> int:
+    """Returns account index to use for a particular transfer.
+    
+    :param accounts: Number of accounts within batch.
+    :param deploy_idx: Index of deploy within batch.
+    :returns: Ordinal index of account used to dispatch deploy.
+
+    """
+    return deploy_idx if accounts == 0 else \
+           deploy_idx % accounts or accounts
+
+
+def get_account_idx_for_network_faucet() -> int:
+    """Returns network specific faucet account index.
+    
+    :returns: Ordinal index of account acting as network faucet.
+
+    """ 
+    return constants.ACC_NETWORK_FAUCET
+
+
+def get_account_idx_for_run_faucet(accounts: int, deploys: int) -> int:
+    """Returns run specific faucet account index when dispatching a deploy batch.
+    
+    :param accounts: Number of accounts within batch.
+    :param deploys: Number of deploys within batch.
+    :returns: Ordinal index of account acting as run faucet.
+
+    """ 
+    return (deploys if accounts == 0 else accounts) + 1
+
+
+def get_account_range(accounts: int, deploys: int) -> int:
+    """Returns run specific faucet account index whcn dispatching a deploy batch.
+    
+    :param accounts: Number of accounts within batch.
+    :param deploys: Number of deploys within batch.
+    :returns: Ordinal index of account acting as run faucet.
+
+    """ 
+    return range(1, (deploys if accounts == 0 else accounts) + 1)
+
+
+def get_account_transfer_count(accounts: int, account_idx: int, deploys: int) -> int:
+    """Returns account index to use for a particular transfer.
+    
+    """
+    if accounts == 0:
+        return 1
+    
+    return 10
+
+
+def get_faucet_initial_balance(transfers, amount) -> int:
+    """Returns initial faucet account CSPR balance.
+    
+    """
+    return (transfers * amount) + (((2 * transfers) + 1) * chain.DEFAULT_TX_FEE)

@@ -23,12 +23,11 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
 
     """
     def _yield_parameterizations() -> typing.Generator:
-        account_range = range(constants.ACC_RUN_USERS, ctx.args.transfers + constants.ACC_RUN_USERS)
-        for account_index in account_range:
+        for account_index in accounts.get_account_range(ctx.args.accounts, ctx.args.transfers):
             yield (
                 ctx,
                 account_index,
-                constants.ACC_NETWORK_FAUCET,
+                accounts.get_account_idx_for_network_faucet(),
                 DeployType.TRANSFER_WASM,
             )
 
@@ -41,7 +40,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    verification.verify_deploy_count(ctx, ctx.args.transfers)
+    verification.verify_deploy_count(ctx, len(accounts.get_account_range(ctx.args.accounts, ctx.args.transfers)))
 
 
 def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
@@ -64,4 +63,4 @@ def verify_deploy_batch_is_complete(ctx: ExecutionContext, deploy_index: int):
     :param deploy_index: Index of a finalized deploy in relation to the deploys dispatched during this step.
 
     """
-    assert deploy_index == ctx.args.transfers
+    assert deploy_index == len(accounts.get_account_range(ctx.args.accounts, ctx.args.transfers))

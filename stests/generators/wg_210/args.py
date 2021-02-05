@@ -54,5 +54,5 @@ ARGS.add_argument(
     help="Number of delegators to simulate.  Default=10.",
     dest="delegators",
     type=int,
-    default=int(10)
+    default=10
     )

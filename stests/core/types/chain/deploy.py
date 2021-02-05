@@ -27,12 +27,6 @@ class Deploy:
     # Associated block hash in event of finalization. 
     block_hash: typing.Optional[str]
 
-    # Consensus era identifier.
-    consensus_era_id: int
-
-    # Consensus round identifier.
-    consensus_round_id: int
-
     # Cost of deploy (in motes).
     deploy_cost: typing.Optional[int]    
 
@@ -50,6 +44,9 @@ class Deploy:
 
     # Moment in time when deploy dispatched to CSPR network.
     dispatch_timestamp: datetime
+
+    # Consensus era identifier.
+    era_id: int
 
     # Time between dispatch & deploy finality.
     finalization_duration: typing.Optional[float]
@@ -77,6 +74,9 @@ class Deploy:
 
     # Numerical index to distinguish between multiple phase within a generator.
     phase_index: typing.Optional[int]
+
+    # Consensus round identifier.
+    round_id: int
 
     # Numerical index to distinguish between multiple runs of the same generator.
     run_index: typing.Optional[int]

@@ -25,9 +25,9 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     """
     return accounts.do_transfer, (
         ctx,
-        constants.ACC_NETWORK_FAUCET,
-        constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_balance,
+        accounts.get_account_idx_for_network_faucet(),
+        accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
+        accounts.get_faucet_initial_balance(ctx.args.transfers, ctx.args.amount),
         DeployType.TRANSFER_NATIVE,
     )
 
@@ -50,14 +50,11 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     :param deploy_hash: Hash of deploy being processed.
 
     """
-    deploy = verification.verify_deploy(ctx, block_hash, deploy_hash)
-
-    verification.verify_account_balance_on_transfer(
+    verification.verify_deploy(ctx, block_hash, deploy_hash)
+    verification.verify_account_balance(
         ctx,
-        node_id,
-        deploy.state_root_hash,
-        constants.ACC_RUN_FAUCET,
-        ctx.args.faucet_initial_balance,
+        accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
+        accounts.get_faucet_initial_balance(ctx.args.transfers, ctx.args.amount),
         )    
 
 

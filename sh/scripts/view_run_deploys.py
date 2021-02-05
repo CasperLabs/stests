@@ -93,7 +93,7 @@ def _render_table(args, network_id, data):
         i.typeof.name,
         i.status.name,      
         i.label_finalization_duration,
-        f"{i.consensus_era_id or '--'}::{i.consensus_round_id or '??'}",
+        f"{i.era_id or '--'}::{i.round_id or '??'}",
         i.block_hash or "--"
     ], data)
 

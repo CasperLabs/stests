@@ -24,8 +24,8 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
     """
     return accounts.do_refund, (
         ctx,
-        constants.ACC_RUN_FAUCET,
-        constants.ACC_NETWORK_FAUCET,
+        accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
+        accounts.get_account_idx_for_network_faucet(),
         DeployType.TRANSFER_WASM,
     )
 

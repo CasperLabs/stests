@@ -73,21 +73,8 @@ def on_consensus_finality_signature(info: NodeEventInfo):
     :param info: Node event information.
 
     """
-    # Escape if already processed.
-    if _is_block_processed(info):
-        return
-
-    # Set processing context info.
-    ctx = _Context(info)
-
-    # Process block.
-    _process_block(ctx)
-
-    # Process deploys & transfers.
-    for deploy_hash in ctx.deploy_hashes + ctx.transfer_hashes:
-        ctx.deploy_hash = deploy_hash
-        if not _is_deploy_processed(ctx):
-            _process_deploy(ctx)
+    if not _is_block_processed(info):
+        _process_block(_Context(info))
 
 
 def _is_block_processed(info: NodeEventInfo) -> bool:
@@ -129,7 +116,7 @@ def _process_block(ctx: _Context):
         block_hash = ctx.block_hash,
         block_hash_parent = ctx.on_chain_block['header']['parent_hash'],
         chain_name = ctx.network.chain_name,
-        consensus_era_id = ctx.on_chain_block['header']['era_id'],
+        era_id = ctx.on_chain_block['header']['era_id'],
         deploy_cost_total = None,
         deploy_count = len(ctx.deploy_hashes) + len(ctx.transfer_hashes),
         deploy_gas_price_avg = None,
@@ -145,6 +132,19 @@ def _process_block(ctx: _Context):
 
     # Emit event.
     log_event(EventType.CHAIN_ADDED_BLOCK, f"{ctx.block_hash}", ctx.block)
+
+    # Process associated deploys + transfers.
+    _process_block_deploys(ctx)
+
+
+def _process_block_deploys(ctx: _Context):
+    """Processes a finalised block.
+    
+    """
+    for deploy_hash in ctx.deploy_hashes + ctx.transfer_hashes:
+        ctx.deploy_hash = deploy_hash
+        if not _is_deploy_processed(ctx):
+            _process_deploy(ctx)
 
 
 def _process_deploy(ctx: _Context):
@@ -187,7 +187,7 @@ def _process_deploy_correlated(ctx: _Context):
         except KeyError:
             ctx.deploy.deploy_cost = 0
 
-    ctx.deploy.consensus_era_id = ctx.block.consensus_era_id
+    ctx.deploy.era_id = ctx.block.era_id
     ctx.deploy.finalization_duration = ctx.block.timestamp.timestamp() - ctx.deploy.dispatch_timestamp.timestamp()    
     ctx.deploy.finalization_node_index = ctx.node.index
     ctx.deploy.finalization_timestamp = ctx.block.timestamp

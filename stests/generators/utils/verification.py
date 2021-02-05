@@ -11,7 +11,6 @@ from stests.generators.utils.infra import get_network_node
 from stests.generators.utils.constants import ACC_RUN_USERS
 
 
-
 def verify_deploy(ctx: ExecutionContext, block_hash: str, deploy_hash: str, expected_status=DeployStatus.ADDED) -> Deploy:
     """Verifies that a deploy is in a finalized state.
     
@@ -31,6 +30,23 @@ def verify_deploy_count(ctx: ExecutionContext, expected: int, aspect: ExecutionA
     count = cache.orchestration.get_deploy_count(ctx, aspect) 
     assert count == expected, \
            IgnoreableAssertionError(f"deploy count mismatch: actual={count}, expected={expected}")
+
+
+def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: int) -> Account:
+    """Verifies that an account balance is as per expectation.
+    
+    """
+    account = cache.state.get_account_by_index(ctx, account_index)
+    network, node = get_network_node(ctx)
+    state_root_hash = chain.get_state_root_hash(network, node)
+
+    purse_uref = chain.get_account_main_purse_uref(network, node, account.account_key, state_root_hash)
+    assert purse_uref is not None, \
+           f"account {account_index} main purse uref could not be retrieved - probably on-chain account does not exist"
+
+    balance = chain.get_account_balance(network, node, purse_uref, state_root_hash)
+    assert balance == expected, \
+           f"account balance mismatch: account_index={account_index}, account_key={account.account_key}, expected={expected}, actual={balance}"
 
 
 def verify_account_balance_on_transfer(

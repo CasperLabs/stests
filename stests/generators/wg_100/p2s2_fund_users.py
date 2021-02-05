@@ -24,12 +24,11 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
 
     """
     def _yield_parameterizations() -> typing.Generator:
-        account_range = range(constants.ACC_RUN_USERS, ctx.args.transfers + constants.ACC_RUN_USERS)
-        for account_index in account_range:
+        for deploy_idx in range(1, ctx.args.transfers + 1):  
             yield (
                 ctx,
-                constants.ACC_RUN_FAUCET,
-                account_index,
+                accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
+                accounts.get_account_idx_for_deploy(ctx.args.accounts, deploy_idx),
                 ctx.args.amount + chain.DEFAULT_TX_FEE_NATIVE_TRANSFER,
                 DeployType.TRANSFER_NATIVE,
             )
@@ -53,18 +52,9 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     :param node_id: Identifier of node emitting chain event.
     :param block_hash: Hash of block in which deploy was batched.
     :param deploy_hash: Hash of deploy being processed.
-    :param deploy_index: Index of a finalized deploy in relation to the deploys dispatched during this step.
 
     """
-    deploy = verification.verify_deploy(ctx, block_hash, deploy_hash)
-
-    verification.verify_account_balance_on_transfer(
-        ctx,
-        node_id,
-        deploy.state_root_hash,
-        deploy.associated_account_index,
-        ctx.args.amount + chain.DEFAULT_TX_FEE_NATIVE_TRANSFER,
-        )
+    verification.verify_deploy(ctx, block_hash, deploy_hash)
 
 
 def verify_deploy_batch_is_complete(ctx: ExecutionContext, deploy_index: int):
