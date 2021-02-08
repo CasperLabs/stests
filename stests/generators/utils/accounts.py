@@ -73,7 +73,6 @@ def do_transfer(
     # Set amount to transfer (in the case of refunds).
     if amount is None:
         amount = get_account_balance(network, node, cp1) - chain.DEFAULT_TX_FEE
-        print(amount)
 
     # Dispatch tx -> chain.
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
@@ -195,14 +194,16 @@ def get_account_range(accounts: int, deploys: int) -> int:
     return range(1, (deploys if accounts == 0 else accounts) + 1)
 
 
-def get_account_transfer_count(accounts: int, account_idx: int, deploys: int) -> int:
+def get_account_deploy_count(accounts: int, account_idx: int, deploys: int) -> int:
     """Returns account index to use for a particular transfer.
     
     """
     if accounts == 0:
         return 1
-    
-    return 10
+
+    q, r = divmod(deploys, accounts)
+
+    return q + (1 if account_idx <= r else 0)
 
 
 def get_faucet_initial_balance(transfers, amount) -> int:
