@@ -1,3 +1,5 @@
+import typing
+
 from stests.core.crypto import hashifier_blake2b as blake2b
 from stests.core.crypto.enums import HashAlgorithm
 from stests.core.crypto.enums import HashEncoding
@@ -15,7 +17,7 @@ def get_hash(
     size: int = 32,
     algo: HashAlgorithm = HashAlgorithm.BLAKE2B,
     encoding: HashEncoding = HashEncoding.BYTES,
-    ) -> bytes:
+    ) -> typing.Union[bytes, str]:
     """Maps input to a blake2b hash.
     
     :param data: Data to be hashed.
