@@ -11,6 +11,11 @@ ALGOS = {
     HashAlgorithm.BLAKE2B: blake2b,
 }
 
+ENCODERS = {
+    HashEncoding.BYTES: lambda x: x,
+    HashEncoding.HEX: lambda x: x.hex(),
+}
+
 
 def get_hash(
     data: bytes,
@@ -25,10 +30,7 @@ def get_hash(
     :param algo: Type of hashing algo to apply.
     :param encoding: Hash output encoding type.
 
-    :returns: Hash of input data.
+    :returns: Encoded hash of input data.
 
     """ 
-    algo = ALGOS[algo]
-    hashed_data = algo.get_hash(data, size)
-
-    return hashed_data if encoding == HashEncoding.BYTES else hashed_data.hex()
+    return ENCODERS[encoding](ALGOS[algo].get_hash(data, size))

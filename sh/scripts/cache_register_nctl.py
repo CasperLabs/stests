@@ -152,7 +152,7 @@ def _get_artefacts_node(path: pathlib.Path) -> typing.Tuple[int, dict, pathlib.P
 
     """
     # Set path to config.
-    path_cfg = path / "config" / "node-config.toml"
+    path_cfg = path / "config" / "1_0_0" / "config.toml"
     if not path_cfg.exists():
         raise ValueError(f"Invalid nctl node - node config toml file not found: {path}")
 

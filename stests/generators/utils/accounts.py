@@ -100,23 +100,20 @@ def do_transfer(
    
 def do_transfer_fire_forget(
     ctx: ExecutionContext,
-    cp1_index: int,
-    cp2_index: int,
+    cp2: Account,
     amount: int,
     transfer_type: DeployType,
     ):
     """Executes fire & forget token transfers between counter-parties.
 
     :param ctx: Execution context information.
-    :param cp1_index: Account index of counter-party 1.
-    :param cp2_range: Account indexes of counter-party 2.
+    :param cp2: Counter-party 2 account.
     :param amount: Amount (in motes) to transfer.
     :param transfer_type: Type of transfer to dispatch.
     
     """
     network, node = get_network_node(ctx)
-    cp1 = get_account(ctx, network, cp1_index)
-    cp2 = factory.create_account_for_run(ctx, cp2_index)
+    cp1 = get_account(ctx, network, get_account_idx_for_network_faucet())
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
     dispatch_fn = TFR_TYPE_TO_TFR_FN[transfer_type]
     dispatch_fn(dispatch_info, cp2, amount)
@@ -192,6 +189,20 @@ def get_account_range(accounts: int, deploys: int) -> int:
 
     """ 
     return range(1, (deploys if accounts == 0 else accounts) + 1)
+
+
+def get_account_set(ctx: ExecutionContext, accounts: int, deploys: int) -> int:
+    """Returns run specific faucet account index whcn dispatching a deploy batch.
+    
+    :param ctx: Execution context information.
+    :param accounts: Number of accounts within batch.
+    :param deploys: Number of deploys within batch.
+    :returns: Set of accounts to act as transfer targets.
+
+    """ 
+    account_range = range(deploys) if accounts == 0 else range(accounts)
+
+    return [factory.create_account_for_run(ctx, i  + 1) for i in account_range]
 
 
 def get_account_deploy_count(accounts: int, account_idx: int, deploys: int) -> int:
