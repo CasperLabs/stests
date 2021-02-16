@@ -51,10 +51,10 @@ ARGS.add_argument(
 # CLI argument: motes per transfer.
 ARGS.add_argument(
     "--amount",
-    help="Motes per transfer. Default=10000000000",
+    help="Motes per transfer. Default=25e8",
     dest="amount",
     type=int,
-    default=int(1e10)
+    default=int(25e8)
     )
 
 # CLI argument: # transfers to dispatch.
