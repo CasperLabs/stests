@@ -51,19 +51,19 @@ def main(args):
 def _get_artefacts(args):
     """Yields aretefacts for mapping to stests types.
 
-    """    
+    """
     path = pathlib.Path(args.assets)
     if not path.exists() or not path.is_dir():
         raise ValueError(f"Invalid dw network - assets path not found: {path}")
 
     path_to_assets = sorted([pathlib.Path(f.path) for f in os.scandir(path) if f.is_dir()])
     path_to_chainspec = path_to_assets[0] / "etc" / "casper" / "1_0_0" / "chainspec.toml"
-    path_to_accounts_csv = path_to_assets[0] / "etc" / "casper" / "1_0_0" / "accounts.csv"
+    path_to_accounts_toml = path_to_assets[0] / "etc" / "casper" / "1_0_0" / "accounts.toml"
     path_to_faucet_pvk = path_to_assets[0] / "etc" / "casper" / "keys" / "faucet" / "secret_key.pem"
 
     return \
         _get_artefacts_chainspec(path_to_chainspec), \
-        _get_artefacts_accounts(path_to_accounts_csv), \
+        _get_artefacts_accounts(path_to_accounts_toml), \
         path_to_faucet_pvk, \
         [_get_artefacts_node(i) for i in path_to_assets]
 
@@ -75,10 +75,7 @@ def _get_artefacts_accounts(path: pathlib.Path) -> typing.List[dict]:
     if not path.exists():
         raise ValueError(f"Invalid network - accounts file not found: {path}")
 
-    with open(path, 'r') as fstream:
-        data = fstream.readlines()
-
-    return [i[0:-1].split(',') for i in data]
+    return toml.load(path)
 
 
 def _get_artefacts_chainspec(path: pathlib.Path) -> typing.List[dict]:
@@ -87,7 +84,7 @@ def _get_artefacts_chainspec(path: pathlib.Path) -> typing.List[dict]:
     """
     if not path.exists():
         raise ValueError(f"Invalid network - chainspec file not found: {path}")
-    
+
     return toml.load(path)
 
 
@@ -131,7 +128,7 @@ def _register_network(
     # Set network.
     network = factory.create_network(
         f"lrt{network_idx}",
-        chainspec['genesis']['name'],
+        chainspec['network']['name'],
         count_of_bootstrap_nodes,
         count_of_genesis_nodes,
         )
@@ -213,10 +210,14 @@ def _register_node(
 
 
 def _get_account(accounts, public_key, key_algo):
-    """Returns matching entry in accounts.csv.
+    """Returns matching entry in accounts.toml.
 
     """
-    for key, initial_balance, stake_weight in accounts:
+
+    for account in accounts["accounts"]:
+        key = account["public_key"]
+        initial_balance = account["balance"]
+        stake_weight = account["bonded_amount"]
         if key.startswith(f"0{key_algo.value}") and key.endswith(public_key):
             return key, KEY_ALGO[key[0:2]], initial_balance, int(stake_weight)
 
