@@ -38,12 +38,16 @@ def main(args):
 
 
 def _get_account(accounts, public_key, key_algo):
-    """Returns matching entry in accounts.csv.
+    """Returns matching entry in accounts.toml.
 
     """
-    for key, initial_balance, stake_weight in accounts:
-        if key.startswith(f"0{key_algo.value}") and key.endswith(public_key):
-            return key, KEY_ALGO[key[0:2]], initial_balance, int(stake_weight)
+    for account in accounts['accounts']:
+        pbk =  account["public_key"]
+        if pbk.startswith(f"0{key_algo.value}") and pbk.endswith(public_key):
+            return pbk, \
+                   KEY_ALGO[pbk[0:2]], \
+                   account["balance"], \
+                   int(account["bonded_amount"])
 
 
 def _yield_artefacts():
@@ -70,35 +74,19 @@ def _yield_artefacts():
               _get_artefacts_nodeset(path)
 
 
-def _get_artefacts(network_idx: int):
-    """Returns network artefacts to be mapped.
-
-    """
-    # Set path to nctl network artefacts.
-    path = pathlib.Path(os.getenv("NCTL")) / "assets" / f"net-{network_idx}"
-    if not path.exists() or not path.is_dir():
-        raise ValueError(f"Invalid nctl network - path not found: {path}")
-
-    return \
-        _get_artefacts_accounts(path), \
-        _get_artefacts_faucet(path), \
-        _get_artefacts_nodeset(path)
-
-
 def _get_artefacts_accounts(path: pathlib.Path) -> typing.List[dict]:
     """Returns accounts artefacts to be mapped.
 
     """
-    # Set path to accounts.csv.
-    path = path / "chainspec" / "accounts.csv"
+    # Set path to accounts.toml.
+    path = path / "chainspec" / "accounts.toml"
     if not path.exists():
-        raise ValueError(f"Invalid nctl network - accounts file not found: {path}")
+        raise ValueError(f"Invalid nctl network - accounts.toml file not found: {path}")
 
-    # Open accounts.csv.
-    with open(path, 'r') as fstream:
-        data = fstream.readlines()
+    # Open accounts.toml.
+    data = toml.load(path)
 
-    return [i[0:-1].split(',') for i in data]
+    return data
 
 
 def _get_artefacts_faucet(path: pathlib.Path):
@@ -241,7 +229,7 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
         crypto.KeyEncoding.HEX
         )
 
-    # Get staking weight from entry in accounts.csv.
+    # Get staking weight from entry in accounts.toml.
     _, _, _, stake_weight = _get_account(accounts, public_key, crypto.DEFAULT_KEY_ALGO)
 
     # Set node addrress.
