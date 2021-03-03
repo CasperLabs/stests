@@ -48,5 +48,5 @@ ARGS.add_argument(
     help="Percentage (i.e. rate) of POS reward alloocated to delegators.  Default=125",
     dest="delegation_rate",
     type=int,
-    default=125
+    default=2
     )

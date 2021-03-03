@@ -41,13 +41,13 @@ def _get_account(accounts, public_key, key_algo):
     """Returns matching entry in accounts.toml.
 
     """
-    for account in accounts['accounts']:
+    for account in [i for i in accounts['accounts'] if i.get("validator", False)]:
         pbk =  account["public_key"]
         if pbk.startswith(f"0{key_algo.value}") and pbk.endswith(public_key):
             return pbk, \
-                   KEY_ALGO[pbk[0:2]], \
-                   account["balance"], \
-                   int(account["bonded_amount"])
+                KEY_ALGO[pbk[0:2]], \
+                account["balance"], \
+                int(account["validator"]["bonded_amount"])
 
 
 def _yield_artefacts():
@@ -229,8 +229,13 @@ def _register_node(network: Network, accounts: dict, info: typing.Tuple[int, dic
         crypto.KeyEncoding.HEX
         )
 
-    # Get staking weight from entry in accounts.toml.
-    _, _, _, stake_weight = _get_account(accounts, public_key, crypto.DEFAULT_KEY_ALGO)
+    # Set entry in accounts.toml.
+    account_info = _get_account(accounts, public_key, crypto.DEFAULT_KEY_ALGO)
+    if account_info is None:
+        return
+
+    # Set staking weight.
+    _, _, _, stake_weight = account_info
 
     # Set node addrress.
     node_address_event = cfg['event_stream_server']['address']

@@ -7,13 +7,11 @@ from stests.core.types.orchestration import ExecutionContext
 from stests.generators.utils import verification
 from stests.generators.utils.infra import get_network_node
 
+import time
 
 
 # Step label.
 LABEL = "auction-bid-submit"
-
-# Account index of user dispatching bid submission.
-_USER_ACCOUNT_INDEX = 1
 
 
 def execute(ctx: ExecutionContext):
@@ -25,11 +23,8 @@ def execute(ctx: ExecutionContext):
     # Set target network / node.
     network, node = get_network_node(ctx)
 
-    # Set validator account.
-    validator = factory.create_account_for_run(ctx, _USER_ACCOUNT_INDEX)
-
     # Submit deploy.
-    dispatch_info = chain.DeployDispatchInfo(validator, network, node)
+    dispatch_info = chain.DeployDispatchInfo(node.account, network, node)
     deploy_hash, dispatch_duration, dispatch_attempts = \
         chain.set_auction_bid_submit(
             dispatch_info,
@@ -40,19 +35,10 @@ def execute(ctx: ExecutionContext):
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
-        account=validator,
+        account=node.account,
         node=node, 
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
         typeof=DeployType.AUCTION_BID_SUBMIT
         ))  
-
-
-def verify(ctx: ExecutionContext):
-    """Step execution verifier.
-    
-    :param ctx: Execution context information.
-
-    """
-    verification.verify_deploy_count(ctx, 1) 
