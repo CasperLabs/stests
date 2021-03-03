@@ -40,7 +40,7 @@ def execute(info: DeployDispatchInfo, amount: int, delegation_rate: int, verbose
     if verbose:
         log_event(
             EventType.WFLOW_DEPLOY_DISPATCHED,
-            f"{info.node.address} :: {deploy_hash} :: auction add-bid :: {amount} CSPR :: from node {info.node.index} ",
+            f"{info.node.address} :: {deploy_hash} :: auction add-bid :: {amount} CSPR :: by node {info.node.index} ",
             info.node,
             deploy_hash=deploy_hash,
             )

@@ -1,13 +1,10 @@
 from stests import chain
 from stests.core import cache
 from stests.core import factory
-from stests.core.types.chain import AccountType
 from stests.core.types.chain import DeployType
 from stests.core.types.orchestration import ExecutionContext
-from stests.generators.utils import verification
 from stests.generators.utils.infra import get_network_node
 
-import time
 
 
 # Step label.
