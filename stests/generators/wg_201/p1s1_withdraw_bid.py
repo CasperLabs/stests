@@ -23,8 +23,11 @@ def execute(ctx: ExecutionContext):
     # Set target network / node.
     network, node = get_network_node(ctx)
 
+    # Set validator.
+    validator = get_network_node(ctx, ctx.args.validator_index)
+
     # Submit deploy.
-    dispatch_info = chain.DeployDispatchInfo(node.account, network, node)
+    dispatch_info = chain.DeployDispatchInfo(validator.account, network, node)
     deploy_hash, dispatch_duration, dispatch_attempts = \
         chain.set_auction_bid_withdraw(
             dispatch_info,
@@ -34,7 +37,7 @@ def execute(ctx: ExecutionContext):
     # Update cache: deploy.
     cache.state.set_deploy(factory.create_deploy_for_run(
         ctx=ctx, 
-        account=node.account,
+        account=validator.account,
         node=node, 
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,

@@ -37,3 +37,12 @@ ARGS.add_argument(
     type=int,
     default=int(1e7)
     )
+
+# CLI argument: validator index.
+args.add_argument(
+    "--validator",
+    dest="validator_index",
+    help="Validator index - index of validator withdrawing an auction bid.",
+    type=args_validator.validate_node_index,
+    default=0,
+    )

@@ -9,7 +9,7 @@ from stests.core.types.orchestration import ExecutionContext
 
 
 
-def get_network_node(src: typing.Union[ExecutionContext, NodeIdentifier]) -> typing.Tuple[Network, Node]:
+def get_network_node(src: typing.Union[ExecutionContext, NodeIdentifier], node_index=None) -> typing.Tuple[Network, Node]:
     """Returns the network and node to which deploy(s) will be dispatched.
 
     :param src: Source from which targets will be derived.
@@ -20,7 +20,10 @@ def get_network_node(src: typing.Union[ExecutionContext, NodeIdentifier]) -> typ
     if isinstance(src, ExecutionContext):
         network_id = factory.create_network_id(src.network)
         network = cache.infra.get_network(network_id)
-        if src.node_index != 0:
+        if node_index != 0:
+            node_id = factory.create_node_id(network_id, src.node_index)
+            node = cache.infra.get_node(node_id)   
+        elif src.node_index != 0:
             node_id = factory.create_node_id(network_id, src.node_index)
             node = cache.infra.get_node(node_id)
         else:
