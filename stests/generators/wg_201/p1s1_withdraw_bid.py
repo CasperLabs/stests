@@ -24,7 +24,7 @@ def execute(ctx: ExecutionContext):
     network, node = get_network_node(ctx)
 
     # Set validator.
-    validator = get_network_node(ctx, ctx.args.validator_index)
+    _, validator = get_network_node(ctx, ctx.args.validator_index)
 
     # Submit deploy.
     dispatch_info = chain.DeployDispatchInfo(validator.account, network, node)

@@ -17,14 +17,17 @@ def execute(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
+    # Set validator.
+    _, validator = get_network_node(ctx, ctx.args.validator_index)
+    
     # Set target network / node.
     network, node = get_network_node(ctx)
 
-    # Set validator.
-    validator = get_network_node(ctx, ctx.args.validator_index)
-
     # Submit deploy.
+    print(node)
     dispatch_info = chain.DeployDispatchInfo(validator.account, network, node)
+    print(dispatch_info)
+        
     deploy_hash, dispatch_duration, dispatch_attempts = \
         chain.set_auction_bid_submit(
             dispatch_info,

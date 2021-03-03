@@ -20,9 +20,9 @@ def get_network_node(src: typing.Union[ExecutionContext, NodeIdentifier], node_i
     if isinstance(src, ExecutionContext):
         network_id = factory.create_network_id(src.network)
         network = cache.infra.get_network(network_id)
-        if node_index != 0:
-            node_id = factory.create_node_id(network_id, src.node_index)
-            node = cache.infra.get_node(node_id)   
+        if node_index is not None:
+            node_id = factory.create_node_id(network_id, node_index)
+            node = cache.infra.get_node(node_id)
         elif src.node_index != 0:
             node_id = factory.create_node_id(network_id, src.node_index)
             node = cache.infra.get_node(node_id)

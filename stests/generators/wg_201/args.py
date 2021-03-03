@@ -1,6 +1,7 @@
 import argparse
 import dataclasses
 
+from stests.core.utils import args_validator
 from stests.generators.utils import constants
 from stests.generators.utils.args import get_argparser
 
@@ -14,6 +15,9 @@ class Arguments:
     # Amount to withdraw from auction bid (motes).
     amount: int
 
+    # Ordinal identifier of validator.
+    validator_index: int
+
     @classmethod
     def create(cls, args: argparse.Namespace):
         """Simple factory method.
@@ -23,6 +27,7 @@ class Arguments:
         """
         return cls(
             amount='amount' in args and args.amount,
+            validator_index='validator_index' in args and args.validator_index,
         )
 
 
@@ -39,10 +44,9 @@ ARGS.add_argument(
     )
 
 # CLI argument: validator index.
-args.add_argument(
+ARGS.add_argument(
     "--validator",
     dest="validator_index",
     help="Validator index - index of validator withdrawing an auction bid.",
     type=args_validator.validate_node_index,
-    default=0,
     )

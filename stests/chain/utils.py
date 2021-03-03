@@ -26,6 +26,7 @@ class DeployDispatchInfo():
         """Instance constructor.
 
         """
+        print(node)
         self.dispatcher = dispatcher
         self.network = network
         self.node = node
