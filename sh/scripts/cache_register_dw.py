@@ -217,7 +217,12 @@ def _get_account(accounts, public_key, key_algo):
     for account in accounts["accounts"]:
         key = account["public_key"]
         initial_balance = account["balance"]
-        stake_weight = account["bonded_amount"]
+        validator = account.get("validator")
+        if validator:
+            stake_weight = validator["bonded_amount"]
+        else:
+            stake_weight = "0"
+
         if key.startswith(f"0{key_algo.value}") and key.endswith(public_key):
             return key, KEY_ALGO[key[0:2]], initial_balance, int(stake_weight)
 
