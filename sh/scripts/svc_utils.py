@@ -75,6 +75,7 @@ def remote_node_systemctl(
     command: SvcCommand,
     ssh_key_path: Path=None,
     check_rc: bool=False,
+    trusted_hash: str=None,
     ):
     '''Issue a systemctl command to a remote casper-node instance. This is a
     building block for being able to simulate bringing up/down a casper-node in
@@ -93,6 +94,10 @@ def remote_node_systemctl(
 
     :returns None
     '''
+
+    # Need to inject trusted hash.
+    if command is SvcCommand.START and trusted_hash is not None:
+        raise NotImplementedError("TODO: Add trusted hash injection")
 
     def yield_args():
         yield 'ssh'
