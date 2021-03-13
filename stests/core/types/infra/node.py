@@ -113,6 +113,15 @@ class Node:
     def url_rpc(self):
         return f"http://{self.address_rpc}/rpc"
 
+    @property
+    def identifier(self) -> NodeIdentifier:
+        network_identifier = NetworkIdentifier(name=self.network_name)
+
+        return NodeIdentifier(
+            network=network_identifier,
+            index=self.index,
+        )
+
 
 
 @dataclasses.dataclass
