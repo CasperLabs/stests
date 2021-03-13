@@ -5,10 +5,12 @@ from pathlib import Path
 
 from stests import chain
 from stests.core import crypto
+from stests.core.cache.ops import infra
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
 from stests.core.types.infra import Node
+from stests.core.types.infra.enums import NodeStatus
 from .arg_utils import get_network_node
 
 class SvcCommand(str, enum.Enum):
@@ -95,6 +97,13 @@ def remote_node_systemctl(
     :returns None
     '''
 
+    # Check if it makes sense to execute this action, (e.g. "START" only if the
+    # node is stopped).
+    if command is SvcCommand.START and not node.status is NodeStatus.DOWN:
+        return
+    elif command is SvcCommand.STOP and not node.status is NodeStatus.HEALTHY:
+        return
+
     # Need to inject trusted hash.
     if command is SvcCommand.START and trusted_hash is not None:
         raise NotImplementedError("TODO: Add trusted hash injection")
@@ -110,3 +119,11 @@ def remote_node_systemctl(
         yield f'sudo systemctl {command} casper-node.service'
 
     subprocess.run(yield_args(), check=check_rc)
+
+    # Update node status in cache.
+    if command is SvcCommand.STOP:
+        node.status = NodeStatus.DOWN
+    elif command is SvcCommand.START:
+        node.status = NodeStatus.HEALTHY
+
+    infra.set_node(node)
