@@ -114,7 +114,7 @@ class Node:
         return f"http://{self.address_rpc}/rpc"
 
     @property
-    def identifier(self) -> NodeIdentifier:
+    def identifier(self) -> 'NodeIdentifier':
         network_identifier = NetworkIdentifier(name=self.network_name)
 
         return NodeIdentifier(
