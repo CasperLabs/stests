@@ -21,7 +21,7 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    utils.log(f"Executing `systemctl {args.command}`:")
+    utils.log(f"Executing `systemctl {SVC_COMMAND}`:")
 
     _, node = get_network_node(args)
 
