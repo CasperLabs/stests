@@ -69,6 +69,14 @@ def get_arg_parser(command: SvcCommand) -> argparse.ArgumentParser:
         type=Path,
     )
 
+    # CLI argument: force flag.
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        dest="force",
+        help="Run command despite the current status of the node.",
+    )
+
     return parser
 
 def remote_node_systemctl(
@@ -78,6 +86,7 @@ def remote_node_systemctl(
     ssh_key_path: Path=None,
     check_rc: bool=True,
     trusted_hash: str=None,
+    force: bool=False,
     ):
     '''Issue a systemctl command to a remote casper-node instance. This is a
     building block for being able to simulate bringing up/down a casper-node in
@@ -93,6 +102,9 @@ def remote_node_systemctl(
     :param ssh_key_path: The file path for the SSH key to use (default: `None`).
     :param check_rc: If `True`, raise an exception if the subprocess returns a
         non-zero exit code (default: `False`).
+    :param trusted_hash: A trusted hash to use/inject when bringing a node up.
+    :param force: If `True`, try and execute the systemctl command regardless
+        of the current state of the node (default: `False`).
 
     :returns None
     '''
@@ -101,10 +113,11 @@ def remote_node_systemctl(
 
     # Check if it makes sense to execute this action, (e.g. "START" only if the
     # node is stopped).
-    if command is SvcCommand.START and not node.status is NodeStatus.DOWN:
-        return
-    elif command is SvcCommand.STOP and not node.status is NodeStatus.HEALTHY:
-        return
+    if not force:
+        if command is SvcCommand.START and not node.status is NodeStatus.DOWN:
+            return
+        elif command is SvcCommand.STOP and not node.status is NodeStatus.HEALTHY:
+            return
 
     # Need to inject trusted hash.
     if command is SvcCommand.START and trusted_hash is not None:
@@ -123,7 +136,10 @@ def remote_node_systemctl(
             yield '-i'
             yield ssh_key_path
 
-        yield f'sudo systemctl {command} casper-node-launcher.service'
+        remote_cli_cmd = f'sudo systemctl {command} casper-node-launcher.service'
+        utils.log(f"Remote systemctl command: `{remote_cli_cmd}`")
+
+        yield remote_cli_cmd
 
     subprocess.run(yield_args(), check=check_rc)
 
