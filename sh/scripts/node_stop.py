@@ -33,7 +33,6 @@ def main(args):
         check_rc=False,
     )
 
-# TODO: Just for testing, remove.
 if __name__ == '__main__':
     parser = get_arg_parser(SVC_COMMAND)
     main(parser.parse_args())
