@@ -114,10 +114,14 @@ def remote_node_systemctl(
     # Check if it makes sense to execute this action, (e.g. "START" only if the
     # node is stopped).
     if not force:
+        bail = False
         if command is SvcCommand.START and not node.status is NodeStatus.DOWN:
-            return
+            bail = True
         elif command is SvcCommand.STOP and not node.status is NodeStatus.HEALTHY:
-            return
+            bail = True
+
+        if bail:
+            utils.log(f"Skipping {command} command, node already is in matching status")
 
     # Need to inject trusted hash.
     if command is SvcCommand.START and trusted_hash is not None:
@@ -144,9 +148,13 @@ def remote_node_systemctl(
     subprocess.run(yield_args(), check=check_rc)
 
     # Update node status in cache.
+    new_node_status = None
     if command is SvcCommand.STOP:
-        node.status = NodeStatus.DOWN
+        new_node_status = NodeStatus.DOWN
     elif command is SvcCommand.START:
-        node.status = NodeStatus.HEALTHY
+        new_node_status = NodeStatus.HEALTHY
 
-    infra.set_node(node)
+    if new_node_status is not None:
+        utils.log(f"Updating status = `{new_node_status}` for node #{node.index} in cache")
+        node.status = new_node_status
+        infra.set_node(node)
