@@ -97,6 +97,8 @@ def remote_node_systemctl(
     :returns None
     '''
 
+    utils.log(f'Current status for node #{node.index} is: {node.status}')
+
     # Check if it makes sense to execute this action, (e.g. "START" only if the
     # node is stopped).
     if command is SvcCommand.START and not node.status is NodeStatus.DOWN:
@@ -109,10 +111,15 @@ def remote_node_systemctl(
         raise NotImplementedError("TODO: Add trusted hash injection")
 
     def yield_args():
+        identity = f'{ssh_user}@{node.host}'
+
+        utils.log(f'Making SSH connection as identity: {identity}')
+
         yield 'ssh'
-        yield f'{ssh_user}@{node.host}'
+        yield identity
 
         if ssh_key_path:
+            utils.log(f'Using SSH key file: {ssh_key_path}')
             yield '-i'
             yield ssh_key_path
 
