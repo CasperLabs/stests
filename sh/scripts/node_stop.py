@@ -5,7 +5,6 @@ from pathlib import Path
 from stests import chain
 from stests.core import crypto
 from stests.core.utils import args_validator
-from stests.core.utils import cli as utils
 from stests.core.utils import env
 from stests.core.types.infra import Node
 from sh.scripts.arg_utils import get_network_node
@@ -21,8 +20,6 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    utils.log(f"Executing `systemctl {SVC_COMMAND}`:")
-
     _, node = get_network_node(args)
 
     remote_node_systemctl(
@@ -31,6 +28,7 @@ def main(args):
         command=SVC_COMMAND,
         ssh_key_path=args.ssh_key_path,
         check_rc=False,
+        force=args.force,
     )
 
 if __name__ == '__main__':
