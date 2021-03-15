@@ -76,7 +76,7 @@ def remote_node_systemctl(
     ssh_user: str,
     command: SvcCommand,
     ssh_key_path: Path=None,
-    check_rc: bool=False,
+    check_rc: bool=True,
     trusted_hash: str=None,
     ):
     '''Issue a systemctl command to a remote casper-node instance. This is a
@@ -123,7 +123,7 @@ def remote_node_systemctl(
             yield '-i'
             yield ssh_key_path
 
-        yield f'sudo systemctl {command} casper-node.service'
+        yield f'sudo systemctl {command} casper-node-launcher.service'
 
     subprocess.run(yield_args(), check=check_rc)
 
