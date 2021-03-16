@@ -75,7 +75,7 @@ def main(args):
         return
 
     # TODO: Do we need to ensure at least one healthy node is always remaining?
-    target_node = random.choice(it.chain(healthy_nodes, down_nodes))
+    target_node = random.choice(healthy_nodes + down_nodes)
     utils.log(f'Selected node #{target_node.index} for toggling')
     utils.log(f'Current status of node: {target_node.status}')
 
