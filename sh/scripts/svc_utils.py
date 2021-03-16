@@ -1,6 +1,8 @@
 import argparse
 import enum
+from os import stat
 import subprocess
+import typing as tp
 from pathlib import Path
 
 from stests import chain
@@ -17,9 +19,16 @@ class SvcCommand(str, enum.Enum):
     STOP = 'stop'
     START = 'start'
 
-def get_healthy_nodes(network):
+def get_nodes_with_status(network, status: NodeStatus) -> tp.List[Node]:
+    utils.log(f'Getting nodes with target status = {status}')
     nodes = infra.get_nodes(network)
-    utils.log(nodes)
+    num_total_nodes = len(nodes)
+
+    target_nodes = [n for n in nodes if n.status is status]
+    num_target_nodes = len(target_nodes)
+
+    utils.log(f'Found {num_target_nodes} target node(s) out of {num_total_nodes} total')
+
     return nodes
 
 def get_arg_parser(command: SvcCommand) -> argparse.ArgumentParser:
