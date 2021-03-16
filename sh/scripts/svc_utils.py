@@ -122,6 +122,7 @@ def remote_node_systemctl(
 
         if bail:
             utils.log(f"Skipping {command} command, node already is in matching status")
+            return
 
     # Need to inject trusted hash.
     if command is SvcCommand.START and trusted_hash is not None:
