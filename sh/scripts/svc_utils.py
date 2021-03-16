@@ -17,6 +17,11 @@ class SvcCommand(str, enum.Enum):
     STOP = 'stop'
     START = 'start'
 
+def get_healthy_nodes(network):
+    nodes = infra.get_nodes(network)
+    utils.log(nodes)
+    return nodes
+
 def get_arg_parser(command: SvcCommand) -> argparse.ArgumentParser:
     # CLI argument parser.
     parser = argparse.ArgumentParser(
