@@ -159,3 +159,25 @@ def remote_node_systemctl(
         utils.log(f"Updating status = `{new_node_status}` for node #{node.index} in cache")
         node.status = new_node_status
         infra.set_node(node)
+
+def common_main(svc_command: SvcCommand):
+    """Common entry point for all svc-related node commands.
+
+    Note: this function assumes that no CLI arg parsing has been done yet.
+
+    :param svc_command: The service command to run on the remote casper node.
+
+    """
+    parser = get_arg_parser(svc_command)
+    args = parser.parse_args()
+
+    _, node = get_network_node(args)
+
+    remote_node_systemctl(
+        node=node,
+        ssh_user=args.ssh_user,
+        command=svc_command,
+        ssh_key_path=args.ssh_key_path,
+        check_rc=False,
+        force=args.force,
+    )
