@@ -1,12 +1,9 @@
 import argparse
 import enum
-from os import stat
 import subprocess
 import typing as tp
 from pathlib import Path
 
-from stests import chain
-from stests.core import crypto
 from stests.core.cache.ops import infra
 from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
@@ -19,17 +16,21 @@ class SvcCommand(str, enum.Enum):
     STOP = 'stop'
     START = 'start'
 
-def get_nodes_with_status(network, status: NodeStatus) -> tp.List[Node]:
-    utils.log(f'Getting nodes with target status = {status}')
+def get_healthy_and_down_nodes(network) -> tp.Tuple[tp.List[Node], tp.List[Node]]:
+    utils.log(f'Fetching all nodes')
     nodes = infra.get_nodes(network)
     num_total_nodes = len(nodes)
+    utils.log(f'Found {num_total_nodes} node(s) in total')
 
-    target_nodes = [n for n in nodes if n.status is status]
-    num_target_nodes = len(target_nodes)
+    utils.log('Filtering out healthy nodes')
+    healthy_nodes = [n for n in nodes if n.status is NodeStatus.HEALTHY]
+    utils.log(f'Found {len(healthy_nodes)} healthy node(s)')
 
-    utils.log(f'Found {num_target_nodes} target node(s) out of {num_total_nodes} total')
+    utils.log('Filtering out down nodes')
+    down_nodes = [n for n in nodes if n.status is NodeStatus.DOWN]
+    utils.log(f'Found {len(down_nodes)} down node(s)')
 
-    return nodes
+    return healthy_nodes, down_nodes
 
 def get_arg_parser(command: SvcCommand) -> argparse.ArgumentParser:
     # CLI argument parser.
@@ -98,8 +99,6 @@ def remote_node_systemctl(
     ssh_user: str,
     command: SvcCommand,
     ssh_key_path: Path=None,
-    check_rc: bool=True,
-    trusted_hash: str=None,
     force: bool=False,
     ):
     '''Issue a systemctl command to a remote casper-node instance. This is a
@@ -114,9 +113,6 @@ def remote_node_systemctl(
     :param ssh_user: The username to SSH into the remote machine as.
     :param command: The `systemctl` command to run on the casper-node service.
     :param ssh_key_path: The file path for the SSH key to use (default: `None`).
-    :param check_rc: If `True`, raise an exception if the subprocess returns a
-        non-zero exit code (default: `False`).
-    :param trusted_hash: A trusted hash to use/inject when bringing a node up.
     :param force: If `True`, try and execute the systemctl command regardless
         of the current state of the node (default: `False`).
 
@@ -138,9 +134,11 @@ def remote_node_systemctl(
             utils.log(f"Skipping {command} command, node already is in matching status")
             return
 
-    # Need to inject trusted hash.
-    if command is SvcCommand.START and trusted_hash is not None:
-        raise NotImplementedError("TODO: Add trusted hash injection")
+    # TODO: This might not need to be done anymore, casper-launcher seems to
+    #       take care of this?
+    # # Need to inject trusted hash.
+    # if command is SvcCommand.START and trusted_hash is not None:
+    #     raise NotImplementedError("TODO: Add trusted hash injection")
 
     def yield_args():
         identity = f'{ssh_user}@{node.host}'
@@ -160,7 +158,7 @@ def remote_node_systemctl(
 
         yield remote_cli_cmd
 
-    subprocess.run(yield_args(), check=check_rc)
+    subprocess.run(yield_args(), check=True)
 
     # Update node status in cache.
     new_node_status = None
@@ -192,6 +190,5 @@ def common_main(svc_command: SvcCommand):
         ssh_user=args.ssh_user,
         command=svc_command,
         ssh_key_path=args.ssh_key_path,
-        check_rc=False,
         force=args.force,
     )
