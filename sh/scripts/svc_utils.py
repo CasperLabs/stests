@@ -94,6 +94,62 @@ def get_arg_parser(command: SvcCommand) -> argparse.ArgumentParser:
 
     return parser
 
+def remote_node_ssh_invoke(
+    ssh_user: str,
+    ssh_host: str,
+    to_run: str,
+    ssh_key_path: str=None,
+):
+    def yield_args():
+        identity = f'{ssh_user}@{ssh_host}'
+
+        utils.log(f'Making SSH connection as identity: {identity}')
+
+        yield 'ssh'
+        yield identity
+
+        if ssh_key_path:
+            utils.log(f'Using SSH key file: {ssh_key_path}')
+            yield '-i'
+            yield ssh_key_path
+
+        utils.log(f"Remote systemctl command: `{to_run}`")
+
+        yield to_run
+
+    subprocess.run(yield_args(), check=True)
+
+def remote_node_ssh_copy(
+    source_path: Path,
+    ssh_user: str,
+    ssh_host: str,
+    target_dir: Path,
+    ssh_key_path: str=None,
+):
+    utils.log(f'Copying `{source_path}` to {ssh_host}:{target_dir}')
+
+    def yield_args():
+        identity = f'{ssh_user}@{ssh_host}'
+
+        utils.log(f'Making SSH connection as identity: {identity}')
+
+        yield 'scp'
+        yield '-r'
+        yield '-q'
+
+        if ssh_key_path:
+            utils.log(f'Using SSH key file: {ssh_key_path}')
+            yield '-i'
+            yield ssh_key_path
+
+        yield source_path
+
+        target = f'{identity}:{target_dir}'
+
+        yield target
+
+    subprocess.run(yield_args(), check=True)
+
 def remote_node_systemctl(
     node: Node,
     ssh_user: str,
@@ -140,25 +196,32 @@ def remote_node_systemctl(
     # if command is SvcCommand.START and trusted_hash is not None:
     #     raise NotImplementedError("TODO: Add trusted hash injection")
 
-    def yield_args():
-        identity = f'{ssh_user}@{node.host}'
+    remote_node_ssh_invoke(
+        ssh_user=ssh_user,
+        ssh_host=node.host,
+        to_run=f'sudo systemctl {command} casper-node-launcher.service',
+        ssh_key_path=ssh_key_path,
+    )
 
-        utils.log(f'Making SSH connection as identity: {identity}')
+    # def yield_args():
+    #     identity = f'{ssh_user}@{node.host}'
 
-        yield 'ssh'
-        yield identity
+    #     utils.log(f'Making SSH connection as identity: {identity}')
 
-        if ssh_key_path:
-            utils.log(f'Using SSH key file: {ssh_key_path}')
-            yield '-i'
-            yield ssh_key_path
+    #     yield 'ssh'
+    #     yield identity
 
-        remote_cli_cmd = f'sudo systemctl {command} casper-node-launcher.service'
-        utils.log(f"Remote systemctl command: `{remote_cli_cmd}`")
+    #     if ssh_key_path:
+    #         utils.log(f'Using SSH key file: {ssh_key_path}')
+    #         yield '-i'
+    #         yield ssh_key_path
 
-        yield remote_cli_cmd
+    #     remote_cli_cmd = f'sudo systemctl {command} casper-node-launcher.service'
+    #     utils.log(f"Remote systemctl command: `{remote_cli_cmd}`")
 
-    subprocess.run(yield_args(), check=True)
+    #     yield remote_cli_cmd
+
+    # subprocess.run(yield_args(), check=True)
 
     # Update node status in cache.
     new_node_status = None
