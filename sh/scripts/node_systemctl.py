@@ -8,7 +8,7 @@ from stests.core.utils import args_validator
 from stests.core.utils import cli as utils
 from stests.core.utils import env
 from stests.core.types.infra import Node
-from .arg_utils import get_network_node
+from sh.scripts.arg_utils import get_network_node
 
 # CLI argument parser.
 ARGS = argparse.ArgumentParser("Executes a systemctl command to the casper-node service on a node.")

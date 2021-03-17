@@ -10,7 +10,7 @@ from stests.core.utils import cli as utils
 from stests.core.utils import env
 from stests.core.types.infra import Node
 from stests.core.types.infra.enums import NodeStatus
-from .arg_utils import get_network_node
+from sh.scripts.arg_utils import get_network_node
 
 class SvcCommand(str, enum.Enum):
     STOP = 'stop'
