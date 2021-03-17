@@ -22,6 +22,15 @@ class Semver(tp.NamedTuple):
     def dotted_str(self) -> str:
         return f'{self.major}.{self.minor}.{self.patch}'
 
+    @staticmethod
+    def from_str(s: str) -> 'Semver':
+        major_str, minor_str, patch_str = s.split('.')
+        return Semver(
+            major=int(major_str),
+            minor=int(minor_str),
+            patch=int(patch_str),
+        )
+
 def push_update_to_node(
     ssh_user: str,
     ssh_host: str,
@@ -35,12 +44,14 @@ def push_update_to_node(
     remote_bin_repo_dir: pl.Path=pl.Path('/var/lib/casper/bin'),
     remote_cfg_repo_dir: pl.Path=pl.Path('/etc/casper'),
 ):
+    semver_snake_str = semver.snake_str()
+    semver_dotted_str = semver.dotted_str()
+
+    utils.log(f'Desired semver: {semver_dotted_str}')
+
     if not public_address:
         utils.log(f'Using SSH address as public address ({ssh_host})')
         public_address = ssh_host
-
-    semver_snake_str = semver.snake_str()
-    semver_dotted_str = semver.dotted_str()
 
     local_bin_dir = local_bin_repo_dir / semver_snake_str
     local_cfg_dir = local_cfg_repo_dir / semver_snake_str
@@ -135,8 +146,8 @@ def get_arg_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--local-bin-repo-dir",
-        dest="local_bin_repo_dir",
+        "--local-bin-repo",
+        dest="local_bin_repo",
         required=True,
         help="Path to directory containing semver folders with casper binaries "
             "(e.g. '1_0_0', '1_1_0', etc). Note this this should be local on "
@@ -145,8 +156,8 @@ def get_arg_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--local-cfg-repo-dir",
-        dest="local_cfg_repo_dir",
+        "--local-cfg-repo",
+        dest="local_cfg_repo",
         required=True,
         help="Path to directory containing semver folders with casper configs "
             "(e.g. '1_0_0', '1_1_0', etc). Note this this should be local on "
@@ -155,16 +166,16 @@ def get_arg_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--remote-bin-repo-dir",
-        dest="remote_bin_repo_dir",
+        "--remote-bin-repo",
+        dest="remote_bin_repo",
         required=True,
         help="Remote path to casper binary repo dir.",
         type=pl.Path,
     )
 
     parser.add_argument(
-        "--remote-cfg-repo-dir",
-        dest="remote_cfg_repo_dir",
+        "--remote-cfg-repo",
+        dest="remote_cfg_repo",
         required=True,
         help="Remote path to casper config repo dir.",
         type=pl.Path,
@@ -186,6 +197,22 @@ def get_arg_parser() -> argparse.ArgumentParser:
         type=pl.Path,
     )
 
+    parser.add_argument(
+        "--semver",
+        required=True,
+        dest="semver",
+        help="Semver (in X.Y.Z format) for desired version to install.",
+        type=Semver.from_str,
+    )
+
+    parser.add_argument(
+        "--activation_era",
+        required=True,
+        dest="activation_era",
+        help="Future era id at which upgrade is inteded to become active.",
+        type=int,
+    )
+
     return parser
 
 if __name__ == '__main__':
@@ -195,19 +222,33 @@ if __name__ == '__main__':
 
     _, node = get_network_node(args)
 
-    # TODO: For testing, remove once smoke tested.
+    # # TODO: For testing, remove once smoke tested.
+    # push_update_to_node(
+    #     ssh_user='stest',
+    #     ssh_host=node.host,
+    #     ssh_key_path=args.ssh_key_path,
+    #     semver=Semver(major=1, minor=1, patch=0),
+    #     local_bin_repo_dir=pl.Path('/home/stest/upgrade_queue/bin'),
+    #     local_cfg_repo_dir=pl.Path('/home/stest/upgrade_queue/cfg'),
+    #     activation_era=272727,
+    #     public_address=None,
+    #     public_port=35000,
+    #     # remote_bin_repo_dir=pl.Path('/var/lib/casper/bin'),
+    #     # remote_cfg_repo_dir=pl.Path('/etc/casper'),
+    #     remote_bin_repo_dir=pl.Path('/tmp/bin_tmp'),
+    #     remote_cfg_repo_dir=pl.Path('/tmp/cfg_tmp'),
+    # )
+
     push_update_to_node(
-        ssh_user='stest',
+        ssh_user=args.ssh_user,
         ssh_host=node.host,
         ssh_key_path=args.ssh_key_path,
-        semver=Semver(major=1, minor=1, patch=0),
-        local_bin_repo_dir=pl.Path('/home/stest/upgrade_queue/bin'),
-        local_cfg_repo_dir=pl.Path('/home/stest/upgrade_queue/cfg'),
-        activation_era=272727,
+        semver=args.semver,
+        local_bin_repo_dir=args.local_bin_repo,
+        local_cfg_repo_dir=args.local_cfg_repo,
+        activation_era=args.activation_era,
         public_address=None,
         public_port=35000,
-        # remote_bin_repo_dir=pl.Path('/var/lib/casper/bin'),
-        # remote_cfg_repo_dir=pl.Path('/etc/casper'),
-        remote_bin_repo_dir=pl.Path('/tmp/bin_tmp'),
-        remote_cfg_repo_dir=pl.Path('/tmp/cfg_tmp'),
+        remote_bin_repo_dir=pl.Path('/var/lib/casper/bin'),
+        remote_cfg_repo_dir=pl.Path('/etc/casper'),
     )
