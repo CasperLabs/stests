@@ -8,7 +8,7 @@ from stests.core.utils import args_validator
 from stests.core.utils import env
 from stests.core.utils import cli as utils
 from sh.scripts.svc_utils import remote_node_ssh_copy
-from sh.scripts.svc_utils import remote_node_ssh_invoke
+from sh.scripts.svc_utils import remote_node_ssh_rsync
 from sh.scripts.arg_utils import get_network_node
 
 class Semver(tp.NamedTuple):
@@ -64,12 +64,13 @@ def push_update_to_node(
 
     # Copy over casper-node binary dir.
     utils.log('Copying over casper-node binary')
-    remote_node_ssh_copy(
+    remote_node_ssh_rsync(
         source_path=local_bin_dir,
         ssh_user=ssh_user,
         ssh_host=ssh_host,
         target_dir=remote_bin_repo_dir,
         ssh_key_path=ssh_key_path,
+        use_remote_sudo=True,
     )
 
     # Need to edit some config files, so create a temp dir.
@@ -116,12 +117,13 @@ def push_update_to_node(
 
         # Copy over modified configs.
         utils.log('Copying over modified configs')
-        remote_node_ssh_copy(
+        remote_node_ssh_rsync(
             source_path=tmp_semver_dir,
             ssh_user=ssh_user,
             ssh_host=ssh_host,
             target_dir=remote_cfg_repo_dir,
             ssh_key_path=ssh_key_path,
+            use_remote_sudo=True,
         )
 
     utils.log('Destroying temp dir')

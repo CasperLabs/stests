@@ -119,6 +119,44 @@ def remote_node_ssh_invoke(
 
     subprocess.run(yield_args(), check=True)
 
+def remote_node_ssh_rsync(
+    source_path: Path,
+    ssh_user: str,
+    ssh_host: str,
+    target_dir: Path,
+    ssh_key_path: str=None,
+    use_remote_sudo: bool=True,
+):
+    utils.log(f'Copying `{source_path}` to {ssh_host}:{target_dir} using `rsync`')
+
+    def yield_args():
+        identity = f'{ssh_user}@{ssh_host}'
+
+        utils.log(f'Making connection as identity: {identity}')
+
+        yield 'rsync'
+        yield '-avz'
+        yield '-q'
+
+        if use_remote_sudo:
+            utils.log('Using `sudo` on remote target')
+            yield '--rsync-path="sudo rsync"'
+
+        if ssh_key_path:
+            utils.log(f'Using SSH key file: {ssh_key_path}')
+
+            # With `rsync`, this needs to be passed in as a suboption to `ssh`.
+            yield '-e'
+            yield f'ssh -i {ssh_key_path}'
+
+        yield source_path
+
+        target = f'{identity}:{target_dir}'
+
+        yield target
+
+    subprocess.run(yield_args(), check=True)
+
 def remote_node_ssh_copy(
     source_path: Path,
     ssh_user: str,
