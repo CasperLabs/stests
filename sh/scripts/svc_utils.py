@@ -135,7 +135,7 @@ def remote_node_ssh_copy(
 
         yield 'scp'
         yield '-r'
-        yield '-q'
+        # yield '-q'
 
         if ssh_key_path:
             utils.log(f'Using SSH key file: {ssh_key_path}')
