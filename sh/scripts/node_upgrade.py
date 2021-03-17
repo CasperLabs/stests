@@ -186,6 +186,8 @@ def get_arg_parser() -> argparse.ArgumentParser:
         type=pl.Path,
     )
 
+    return parser
+
 if __name__ == '__main__':
     parser = get_arg_parser()
 
