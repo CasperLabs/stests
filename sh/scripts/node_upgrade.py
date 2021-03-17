@@ -9,6 +9,7 @@ from stests.core.utils import env
 from stests.core.utils import cli as utils
 from sh.scripts.svc_utils import remote_node_ssh_copy
 from sh.scripts.svc_utils import remote_node_ssh_invoke
+from .arg_utils import get_network_node
 
 class Semver(tp.NamedTuple):
     major: int
@@ -61,6 +62,7 @@ def push_update_to_node(
     )
 
     # Need to edit some config files, so create a temp dir.
+    utils.log('Creating temp dir')
     with tempfile.TemporaryDirectory() as tmp_dir:
         tmp_dir = pl.Path(tmp_dir)
 
@@ -107,6 +109,8 @@ def push_update_to_node(
             ssh_key_path=ssh_key_path,
         )
 
+    utils.log('Destroying temp dir')
+
     # TODO: Continue here.
 
 def get_arg_parser() -> argparse.ArgumentParser:
@@ -131,8 +135,8 @@ def get_arg_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--update-cache-dir",
-        dest="update_cache_dir",
+        "--local-bin-repo-dir",
+        dest="local_bin_repo_dir",
         required=True,
         help="Path to directory containing semver folders with casper binaries "
             "(e.g. '1_0_0', '1_1_0', etc). Note this this should be local on "
@@ -141,10 +145,28 @@ def get_arg_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--remote-casper-dir",
-        dest="remote_casper_dir",
+        "--local-cfg-repo-dir",
+        dest="local_cfg_repo_dir",
         required=True,
-        help="Remote path to casper-node installation dir.",
+        help="Path to directory containing semver folders with casper configs "
+            "(e.g. '1_0_0', '1_1_0', etc). Note this this should be local on "
+            "the stest control box.",
+        type=pl.Path,
+    )
+
+    parser.add_argument(
+        "--remote-bin-repo-dir",
+        dest="remote_bin_repo_dir",
+        required=True,
+        help="Remote path to casper binary repo dir.",
+        type=pl.Path,
+    )
+
+    parser.add_argument(
+        "--remote-cfg-repo-dir",
+        dest="remote_cfg_repo_dir",
+        required=True,
+        help="Remote path to casper config repo dir.",
         type=pl.Path,
     )
 
@@ -162,4 +184,28 @@ def get_arg_parser() -> argparse.ArgumentParser:
         dest="ssh_key_path",
         help="Path to SSH key.",
         type=pl.Path,
+    )
+
+if __name__ == '__main__':
+    parser = get_arg_parser()
+
+    args = parser.parse_args()
+
+    _, node = get_network_node(args)
+
+    # TODO: For testing, remove once smoke tested.
+    push_update_to_node(
+        ssh_user='stest',
+        ssh_host=node.host,
+        ssh_key_path=args.ssh_key_path,
+        semver=Semver(major=2, minor=0, patch=0),
+        local_bin_repo_dir=pl.Path('/home/stest/update_queue/bin'),
+        local_cfg_repo_dir=pl.Path('/home/stest/update_queue/cfg'),
+        activation_era=272727,
+        public_address=None,
+        public_port=35000,
+        # remote_bin_repo_dir=pl.Path('/var/lib/casper/bin'),
+        # remote_cfg_repo_dir=pl.Path('/etc/casper'),
+        remote_bin_repo_dir=pl.Path('/tmp/bin_tmp'),
+        remote_cfg_repo_dir=pl.Path('/tmp/cfg_tmp'),
     )
