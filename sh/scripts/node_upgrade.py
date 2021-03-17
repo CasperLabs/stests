@@ -94,8 +94,12 @@ def push_update_to_node(
         launcher_state_toml = toml.load(local_cfg_dir / 'casper-node-launcher-state.toml')
 
         launcher_state_toml['version'] = semver_dotted_str
-        launcher_state_toml['binary_path'] = str(remote_bin_repo_dir / semver_snake_str / 'casper-node')
-        launcher_state_toml['config_path'] = str(remote_cfg_repo_dir / semver_snake_str / 'config.toml')
+        launcher_state_toml['binary_path'] = str(
+            remote_bin_repo_dir / semver_snake_str / 'casper-node'
+        )
+        launcher_state_toml['config_path'] = str(
+            remote_cfg_repo_dir / semver_snake_str / 'config.toml'
+        )
 
         with (tmp_semver_dir / 'casper-node-launcher-state.toml').open('w') as fp:
             toml.dump(launcher_state_toml, fp)
@@ -121,8 +125,6 @@ def push_update_to_node(
         )
 
     utils.log('Destroying temp dir')
-
-    # TODO: Continue here.
 
 def get_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -168,7 +170,7 @@ def get_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--remote-bin-repo",
         dest="remote_bin_repo",
-        required=True,
+        default=pl.Path('/var/lib/casper/bin'),
         help="Remote path to casper binary repo dir.",
         type=pl.Path,
     )
@@ -176,7 +178,7 @@ def get_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--remote-cfg-repo",
         dest="remote_cfg_repo",
-        required=True,
+        default=pl.Path('/etc/casper'),
         help="Remote path to casper config repo dir.",
         type=pl.Path,
     )
@@ -206,7 +208,7 @@ def get_arg_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--activation_era",
+        "--activation-era",
         required=True,
         dest="activation_era",
         help="Future era id at which upgrade is inteded to become active.",
