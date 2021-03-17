@@ -200,7 +200,7 @@ if __name__ == '__main__':
         ssh_user='stest',
         ssh_host=node.host,
         ssh_key_path=args.ssh_key_path,
-        semver=Semver(major=2, minor=0, patch=0),
+        semver=Semver(major=1, minor=1, patch=0),
         local_bin_repo_dir=pl.Path('/home/stest/upgrade_queue/bin'),
         local_cfg_repo_dir=pl.Path('/home/stest/upgrade_queue/cfg'),
         activation_era=272727,
