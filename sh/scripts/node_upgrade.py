@@ -7,7 +7,7 @@ import tempfile
 from stests.core.utils import args_validator
 from stests.core.utils import env
 from stests.core.utils import cli as utils
-from sh.scripts.svc_utils import remote_node_ssh_copy
+from sh.scripts.svc_utils import remote_node_ssh_copy, remote_node_ssh_invoke
 from sh.scripts.svc_utils import remote_node_ssh_rsync
 from sh.scripts.arg_utils import get_network_node
 
@@ -62,21 +62,42 @@ def push_update_to_node(
     utils.log(f'Remote target bin repo dir `{remote_bin_repo_dir}`')
     utils.log(f'Remote target cfg repo dir `{remote_cfg_repo_dir}`')
 
+    # A "transient" directory to copy files to, to then be moved to their final
+    # location. This is needed because `scp` can't copy files to dirs it does
+    # not have permissions for.
+    transient_remote_repo = pl.Path('./')
+    transient_remote_dir = transient_remote_repo / semver_snake_str
+
     # Copy over casper-node binary dir.
     utils.log('Copying over casper-node binary')
-    # remote_node_ssh_rsync(
+    # remote_node_ssh_copy(
     #     source_path=local_bin_dir,
     #     ssh_user=ssh_user,
     #     ssh_host=ssh_host,
     #     target_dir=remote_bin_repo_dir,
     #     ssh_key_path=ssh_key_path,
-    #     use_remote_sudo=True,
     # )
     remote_node_ssh_copy(
         source_path=local_bin_dir,
         ssh_user=ssh_user,
         ssh_host=ssh_host,
-        target_dir=remote_bin_repo_dir,
+        target_dir=transient_remote_repo,
+        ssh_key_path=ssh_key_path,
+    )
+
+    utils.log(f'Running `chown` on copied bin dir: {transient_remote_dir}')
+    remote_node_ssh_invoke(
+        ssh_user=ssh_user,
+        ssh_host=ssh_host,
+        to_run=f'sudo chown -R casper:casper {transient_remote_dir}',
+        ssh_key_path=ssh_key_path,
+    )
+
+    utils.log(f'Moving copied bin dir to final location @ {remote_bin_repo_dir}')
+    remote_node_ssh_invoke(
+        ssh_user=ssh_user,
+        ssh_host=ssh_host,
+        to_run=f'sudo mv --no-clobber --update {transient_remote_dir} {remote_bin_repo_dir}/',
         ssh_key_path=ssh_key_path,
     )
 
@@ -124,19 +145,34 @@ def push_update_to_node(
 
         # Copy over modified configs.
         utils.log('Copying over modified configs')
-        # remote_node_ssh_rsync(
+        # remote_node_ssh_copy(
         #     source_path=tmp_semver_dir,
         #     ssh_user=ssh_user,
         #     ssh_host=ssh_host,
         #     target_dir=remote_cfg_repo_dir,
         #     ssh_key_path=ssh_key_path,
-        #     use_remote_sudo=True,
         # )
         remote_node_ssh_copy(
             source_path=tmp_semver_dir,
             ssh_user=ssh_user,
             ssh_host=ssh_host,
-            target_dir=remote_cfg_repo_dir,
+            target_dir=transient_remote_repo,
+            ssh_key_path=ssh_key_path,
+        )
+
+        utils.log(f'Running `chown` on copied cfg dir: {transient_remote_dir}')
+        remote_node_ssh_invoke(
+            ssh_user=ssh_user,
+            ssh_host=ssh_host,
+            to_run=f'sudo chown -R casper:casper {transient_remote_dir}',
+            ssh_key_path=ssh_key_path,
+        )
+
+        utils.log(f'Moving copied cfg dir to final location @ {remote_cfg_repo_dir}')
+        remote_node_ssh_invoke(
+            ssh_user=ssh_user,
+            ssh_host=ssh_host,
+            to_run=f'sudo mv --no-clobber --update {transient_remote_dir} {remote_cfg_repo_dir}/',
             ssh_key_path=ssh_key_path,
         )
 
