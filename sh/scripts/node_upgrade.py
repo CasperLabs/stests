@@ -70,13 +70,6 @@ def push_update_to_node(
 
     # Copy over casper-node binary dir.
     utils.log('Copying over casper-node binary')
-    # remote_node_ssh_copy(
-    #     source_path=local_bin_dir,
-    #     ssh_user=ssh_user,
-    #     ssh_host=ssh_host,
-    #     target_dir=remote_bin_repo_dir,
-    #     ssh_key_path=ssh_key_path,
-    # )
     remote_node_ssh_copy(
         source_path=local_bin_dir,
         ssh_user=ssh_user,
@@ -145,13 +138,6 @@ def push_update_to_node(
 
         # Copy over modified configs.
         utils.log('Copying over modified configs')
-        # remote_node_ssh_copy(
-        #     source_path=tmp_semver_dir,
-        #     ssh_user=ssh_user,
-        #     ssh_host=ssh_host,
-        #     target_dir=remote_cfg_repo_dir,
-        #     ssh_key_path=ssh_key_path,
-        # )
         remote_node_ssh_copy(
             source_path=tmp_semver_dir,
             ssh_user=ssh_user,
