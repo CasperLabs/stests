@@ -23,11 +23,11 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
 
     """
     def _yield_parameterizations() -> typing.Generator:
-        for account_index in accounts.get_account_range(ctx.args.accounts, ctx.args.transfers):
+        for deploy_idx in range(1, ctx.args.transfers + 1):  
             yield (
                 ctx,
-                account_index,
-                accounts.get_account_idx_for_network_faucet(),
+                accounts.get_account_idx_for_deploy(ctx.args.accounts, deploy_idx),
+                accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
                 DeployType.TRANSFER_NATIVE,
             )
 

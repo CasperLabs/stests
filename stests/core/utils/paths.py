@@ -50,7 +50,21 @@ def _get_path_to_binary(network: Network, fname: str):
 
     # NCTL paths.
     if network.name_raw.startswith('nctl'):
-        path = pathlib.Path(os.getenv("NCTL")) / "assets" / f"net-{network.index}" / "bin" / fname
+        path_nctl = pathlib.Path(os.getenv("NCTL")) / "assets" / f"net-{network.index}" / "bin"
+
+        path = path_nctl / fname
+        if path.exists():
+            return path
+
+        path = path_nctl / "auction" / fname
+        if path.exists():
+            return path
+
+        path = path_nctl / "eco" / fname
+        if path.exists():
+            return path
+
+        path = path_nctl / "transfers" / fname
         if path.exists():
             return path
 

@@ -45,14 +45,14 @@ ARGS.add_argument(
 # Table columns.
 COLS = [
     ("#", BeautifulTable.ALIGN_LEFT),
-    ("Dispatch Node ID", BeautifulTable.ALIGN_LEFT),
-    ("Dispatch Timestamp", BeautifulTable.ALIGN_LEFT),
-    ("Dispatch Account Key", BeautifulTable.ALIGN_LEFT),
-    ("Hash", BeautifulTable.ALIGN_LEFT),
     ("Type", BeautifulTable.ALIGN_LEFT),
+    ("Deploy Hash", BeautifulTable.ALIGN_LEFT),
+    ("Node", BeautifulTable.ALIGN_LEFT),
+    ("Timestamp", BeautifulTable.ALIGN_LEFT),
+    ("Account Key", BeautifulTable.ALIGN_LEFT),
     ("Status", BeautifulTable.ALIGN_LEFT),
-    ("Time to Finalization (S)", BeautifulTable.ALIGN_RIGHT),
-    ("Consensus", BeautifulTable.ALIGN_RIGHT),
+    ("Finalization Time (S)", BeautifulTable.ALIGN_RIGHT),
+    ("Era:Round", BeautifulTable.ALIGN_RIGHT),
     ("Block Hash", BeautifulTable.ALIGN_RIGHT),
 ]
 
@@ -86,14 +86,14 @@ def _render_table(args, network_id, data):
     cols = [i for i, _ in COLS]
     rows = map(lambda i: [
         data.index(i) + 1,
-        f"# {i.dispatch_node_index}",
+        i.typeof.name,
+        i.deploy_hash,      
+        i.dispatch_node_index,
         i.dispatch_timestamp.isoformat(),
         i.account,
-        i.deploy_hash,      
-        i.typeof.name,
         i.status.name,      
         i.label_finalization_duration,
-        f"{i.era_id or '--'}::{i.round_id or '??'}",
+        f"{i.era_id or '--'}:{i.round_id or '??'}",
         i.block_hash or "--"
     ], data)
 
