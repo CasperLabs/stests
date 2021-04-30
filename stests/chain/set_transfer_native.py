@@ -1,4 +1,5 @@
 import json
+import random
 import subprocess
 
 from stests.core.logging import log_event
@@ -13,6 +14,9 @@ from stests.events import EventType
 
 # Method upon client to be invoked.
 _CLIENT_METHOD = "transfer"
+
+# Maximum value of a transfer ID.
+_MAX_TRANSFER_ID = (2 ** 63) - 1
 
 
 @execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
@@ -38,6 +42,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
         "--node-address", info.node_address,
         "--payment-amount", str(info.fee),
         "--secret-key", info.dispatcher.get_private_key_pem_filepath(),
+        "--transfer-id", str(random.randint(1, _MAX_TRANSFER_ID)),
         "--ttl", str(info.time_to_live),
         ],
         stdout=subprocess.PIPE,

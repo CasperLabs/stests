@@ -44,7 +44,7 @@ class _Context():
     def deploy_hashes(self):
         """Gets set of associated deploy hashes."""
         try:
-            return self.on_chain_block['header']['deploy_hashes']
+            return self.on_chain_block['body']['deploy_hashes']
         except (TypeError, KeyError):
             return []            
 
@@ -61,7 +61,7 @@ class _Context():
     def transfer_hashes(self):
         """Gets set of associated transfer hashes."""
         try:
-            return self.on_chain_block['header']['transfer_hashes']
+            return self.on_chain_block['body']['transfer_hashes']
         except (TypeError, KeyError):
             return []            
 
@@ -105,7 +105,7 @@ def _process_block(ctx: _Context):
     except Exception as err:
         log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, ctx.block_hash)
         return
-    
+
     # Escape if block empty.
     if not ctx.deploy_hashes and not ctx.transfer_hashes:
         log_event(EventType.CHAIN_ADDED_BLOCK_EMPTY, None, ctx.block_hash)
@@ -123,7 +123,7 @@ def _process_block(ctx: _Context):
         height = ctx.on_chain_block['header']['height'],
         is_switch_block = ctx.on_chain_block['header']['era_end'] is not None,
         network = ctx.network.name,
-        proposer = ctx.on_chain_block['header']['proposer'],      
+        proposer = ctx.on_chain_block['body']['proposer'],      
         size_bytes = None,
         state_root_hash = ctx.on_chain_block['header']['state_root_hash'],
         status = BlockStatus.FINALIZED.name,
