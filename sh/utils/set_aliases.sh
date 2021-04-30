@@ -45,7 +45,10 @@ alias stests-workers-stop=$STESTS_PATH_SH/workers/stop.sh
 # ALIASES: Nodes
 # ###############################################################
 
-alias stests-node-systemctl='_exec_cmd $STESTS_PATH_SH_SCRIPTS/node_systemctl.py'
+alias stests-node-start='_exec_cmd $STESTS_PATH_SH_SCRIPTS/node_start.py'
+alias stests-node-stop='_exec_cmd $STESTS_PATH_SH_SCRIPTS/node_stop.py'
+alias stests-node-toggle='_exec_cmd $STESTS_PATH_SH_SCRIPTS/node_toggle.py'
+alias stests-node-upgrade='_exec_cmd $STESTS_PATH_SH_SCRIPTS/node_upgrade.py'
 
 # ###############################################################
 # ALIASES: Registration

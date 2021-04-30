@@ -9,7 +9,7 @@ from stests.core.types.infra.enums import NetworkType
 @dataclasses.dataclass
 class Network:
     """A test network.
-    
+
     """
     # Primary faucet associated with network.
     faucet: typing.Optional[typing.Any]
@@ -25,13 +25,13 @@ class Network:
 
     # Numerical index to distinguish between multiple deployments of the same network type, e.g. lrt1, lrt2 ...etc.
     index: int
-    
+
     # Network's name, e.g. LRT-01.
     name: str
 
     # Network's raw name, e.g. lrt1.
     name_raw: str
-    
+
     # Current network status.
     status: NetworkStatus
 
@@ -42,10 +42,10 @@ class Network:
 @dataclasses.dataclass
 class NetworkIdentifier:
     """Information required to disambiguate between networks.
-    
-    """ 
+
+    """
     # Internal name of network, e.g. LRT-01
-    name: str   
+    name: str
 
     @property
     def index(self) -> int:
