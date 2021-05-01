@@ -51,8 +51,12 @@ def main(args):
         network, nodeset = get_network_nodeset(args)
     
     for node in nodeset:
-        state_root_hash = chain.get_state_root_hash(network, node, args.block_hash)
-        utils.log(f"STATE ROOT HASH @ {node.address_rpc} = {state_root_hash or 'N/A'}")
+        try:
+            state_root_hash = chain.get_state_root_hash(network, node, args.block_hash)
+        except:
+            utils.log(f"STATE ROOT HASH @ {node.address_rpc} = 'N/A'")
+        else:
+            utils.log(f"STATE ROOT HASH @ {node.address_rpc} = {state_root_hash or 'N/A'}")
 
 
 # Entry point.

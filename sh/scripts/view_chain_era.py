@@ -43,16 +43,12 @@ def main(args):
         network, nodeset = get_network_nodeset(args)
     
     for node in nodeset:
-        block = chain.get_block(network, node)
         try:
-            era_id = block['header']['era_id']
+            block = chain.get_block(network, node)
         except:
-            era_id = "N/A"
-        try:
-            height = block['header']['height']
-        except:
-            height = "N/A"
-        utils.log(f"ERA::HEIGHT @ {node.address_rpc} = {era_id}::{height}")
+            utils.log(f"ERA::HEIGHT @ {node.address_rpc} = N/A")
+        else:
+            utils.log(f"ERA:HEIGHT @ {node.address_rpc} = {block['header']['era_id']}:{block['header']['height']}")
 
 
 # Entry point.

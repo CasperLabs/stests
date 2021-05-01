@@ -125,6 +125,15 @@ def _parse_event(
             payload['DeployProcessed']['deploy_hash'], \
             None
 
+    elif 'Step' in payload:
+        return \
+            EventType.MONIT_STEP, \
+            event_id, \
+            payload, \
+            None, \
+            None, \
+            payload['Step']['era_id']
+
     log_event(
         EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,
         f"event skipped as type is unsupported :: node={node.address_rpc} :: event type={list(payload.keys())[0]}",
