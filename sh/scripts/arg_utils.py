@@ -70,10 +70,8 @@ def get_network_nodeset_by_node(args) -> typing.Tuple[Network, typing.List[Node]
     # A specific node.
     if isinstance(args.node, int):
         try:
-            nodeset = [next((x for x in nodeset if x.index > args.node))]
-        except StopIteration:
-            raise ValueError("Invalid node index.")
-        else:
-            return network, nodeset
+            return network, [nodeset[args.node - 1]]
+        except IndexError:
+            return network, [random.choice(nodeset)]
 
     raise ValueError("Invalid node index.")

@@ -10,9 +10,6 @@ from stests.core.crypto.enums import KeyEncoding
 # Curve of interest.
 CURVE = ecdsa.SECP256k1
 
-# Use uncompressed public keys.
-UNCOMPRESSED = "uncompressed"
-
 
 def get_key_pair() -> typing.Tuple[bytes, bytes]:
     """Returns an SECP256K1 key pair, each key is a 32 byte array.
@@ -68,4 +65,4 @@ def _get_key_pair_from_sk(sk: ecdsa.SigningKey) -> typing.Tuple[bytes, bytes]:
     
     """
     return sk.to_string(), \
-           sk.verifying_key.to_string(UNCOMPRESSED)
+           sk.verifying_key.to_string("compressed")
