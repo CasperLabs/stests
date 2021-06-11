@@ -99,9 +99,9 @@ def create_node() -> types.infra.Node:
         host="localhost",
         index=1,
         network_id=create_network_id(),
-        port_rest=50101,
-        port_rpc=40101,
-        port_event=60101,
+        port_rest=14101,
+        port_rpc=11101,
+        port_event=18101,
         typeof=random.choice(list(types.infra.NodeType)),
         status=random.choice(list(types.infra.NodeStatus)),
     )
