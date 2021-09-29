@@ -1,6 +1,4 @@
-import json
 import random
-import subprocess
 
 import pycspr 
 
