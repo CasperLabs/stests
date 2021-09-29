@@ -62,7 +62,7 @@ def _get_chain_name(path_assets: pathlib.Path) -> str:
     """
     chainspec = _get_chainspec(path_assets)
 
-    return chainspec['genesis']['name']
+    return chainspec['network']['name']
 
 
 def _get_chainspec(path_assets: pathlib.Path) -> str:
