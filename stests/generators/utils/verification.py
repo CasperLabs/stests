@@ -37,14 +37,13 @@ def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: 
     
     """
     account = cache.state.get_account_by_index(ctx, account_index)
-    network, node = get_network_node(ctx)
-    state_root_hash = chain.get_state_root_hash(network, node)
+    _, node = get_network_node(ctx)
 
-    purse_uref = chain.get_account_main_purse_uref(network, node, account.account_key, state_root_hash)
+    purse_uref = chain.get_account_main_purse_uref(node, account.account_key)
     assert purse_uref is not None, \
            f"account {account_index} main purse uref could not be retrieved - probably on-chain account does not exist"
 
-    balance = chain.get_account_balance(node, purse_uref, state_root_hash)
+    balance = chain.get_account_balance(node, purse_uref)
     assert balance == expected, \
            f"account balance mismatch: account_index={account_index}, account_key={account.account_key}, expected={expected}, actual={balance}"
 
@@ -52,7 +51,6 @@ def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: 
 def verify_account_balance_on_transfer(
     ctx: ExecutionContext,
     node_id: NodeIdentifier,
-    state_root_hash: str,
     account_index: int,
     expected: int,
     ) -> Account:
@@ -63,15 +61,15 @@ def verify_account_balance_on_transfer(
     account = cache.state.get_account_by_index(ctx, account_index)
 
     # Set network / node in readiness for chain interaction.
-    network, node = get_network_node(node_id)
+    _, node = get_network_node(node_id)
 
     # Set account main purse uref.
-    purse_uref = chain.get_account_main_purse_uref(network, node, account.account_key, state_root_hash)
+    purse_uref = chain.get_account_main_purse_uref(node, account.account_key)
     assert purse_uref is not None, \
            f"account {account_index} main purse uref could not be retrieved - probably on-chain account does not exist"
 
     # Set account balance.
-    balance = chain.get_account_balance(node, purse_uref, state_root_hash)
+    balance = chain.get_account_balance(node, purse_uref)
     assert balance == expected, \
            f"account balance mismatch: account_index={account_index}, account_key={account.account_key}, expected={expected}, actual={balance}"
 

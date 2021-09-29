@@ -20,6 +20,10 @@ def execute(
     :returns: Account main purse uref.
 
     """
-    account = get_account(network, node, account_key, state_root_hash)
+    # Map inputs to pycspr objects.
+    node_client = node.as_pycspr_client
 
-    return account['stored_value']['Account']['main_purse']
+    # Query chain to pull main purse uref.
+    uref = node_client.queries.get_account_main_purse_uref(account_key, state_root_hash)
+
+    return uref.as_string()

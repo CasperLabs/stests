@@ -58,7 +58,6 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     verification.verify_account_balance_on_transfer(
         ctx,
         node_id,
-        deploy.state_root_hash,
         deploy.associated_account_index,
         ctx.args.amount_to_fund,
         )

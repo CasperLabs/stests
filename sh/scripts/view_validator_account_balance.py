@@ -37,13 +37,13 @@ def main(args):
 
     """
     if args.node:
-        network, node = get_network_node(args)
+        _, node = get_network_node(args)
         nodeset = [node]
     else:
-        network, nodeset = get_network_nodeset(args)
+        _, nodeset = get_network_nodeset(args)
 
     for node in nodeset:
-        purse_uref = chain.get_account_main_purse_uref(network, node, node.account.account_key)
+        purse_uref = chain.get_account_main_purse_uref(node, node.account.account_key)
         balance = chain.get_account_balance(node, purse_uref)
         utils.log(f"VALIDATOR ACCOUNT BALANCE @ NODE #{node.index} ({node.address}) = {balance or 'N/A'}")
 

@@ -139,11 +139,11 @@ def get_account(ctx: ExecutionContext, network: Network, account_index: int) -> 
     return factory.create_account_for_run(ctx, account_index)
 
 
-def get_account_balance(network: Network, node: Node, account: Account) -> int:
+def get_account_balance(node: Node, account: Account) -> int:
     """Returns either a faucet account or a user account.
     
     """
-    purse_uref = chain.get_account_main_purse_uref(network, node, account.account_key)
+    purse_uref = chain.get_account_main_purse_uref(node, account.account_key)
 
     return chain.get_account_balance(node, purse_uref)
 
