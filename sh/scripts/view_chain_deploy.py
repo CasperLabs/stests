@@ -43,8 +43,8 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network, node = get_network_node(args)
-    deploy = chain.get_deploy(network, node, args.deploy_hash)
+    _, node = get_network_node(args)
+    deploy = chain.get_deploy(node, args.deploy_hash)
     if deploy:
         print(json.dumps(deploy, indent=4))
     else:

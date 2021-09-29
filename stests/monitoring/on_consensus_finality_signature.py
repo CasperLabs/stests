@@ -153,7 +153,7 @@ def _process_deploy(ctx: _Context):
     """    
     # Set deploy - escape if not found.
     try:
-        ctx.on_chain_deploy = chain.get_deploy(ctx.network, ctx.node, ctx.deploy_hash)
+        ctx.on_chain_deploy = chain.get_deploy(ctx.node, ctx.deploy_hash)
     except Exception as err:
         log_event(EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND, None, ctx.deploy_hash)
         return
