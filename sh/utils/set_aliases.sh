@@ -3,6 +3,7 @@
 # ###############################################################
 function _exec_cmd()
 {
+    echo $(which python3)
     # Destructure command script & args.
     args=($@)
     args_len=${#args[@]}
@@ -89,7 +90,9 @@ alias stests-view-chain-height='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_hei
 alias stests-view-chain-state-root-hash='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_chain_state_root_hash.py'
 
 # Views #2: node information.
-alias stests-view-node-events='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_events.py'
+alias stests-view-node-events='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_events.py --stream main'
+alias stests-view-node-events-main='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_events.py --stream main'
+alias stests-view-node-events-sigs='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_events.py --stream sigs'
 alias stests-view-node-metric='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py'
 alias stests-view-node-metric-deploy-gossiper='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric deploy_gossiper'
 alias stests-view-node-metric-contract-runtime='_exec_cmd $STESTS_PATH_SH_SCRIPTS/view_node_metric.py --metric contract_runtime'

@@ -11,7 +11,7 @@ from stests.events import EventType
 
 
 
-def execute(node: Node, event_callback: typing.Callable, event_id: int = 0):
+def execute(node: Node, event_callback: typing.Callable, event_id: int = 0, stream_type="main"):
     """Hooks upto a node's event stream invoking passed callback for each event.
 
     :param node: The node to which to bind.
@@ -20,7 +20,7 @@ def execute(node: Node, event_callback: typing.Callable, event_id: int = 0):
 
     """
     log_event(EventType.MONIT_STREAM_OPENING, node.address_event, node)
-    for event_type, event_id, payload, block_hash, deploy_hash, account_key in _yield_events(node, event_id):
+    for event_type, event_id, payload, block_hash, deploy_hash, account_key in _yield_events(node, event_id, stream_type):
         event_info = factory.create_node_event_info(
             node,
             event_id,
@@ -32,12 +32,12 @@ def execute(node: Node, event_callback: typing.Callable, event_id: int = 0):
         event_callback(node, event_info, payload)
 
 
-def _yield_events(node: Node, event_id: int):
+def _yield_events(node: Node, event_id: int, stream_type: str):
     """Yields events streaming from node.
 
     """
     # Set url.
-    url = node.url_event
+    url = f"{node.url_event}/{stream_type}"
     if event_id:
         url = f"{url}?start_from={event_id}"
 

@@ -24,6 +24,7 @@ typing-inspect = "*"
 beautifultable = "*"
 python-logstash = "*"
 requests = "*"
+pycspr = "*"
 pyblake2 = "*"
 ecdsa = "*"
 toml = "*"
@@ -31,4 +32,4 @@ sseclient-py = "*"
 jsonrpcclient = "*"
 
 [requires]
-python_version = "3.9.1"
+python_version = "3.9"

@@ -33,6 +33,15 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
+# CLI argument: stream type.
+ARGS.add_argument(
+    "--stream",
+    default="main",
+    dest="stream_type",
+    help="The type of event stream to which to bind.",
+    type=str
+    )
+    
 # CLI argument: event type filter.
 ARGS.add_argument(
     "--type",
@@ -67,7 +76,7 @@ def main(args):
             _on_event_callback(node, info, payload)
 
     _, node = get_network_node(args)
-    chain.stream_events(node, _filter, args.event_id)
+    chain.stream_events(node, _filter, args.event_id, args.stream_type)
 
 
 def _on_event_callback(node: Node, info: NodeEventInfo, payload: dict):

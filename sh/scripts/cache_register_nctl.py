@@ -305,11 +305,11 @@ def _get_node_port(port_type:str, net_index: int, node_index: int) -> int:
 
     """
     if port_type == "rpc":
-        return 40000 + (net_index * 100) + node_index
+        return 11000 + (net_index * 100) + node_index
     if port_type == "rest":
-        return 50000 + (net_index * 100) + node_index
+        return 14000 + (net_index * 100) + node_index
     if port_type == "event":
-        return 60000 + (net_index * 100) + node_index
+        return 18000 + (net_index * 100) + node_index
 
 
 # Entry point.

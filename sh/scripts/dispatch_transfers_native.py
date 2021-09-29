@@ -107,6 +107,7 @@ def _get_account_for_cp2(network: Network, accounts: int, deploy_idx: int) -> Ac
         if not account_idx in _ACCOUNTS:
             _ACCOUNTS[account_idx] = factory.create_account(network.name, AccountType.OTHER, index=account_idx)
         return _ACCOUNTS[account_idx]
+
     return factory.create_account(network.name, AccountType.OTHER, index=deploy_idx)
 
 

@@ -2,6 +2,8 @@ import dataclasses
 import typing
 from datetime import datetime
 
+import pycspr
+
 from stests.core.types.chain.account import Account
 from stests.core.types.infra.enums import NodeStatus
 from stests.core.types.infra.enums import NodeGroup
@@ -121,7 +123,17 @@ class Node:
             network=network_identifier,
             index=self.index,
         )
-
+    
+    @property
+    def as_pycspr_client() -> pycspr.NodeClient:
+        return pycspr.NodeClient(
+            pycspr.NodeConnectionInfo(
+                host=self.host,
+                port_rest=self.port_rest,
+                port_rpc=self.port_rpc,
+                port_sse=self.port_event,
+            )
+        )
 
 
 @dataclasses.dataclass

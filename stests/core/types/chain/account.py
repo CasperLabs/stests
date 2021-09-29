@@ -1,6 +1,8 @@
 import dataclasses
 import typing
 
+import pycspr
+
 from stests.core import crypto
 from stests.core.types.chain.enums import AccountType
 
@@ -49,6 +51,14 @@ class Account:
         return bytes.fromhex(self.account_key)
 
     @property
+    def as_pycspr_private_key(self) -> pycspr.types.PublicKey:
+        return pycspr.parse_private_key_bytes(bytes.fromhex(self.private_key), self.key_algo)
+
+    @property
+    def as_pycspr_public_key(self) -> pycspr.types.PublicKey:
+        return pycspr.parse_public_key_bytes(bytes.fromhex(self.public_key), self.key_algo)
+
+    @property
     def is_run_account(self):
         return self.run_index is not None
 
@@ -68,6 +78,7 @@ class Account:
             bytes.fromhex(self.private_key),
             crypto.KeyAlgorithm[self.key_algo],
             )
+
 
 
 @dataclasses.dataclass
