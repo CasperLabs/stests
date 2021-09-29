@@ -43,7 +43,7 @@ def main(args):
         _, nodeset = get_network_nodeset(args)
 
     for node in nodeset:
-        info = chain.get_node_status(node)
+        info = node.get_node_status()
         if info:
             utils.log_line()
             utils.log(f"NODE STATUS @ {node.address_rpc}:")

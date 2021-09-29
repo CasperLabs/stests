@@ -135,6 +135,128 @@ class Node:
             )
         )
 
+    def get_account(self, account_key: str, block_id: typing.Union[None, bytes, str, int] = None) -> dict:
+        """Returns on-chain account information at a certain block.
+
+        :param account_key: An account holder's public key prefixed with a key type identifier.
+        :param block_id: Identifier of a finalised block.
+        :returns: Account information in JSON format.
+
+        """ 
+        client = self.as_pycspr_client
+
+        return client.queries.get_account_info(account_key, block_id)
+
+
+    def get_account_balance(self, purse_uref: str, state_root_hash: str = None) -> int:    
+        """Queries account balance at a certain block height | hash.
+
+        :param purse_uref: URef of a purse associated with an on-chain account.
+        :param state_root_hash: A node's root state hash at some point in chain time.
+        :returns: Account balance.
+
+        """
+        client = self.as_pycspr_client
+
+        return client.queries.get_account_balance(purse_uref, state_root_hash)
+
+
+    def get_account_main_purse_uref(self, account_key: str, state_root_hash: str = None) -> str:
+        """Returns main purse uref for an account.
+
+        :param account_key: Key of account being pulled.
+        :param state_root_hash: State root hash at a node within target network.
+
+        :returns: Account main purse uref.
+
+        """
+        client = self.as_pycspr_client
+        uref = client.queries.get_account_main_purse_uref(account_key, state_root_hash)
+
+        return uref.as_string()
+
+
+    def get_auction_info(self) -> dict:
+        """Queries chain for current auction contract information.
+
+        :returns: On-chain auction information.
+
+        """
+        client = self.as_pycspr_client
+
+        return client.queries.get_auction_info()
+
+
+    def get_block(self, block_id: typing.Union[None, bytes, str, int] = None) -> str:
+        """Queries a node for a block - returns latest block if hash is not provided.
+
+        :param block_id: Identifier of a finalised block.
+        :returns: Representation of a block within a node's state.
+
+        """
+        client = self.as_pycspr_client
+
+        return client.queries.get_block(block_id)
+
+
+    def get_deploy(self, deploy_hash: str = None) -> dict:
+        """Queries a node for a deploy.
+
+        :param deploy_hash: Hash of deploy being pulled.
+        :returns: Representation of a deploy within a node's state.
+
+        """
+        client = self.as_pycspr_client
+
+        return client.queries.get_deploy(deploy_hash)
+
+
+    def get_node_metrics(self) -> list:
+        """Queries a node for it's current metrics.
+
+        :returns: Representation of a node's metrics.
+
+        """
+        client = self.as_pycspr_client
+
+        return client.queries.get_node_metrics()
+
+
+    def get_node_peers(self) -> list:
+        """Queries a node for it's current peer set.
+
+        :returns: List of a node's peer set.
+
+        """
+        client = self.as_pycspr_client
+
+        return client.queries.get_node_peers()
+
+
+    def get_node_status(self) -> str:
+        """Queries a node for it's current status.
+
+        :returns: Representation of a node's status.
+
+        """
+        client = self.as_pycspr_client
+
+        return client.queries.get_node_status()
+
+
+    def get_state_root_hash(self, block_id: typing.Union[None, bytes, str, int] = None) -> str:
+        """Queries a node for it's current state root hash.
+
+        :param block_id: Identifier of a finalised block.
+        :returns: Global state root hash at a network node.
+
+        """
+        client = self.as_pycspr_client
+
+        state_root_hash: bytes = client.queries.get_state_root_hash(block_id)
+
+        return state_root_hash.hex()
+
 
 @dataclasses.dataclass
 class NodeEventInfo:

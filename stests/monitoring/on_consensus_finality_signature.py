@@ -101,7 +101,7 @@ def _process_block(ctx: _Context):
     """
     # Escape if block not found.
     try:
-        ctx.on_chain_block = chain.get_block(ctx.node, ctx.block_hash)
+        ctx.on_chain_block = ctx.node.get_block(ctx.block_hash)
     except Exception as err:
         log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, ctx.block_hash)
         return
@@ -153,7 +153,7 @@ def _process_deploy(ctx: _Context):
     """    
     # Set deploy - escape if not found.
     try:
-        ctx.on_chain_deploy = chain.get_deploy(ctx.node, ctx.deploy_hash)
+        ctx.on_chain_deploy = ctx.node.get_deploy(ctx.deploy_hash)
     except Exception as err:
         log_event(EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND, None, ctx.deploy_hash)
         return

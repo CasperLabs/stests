@@ -46,7 +46,7 @@ def main(args):
 
     """
     _, node = get_network_node(args)
-    account = chain.get_account(node, args.account_key)
+    account = node.get_account(args.account_key)
 
     if account:
         print(json.dumps(account, indent=4))

@@ -143,9 +143,9 @@ def get_account_balance(node: Node, account: Account) -> int:
     """Returns either a faucet account or a user account.
     
     """
-    purse_uref = chain.get_account_main_purse_uref(node, account.account_key)
+    purse_uref = node.get_account_main_purse_uref(account.account_key)
 
-    return chain.get_account_balance(node, purse_uref)
+    return node.get_account_balance(purse_uref)
 
 
 def get_account_idx_for_deploy(accounts: int, deploy_idx: int) -> int:

@@ -1,7 +1,6 @@
 import argparse
 import json
 
-from stests import chain
 from stests.core.utils import args_validator
 from stests.core.utils import env
 from arg_utils import get_network_node
@@ -44,7 +43,7 @@ def main(args):
 
     """
     _, node = get_network_node(args)
-    deploy = chain.get_deploy(node, args.deploy_hash)
+    deploy = node.get_deploy(args.deploy_hash)
     if deploy:
         print(json.dumps(deploy, indent=4))
     else:

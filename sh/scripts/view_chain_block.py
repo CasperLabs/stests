@@ -29,12 +29,12 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
-# CLI argument: block hash.
+# CLI argument: block identifier.
 ARGS.add_argument(
     "--block",
-    dest="block_hash",
-    help="Block hash.",
-    type=str,
+    dest="block_id",
+    help="Block identifier.",
+    type=str
     )
 
 
@@ -44,8 +44,13 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
+    try:
+        block_id = int(args.block_id)
+    except:
+        block_id = args.block_id
+
     _, node = get_network_node(args)
-    block = chain.get_block(node, args.block_hash)
+    block = node.get_block(block_id)
 
     if block:
         print(json.dumps(block, indent=4))

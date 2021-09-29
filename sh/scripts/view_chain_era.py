@@ -44,7 +44,7 @@ def main(args):
     
     for node in nodeset:
         try:
-            block = chain.get_block(node)
+            block = node.get_block()
         except:
             utils.log(f"ERA::HEIGHT @ {node.address_rpc} = N/A")
         else:

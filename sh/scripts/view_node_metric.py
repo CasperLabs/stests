@@ -54,7 +54,7 @@ def main(args):
     for node in nodeset:
         utils.log_line()
         utils.log(f"NODE METRICS @ NODE {node.index} :: {node.address_rpc}:")
-        for metric in chain.get_node_metrics(node):
+        for metric in node.get_node_metrics():
             if args.metric == "*" or metric.startswith(args.metric):
                 print(metric)
 

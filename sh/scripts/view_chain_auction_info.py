@@ -37,7 +37,7 @@ def main(args):
 
     """
     _, node = get_network_node(args)
-    auction_info = chain.get_auction_info(node)
+    auction_info = node.get_auction_info()
 
     if auction_info:
         print(json.dumps(auction_info, indent=4))

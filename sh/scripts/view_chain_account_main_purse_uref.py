@@ -46,7 +46,7 @@ def main(args):
 
     """
     _, node = get_network_node(args)
-    purse_uref = chain.get_account_main_purse_uref(node, args.account_key)
+    purse_uref = node.get_account_main_purse_uref(args.account_key)
 
     utils.log(f"ACCOUNT MAIN PURSE UREF = {purse_uref or 'N/A'}")
 

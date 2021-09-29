@@ -29,11 +29,11 @@ ARGS.add_argument(
     type=args_validator.validate_node_index
     )
 
-# CLI argument: block hash.
+# CLI argument: block identifier.
 ARGS.add_argument(
     "--block",
-    dest="block_hash",
-    help="Hash of block for which the associated state root hash is being queried.",
+    dest="block_id",
+    help="Block identifier.",
     type=str
     )
 
@@ -44,6 +44,11 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
+    try:
+        block_id = int(args.block_id)
+    except:
+        block_id = args.block_id
+        
     if args.node:
         _, node = get_network_node(args)
         nodeset = [node]
@@ -52,7 +57,7 @@ def main(args):
     
     for node in nodeset:
         try:
-            state_root_hash = chain.get_state_root_hash(node, args.block_hash)
+            state_root_hash = node.get_state_root_hash(block_id)
         except:
             utils.log(f"STATE ROOT HASH @ {node.address_rpc} = 'N/A'")
         else:

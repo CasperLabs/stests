@@ -46,7 +46,7 @@ def main(args):
     for node in nodeset:
         utils.log_line()
         utils.log(f"VALIDATOR ACCOUNT @ NODE {node.index} ({node.address}) :")
-        account = chain.get_account(node, node.account.account_key)
+        account = node.get_account(node.account.account_key)
         if account:
             print(json.dumps(account, indent=4))
         else:
