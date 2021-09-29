@@ -125,7 +125,7 @@ class Node:
         )
     
     @property
-    def as_pycspr_client() -> pycspr.NodeClient:
+    def as_pycspr_client(self) -> pycspr.NodeClient:
         return pycspr.NodeClient(
             pycspr.NodeConnectionInfo(
                 host=self.host,

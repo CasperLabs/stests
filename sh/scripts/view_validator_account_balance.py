@@ -44,7 +44,7 @@ def main(args):
 
     for node in nodeset:
         purse_uref = chain.get_account_main_purse_uref(network, node, node.account.account_key)
-        balance = chain.get_account_balance(network, node, purse_uref)
+        balance = chain.get_account_balance(node, purse_uref)
         utils.log(f"VALIDATOR ACCOUNT BALANCE @ NODE #{node.index} ({node.address}) = {balance or 'N/A'}")
 
 

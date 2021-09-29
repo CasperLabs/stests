@@ -29,7 +29,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
     # Map inputs to pycspr objects.
     cp1 = info.dispatcher.as_pycspr_private_key
     cp2 = cp2.as_pycspr_private_key
-    node_client = info.as_pycspr_node_client
+    node_client = info.as_pycspr_client
 
     # Set deploy & approve.
     deploy = pycspr.create_native_transfer(
@@ -46,7 +46,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
     # Dispatch deploy.
     deploy_hash = node_client.deploys.send(deploy)
 
-    if not verbose:
+    if verbose:
         log_event(
             EventType.WFLOW_DEPLOY_DISPATCHED,
             f"{info.node.address} :: {deploy_hash} :: transfer (native) :: {amount} CSPR :: from {cp1.account_key[:8].hex()} -> {cp2.account_key[:8].hex()} ",

@@ -3,7 +3,6 @@
 # ###############################################################
 function _exec_cmd()
 {
-    echo $(which python3)
     # Destructure command script & args.
     args=($@)
     args_len=${#args[@]}

@@ -72,7 +72,7 @@ def do_transfer(
 
     # Set amount to transfer (in the case of refunds).
     if amount is None:
-        amount = get_account_balance(network, node, cp1) - chain.DEFAULT_TX_FEE
+        amount = get_account_balance(node, cp1) - chain.DEFAULT_TX_FEE
 
     # Dispatch tx -> chain.
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
@@ -145,7 +145,7 @@ def get_account_balance(network: Network, node: Node, account: Account) -> int:
     """
     purse_uref = chain.get_account_main_purse_uref(network, node, account.account_key)
 
-    return chain.get_account_balance(network, node, purse_uref)
+    return chain.get_account_balance(node, purse_uref)
 
 
 def get_account_idx_for_deploy(accounts: int, deploy_idx: int) -> int:

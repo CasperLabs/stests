@@ -44,7 +44,7 @@ def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: 
     assert purse_uref is not None, \
            f"account {account_index} main purse uref could not be retrieved - probably on-chain account does not exist"
 
-    balance = chain.get_account_balance(network, node, purse_uref, state_root_hash)
+    balance = chain.get_account_balance(node, purse_uref, state_root_hash)
     assert balance == expected, \
            f"account balance mismatch: account_index={account_index}, account_key={account.account_key}, expected={expected}, actual={balance}"
 
@@ -71,7 +71,7 @@ def verify_account_balance_on_transfer(
            f"account {account_index} main purse uref could not be retrieved - probably on-chain account does not exist"
 
     # Set account balance.
-    balance = chain.get_account_balance(network, node, purse_uref, state_root_hash)
+    balance = chain.get_account_balance(node, purse_uref, state_root_hash)
     assert balance == expected, \
            f"account balance mismatch: account_index={account_index}, account_key={account.account_key}, expected={expected}, actual={balance}"
 

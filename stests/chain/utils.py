@@ -35,18 +35,7 @@ class DeployDispatchInfo():
         self.time_to_live = time_to_live
         self.fee = fee
         self.gas_price = gas_price
-
-
-    @property
-    def as_pycspr_node_client(self) -> pycspr.NodeClient:
-        return pycspr.NodeClient(
-            pycspr.NodeConnectionInfo(
-                host=self.node.host,
-                port_rest=self.node.port_rest,
-                port_rpc=self.node.port_rpc,
-                port_sse=self.node.port_event,
-            )
-        )
+        self.as_pycspr_client = node.as_pycspr_client
 
 
 class NodeApi_Exception(Exception):
