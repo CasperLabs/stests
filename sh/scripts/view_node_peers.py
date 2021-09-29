@@ -37,13 +37,13 @@ def main(args):
 
     """
     if args.node:
-        network, node = get_network_node(args)
+        _, node = get_network_node(args)
         nodeset = [node]
     else:
-        network, nodeset = get_network_nodeset(args)
+        _, nodeset = get_network_nodeset(args)
 
     for node in nodeset:
-        info = chain.get_node_peers(network, node)
+        info = chain.get_node_peers(node)
         if info:
             utils.log_line()
             utils.log(f"NODE PEERS @ {node.address_rpc}:")
