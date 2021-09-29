@@ -1,27 +1,17 @@
-from jsonrpcclient import request
-
-from stests.core.types.infra import Network
 from stests.core.types.infra import Node
 
 
 
-# Method upon client to be invoked.
-_RPC_METHOD = "info_get_status"
-
-
-def execute(
-    network: Network,
-    node: Node,
-    ) -> str:
+def execute(node: Node,) -> str:
     """Queries a node for it's current status.
 
-    :param network: Target network being tested.
     :param node: Target node being tested.
 
     :returns: Representation of a node's status.
 
     """
-    response = request(node.url_rpc, _RPC_METHOD)
+    # Map inputs to pycspr objects.
+    node_client = node.as_pycspr_client
 
-    return response.data.result
+    return node_client.queries.get_node_status()
 
