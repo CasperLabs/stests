@@ -1,15 +1,8 @@
-import json
-
 from stests.core.types.infra import Node
-from stests.core.utils import paths
 
 
 
-def execute(
-    node: Node,
-    purse_uref: str,
-    state_root_hash: str = None,
-    ) -> int:
+def execute(node: Node, purse_uref: str, state_root_hash: str = None) -> int:
     """Queries account balance at a certain block height | hash.
 
     :param node: Target node being tested.

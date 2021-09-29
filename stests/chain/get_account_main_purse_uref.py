@@ -2,11 +2,7 @@ from stests.core.types.infra import Node
 
 
 
-def execute(
-    node: Node,
-    account_key: str,
-    state_root_hash: str = None,
-    ) -> int:
+def execute(node: Node, account_key: str, state_root_hash: str = None) -> int:
     """Returns main purse uref for an account.
 
     :param node: Target node being tested.

@@ -36,8 +36,8 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network, node = get_network_node(args)
-    auction_info = chain.get_auction_info(network, node)
+    _, node = get_network_node(args)
+    auction_info = chain.get_auction_info(node)
 
     if auction_info:
         print(json.dumps(auction_info, indent=4))
