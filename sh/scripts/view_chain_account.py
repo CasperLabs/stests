@@ -45,8 +45,8 @@ def main(args):
     :param args: Parsed CLI arguments.
 
     """
-    network, node = get_network_node(args)
-    account = chain.get_account(network, node, args.account_key)
+    _, node = get_network_node(args)
+    account = chain.get_account(node, args.account_key)
 
     if account:
         print(json.dumps(account, indent=4))

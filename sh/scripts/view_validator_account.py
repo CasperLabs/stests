@@ -38,15 +38,15 @@ def main(args):
 
     """
     if args.node:
-        network, node = get_network_node(args)
+        _, node = get_network_node(args)
         nodeset = [node]
     else:
-        network, nodeset = get_network_nodeset(args)
+        _, nodeset = get_network_nodeset(args)
 
     for node in nodeset:
         utils.log_line()
         utils.log(f"VALIDATOR ACCOUNT @ NODE {node.index} ({node.address}) :")
-        account = chain.get_account(network, node, node.account.account_key)
+        account = chain.get_account(node, node.account.account_key)
         if account:
             print(json.dumps(account, indent=4))
         else:
