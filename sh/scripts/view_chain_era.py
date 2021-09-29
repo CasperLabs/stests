@@ -37,14 +37,14 @@ def main(args):
 
     """
     if args.node:
-        network, node = get_network_node(args)
+        _, node = get_network_node(args)
         nodeset = [node]
     else:
-        network, nodeset = get_network_nodeset(args)
+        _, nodeset = get_network_nodeset(args)
     
     for node in nodeset:
         try:
-            block = chain.get_block(network, node)
+            block = chain.get_block(node)
         except:
             utils.log(f"ERA::HEIGHT @ {node.address_rpc} = N/A")
         else:

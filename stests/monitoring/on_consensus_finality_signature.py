@@ -101,7 +101,7 @@ def _process_block(ctx: _Context):
     """
     # Escape if block not found.
     try:
-        ctx.on_chain_block = chain.get_block(ctx.network, ctx.node, ctx.block_hash)
+        ctx.on_chain_block = chain.get_block(ctx.node, ctx.block_hash)
     except Exception as err:
         log_event(EventType.CHAIN_QUERY_BLOCK_NOT_FOUND, None, ctx.block_hash)
         return
