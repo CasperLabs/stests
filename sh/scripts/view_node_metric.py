@@ -46,15 +46,15 @@ def main(args):
 
     """
     if args.node:
-        network, node = get_network_node(args)
+        _, node = get_network_node(args)
         nodeset = [node]
     else:
-        network, nodeset = get_network_nodeset(args)
+        _, nodeset = get_network_nodeset(args)
 
     for node in nodeset:
         utils.log_line()
         utils.log(f"NODE METRICS @ NODE {node.index} :: {node.address_rpc}:")
-        for metric in chain.get_node_metrics(network, node).split("\n"):
+        for metric in chain.get_node_metrics(node):
             if args.metric == "*" or metric.startswith(args.metric):
                 print(metric)
 

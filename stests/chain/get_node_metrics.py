@@ -1,14 +1,8 @@
-import requests
-
-from stests.core.types.infra import Network
 from stests.core.types.infra import Node
 
 
 
-def execute(
-    network: Network,
-    node: Node,
-    ) -> str:
+def execute(node: Node) -> str:
     """Queries a node for it's current metrics.
 
     :param network: Target network being tested.
@@ -17,7 +11,7 @@ def execute(
     :returns: Representation of a node's metrics.
 
     """
-    url = f"{node.url_rest}/metrics"
-    response = requests.get(url)
+    # Map inputs to pycspr objects.
+    node_client = node.as_pycspr_client
 
-    return response.content.decode("utf-8")
+    return node_client.queries.get_node_metrics()
