@@ -45,14 +45,14 @@ def main(args):
 
     """
     if args.node:
-        network, node = get_network_node(args)
+        _, node = get_network_node(args)
         nodeset = [node]
     else:
-        network, nodeset = get_network_nodeset(args)
+        _, nodeset = get_network_nodeset(args)
     
     for node in nodeset:
         try:
-            state_root_hash = chain.get_state_root_hash(network, node, args.block_hash)
+            state_root_hash = chain.get_state_root_hash(node, args.block_hash)
         except:
             utils.log(f"STATE ROOT HASH @ {node.address_rpc} = 'N/A'")
         else:
