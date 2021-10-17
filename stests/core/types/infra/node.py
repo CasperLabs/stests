@@ -127,13 +127,22 @@ class Node:
     @property
     def as_pycspr_client(self) -> pycspr.NodeClient:
         return pycspr.NodeClient(
-            pycspr.NodeConnectionInfo(
+            pycspr.NodeConnection(
                 host=self.host,
                 port_rest=self.port_rest,
                 port_rpc=self.port_rpc,
                 port_sse=self.port_event,
             )
         )
+
+    def dispatch_deploy(self, deploy: pycspr.types.Deploy) -> str:
+        """Dispatches a deploy to a node for processing.
+
+        :param deploy: A deploy to be processed at a node.
+
+        """
+        return self.as_pycspr_client.send_deploy(deploy)
+
 
     def get_account(self, account_key: str, block_id: typing.Union[None, bytes, str, int] = None) -> dict:
         """Returns on-chain account information at a certain block.
@@ -143,9 +152,7 @@ class Node:
         :returns: Account information in JSON format.
 
         """ 
-        client = self.as_pycspr_client
-
-        return client.queries.get_account_info(account_key, block_id)
+        return self.as_pycspr_client.get_account_info(account_key, block_id)
 
 
     def get_account_balance(self, purse_uref: str, state_root_hash: str = None) -> int:    
@@ -156,9 +163,7 @@ class Node:
         :returns: Account balance.
 
         """
-        client = self.as_pycspr_client
-
-        return client.queries.get_account_balance(purse_uref, state_root_hash)
+        return self.as_pycspr_client.get_account_balance(purse_uref, state_root_hash)
 
 
     def get_account_main_purse_uref(self, account_key: str, state_root_hash: str = None) -> str:
@@ -170,8 +175,7 @@ class Node:
         :returns: Account main purse uref.
 
         """
-        client = self.as_pycspr_client
-        uref = client.queries.get_account_main_purse_uref(account_key, state_root_hash)
+        uref = self.as_pycspr_client.get_account_main_purse_uref(account_key, state_root_hash)
 
         return uref.as_string()
 
@@ -182,9 +186,7 @@ class Node:
         :returns: On-chain auction information.
 
         """
-        client = self.as_pycspr_client
-
-        return client.queries.get_auction_info()
+        return self.as_pycspr_client.get_auction_info()
 
 
     def get_block(self, block_id: typing.Union[None, bytes, str, int] = None) -> str:
@@ -194,9 +196,7 @@ class Node:
         :returns: Representation of a block within a node's state.
 
         """
-        client = self.as_pycspr_client
-
-        return client.queries.get_block(block_id)
+        return self.as_pycspr_client.get_block(block_id)
 
 
     def get_deploy(self, deploy_hash: str = None) -> dict:
@@ -206,9 +206,7 @@ class Node:
         :returns: Representation of a deploy within a node's state.
 
         """
-        client = self.as_pycspr_client
-
-        return client.queries.get_deploy(deploy_hash)
+        return self.as_pycspr_client.get_deploy(deploy_hash)
 
 
     def get_node_metrics(self) -> list:
@@ -217,9 +215,7 @@ class Node:
         :returns: Representation of a node's metrics.
 
         """
-        client = self.as_pycspr_client
-
-        return client.queries.get_node_metrics()
+        return self.as_pycspr_client.get_node_metrics()
 
 
     def get_node_peers(self) -> list:
@@ -228,9 +224,7 @@ class Node:
         :returns: List of a node's peer set.
 
         """
-        client = self.as_pycspr_client
-
-        return client.queries.get_node_peers()
+        return self.as_pycspr_client.get_node_peers()
 
 
     def get_node_status(self) -> str:
@@ -239,9 +233,7 @@ class Node:
         :returns: Representation of a node's status.
 
         """
-        client = self.as_pycspr_client
-
-        return client.queries.get_node_status()
+        return self.as_pycspr_client.get_node_status()
 
 
     def get_state_root_hash(self, block_id: typing.Union[None, bytes, str, int] = None) -> str:
@@ -251,9 +243,7 @@ class Node:
         :returns: Global state root hash at a network node.
 
         """
-        client = self.as_pycspr_client
-
-        state_root_hash: bytes = client.queries.get_state_root_hash(block_id)
+        state_root_hash: bytes = self.as_pycspr_client.get_state_root_hash(block_id)
 
         return state_root_hash.hex()
 

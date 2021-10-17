@@ -24,12 +24,11 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
     :returns: Dispatched deploy hash.
 
     """
-    # Map inputs to pycspr objects.
-    cp1 = info.dispatcher.as_pycspr_private_key
-    cp2 = cp2.as_pycspr_private_key
-    node_client = info.as_pycspr_client
+    # Set counter-party keys.
+    cp1: pycspr.types.PrivateKey = info.dispatcher.as_pycspr_private_key
+    cp2: pycspr.types.PublicKey = cp2.as_pycspr_public_key
 
-    # Set deploy & approve.
+    # Set deploy.
     deploy = pycspr.create_native_transfer(
         params=pycspr.create_deploy_parameters(
             account=cp1,
@@ -39,17 +38,19 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
         target=cp2.account_hash,
         correlation_id=random.randint(1, _MAX_TRANSFER_ID)
         )
+
+    # Set deploy approval.
     deploy.approve(cp1)
 
-    # Dispatch deploy.
-    deploy_hash = node_client.deploys.send(deploy)
+    # Dispatch.
+    info.node.dispatch_deploy(deploy)
 
     if verbose:
         log_event(
             EventType.WFLOW_DEPLOY_DISPATCHED,
-            f"{info.node.address} :: {deploy_hash} :: transfer (native) :: {amount} CSPR :: from {cp1.account_key[:8].hex()} -> {cp2.account_key[:8].hex()} ",
+            f"{info.node.address} :: {deploy.hash.hex()} :: transfer (native) :: {amount} CSPR :: from {cp1.account_key[:8].hex()} -> {cp2.account_key[:8].hex()} ",
             info.node,
-            deploy_hash=deploy_hash,
+            deploy_hash=deploy.hash,
             )
 
-    return deploy_hash
+    return deploy.hash

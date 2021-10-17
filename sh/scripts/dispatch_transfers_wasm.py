@@ -103,12 +103,17 @@ def _get_account_for_cp2(network: Network, accounts: int, deploy_idx: int) -> Ac
     """Returns counter-party 2 account.
     
     """
-    if accounts != 0:
-        account_idx = _get_account_idx_for_deploy(accounts, deploy_idx)
-        if not account_idx in _ACCOUNTS:
-            _ACCOUNTS[account_idx] = factory.create_account(network.name, AccountType.OTHER, index=account_idx)
-        return _ACCOUNTS[account_idx]
-    return factory.create_account(network.name, AccountType.OTHER, index=deploy_idx)
+    # Each deploy is dispatched under a new account.
+    if accounts == 0:
+        return factory.create_account(network.name, AccountType.OTHER, index=deploy_idx)
+
+    # Map deploy index to an account index.  Create account if uncached.
+    account_idx = _get_account_idx_for_deploy(accounts, deploy_idx)
+    if not account_idx in _ACCOUNTS:
+        _ACCOUNTS[account_idx] = factory.create_account(network.name, AccountType.OTHER, index=account_idx)
+
+    # Return cached account.
+    return _ACCOUNTS[account_idx]
 
 
 def _get_account_idx_for_deploy(accounts: int, deploy_idx: int) -> int:

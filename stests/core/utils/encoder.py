@@ -142,6 +142,9 @@ def encode(data: typing.Any, requires_decoding=True) -> typing.Any:
     """Encodes input data in readiness for downstream processing.
     
     """
+    if isinstance(data, bytes):
+        return data.hex()
+
     if isinstance(data, PRIMITIVES):
         return data
 

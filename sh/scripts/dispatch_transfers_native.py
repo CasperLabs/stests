@@ -83,12 +83,9 @@ def main(args):
 
     with Timer() as timer:
         for deploy_idx in range(1, args.transfers + 1):
-            chain.set_transfer_native(
-                chain.DeployDispatchInfo(cp1, network, random.choice(nodeset)),
-                _get_account_for_cp2(network, args.accounts, deploy_idx),
-                args.amount,
-                verbose=False,
-                )
+            dispatch_info = chain.DeployDispatchInfo(cp1, network, random.choice(nodeset))
+            cp2 = _get_account_for_cp2(network, args.accounts, deploy_idx)
+            chain.set_transfer_native(dispatch_info, cp2, args.amount, verbose=False)
 
     utils.log(f"Dispatch complete")
     utils.log(f"... total transfers   : {args.transfers}")

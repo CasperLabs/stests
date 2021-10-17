@@ -51,7 +51,7 @@ class Account:
         return bytes.fromhex(self.account_key)
 
     @property
-    def as_pycspr_private_key(self) -> pycspr.types.PublicKey:
+    def as_pycspr_private_key(self) -> pycspr.types.PrivateKey:
         return pycspr.parse_private_key_bytes(bytes.fromhex(self.private_key), self.key_algo)
 
     @property

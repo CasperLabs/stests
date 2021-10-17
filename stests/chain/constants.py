@@ -8,4 +8,4 @@ DEFAULT_TX_GAS_PRICE = 10
 DEFAULT_TX_FEE = int(1e11)
 
 # Default transaction fee for native transfers.
-DEFAULT_TX_FEE_NATIVE_TRANSFER = int(1e4)
+DEFAULT_TX_FEE_NATIVE_TRANSFER = int(1e8)
