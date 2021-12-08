@@ -21,7 +21,7 @@ def bind_to_stream(node: Node, event_id: int = 0):
     :param event_id: Identifer of event from which to start stream.
     
     """
-    chain.stream_events(node, _on_node_event)
+    chain.stream_events(node, _on_node_event, event_id)
 
 
 def _on_node_event(node: Node, info: NodeEventInfo, payload: dict):

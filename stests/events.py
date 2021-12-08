@@ -32,10 +32,11 @@ class EventType(enum.Enum):
 
     # Monitoring sub-system.
     MONIT_BLOCK_ADDED = enum.auto()
-    MONIT_BLOCK_FINALIZED = enum.auto()
     MONIT_CONSENSUS_FAULT = enum.auto()
     MONIT_CONSENSUS_FINALITY_SIGNATURE = enum.auto()
+    MONIT_DEPLOY_ACCEPTED = enum.auto()
     MONIT_DEPLOY_EXECUTION_ERROR = enum.auto()
+    MONIT_DEPLOY_EXPIRED = enum.auto()
     MONIT_DEPLOY_PROCESSED = enum.auto()
     MONIT_STEP = enum.auto()
     MONIT_STREAM_BIND_ERROR = enum.auto()
@@ -70,7 +71,7 @@ class EventType(enum.Enum):
 EVENTS_DEBUG = (
     EventType.CORE_BROKER_CONNECTION_ESTABLISHED,
     EventType.MONIT_BLOCK_ADDED,
-    EventType.MONIT_BLOCK_FINALIZED,
+    EventType.MONIT_DEPLOY_ACCEPTED,    
     EventType.MONIT_DEPLOY_PROCESSED,
 )
 
@@ -80,6 +81,7 @@ EVENTS_ERROR = (
     EventType.CHAIN_QUERY_BLOCK_NOT_FOUND,
     EventType.CHAIN_QUERY_DEPLOY_NOT_FOUND,
     EventType.MONIT_DEPLOY_EXECUTION_ERROR,
+    EventType.MONIT_DEPLOY_EXPIRED,
     EventType.MONIT_STREAM_BIND_ERROR,
     EventType.WFLOW_DEPLOY_DISPATCH_ERROR,
     EventType.WFLOW_RUN_ERROR,

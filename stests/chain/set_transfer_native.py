@@ -24,22 +24,22 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
     :returns: Dispatched deploy hash.
 
     """
-    # Set counter-party keys.
+    # Set counter-parties.
     cp1: pycspr.types.PrivateKey = info.dispatcher.as_pycspr_private_key
     cp2: pycspr.types.PublicKey = cp2.as_pycspr_public_key
 
     # Set deploy.
-    deploy = pycspr.create_native_transfer(
+    deploy = pycspr.create_transfer(
         params=pycspr.create_deploy_parameters(
             account=cp1,
             chain_name=info.network.chain_name
         ),
         amount=amount,
-        target=cp2.account_hash,
+        target=cp2.account_key,
         correlation_id=random.randint(1, _MAX_TRANSFER_ID)
         )
 
-    # Set deploy approval.
+    # Set approval.
     deploy.approve(cp1)
 
     # Dispatch.

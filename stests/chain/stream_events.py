@@ -1,7 +1,9 @@
 import json
 import typing
 
+import pycspr
 import requests
+from pycspr.factory.accounts import parse_public_key
 import sseclient
 
 from stests.core import factory
@@ -20,6 +22,7 @@ def execute(node: Node, event_callback: typing.Callable, event_id: int = 0, stre
 
     """
     log_event(EventType.MONIT_STREAM_OPENING, node.address_event, node)
+
     for event_type, event_id, payload, block_hash, deploy_hash, account_key in _yield_events(node, event_id, stream_type):
         event_info = factory.create_node_event_info(
             node,
@@ -32,110 +35,89 @@ def execute(node: Node, event_callback: typing.Callable, event_id: int = 0, stre
         event_callback(node, event_info, payload)
 
 
-def _yield_events(node: Node, event_id: int, stream_type: str):
+def _yield_events(node: Node, event_id: int, event_channel: str):
     """Yields events streaming from node.
 
     """
-    # Set url.
-    url = f"{node.url_event}/{stream_type}"
-    if event_id:
-        url = f"{url}?start_from={event_id}"
-
-    # Set client.
-    stream = requests.get(url, stream=True)
-    client = sseclient.SSEClient(stream)
-
-    # Bind to stream & yield parsed events.
-    try:
-        for event in client.events():
-            parsed = _parse_event(node, event.id, json.loads(event.data))
-            if parsed:
-                yield parsed
-
-    # On stream error close & re-raise.
-    except Exception as err:
-        try:
-            client.close()
-        except:
-            pass
-        finally:
-            raise err
+    event_channel = pycspr.NodeEventChannel[event_channel]
+    for event in node.client.yield_events(event_channel, None, event_id):
+        parsed = _parse_event(node, event)
+        if parsed:
+            yield parsed
 
 
-def _parse_event(
-    node: Node,
-    event_id: int,
-    payload: dict,
-    ) -> typing.Tuple[
-        EventType,
-        int,                   # event id
-        dict,                  # payload
-        typing.Optional[str],  # block hash
-        typing.Optional[str],  # deploy hash
-        typing.Optional[str],  # account key
-        ]:
-    """Parses raw event data for upstream processing.
-
+def _parse_event(node: Node, info: pycspr.NodeEventInfo):
+    """Parses event information for upstream processing.
+    
     """
-    if 'ApiVersion' in payload:
+    if info.typeof == pycspr.NodeEventType.ApiVersion:
         return
-
-    elif 'BlockAdded' in payload:
+    
+    if info.typeof == pycspr.NodeEventType.BlockAdded:
         return \
             EventType.MONIT_BLOCK_ADDED, \
-            event_id, \
-            payload, \
-            payload['BlockAdded']['block_hash'], \
+            info.idx, \
+            info.payload, \
+            info.payload['BlockAdded']['block_hash'], \
             None, \
             None
 
-    elif 'BlockFinalized' in payload:
+    if info.typeof == pycspr.NodeEventType.DeployAccepted:
         return \
-            EventType.MONIT_BLOCK_FINALIZED, \
-            event_id, \
-            payload, \
-            payload['BlockFinalized']['proto_block']['hash'], \
+            EventType.MONIT_DEPLOY_ACCEPTED, \
+            info.idx, \
+            info.payload, \
             None, \
+            info.payload['DeployAccepted']['deploy'], \
             None
 
-    elif 'FinalitySignature' in payload:
+    if info.typeof == pycspr.NodeEventType.DeployExpired:
         return \
-            EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE, \
-            event_id, \
-            payload, \
-            payload['FinalitySignature']['block_hash'], \
+            EventType.MONIT_DEPLOY_EXPIRED, \
+            info.idx, \
+            info.payload, \
             None, \
-            payload['FinalitySignature']['public_key']
-
-    elif 'Fault' in payload:
-        return \
-            EventType.MONIT_CONSENSUS_FAULT, \
-            event_id, \
-            payload, \
-            payload['Fault']['era_id'], \
-            None, \
+            info.payload['DeployExpired']['deploy_hash'], \
             None
 
-    elif 'DeployProcessed' in payload:
+    if info.typeof == pycspr.NodeEventType.DeployProcessed:
         return \
             EventType.MONIT_DEPLOY_PROCESSED, \
-            event_id, \
-            payload, \
-            payload['DeployProcessed']['block_hash'], \
-            payload['DeployProcessed']['deploy_hash'], \
+            info.idx, \
+            info.payload, \
+            info.payload['DeployProcessed']['block_hash'], \
+            info.payload['DeployProcessed']['deploy_hash'], \
             None
 
-    elif 'Step' in payload:
+    if info.typeof == pycspr.NodeEventType.Fault:
+        return \
+            EventType.MONIT_CONSENSUS_FAULT, \
+            info.idx, \
+            info.payload, \
+            info.payload['Fault']['era_id'], \
+            None, \
+            None
+
+    if info.typeof == pycspr.NodeEventType.FinalitySignature:
+        return \
+            EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE, \
+            info.idx, \
+            info.payload, \
+            info.payload['FinalitySignature']['block_hash'], \
+            None, \
+            info.payload['FinalitySignature']['public_key']
+
+    if info.typeof == pycspr.NodeEventType.Step:
         return \
             EventType.MONIT_STEP, \
-            event_id, \
-            payload, \
+            info.idx, \
+            info.payload, \
             None, \
             None, \
-            payload['Step']['era_id']
+            info.payload['Step']['era_id']
 
     log_event(
         EventType.MONIT_STREAM_EVENT_TYPE_UNKNOWN,
-        f"event skipped as type is unsupported :: node={node.address_rpc} :: event type={list(payload.keys())[0]}",
+        f"event skipped as type is unsupported :: node={node.address_rpc} :: event type={info.typeof.name}",
         node
         )

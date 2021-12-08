@@ -109,7 +109,6 @@ def set_node_event_info(info: NodeEventInfo) -> Item:
     """
     if info.event_type in (
         EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE,
-        EventType.MONIT_BLOCK_FINALIZED,
         EventType.MONIT_BLOCK_ADDED,
         ):
         names = [

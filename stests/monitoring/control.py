@@ -8,6 +8,7 @@ from dramatiq.middleware import Shutdown
 from stests.core import cache
 from stests.core import factory
 from stests.core.logging import log_event
+from stests.core.types.infra import NetworkIdentifier
 from stests.core.types.infra import NodeIdentifier
 from stests.core.types.infra import NodeMonitoringLock
 from stests.core.utils.env import get_var
@@ -35,11 +36,10 @@ def do_start_monitoring():
     
     """
     for network in cache.infra.get_networks():
-        network_id = factory.create_network_id(network.name)
+        network_id: NetworkIdentifier = factory.create_network_id(network.name)
         for node in cache.infra.get_nodes_for_monitoring(network, _MAX_NODES):
-            do_monitor_node.send(
-                factory.create_node_id(network_id, node.index),
-                )
+            node_id: NodeIdentifier = factory.create_node_id(network_id, node.index)
+            do_monitor_node.send(node_id)
             time.sleep(float(1))
 
 
@@ -64,9 +64,7 @@ def do_monitor_node(node_id: NodeIdentifier):
 
     # Monitor node by listening to & processing node events.
     try:
-        listener.bind_to_stream(
-            cache.infra.get_node(node_id),
-        )
+        listener.bind_to_stream(cache.infra.get_node(node_id))
 
     # Exception: actor timeout.
     except TimeLimitExceeded:

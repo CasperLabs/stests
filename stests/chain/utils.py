@@ -35,7 +35,7 @@ class DeployDispatchInfo():
         self.time_to_live = time_to_live
         self.fee = fee
         self.gas_price = gas_price
-        self.as_pycspr_client = node.as_pycspr_client
+        self.client = node.client
 
 
 class NodeApi_Exception(Exception):
