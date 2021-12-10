@@ -22,5 +22,5 @@ def execute(ctx: ExecutionContext):
     """
     for account_idx in accounts.get_account_range(ctx.args.accounts, ctx.args.transfers):
         transfers = accounts.get_account_deploy_count(ctx.args.accounts, account_idx, ctx.args.transfers)
-        amount = transfers * (ctx.args.amount + chain.DEFAULT_TX_FEE_NATIVE_TRANSFER)
+        amount = transfers * (ctx.args.amount + chain.DEFAULT_TX_FEE_WASM_TRANSFER)
         verification.verify_account_balance(ctx, account_idx, amount)

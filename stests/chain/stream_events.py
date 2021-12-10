@@ -13,7 +13,7 @@ from stests.events import EventType
 
 
 
-def execute(node: Node, event_callback: typing.Callable, event_id: int = 0, stream_type="main"):
+def execute(node: Node, event_callback: typing.Callable, event_id: int = 0, stream_type="sigs"):
     """Hooks upto a node's event stream invoking passed callback for each event.
 
     :param node: The node to which to bind.

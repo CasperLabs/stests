@@ -53,4 +53,4 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
             deploy_hash=deploy.hash,
             )
 
-    return deploy.hash
+    return deploy.hash.hex()

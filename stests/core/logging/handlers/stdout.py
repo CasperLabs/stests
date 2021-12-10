@@ -16,8 +16,8 @@ def log_event(msg: LogMessage, mode: OutputMode):
     """
     if mode == OutputMode.INTERACTIVE:
         if msg.event.priority > 1:
-            print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.app.system}] [{msg.event.level}] {msg.message}",
+            print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.app.system}] [{msg.event.level}] [{msg.event.sub_system}] [{msg.event.short_type}] {msg.message}",
                   file=sys.stderr if msg.event.priority > 9 else sys.stdout)
     else:
-        print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.app.system}] [{msg.event.level}] {msg.message}",
+        print(f"[{datetime.utcnow().isoformat()}Z] [PID {msg.process.pid}] [{msg.app.system}] [{msg.event.level}] [{msg.event.sub_system}] [{msg.event.short_type}] {msg.message}",
                 file=sys.stderr if msg.event.priority > 9 else sys.stdout)

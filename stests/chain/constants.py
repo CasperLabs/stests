@@ -9,3 +9,6 @@ DEFAULT_TX_FEE = int(1e11)
 
 # Default transaction fee for native transfers.
 DEFAULT_TX_FEE_NATIVE_TRANSFER = int(1e8)
+
+# Default transaction fee for wasm transfers.
+DEFAULT_TX_FEE_WASM_TRANSFER = int(1e11)

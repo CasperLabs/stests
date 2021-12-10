@@ -38,7 +38,7 @@ def do_step(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index + 1)    
     if step is None:
-        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : invalid step", ctx)
         return
 
     # Update ctx.
@@ -50,7 +50,7 @@ def do_step(ctx: ExecutionContext):
     cache.orchestration.set_info(factory.create_execution_info(ExecutionAspect.STEP, ctx))
 
     # Notify.
-    log_event(EventType.WFLOW_STEP_START, None, ctx)
+    log_event(EventType.WFLOW_STEP_START, ctx.label, ctx)
 
     # Execute.
     _execute(ctx, step)
@@ -66,7 +66,7 @@ def do_step_verification(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : invalid step", ctx)
         return
 
     # Verify step.
@@ -74,7 +74,7 @@ def do_step_verification(ctx: ExecutionContext):
         try:
             step.verify(ctx)
         except AssertionError as err:
-            log_event(EventType.WFLOW_STEP_FAILURE, "verification failed", ctx)
+            log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : step verification failed", ctx)
             return
 
     # Enqueue step end.
@@ -91,14 +91,14 @@ def on_step_end(ctx: ExecutionContext):
     # Set step.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : invalid step", ctx)
         return
 
     # Update cache.
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.COMPLETE)
 
     # Notify.
-    log_event(EventType.WFLOW_STEP_END, None, ctx)
+    log_event(EventType.WFLOW_STEP_END, ctx.label, ctx)
 
     # Enqueue either end of phase or next step. 
     if step.is_last:
@@ -121,7 +121,7 @@ def on_step_error(ctx: ExecutionContext, err: str):
     cache.orchestration.set_info_update(ctx, ExecutionAspect.STEP, ExecutionStatus.ERROR)
 
     # Notify.
-    log_event(EventType.WFLOW_STEP_ERROR, err, ctx)
+    log_event(EventType.WFLOW_STEP_ERROR, f"{ctx.label} : {err}", ctx)
 
 
 @dramatiq.actor(queue_name=_QUEUE)
@@ -137,19 +137,19 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
     # Set step - escape if not found.
     step = Workflow.get_phase_step(ctx, ctx.phase_index, ctx.step_index)
     if step is None:
-        log_event(EventType.WFLOW_STEP_FAILURE, "invalid step", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : invalid step", ctx)
         return
 
     # Escape if no deploy verifier.
     if not step.has_verifer_for_deploy:
-        log_event(EventType.WFLOW_STEP_FAILURE, "deploy verifier undefined", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : deploy verifier undefined", ctx)
         return 
 
     # Verify deploy.
     try:
         step.verify_deploy(ctx, node_id, block_hash, deploy_hash)
     except AssertionError as err:
-        log_event(EventType.WFLOW_STEP_FAILURE, f"deploy verification failed: {err} :: {deploy_hash}", ctx)
+        log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : deploy step verification failed: {err} :: {deploy_hash}", ctx)
         return
 
     # Increment verified deploy counts.
@@ -166,7 +166,7 @@ def on_step_deploy_finalized(ctx: ExecutionContext, node_id: NodeIdentifier, blo
         try:
             step.verify(ctx)
         except AssertionError as err:
-            log_event(EventType.WFLOW_STEP_FAILURE, f"verification failed", ctx)
+            log_event(EventType.WFLOW_STEP_FAILURE, f"{ctx.label} : deploy step verification failed: {err}", ctx)
             return    
 
     # Step verification succeeded therefore signal step end.
@@ -189,13 +189,13 @@ def _can_start(ctx: ExecutionContext) -> bool:
     # False if current phase not found.
     phase = wflow.get_phase(ctx.phase_index)
     if phase is None:
-        log_event(EventType.WFLOW_STEP_ABORT, "invalid phase index", ctx)
+        log_event(EventType.WFLOW_STEP_ABORT, f"{ctx.label} : invalid phase index", ctx)
         return False
     
     # False if next step not found.
     step = phase.get_step(ctx.next_step_index)
     if step is None:
-        log_event(EventType.WFLOW_STEP_ABORT, "invalid step index", ctx)
+        log_event(EventType.WFLOW_STEP_ABORT, f"{ctx.label} : invalid step index", ctx)
         return False
 
     # False if next step locked - can happen when processing groups of messages.

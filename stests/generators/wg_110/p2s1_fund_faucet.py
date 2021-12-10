@@ -27,7 +27,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
         ctx,
         accounts.get_account_idx_for_network_faucet(),
         accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
-        accounts.get_faucet_initial_balance(ctx.args.transfers, ctx.args.amount),
+        accounts.get_faucet_initial_balance(ctx.args.transfers, ctx.args.amount, DeployType.TRANSFER_WASM),
         DeployType.TRANSFER_WASM,
     )
 
@@ -54,7 +54,7 @@ def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: st
     verification.verify_account_balance(
         ctx,
         accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
-        accounts.get_faucet_initial_balance(ctx.args.transfers, ctx.args.amount),
+        accounts.get_faucet_initial_balance(ctx.args.transfers, ctx.args.amount, DeployType.TRANSFER_WASM),
         )    
 
 

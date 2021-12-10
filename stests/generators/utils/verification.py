@@ -13,7 +13,7 @@ from stests.generators.utils.constants import ACC_RUN_USERS
 
 def verify_deploy(ctx: ExecutionContext, block_hash: str, deploy_hash: str, expected_status=DeployStatus.ADDED) -> Deploy:
     """Verifies that a deploy is in a finalized state.
-    
+
     """
     deploy = cache.state.get_deploy(ctx, deploy_hash)
     assert deploy, f"deploy could not be retrieved: {deploy_hash}"
@@ -25,16 +25,16 @@ def verify_deploy(ctx: ExecutionContext, block_hash: str, deploy_hash: str, expe
 
 def verify_deploy_count(ctx: ExecutionContext, expected: int, aspect: ExecutionAspect = ExecutionAspect.STEP):
     """Verifies that a step's count of finalized deploys tallies.
-    
+
     """
-    count = cache.orchestration.get_deploy_count(ctx, aspect) 
+    count = cache.orchestration.get_deploy_count(ctx, aspect)
     assert count == expected, \
            IgnoreableAssertionError(f"deploy count mismatch: actual={count}, expected={expected}")
 
 
 def verify_account_balance(ctx: ExecutionContext, account_index: int, expected: int) -> Account:
     """Verifies that an account balance is as per expectation.
-    
+
     """
     account = cache.state.get_account_by_index(ctx, account_index)
     _, node = get_network_node(ctx)
@@ -55,7 +55,7 @@ def verify_account_balance_on_transfer(
     expected: int,
     ) -> Account:
     """Verifies that an account balance is as per expectation.
-    
+
     """
     # Set account.
     account = cache.state.get_account_by_index(ctx, account_index)
@@ -78,7 +78,7 @@ def verify_account_balance_on_transfer(
 
 def verify_account_count(ctx: ExecutionContext) -> Deploy:
     """Verifies number of created accounts.
-    
+
     """
     cached = cache.state.get_account_count(ctx)
     expected = ctx.args.user_accounts + 2

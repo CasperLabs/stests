@@ -86,8 +86,7 @@ def main(args):
         for deploy_idx in range(1, args.transfers + 1):
             dispatch_info = chain.DeployDispatchInfo(cp1, network, random.choice(nodeset))
             cp2 = _get_account_for_cp2(network, args.accounts, deploy_idx)
-            deploy_hash, dispatch_time_ms, dispatch_attempts = \
-                chain.set_transfer_wasm(dispatch_info, cp2, args.amount, verbose=False)
+            chain.set_transfer_wasm(dispatch_info, cp2, args.amount, verbose=False)
 
     utils.log(f"Dispatch complete")
     utils.log(f"... total transfers   : {args.transfers}")

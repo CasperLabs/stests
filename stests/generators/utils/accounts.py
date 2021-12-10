@@ -27,6 +27,11 @@ TFR_TYPE_TO_TFR_FN = {
     DeployType.TRANSFER_NATIVE: chain.set_transfer_native,
 }
 
+# Map of transfer types to default tx fee.
+TFR_TYPE_TO_TFR_FEE = {
+    DeployType.TRANSFER_WASM: chain.DEFAULT_TX_FEE_WASM_TRANSFER,
+    DeployType.TRANSFER_NATIVE: chain.DEFAULT_TX_FEE_NATIVE_TRANSFER,
+}
 
 @dramatiq.actor(queue_name=_QUEUE)
 def do_refund(
@@ -63,20 +68,19 @@ def do_transfer(
     :param transfer_type: Type of transfer to dispatch.
     
     """
-    # Set target network / node.
+    # Parse inputs.
     network, node = get_network_node(ctx)
-    
-    # Set counterparties.
-    cp1 = get_account(ctx, network, cp1_index)
-    cp2 = get_account(ctx, network, cp2_index)
+    cp1: Account = get_account(ctx, network, cp1_index)
+    cp2: Account = get_account(ctx, network, cp2_index)
+    transfer_type: DeployType = DeployType[transfer_type]
 
     # Set amount to transfer (in the case of refunds).
     if amount is None:
-        amount = get_account_balance(node, cp1) - chain.DEFAULT_TX_FEE
+        amount = get_amount_to_refund(node, cp1, transfer_type)
 
     # Dispatch tx -> chain.
     dispatch_info = chain.DeployDispatchInfo(cp1, network, node)
-    dispatch_fn = TFR_TYPE_TO_TFR_FN[DeployType[transfer_type]]
+    dispatch_fn = TFR_TYPE_TO_TFR_FN[transfer_type]
     deploy_hash, dispatch_duration, dispatch_attempts = dispatch_fn(dispatch_info, cp2, amount)
 
     # Update cache: deploy.
@@ -88,7 +92,7 @@ def do_transfer(
         deploy_hash=deploy_hash, 
         dispatch_attempts=dispatch_attempts,
         dispatch_duration=dispatch_duration,
-        typeof=DeployType[transfer_type]
+        typeof=transfer_type
         ))
 
     # Update cache: account balances.
@@ -217,8 +221,27 @@ def get_account_deploy_count(accounts: int, account_idx: int, deploys: int) -> i
     return q + (1 if account_idx <= r else 0)
 
 
-def get_faucet_initial_balance(transfers, amount) -> int:
+def get_faucet_initial_balance(transfers: int, amount: int, transfer_type: DeployType) -> int:
     """Returns initial faucet account CSPR balance.
     
     """
-    return (transfers * amount) + (((2 * transfers) + 1) * chain.DEFAULT_TX_FEE)
+    try:
+        fee = TFR_TYPE_TO_TFR_FEE[transfer_type]
+    except KeyError:
+        raise ValueError("Invalid deploy type")
+
+    return (transfers * amount) + (((2 * transfers) + 1) * fee)
+
+
+def get_amount_to_refund(node: Node, account: Account, transfer_type: DeployType) -> int:
+    """Returns initial faucet account CSPR balance.
+    
+    """
+    try:
+        fee = TFR_TYPE_TO_TFR_FEE[transfer_type]
+    except KeyError:
+        raise ValueError("Invalid deploy type")
+
+    purse_uref = node.get_account_main_purse_uref(account.account_key)
+
+    return node.get_account_balance(purse_uref) - fee

@@ -1,5 +1,6 @@
 from stests.chain.constants import DEFAULT_TX_FEE
 from stests.chain.constants import DEFAULT_TX_FEE_NATIVE_TRANSFER
+from stests.chain.constants import DEFAULT_TX_FEE_WASM_TRANSFER
 from stests.chain.constants import DEFAULT_TX_GAS_PRICE
 from stests.chain.constants import DEFAULT_TX_TIME_TO_LIVE
 from stests.chain.set_auction_bid_submit import execute as set_auction_bid_submit

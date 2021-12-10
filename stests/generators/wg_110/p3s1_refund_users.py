@@ -40,7 +40,7 @@ def verify(ctx: ExecutionContext):
     :param ctx: Execution context information.
 
     """
-    verification.verify_deploy_count(ctx, len(accounts.get_account_range(ctx.args.accounts, ctx.args.transfers)))
+    verification.verify_deploy_count(ctx, ctx.args.transfers)
 
 
 def verify_deploy(ctx: ExecutionContext, node_id: NodeIdentifier, block_hash: str, deploy_hash: str):
@@ -63,4 +63,4 @@ def verify_deploy_batch_is_complete(ctx: ExecutionContext, deploy_index: int):
     :param deploy_index: Index of a finalized deploy in relation to the deploys dispatched during this step.
 
     """
-    assert deploy_index == len(accounts.get_account_range(ctx.args.accounts, ctx.args.transfers))
+    assert deploy_index == ctx.args.transfers

@@ -70,6 +70,23 @@ class ExecutionContext:
         return self.phase_index + 1
 
     @property
+    def label(self):
+        if self.phase_index == 0 and self.step_index == 0:
+            return f"{self.run_type}:{self.label_run_index}"
+        elif self.step_index == 0:
+            return f"{self.run_type}:{self.label_run_index}.{self.label_phase_index}"
+        else:
+            return f"{self.run_type}:{self.label_run_index}.{self.label_phase_index}.{self.label_step_index}"
+
+    @property
+    def label_phase_end(self):
+        return f"{self.run_type}:{self.label_run_index}.{self.label_phase_index}"
+
+    @property
+    def label_run_end(self):
+        return f"{self.run_type}:{self.label_run_index}"
+            
+    @property
     def label_next_phase_index(self):
         return f"P-{str(self.next_phase_index).zfill(2)}"        
 

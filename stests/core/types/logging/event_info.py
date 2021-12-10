@@ -24,3 +24,11 @@ class EventInfo():
 
     # Event type for disambiguation purpose.
     type: str
+
+    @property
+    def sub_system(self) -> str:
+        return self.type.split("_")[0]
+
+    @property
+    def short_type(self) -> str:
+        return "_".join(self.type.split("_")[1:])

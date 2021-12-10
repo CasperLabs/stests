@@ -188,7 +188,7 @@ def get_deploy_on_finalisation(network_name: str, deploy_hash: str) -> ItemKey:
 
     :returns: Cache item key.
 
-    """
+    """    
     return ItemKey(
         paths=[
             network_name,

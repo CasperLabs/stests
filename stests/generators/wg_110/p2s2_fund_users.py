@@ -29,7 +29,7 @@ def execute(ctx: ExecutionContext) -> typing.Union[dramatiq.Actor, int, typing.C
                 ctx,
                 accounts.get_account_idx_for_run_faucet(ctx.args.accounts, ctx.args.transfers),
                 accounts.get_account_idx_for_deploy(ctx.args.accounts, deploy_idx),
-                ctx.args.amount + chain.DEFAULT_TX_FEE_NATIVE_TRANSFER,
+                ctx.args.amount + chain.DEFAULT_TX_FEE_WASM_TRANSFER,
                 DeployType.TRANSFER_WASM,
             )
 

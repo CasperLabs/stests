@@ -175,9 +175,9 @@ class Node:
         :returns: Account main purse uref.
 
         """
-        uref = self.client.get_account_main_purse_uref(account_key, state_root_hash)
+        uref: pycspr.types.CL_URef = self.client.get_account_main_purse_uref(account_key, state_root_hash)
 
-        return uref.as_string()
+        return uref.to_string()
 
 
     def get_auction_info(self) -> dict:

@@ -1,6 +1,11 @@
+import random
+
 import pycspr
 
 from pycspr.types import CL_ByteArray
+from pycspr.types import CL_Option
+from pycspr.types import CL_Type_U64
+from pycspr.types import CL_U64
 from pycspr.types import CL_U512
 from pycspr.types import DeployArgument
 from stests.chain import constants
@@ -14,6 +19,9 @@ from stests.core.utils import paths
 
 # Name of smart contract to dispatch & invoke.
 _CONTRACT_FNAME = "transfer_to_account_u512.wasm"
+
+# Maximum value of a transfer ID.
+_MAX_TRANSFER_ID = (2 ** 63) - 1
 
 
 @execute_api("transfer-wasm", EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
@@ -49,7 +57,7 @@ def execute(
 
     # Set payment logic.
     payment: pycspr.types.ModuleBytes = \
-        pycspr.create_standard_payment(constants.DEFAULT_TX_FEE)
+        pycspr.create_standard_payment(constants.DEFAULT_TX_FEE_WASM_TRANSFER)
 
     # Set session logic.
     session: pycspr.types.ModuleBytes = \
@@ -64,6 +72,10 @@ def execute(
                     "target",
                     CL_ByteArray(cp2.account_hash)
                     ),
+                DeployArgument(
+                    "id",
+                    CL_Option(CL_U64(random.randint(1, _MAX_TRANSFER_ID)), CL_Type_U64())
+                    ),                    
             ]
         )
 
@@ -84,4 +96,4 @@ def execute(
             deploy_hash=deploy.hash,
             )
 
-    return deploy.hash
+    return deploy.hash.hex()

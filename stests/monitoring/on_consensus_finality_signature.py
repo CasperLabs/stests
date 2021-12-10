@@ -162,12 +162,10 @@ def _process_deploy(ctx: _Context):
     log_event(EventType.CHAIN_ADDED_DEPLOY, f"{ctx.block_hash}.{ctx.deploy_hash}", ctx.info)
 
     # Escape if deploy cannot be correlated to a workflow.
-    ctx.deploy = cache.state.get_deploy_on_finalisation(ctx.network.name, ctx.deploy_hash)
-    if not ctx.deploy:
-        return
-
     # Process correlated - i.e. deploys previously dispatched by a generator.
-    _process_deploy_correlated(ctx)
+    ctx.deploy = cache.state.get_deploy_on_finalisation(ctx.network.name, ctx.deploy_hash)
+    if ctx.deploy:
+        _process_deploy_correlated(ctx)
 
 
 def _process_deploy_correlated(ctx: _Context):
