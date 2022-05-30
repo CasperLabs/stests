@@ -111,7 +111,7 @@ class Node:
 
     @property
     def url_rpc(self):
-        return f"http://{self.address_rpc}/rpc"
+        return f"http://{self.address_rpc}"
 
     @property
     def identifier(self) -> 'NodeIdentifier':
