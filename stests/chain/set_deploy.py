@@ -45,7 +45,6 @@ def execute(
     cli_response = subprocess.run([
         binary_path, _CLIENT_METHOD,
         "--chain-name", network.chain_name,
-        "--gas-price", str(tx_gas_price),
         "--node-address", node.url_rpc,
         "--payment-amount", str(tx_fee),
         "--secret-key", dispatcher.get_private_key_pem_filepath(),

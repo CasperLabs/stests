@@ -38,7 +38,6 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
         "--target-account", cp2.account_key,
         "--amount", str(amount),
         "--chain-name", info.network.chain_name,
-        "--gas-price", str(info.gas_price),
         "--node-address", info.node_address,
         "--payment-amount", str(info.fee),
         "--secret-key", info.dispatcher.get_private_key_pem_filepath(),
