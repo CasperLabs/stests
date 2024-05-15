@@ -99,13 +99,22 @@ def _parse_event(
             None
 
     elif 'FinalitySignature' in payload:
-        return \
-            EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE, \
-            event_id, \
-            payload, \
-            payload['FinalitySignature']['block_hash'], \
-            None, \
-            payload['FinalitySignature']['public_key']
+        if 'V2' in payload['FinalitySignature']:
+            return \
+                EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE, \
+                event_id, \
+                payload, \
+                payload['FinalitySignature']['V2']['block_hash'], \
+                None, \
+                payload['FinalitySignature']['V2']['public_key']
+        else:
+            return \
+                EventType.MONIT_CONSENSUS_FINALITY_SIGNATURE, \
+                event_id, \
+                payload, \
+                payload['FinalitySignature']['block_hash'], \
+                None, \
+                payload['FinalitySignature']['public_key']
 
     elif 'Fault' in payload:
         return \
@@ -123,6 +132,15 @@ def _parse_event(
             payload, \
             payload['DeployProcessed']['block_hash'], \
             payload['DeployProcessed']['deploy_hash'], \
+            None
+    
+    elif 'TransactionProcessed' in payload:
+        return \
+            EventType.MONIT_DEPLOY_PROCESSED, \
+            event_id, \
+            payload, \
+            payload['TransactionProcessed']['block_hash'], \
+            payload['TransactionProcessed']['transaction_hash']['Deploy'], \
             None
 
     elif 'Step' in payload:

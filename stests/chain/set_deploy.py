@@ -50,6 +50,7 @@ def execute(
         "--secret-key", dispatcher.get_private_key_pem_filepath(),
         "--session-path", session_path,
         "--ttl", str(tx_ttl),
+        "--gas-price", str(tx_gas_price)
         ] + session_args,
         stdout=subprocess.PIPE,
         )

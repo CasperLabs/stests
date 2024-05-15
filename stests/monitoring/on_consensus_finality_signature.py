@@ -112,6 +112,7 @@ def _process_block(ctx: _Context):
         return
     
     # Set stats.
+    # updated proposer with v1 and v2 structure
     ctx.block = factory.create_block_statistics_on_addition(
         block_hash = ctx.block_hash,
         block_hash_parent = ctx.on_chain_block['header']['parent_hash'],
@@ -123,7 +124,7 @@ def _process_block(ctx: _Context):
         height = ctx.on_chain_block['header']['height'],
         is_switch_block = ctx.on_chain_block['header']['era_end'] is not None,
         network = ctx.network.name,
-        proposer = ctx.on_chain_block['body']['proposer'],      
+        proposer = ctx.on_chain_block['body']['proposer'] or ctx.on_chain_block['header']['proposer'],      
         size_bytes = None,
         state_root_hash = ctx.on_chain_block['header']['state_root_hash'],
         status = BlockStatus.FINALIZED.name,

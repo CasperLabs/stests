@@ -43,4 +43,8 @@ def execute(
             stdout=subprocess.PIPE,
             )  
 
-    return json.loads(cli_response.stdout)['result']['block']
+    # v1 and v2 block structure changes
+    if 'block_with_signatures' in json.loads(cli_response.stdout)['result']:
+        return json.loads(cli_response.stdout)['result']['block_with_signatures']['block']
+    else:
+        return json.loads(cli_response.stdout)['result']['block']
