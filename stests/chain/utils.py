@@ -12,7 +12,7 @@ from stests.events import EventType
 
 
 class DeployDispatchInfo():
-    """Encapsulates information required when dispatching a deploy.
+    """Encapsulates information required when dispatching a deploy inclusive for v1 and v2 clients.
 
     """
     def __init__(self,
@@ -22,6 +22,8 @@ class DeployDispatchInfo():
         time_to_live: str = constants.DEFAULT_TX_TIME_TO_LIVE,
         fee: str = constants.DEFAULT_TX_FEE,
         gas_price: int = constants.DEFAULT_TX_GAS_PRICE,
+        gas_price_tolerance: float = constants.DEFAULT_TX_GAS_PRICE_TOLERANCE,
+        pricing_mode: str = constants.DEFAULT_TX_PRICING_MODE,
         ):
         """Instance constructor.
 
@@ -33,6 +35,8 @@ class DeployDispatchInfo():
         self.time_to_live = time_to_live
         self.fee = fee
         self.gas_price = gas_price
+        self.gas_price_tolerance = gas_price_tolerance
+        self.pricing_mode = pricing_mode
 
 
 class CLI_Exception(Exception):

@@ -9,3 +9,9 @@ DEFAULT_TX_FEE = int(1e11)
 
 # Default transaction fee for native transfers.
 DEFAULT_TX_FEE_NATIVE_TRANSFER = int(1e4)
+
+# Default transaction gas price tolerance.
+DEFAULT_TX_GAS_PRICE_TOLERANCE = 5
+
+# Default transaction pricing mode
+DEFAULT_TX_PRICING_MODE = "fixed"

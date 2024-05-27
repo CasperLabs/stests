@@ -56,6 +56,8 @@ class DeployType(enum.Flag):
     CONTRACT_INSTALL = enum.auto()
     TRANSFER_WASM = enum.auto()
     TRANSFER_NATIVE = enum.auto()
+    TRANSFER_NATIVE_V2 = enum.auto()
+    TRANSFER_WASM_V2 = enum.auto()
 
 
 
