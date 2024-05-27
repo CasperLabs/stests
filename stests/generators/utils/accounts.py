@@ -25,7 +25,7 @@ ACC_NETWORK_FAUCET_INDEX = 0
 TFR_TYPE_TO_TFR_FN = {
     DeployType.TRANSFER_WASM: chain.set_transfer_wasm,
     DeployType.TRANSFER_NATIVE: chain.set_transfer_native,
-    DeployType.TRANSFER_WASM_V2: chain.set_transfer_wasm_v2
+    DeployType.TRANSFER_WASM_V2: chain.set_transfer_wasm_v2,
     DeployType.TRANSFER_NATIVE_V2: chain.set_transfer_native_v2,
 }
 

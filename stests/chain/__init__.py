@@ -25,6 +25,8 @@ from stests.chain.set_auction_delegate import execute as set_auction_delegate
 from stests.chain.set_auction_undelegate import execute as set_auction_undelegate
 from stests.chain.set_transfer_native import execute as set_transfer_native
 from stests.chain.set_transfer_wasm import execute as set_transfer_wasm
+from stests.chain.set_transfer_native_v2 import execute as set_transfer_native_v2
+from stests.chain.set_transfer_wasm_v2 import execute as set_transfer_wasm_v2
 
 # Node events.
 from stests.chain.stream_events import execute as stream_events
