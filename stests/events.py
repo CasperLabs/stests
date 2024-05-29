@@ -37,6 +37,8 @@ class EventType(enum.Enum):
     MONIT_CONSENSUS_FINALITY_SIGNATURE = enum.auto()
     MONIT_DEPLOY_EXECUTION_ERROR = enum.auto()
     MONIT_DEPLOY_PROCESSED = enum.auto()
+    MONIT_TRANSACTION_PROCESSED = enum.auto()
+    MONIT_TRANSACTION_ACCEPTED = enum.auto()
     MONIT_STEP = enum.auto()
     MONIT_STREAM_BIND_ERROR = enum.auto()
     MONIT_STREAM_EVENT_TYPE_UNKNOWN = enum.auto()
@@ -72,6 +74,8 @@ EVENTS_DEBUG = (
     EventType.MONIT_BLOCK_ADDED,
     EventType.MONIT_BLOCK_FINALIZED,
     EventType.MONIT_DEPLOY_PROCESSED,
+    EventType.MONIT_TRANSACTION_PROCESSED,
+    EventType.MONIT_TRANSACTION_ACCEPTED,
 )
 
 # Set of error events.

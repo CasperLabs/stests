@@ -136,11 +136,20 @@ def _parse_event(
     
     elif 'TransactionProcessed' in payload:
         return \
-            EventType.MONIT_DEPLOY_PROCESSED, \
+            EventType.MONIT_TRANSACTION_PROCESSED, \
             event_id, \
             payload, \
             payload['TransactionProcessed']['block_hash'], \
-            payload['TransactionProcessed']['transaction_hash']['Deploy'], \
+            payload['TransactionProcessed']['transaction_hash']['Version1'], \
+            None
+    
+    elif 'TransactionAccepted' in payload:
+        return \
+            EventType.MONIT_TRANSACTION_ACCEPTED, \
+            event_id, \
+            payload, \
+            None, \
+            payload['TransactionAccepted']['Version1']['hash'], \
             None
 
     elif 'Step' in payload:
