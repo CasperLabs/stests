@@ -19,7 +19,7 @@ def execute(ctx: ExecutionContext):
 
     """
     account_set = accounts.get_account_set(ctx, ctx.args.accounts, ctx.args.transfers)
-    for deploy_idx in range(1, ctx.args.transfers + 1):  
+    for deploy_idx in range(1, ctx.args.transfers + 1):
         account_idx = accounts.get_account_idx_for_deploy(ctx.args.accounts, deploy_idx)
         accounts.do_transfer_fire_forget(
             ctx,

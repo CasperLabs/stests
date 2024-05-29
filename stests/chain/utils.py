@@ -21,8 +21,7 @@ class DeployDispatchInfo():
         node: Node,
         time_to_live: str = constants.DEFAULT_TX_TIME_TO_LIVE,
         fee: str = constants.DEFAULT_TX_FEE,
-        gas_price: int = constants.DEFAULT_TX_GAS_PRICE,
-        gas_price_tolerance: float = constants.DEFAULT_TX_GAS_PRICE_TOLERANCE,
+        gas_price_tolerance: int = constants.DEFAULT_TX_GAS_PRICE_TOLERANCE,
         pricing_mode: str = constants.DEFAULT_TX_PRICING_MODE,
         ):
         """Instance constructor.
@@ -34,7 +33,6 @@ class DeployDispatchInfo():
         self.node_address = node.url_rpc
         self.time_to_live = time_to_live
         self.fee = fee
-        self.gas_price = gas_price
         self.gas_price_tolerance = gas_price_tolerance
         self.pricing_mode = pricing_mode
 

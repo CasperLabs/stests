@@ -12,8 +12,8 @@ from stests.events import EventType
 
 
 # Method upon client to be invoked.
-_CLIENT_METHOD = "put-transaction session"
-
+_CLIENT_METHOD = "put-transaction"
+_CLIENT_METHOD_TARGET = "session"
 
 def execute(
     network: Network,
@@ -44,7 +44,7 @@ def execute(
     session_path = paths.get_path_to_contract(network, contract_fname)
 
     cli_response = subprocess.run([
-        binary_path, _CLIENT_METHOD,
+        binary_path, _CLIENT_METHOD, _CLIENT_METHOD_TARGET,
         "--chain-name", network.chain_name,
         "--node-address", node.url_rpc,
         "--payment-amount", str(tx_fee),

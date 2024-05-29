@@ -13,7 +13,8 @@ from stests.events import EventType
 
 
 # Method upon client to be invoked.
-_CLIENT_METHOD = "put-transaction transfer"
+_CLIENT_METHOD = "put-transaction"
+_CLIENT_METHOD_TARGET = "transfer"
 
 # Maximum value of a transfer ID.
 _MAX_TRANSFER_ID = (2 ** 63) - 1
@@ -34,7 +35,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
     cp1 = info.dispatcher
 
     cli_response = subprocess.run([
-        binary_path, _CLIENT_METHOD,
+        binary_path, _CLIENT_METHOD, _CLIENT_METHOD_TARGET,
         "--target", cp2.account_key,
         "--transfer-amount", str(amount),
         "--chain-name", info.network.chain_name,
@@ -42,7 +43,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
         "--payment-amount", str(info.fee),
         "--secret-key", info.dispatcher.get_private_key_pem_filepath(),
         "--id", str(random.randint(1, _MAX_TRANSFER_ID)),
-        "--gas-price-tolerance ", str(info.gas_price_tolerance),
+        "--gas-price-tolerance", str(info.gas_price_tolerance),
         "--ttl", str(info.time_to_live),
         "--pricing-mode", str(info.pricing_mode),
         ],

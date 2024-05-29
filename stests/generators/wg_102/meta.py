@@ -1,6 +1,6 @@
 from stests.core.types.orchestration import ExecutionContext
 from stests.generators.wg_102 import args
-from stests.stests.generators.wg_102 import p1s1_do_transfers_v2
+from stests.generators.wg_102 import p1s1_do_transfers_v2
 
 
 # Workload custom args type.

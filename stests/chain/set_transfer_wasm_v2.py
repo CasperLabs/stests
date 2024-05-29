@@ -10,7 +10,8 @@ from stests.events import EventType
 
 
 # Method upon client to be invoked.
-_CLIENT_METHOD = "put-transaction session"
+_CLIENT_METHOD = "put-transaction"
+_CLIENT_METHOD_TARGET = "session"
 
 # Name of smart contract to dispatch & invoke.
 _CONTRACT_FNAME = "transfer_to_account_u512.wasm"
