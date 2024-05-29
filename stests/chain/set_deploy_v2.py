@@ -20,6 +20,7 @@ def execute(
     node: Node,
     dispatcher: Account,
     contract_fname: str,
+    contract_session_entry_point: str,
     session_args: list=[],
     tx_ttl=constants.DEFAULT_TX_TIME_TO_LIVE,
     tx_fee=constants.DEFAULT_TX_FEE,
@@ -50,6 +51,7 @@ def execute(
         "--payment-amount", str(tx_fee),
         "--secret-key", dispatcher.get_private_key_pem_filepath(),
         "--transaction-path", session_path,
+        "--session-entry-point", contract_session_entry_point,
         "--ttl", str(tx_ttl),
         "--gas-price-tolerance", str(tx_gas_price_tolerance),
         "--pricing-mode", str(tx_pricing_mode),
@@ -57,4 +59,4 @@ def execute(
         stdout=subprocess.PIPE,
         )
 
-    return json.loads(cli_response.stdout)['transaction_hash']['Version1']
+    return json.loads(cli_response.stdout)['result']['transaction_hash']['Version1']

@@ -15,6 +15,7 @@ _CLIENT_METHOD_TARGET = "session"
 
 # Name of smart contract to dispatch & invoke.
 _CONTRACT_FNAME = "transfer_to_account_u512.wasm"
+_CONTRACT_ENTRY_POINT = "call"
 
 
 @execute_cli(_CLIENT_METHOD, EventType.WFLOW_DEPLOY_DISPATCH_FAILURE)
@@ -35,6 +36,7 @@ def execute(info: DeployDispatchInfo, cp2: Account, amount: int, verbose: bool =
         info.node,
         info.dispatcher,
         _CONTRACT_FNAME,
+        _CONTRACT_ENTRY_POINT,
         [
             "--session-arg", f"amount:u512='{amount}'",
             "--session-arg", f"target:account_hash='account-hash-{cp2.account_hash}'",
