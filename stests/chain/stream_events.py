@@ -140,7 +140,7 @@ def _parse_event(
             event_id, \
             payload, \
             payload['TransactionProcessed']['block_hash'], \
-            payload['TransactionProcessed']['transaction_hash']['Version1'], \
+            payload['TransactionProcessed']['transaction_hash']['Deploy'], \
             None
     
     elif 'TransactionAccepted' in payload:
@@ -149,7 +149,7 @@ def _parse_event(
             event_id, \
             payload, \
             None, \
-            payload['TransactionAccepted']['Version1']['hash'], \
+            payload['TransactionAccepted']['Deploy']['hash'], \
             None
 
     elif 'Step' in payload:
