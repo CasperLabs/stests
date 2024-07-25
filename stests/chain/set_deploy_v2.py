@@ -26,6 +26,7 @@ def execute(
     tx_fee=constants.DEFAULT_TX_FEE,
     tx_gas_price_tolerance=constants.DEFAULT_TX_GAS_PRICE_TOLERANCE,
     tx_pricing_mode=constants.DEFAULT_TX_PRICING_MODE,
+    tx_categogy=constants.DEFAULT_TX_CATEGORY
     ) -> str:
     """Dispatches a signed deploy to target test network.
 
@@ -55,6 +56,7 @@ def execute(
         "--ttl", str(tx_ttl),
         "--gas-price-tolerance", str(tx_gas_price_tolerance),
         "--pricing-mode", str(tx_pricing_mode),
+        "--category", str(tx_categogy)
         ] + session_args,
         stdout=subprocess.PIPE,
         )

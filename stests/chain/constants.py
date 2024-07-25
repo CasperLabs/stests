@@ -15,3 +15,6 @@ DEFAULT_TX_GAS_PRICE_TOLERANCE = 5
 
 # Default transaction pricing mode
 DEFAULT_TX_PRICING_MODE = "fixed"
+
+# Default transaction category
+DEFAULT_TX_CATEGORY = "medium"
